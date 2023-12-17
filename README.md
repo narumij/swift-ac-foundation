@@ -17,7 +17,7 @@
 - 文字列
 - C文字配列
 
-```
+```swift
 let N: Int = Int.read()
 ```
 
