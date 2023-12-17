@@ -28,12 +28,12 @@ getchar_unlocked()を用いた読み込みとなっていて、必要最小限�
 
 タプルや配列の入力を補助します。
 
-```
+```swift
 let N,M: Int
 (N,M) = Input.read()
 ```
 
-```
+```swift
 let N: Int
 let A: [Int]
 N = Input.read()
