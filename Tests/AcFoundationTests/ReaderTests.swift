@@ -13,7 +13,7 @@ extension CChar: ExpressibleByStringLiteral {
     }
 }
 
-@STDIN
+@STDIO
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -26,13 +26,13 @@ final class ReaderTests: XCTestCase {
 
     func testRead1() throws {
         XCTAssertEqual(
-            SolverRunner(solver: { print in
+            SolverRunner(solver: {
                 let N = Int.read()!
                 let F = Double.read()!
                 let S = String.read()!
                 let CC = [CChar].read()!
-                print((N + 1).description)
-                print((F * 2).description)
+                print((N + 1))
+                print((F * 2))
                 print(S.uppercased())
                 print(String(cString: CC + ["1",0]))
             })
@@ -54,7 +54,7 @@ final class ReaderTests: XCTestCase {
     
     func testRead2() throws {
         XCTAssertEqual(
-            SolverRunner(solver: { print in
+            SolverRunner(solver: {
                 let S: String = String.read()
                 let CC: [CChar] = [CChar].read()
                 print(S.uppercased())

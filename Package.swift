@@ -11,6 +11,9 @@ let package = Package(
             name: "AcFoundation",
             targets: ["AcFoundation"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
@@ -18,6 +21,9 @@ let package = Package(
             name: "AcFoundation"),
         .testTarget(
             name: "AcFoundationTests",
-            dependencies: ["AcFoundation"]),
+            dependencies: [
+                "AcFoundation",
+                .product(name: "Algorithms", package: "swift-algorithms"),
+            ]),
     ]
 )

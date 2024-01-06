@@ -16,6 +16,15 @@ public extension Array where Element == CChar {
     @inlinable @inline(__always) static func read() -> Self! { ATOC.read() }
 }
 
+extension Array where Element: SingleRead {
+    static func read(columns count: Int) -> Self {
+        (0..<count).map{ _ in .read() }
+    }
+    static func read(rows count: Int) -> Self {
+        (0..<count).map{ _ in .read() }
+    }
+}
+
 public protocol IOReader { }
 
 public protocol FixedBufferIOReader: IOReader {
