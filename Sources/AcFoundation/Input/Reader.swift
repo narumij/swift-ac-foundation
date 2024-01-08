@@ -28,6 +28,7 @@ public extension Collection where Element: Collection, Element.Element: ArrayRea
 }
 
 extension Int: FullRead { }
+extension UInt: FullRead { }
 extension Double: FullRead { }
 extension CInt: FullRead { }
 extension CUnsignedInt: FullRead { }
