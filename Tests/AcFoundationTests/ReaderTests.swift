@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import AcFoundation
 
 extension CChar: ExpressibleByStringLiteral {
     public init(stringLiteral s: String) {
@@ -69,6 +70,94 @@ final class ReaderTests: XCTestCase {
             """
             ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ
             11111111111111111111111111111111111111111111111111111
+            """)
+    }
+    
+    func testRead3() throws {
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let CC: [[CChar]] = .read(rows: 3, columns: 3)
+                CC.forEach {
+                    print(String(cString: $0 + [0]).uppercased())
+                }
+            })
+            .run(input:
+            """
+            aaa
+            bbb
+            ccc
+            """),
+            
+            """
+            AAA
+            BBB
+            CCC
+            """)
+    }
+
+    func testRead4() throws {
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let SS: [String] = .read(rows: 3, columns: 3)
+                SS.forEach {
+                    print($0.uppercased())
+                }
+            })
+            .run(input:
+            """
+            aaa
+            bbb
+            ccc
+            """),
+            
+            """
+            AAA
+            BBB
+            CCC
+            """)
+    }
+    
+    func testRead5() throws {
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let ABC: [[Int]] = .read(rows: 3, columns: 3)
+                ABC.forEach {
+                    print($0.map{ $0 * 3 }.map(\.description).joined(separator: " "))
+                }
+            })
+            .run(input:
+            """
+            1 1 1
+            2 2 2
+            3 3 3
+            """),
+            
+            """
+            3 3 3
+            6 6 6
+            9 9 9
+            """)
+    }
+    
+    func testRead6() throws {
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let A: [Int] = .read(rows: 3)
+                A.forEach {
+                    print($0 * 3)
+                }
+            })
+            .run(input:
+            """
+            1
+            2
+            3
+            """),
+            
+            """
+            3
+            6
+            9
             """)
     }
 
