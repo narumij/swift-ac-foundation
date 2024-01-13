@@ -61,7 +61,7 @@ public struct SolverRunner {
             let bytesRead = read(pipefd[0], &readBuffer, 1024)
             if bytesRead > 0 {
                 // 読み取ったデータを文字列に変換して追加
-                completeOutput += String(cString: readBuffer)
+                completeOutput += String(cString: readBuffer + [0])
             } else {
                 // もう読み取るデータがない場合
                 break
