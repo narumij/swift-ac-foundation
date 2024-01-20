@@ -94,7 +94,7 @@ extension FixedWidthInteger {
 extension FixedWidthInteger {
     
     @inlinable @inline(__always)
-    static func readHead() -> Self {
+    static func __readHead() -> Self {
         var head: Self
         repeat {
             head = Self(truncatingIfNeeded: getchar_unlocked())
@@ -106,8 +106,8 @@ extension FixedWidthInteger {
 extension Array where Element: FixedWidthInteger {
     
     @inlinable @inline(__always)
-    static func readBytes(count: Int) -> Self {
-        return [.readHead()] + (1..<count).map { _ in
+    static func __readBytes(count: Int) -> Self {
+        return [.__readHead()] + (1..<count).map { _ in
             Element(truncatingIfNeeded: getchar_unlocked())
         }
     }
@@ -119,7 +119,7 @@ extension FixedBufferIOReader {
     mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) -> T? {
         var current = 0
         return buffer.withUnsafeMutableBufferPointer { buffer in
-            buffer[current] = .readHead()
+            buffer[current] = .__readHead()
             while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
                 current += 1
                 buffer[current] = UInt8(truncatingIfNeeded: getchar_unlocked())
@@ -138,7 +138,7 @@ extension VariableBufferIOReader {
     @inlinable @inline(__always)
     mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) -> T? {
         var current = 0
-        buffer[current] = .readHead()
+        buffer[current] = .__readHead()
         while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
             current += 1
             if current == buffer.count {
@@ -179,7 +179,7 @@ extension IOReaderInstance {
     public static var instance = Self()
     @inlinable @inline(__always) static func read(columns: Int) -> [CChar] {
         defer { getchar_unlocked() }
-        return .readBytes(count: columns)
+        return .__readBytes(count: columns)
     }
 }
 
@@ -190,6 +190,6 @@ extension IOReaderInstance {
     public static var instance = Self()
     @inlinable @inline(__always) static func read(columns: Int) -> String! {
         defer { getchar_unlocked() }
-        return String(bytes: Array.readBytes(count: columns), encoding: .ascii)
+        return String(bytes: Array.__readBytes(count: columns), encoding: .ascii)
     }
 }

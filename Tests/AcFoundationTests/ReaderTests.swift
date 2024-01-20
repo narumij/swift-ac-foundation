@@ -56,8 +56,8 @@ final class ReaderTests: XCTestCase {
     func testRead2() throws {
         XCTAssertEqual(
             SolverRunner(solver: {
-                let S: String = String.read()
-                let CC: [CChar] = [CChar].read()
+                let S: String = .read()
+                let CC: [CChar] = .read()
                 print(S.uppercased())
                 print(String(cString: CC + ["1",0]))
             })
