@@ -22,3 +22,7 @@ func dot<Element: Numeric>(_ lhs: Array<Element>,_ rhs: Array<Element>) -> Eleme
 func length_squared<Element: Numeric>(_ rhs: Array<Element>) -> Element {
     dot( rhs, rhs)
 }
+
+func distance_squared<Element: Numeric>(_ lhs: Array<Element>,_ rhs: Array<Element>) -> Element {
+    length_squared(lhs &- rhs)
+}
