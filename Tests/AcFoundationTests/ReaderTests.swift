@@ -30,8 +30,9 @@ final class ReaderTests: XCTestCase {
             SolverRunner(solver: {
                 let N = Int.read()!
                 let F = Double.read()!
+                assert(F == 3.14)
                 let S = String.read()!
-                let CC = [CChar].read()!
+                let CC = [CChar].read()
                 print((N + 1))
                 print((F * 2))
                 print(S.uppercased())

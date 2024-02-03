@@ -39,15 +39,15 @@ extension String: TupleRead { }
 extension CChar: TupleRead { }
 
 public extension FixedWidthInteger {
-    @inlinable @inline(__always) static func read() -> Self! { .init(ATOL.read()!) }
+    @inlinable @inline(__always) static func read() -> Self! { .init(SCANL.next()!) }
 }
 
 public extension BinaryFloatingPoint {
-    @inlinable @inline(__always) static func read() -> Self! { .init(ATOF.read()!) }
+    @inlinable @inline(__always) static func read() -> Self! { .init(SCANF.next()!) }
 }
 
 public extension String {
-    @inlinable @inline(__always) static func read() -> String! { ATOS.read() }
+    @inlinable @inline(__always) static func read() -> String! { readLine() }
     
     @inlinable @inline(__always)
     static func read(columns: Int) -> String! { ATOS.read(columns: columns) }
@@ -66,10 +66,10 @@ public extension CChar {
 }
 
 public extension Array where Element == CChar {
-    @inlinable @inline(__always) static func read() -> Self! { ATOC.read() }
+    @inlinable @inline(__always) static func read() -> [CChar] { ATOC.read() }
     
     @inlinable @inline(__always)
-    static func read(columns: Int) -> [CChar]! { ATOC.read(columns: columns) }
+    static func read(columns: Int) -> [CChar] { ATOC.read(columns: columns) }
 }
 
 public extension Array where Element == Array<CChar> {
@@ -80,11 +80,60 @@ public extension Array where Element == Array<CChar> {
     }
 }
 
+// MARK: -
+
+@usableFromInline protocol IOReaderInstance: IteratorProtocol {
+    static var instance: Self { get set }
+}
+
+extension IOReaderInstance {
+    @inlinable @inline(__always) static func next() -> Element! { instance.next() }
+}
+
 @usableFromInline protocol IOReader { }
 
-@usableFromInline protocol FixedBufferIOReader: IOReader {
-    var buffer: [UInt8] { get set }
+@usableFromInline protocol ScanfIOReader: IOReader {
+    associatedtype Element: ExpressibleByIntegerLiteral
+    var format: String { get }
 }
+
+extension ScanfIOReader {
+    
+    @inlinable @inline(__always)
+    mutating func _next() -> Element? {
+        func __vfscanf(_ file: UnsafeMutablePointer<FILE>!,_ format: String, _ args: CVarArg...) -> Int32 {
+            withVaList(args) { vaList in vfscanf(stdin, format, vaList) }
+        }
+        var element: Element = 0
+        let result = withUnsafeMutablePointer(to: &element) { arg in
+            __vfscanf(stdin, format, arg)
+        }
+        assert(result != EOF)
+        assert(result != 0)
+        if result == EOF { return nil }
+        if result == 0 { return nil }
+        defer { getchar_unlocked() }
+        return element
+    }
+}
+
+@usableFromInline struct SCANL: IteratorProtocol, ScanfIOReader, IOReaderInstance {
+    public typealias Element = CLongLong
+    public var format: String = "%lld"
+    public static var instance = Self()
+    @inlinable @inline(__always)
+    public mutating func next() -> Element? { _next() }
+}
+
+@usableFromInline struct SCANF: IteratorProtocol, ScanfIOReader, IOReaderInstance {
+    public typealias Element = CDouble
+    public var format: String = "%lf"
+    public static var instance = Self()
+    @inlinable @inline(__always)
+    public mutating func next() -> Element? { _next() }
+}
+
+// MARK: -
 
 extension FixedWidthInteger {
     @inlinable @inline(__always) static var SP: Self { 0x20 }
@@ -97,7 +146,7 @@ extension FixedWidthInteger {
     static func __readHead() -> Self {
         var head: Self
         repeat {
-            head = Self(truncatingIfNeeded: getchar_unlocked())
+            head = numericCast(getchar_unlocked())
         } while head == .SP || head == .LF;
         return head
     }
@@ -108,26 +157,12 @@ extension Array where Element: FixedWidthInteger {
     @inlinable @inline(__always)
     static func __readBytes(count: Int) -> Self {
         return [.__readHead()] + (1..<count).map { _ in
-            Element(truncatingIfNeeded: getchar_unlocked())
+            numericCast(getchar_unlocked())
         }
     }
 }
 
-extension FixedBufferIOReader {
-    
-    @inlinable @inline(__always)
-    mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) -> T? {
-        var current = 0
-        return buffer.withUnsafeMutableBufferPointer { buffer in
-            buffer[current] = .__readHead()
-            while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
-                current += 1
-                buffer[current] = UInt8(truncatingIfNeeded: getchar_unlocked())
-            }
-            return current == 0 ? nil : f(buffer.baseAddress!)
-        }
-    }
-}
+// MARK: -
 
 @usableFromInline protocol VariableBufferIOReader: IOReader {
     associatedtype BufferElement: FixedWidthInteger
@@ -135,6 +170,7 @@ extension FixedBufferIOReader {
 }
 
 extension VariableBufferIOReader {
+    
     @inlinable @inline(__always)
     mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) -> T? {
         var current = 0
@@ -144,32 +180,10 @@ extension VariableBufferIOReader {
             if current == buffer.count {
                 buffer.append(contentsOf: repeatElement(0, count: buffer.count))
             }
-            buffer[current] = BufferElement(truncatingIfNeeded: getchar_unlocked())
+            buffer[current] = numericCast(getchar_unlocked())
         }
         return buffer.withUnsafeBufferPointer{ f($0, current) }
     }
-}
-
-@usableFromInline protocol IOReaderInstance: IteratorProtocol {
-    static var instance: Self { get set }
-}
-
-extension IOReaderInstance {
-    @inlinable @inline(__always) static func read() -> Element! { instance.next() }
-}
-
-@usableFromInline struct ATOL: IteratorProtocol, FixedBufferIOReader, IOReaderInstance {
-    public var buffer = [UInt8](repeating: 0, count: 32)
-    @inlinable @inline(__always)
-    public mutating func next() -> Int? { _next { atol($0) } }
-    public static var instance = Self()
-}
-
-@usableFromInline struct ATOF: IteratorProtocol, FixedBufferIOReader, IOReaderInstance {
-    public var buffer = [UInt8](repeating: 0, count: 64)
-    @inlinable @inline(__always)
-    public mutating func next() -> Double? { _next { atof($0) } }
-    public static var instance = Self()
 }
 
 @usableFromInline struct ATOC: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
@@ -177,6 +191,14 @@ extension IOReaderInstance {
     @inlinable @inline(__always)
     public mutating func next() -> Array<CChar>? { _next { Array($0[0..<$1]) } }
     public static var instance = Self()
+    @inlinable @inline(__always) static func read() -> [CChar] {
+        var buffer: [CChar] = [.__readHead()]
+        while buffer.last != .SP, buffer.last != .LF, buffer.last != 0 {
+            buffer.append(numericCast(getchar_unlocked()))
+        }
+        buffer.removeLast()
+        return buffer
+    }
     @inlinable @inline(__always) static func read(columns: Int) -> [CChar] {
         defer { getchar_unlocked() }
         return .__readBytes(count: columns)
