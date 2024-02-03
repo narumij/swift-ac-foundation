@@ -2,7 +2,7 @@ import Foundation
 
 public protocol SingleRead {
     @inlinable @inline(__always)
-    static func read() -> Self!
+    static func read() -> Self
 }
 
 public protocol TupleRead: SingleRead { }
@@ -39,15 +39,15 @@ extension String: TupleRead { }
 extension CChar: TupleRead { }
 
 public extension FixedWidthInteger {
-    @inlinable @inline(__always) static func read() -> Self! { .init(ATOL.read()!) }
+    @inlinable @inline(__always) static func read() -> Self { .init(ATOL.read()!) }
 }
 
 public extension BinaryFloatingPoint {
-    @inlinable @inline(__always) static func read() -> Self! { .init(ATOF.read()!) }
+    @inlinable @inline(__always) static func read() -> Self { .init(ATOF.read()!) }
 }
 
 public extension String {
-    @inlinable @inline(__always) static func read() -> String! { ATOS.read() }
+    @inlinable @inline(__always) static func read() -> String { ATOS.read() }
     
     @inlinable @inline(__always)
     static func read(columns: Int) -> String! { ATOS.read(columns: columns) }
@@ -66,7 +66,7 @@ public extension CChar {
 }
 
 public extension Array where Element == CChar {
-    @inlinable @inline(__always) static func read() -> Self! { ATOC.read() }
+    @inlinable @inline(__always) static func read() -> Self { ATOC.read() }
     
     @inlinable @inline(__always)
     static func read(columns: Int) -> [CChar]! { ATOC.read(columns: columns) }
@@ -97,7 +97,7 @@ extension FixedWidthInteger {
     static func __readHead() -> Self {
         var head: Self
         repeat {
-            head = Self(truncatingIfNeeded: getchar_unlocked())
+            head = numericCast(getchar_unlocked())
         } while head == .SP || head == .LF;
         return head
     }
@@ -106,10 +106,10 @@ extension FixedWidthInteger {
 extension Array where Element: FixedWidthInteger {
     
     @inlinable @inline(__always)
-    static func __readBytes(count: Int) -> Self {
-        return [.__readHead()] + (1..<count).map { _ in
-            Element(truncatingIfNeeded: getchar_unlocked())
-        }
+    static func __readBytes(count: Int) -> Self? {
+        let h: Element = .__readHead()
+        guard h != EOF else { return nil }
+        return [h] + (1..<count).map { _ in numericCast(getchar_unlocked()) }
     }
 }
 
@@ -119,10 +119,13 @@ extension FixedBufferIOReader {
     mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) -> T? {
         var current = 0
         return buffer.withUnsafeMutableBufferPointer { buffer in
-            buffer[current] = .__readHead()
-            while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
+            buffer.baseAddress![current] = .__readHead()
+            while buffer.baseAddress![current] != .SP,
+                  buffer.baseAddress![current] != .LF,
+                  buffer.baseAddress![current] != EOF
+            {
                 current += 1
-                buffer[current] = UInt8(truncatingIfNeeded: getchar_unlocked())
+                buffer[current] = numericCast(getchar_unlocked())
             }
             return current == 0 ? nil : f(buffer.baseAddress!)
         }
@@ -179,7 +182,7 @@ extension IOReaderInstance {
     public static var instance = Self()
     @inlinable @inline(__always) static func read(columns: Int) -> [CChar] {
         defer { getchar_unlocked() }
-        return .__readBytes(count: columns)
+        return .__readBytes(count: columns) ?? []
     }
 }
 
@@ -190,6 +193,6 @@ extension IOReaderInstance {
     public static var instance = Self()
     @inlinable @inline(__always) static func read(columns: Int) -> String! {
         defer { getchar_unlocked() }
-        return String(bytes: Array.__readBytes(count: columns), encoding: .ascii)
+        return String(bytes: Array.__readBytes(count: columns) ?? [], encoding: .ascii)
     }
 }

@@ -28,10 +28,10 @@ final class ReaderTests: XCTestCase {
     func testRead1() throws {
         XCTAssertEqual(
             SolverRunner(solver: {
-                let N = Int.read()!
-                let F = Double.read()!
-                let S = String.read()!
-                let CC = [CChar].read()!
+                let N = Int.read()
+                let F = Double.read()
+                let S = String.read()
+                let CC = [CChar].read()
                 print((N + 1))
                 print((F * 2))
                 print(S.uppercased())
