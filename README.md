@@ -25,6 +25,7 @@ let G: [[CChar]] = .read(rows: H, columns: W)
 ```
 
 整数及び浮動小数はvfscanf(...)を用いた読み込みとなっていて、C言語の速度で動きます。
+ですが、Clangと同じ理由の遅さとなっている様子なので、解決策が分かるまで保留にします。
 
 #### ReaderHelper
 
