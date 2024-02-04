@@ -50,7 +50,7 @@ public extension String {
     @inlinable @inline(__always) static func read() -> String { ATOS.read() }
     
     @inlinable @inline(__always)
-    static func read(columns: Int) -> String! { ATOS.read(columns: columns) }
+    static func read(columns: Int) -> String { ATOS.read(columns: columns) }
 }
 
 public extension Array where Element == String {
