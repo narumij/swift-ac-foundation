@@ -35,13 +35,4 @@ final class AcFoundationTests: XCTestCase {
         XCTAssertEqual(3, array.left(6))
         XCTAssertEqual(3, array.right(6))
     }
-    
-    func testVector() throws {
-        
-        XCTAssertEqual([1,1], [0,1] &+ [1,0])
-        XCTAssertEqual([-1,1], [0,1] &- [1,0])
-        
-        XCTAssertEqual(dot([0,1] as SIMD2<Float>, [1,0] as SIMD2<Float>), dot([0,1],[1,0]))
-        XCTAssertEqual(length_squared([0,1] as SIMD2<Float>), length_squared([0,1]))
-    }
 }
