@@ -29,10 +29,12 @@ final class ReaderTests: XCTestCase {
         XCTAssertEqual(
             SolverRunner(solver: {
                 let N = Int.read()
+                let M = Int.read()
                 let F = Double.read()
                 let S = String.read()
                 let CC = [CChar].read()
                 print((N + 1))
+                print((M + 1))
                 print((F * 2))
                 print(S.uppercased())
                 print(String(cString: CC + ["1",0]))
@@ -40,6 +42,7 @@ final class ReaderTests: XCTestCase {
             .run(input:
             """
             3
+            -3
             3.14
             abc
             1111
@@ -47,6 +50,7 @@ final class ReaderTests: XCTestCase {
             
             """
             4
+            -2
             6.28
             ABC
             11111
