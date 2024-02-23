@@ -21,7 +21,7 @@ let S: String = .read()
 
 ```swift
 let (H,W): (Int, Int) = (.read(), .read())
-let G: [[CChar]] = .read(rows: H, columns: W)
+let G: [[Character]] = .read(rows: H, columns: W)
 ```
 
 整数及び浮動小数はvfscanf(...)を用いた読み込みとなっていて、C言語の速度で動きます。

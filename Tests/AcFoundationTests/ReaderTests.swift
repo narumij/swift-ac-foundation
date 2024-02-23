@@ -32,11 +32,11 @@ final class ReaderTests: XCTestCase {
                 let F = Double.read()!
                 assert(F == 3.14)
                 let S = String.read()!
-                let CC = [CChar].read()
+                let CC = [Character].read()
                 print((N + 1))
                 print((F * 2))
                 print(S.uppercased())
-                print(String(cString: CC + ["1",0]))
+                print(String(CC))
             })
             .run(input:
             """
@@ -58,9 +58,9 @@ final class ReaderTests: XCTestCase {
         XCTAssertEqual(
             SolverRunner(solver: {
                 let S: String = .read()
-                let CC: [CChar] = .read()
+                let CC: [Character] = .read()
                 print(S.uppercased())
-                print(String(cString: CC + ["1",0]))
+                print(String(CC + ["1"]))
             })
             .run(input:
             """
@@ -77,9 +77,9 @@ final class ReaderTests: XCTestCase {
     func testRead3() throws {
         XCTAssertEqual(
             SolverRunner(solver: {
-                let CC: [[CChar]] = .read(rows: 3, columns: 3)
+                let CC: [[Character]] = .read(rows: 3, columns: 3)
                 CC.forEach {
-                    print(String(cString: $0 + [0]).uppercased())
+                    print(String($0).uppercased())
                 }
             })
             .run(input:
