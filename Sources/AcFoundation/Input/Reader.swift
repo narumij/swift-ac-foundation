@@ -2,7 +2,7 @@ import Foundation
 
 public protocol SingleRead {
     @inlinable @inline(__always)
-    static func read() -> Self!
+    static func read() -> Self
 }
 
 public protocol TupleRead: SingleRead { }
@@ -39,18 +39,18 @@ extension String: TupleRead { }
 extension CChar: TupleRead { }
 
 public extension FixedWidthInteger {
-    @inlinable @inline(__always) static func read() -> Self! { .init(SCANL.next()!) }
+    @inlinable @inline(__always) static func read() -> Self { .init(SCANL.next()!) }
 }
 
 public extension BinaryFloatingPoint {
-    @inlinable @inline(__always) static func read() -> Self! { .init(SCANF.next()!) }
+    @inlinable @inline(__always) static func read() -> Self { .init(SCANF.next()!) }
 }
 
 public extension String {
-    @inlinable @inline(__always) static func read() -> String! { readLine() }
+    @inlinable @inline(__always) static func read() -> String { readLine()! }
     
     @inlinable @inline(__always)
-    static func read(columns: Int) -> String! { ATOS.read(columns: columns) }
+    static func read(columns: Int) -> String { ATOS.read(columns: columns) }
 }
 
 public extension Array where Element == String {
@@ -62,7 +62,7 @@ public extension Array where Element == String {
 }
 
 public extension Character {
-    static func read() -> Character { String.read(columns: 1)!.map{ $0 }.first! }
+    static func read() -> Character { Character(String.read(columns: 1)) }
 }
 
 public extension Array where Element == Character {

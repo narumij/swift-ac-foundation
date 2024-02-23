@@ -28,15 +28,15 @@ final class ReaderTests: XCTestCase {
     func testRead1() throws {
         XCTAssertEqual(
             SolverRunner(solver: {
-                let N = Int.read()!
-                let F = Double.read()!
+                let N = Int.read()
+                let F = Double.read()
                 assert(F == 3.14)
-                let S = String.read()!
+                let S = String.read()
                 let CC = [Character].read()
                 print((N + 1))
                 print((F * 2))
                 print(S.uppercased())
-                print(String(CC))
+                print(String(CC + "1"))
             })
             .run(input:
             """
