@@ -61,21 +61,24 @@ public extension Array where Element == String {
     }
 }
 
-public extension CChar {
-    static func read() -> CChar! { ATOC.read(columns: 1).first! }
+public extension Character {
+    static func read() -> Character { Character(String.read(columns: 1)) }
 }
 
-public extension Array where Element == CChar {
-    @inlinable @inline(__always) static func read() -> Self { ATOC.read() }
-    
+public extension Array where Element == Character {
     @inlinable @inline(__always)
-    static func read(columns: Int) -> [CChar]! { ATOC.read(columns: columns) }
+    static func read() -> [Character] {
+        String.read().map{ $0 }
+    }
+    @inlinable @inline(__always)
+    static func read(columns: Int) -> [Character] {
+        String.read(columns: columns).map{ $0 }
+    }
 }
 
-public extension Array where Element == Array<CChar> {
-    
+public extension Array where Element == Array<Character> {
     @inlinable @inline(__always)
-    static func read(rows: Int, columns: Int) -> [[CChar]] {
+    static func read(rows: Int, columns: Int) -> [[Character]] {
         (0..<rows).map { _ in .read(columns: columns) }
     }
 }
@@ -173,17 +176,6 @@ extension IOReaderInstance {
     @inlinable @inline(__always)
     public mutating func next() -> Double? { _next { atof($0) } }
     public static var instance = Self()
-}
-
-@usableFromInline struct ATOC: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
-    public var buffer: [CChar] = .init(repeating: 0, count: 32)
-    @inlinable @inline(__always)
-    public mutating func next() -> Array<CChar>? { _next { Array($0[0..<$1]) } }
-    public static var instance = Self()
-    @inlinable @inline(__always) static func read(columns: Int) -> [CChar] {
-        defer { getchar_unlocked() }
-        return .__readBytes(count: columns) ?? []
-    }
 }
 
 @usableFromInline struct ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
