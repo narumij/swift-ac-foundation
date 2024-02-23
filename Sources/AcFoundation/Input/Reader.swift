@@ -36,7 +36,7 @@ extension CLongLong: FullRead { }
 extension CUnsignedLongLong: FullRead { }
 
 extension String: TupleRead { }
-extension CChar: TupleRead { }
+extension Character: TupleRead { }
 
 public extension FixedWidthInteger {
     @inlinable @inline(__always) static func read() -> Self { .init(ATOL.read()!) }
