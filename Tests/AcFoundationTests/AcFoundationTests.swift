@@ -1,5 +1,9 @@
 import XCTest
+#if DEBUG
 @testable import AcFoundation
+#else
+import AcFoundation
+#endif
 import simd
 
 final class AcFoundationTests: XCTestCase {
@@ -11,6 +15,7 @@ final class AcFoundationTests: XCTestCase {
         // https://developer.apple.com/documentation/xctest/defining_test_cases_and_test_methods
     }
     
+#if DEBUG
     func testBinarySearch() throws {
         let array = [1, 3, 5, 7, 9]
         
@@ -35,4 +40,5 @@ final class AcFoundationTests: XCTestCase {
         XCTAssertEqual(3, array.left(6))
         XCTAssertEqual(3, array.right(6))
     }
+#endif
 }

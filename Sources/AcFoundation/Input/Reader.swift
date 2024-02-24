@@ -37,6 +37,7 @@ extension CUnsignedLongLong: FullRead { }
 
 extension String: TupleRead { }
 extension Character: TupleRead { }
+extension UInt8: TupleRead { }
 
 public extension FixedWidthInteger {
     @inlinable @inline(__always) static func read() -> Self { .init(ATOL.read()!) }
@@ -47,7 +48,8 @@ public extension BinaryFloatingPoint {
 }
 
 public extension String {
-    @inlinable @inline(__always) static func read() -> String { ATOS.read() }
+    @inlinable @inline(__always)
+    static func read() -> String { ATOS.read() }
     
     @inlinable @inline(__always)
     static func read(columns: Int) -> String { ATOS.read(columns: columns) }
@@ -61,6 +63,25 @@ public extension Array where Element == String {
     }
 }
 
+public extension UInt8 {
+    static func read() -> UInt8 { ATOB.read(columns: 1).first! }
+}
+
+public extension Array where Element == UInt8 {
+    @inlinable @inline(__always)
+    static func read() -> [UInt8] { ATOB.read() }
+    
+    @inlinable @inline(__always)
+    static func read(columns: Int) -> [UInt8] { ATOB.read(columns: columns) }
+}
+
+public extension Array where Element == Array<UInt8> {
+    @inlinable @inline(__always)
+    static func read(rows: Int, columns: Int) -> [[UInt8]] {
+        (0..<rows).map { _ in .read(columns: columns) }
+    }
+}
+
 public extension Character {
     static func read() -> Character { Character(String.read(columns: 1)) }
 }
@@ -70,6 +91,7 @@ public extension Array where Element == Character {
     static func read() -> [Character] {
         String.read().map{ $0 }
     }
+    
     @inlinable @inline(__always)
     static func read(columns: Int) -> [Character] {
         String.read(columns: columns).map{ $0 }
@@ -176,6 +198,17 @@ extension IOReaderInstance {
     @inlinable @inline(__always)
     public mutating func next() -> Double? { _next { atof($0) } }
     public static var instance = Self()
+}
+
+@usableFromInline struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+    public var buffer: [UInt8] = .init(repeating: 0, count: 32)
+    @inlinable @inline(__always)
+    public mutating func next() -> Array<UInt8>? { _next { Array($0[0..<$1]) } }
+    public static var instance = Self()
+    @inlinable @inline(__always) static func read(columns: Int) -> [UInt8] {
+        defer { getchar_unlocked() }
+        return .__readBytes(count: columns) ?? []
+    }
 }
 
 @usableFromInline struct ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
