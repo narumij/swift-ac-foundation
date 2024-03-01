@@ -1,5 +1,7 @@
 import Foundation
 
+// MARK: - Reader
+
 public protocol SingleRead {
     @inlinable @inline(__always)
     static func read() -> Self
@@ -56,7 +58,10 @@ public extension String {
 }
 
 public extension Array where Element == String {
-    
+    @inlinable @inline(__always)
+    static func read(rows: Int) -> [String] {
+        (0..<rows).map { _ in .read() }
+    }
     @inlinable @inline(__always)
     static func read(rows: Int, columns: Int) -> [String] {
         (0..<rows).map { _ in .read(columns: columns) }
@@ -77,6 +82,10 @@ public extension Array where Element == UInt8 {
 
 public extension Array where Element == Array<UInt8> {
     @inlinable @inline(__always)
+    static func read(rows: Int) -> [[UInt8]] {
+        (0..<rows).map { _ in .read() }
+    }
+    @inlinable @inline(__always)
     static func read(rows: Int, columns: Int) -> [[UInt8]] {
         (0..<rows).map { _ in .read(columns: columns) }
     }
@@ -91,7 +100,6 @@ public extension Array where Element == Character {
     static func read() -> [Character] {
         String.read().map{ $0 }
     }
-    
     @inlinable @inline(__always)
     static func read(columns: Int) -> [Character] {
         String.read(columns: columns).map{ $0 }
@@ -99,6 +107,10 @@ public extension Array where Element == Character {
 }
 
 public extension Array where Element == Array<Character> {
+    @inlinable @inline(__always)
+    static func read(rows: Int) -> [[Character]] {
+        (0..<rows).map { _ in .read() }
+    }
     @inlinable @inline(__always)
     static func read(rows: Int, columns: Int) -> [[Character]] {
         (0..<rows).map { _ in .read(columns: columns) }

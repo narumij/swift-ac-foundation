@@ -1,5 +1,13 @@
 import Foundation
 
+// MARK: - ReadHelper
+
+typealias Int2 = (Int,Int)
+typealias Int3 = (Int,Int,Int)
+typealias Int4 = (Int,Int,Int,Int)
+typealias Int5 = (Int,Int,Int,Int,Int)
+typealias Int6 = (Int,Int,Int,Int,Int,Int)
+
 public enum Input { }
 
 public extension Input {
@@ -31,6 +39,12 @@ public extension Input {
     where A: TupleRead, B: TupleRead, C: TupleRead, D: TupleRead, E: TupleRead
     {
         (.read(), .read(), .read(), .read(), .read())
+    }
+    
+    static func read<A,B,C,D,E,F>() -> (A,B,C,D,E,F)!
+    where A: TupleRead, B: TupleRead, C: TupleRead, D: TupleRead, E: TupleRead, F: TupleRead
+    {
+        (.read(), .read(), .read(), .read(), .read(), .read())
     }
 }
 

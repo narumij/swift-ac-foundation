@@ -1,5 +1,36 @@
 import Foundation
 
+// MARK: - Binary Search
+
+extension Range {
+    
+    func left<Item>(_ x: Item,_ item: (Element) -> Item) -> Element where Item: Comparable, Bound: BinaryInteger {
+        var (left, right) = (startIndex, endIndex)
+        while left < right {
+            let mid = (left + right) >> 1
+            if item(mid) < x {
+                left = mid + 1
+            } else {
+                right = mid
+            }
+        }
+        return left
+    }
+    
+    func right<Item>(_ x: Item,_ item: (Element) -> Item) -> Element where Item: Comparable, Bound: BinaryInteger {
+        var (left, right) = (startIndex, endIndex)
+        while left < right {
+            let mid = (left + right) >> 1
+            if x < item(mid) {
+                right = mid
+            } else {
+                left = mid + 1
+            }
+        }
+        return left
+    }
+}
+
 extension Collection where Index == Int {
     
     func right(_ x: Element, start left: Index, end right: Index) -> Index where Element: Comparable {
