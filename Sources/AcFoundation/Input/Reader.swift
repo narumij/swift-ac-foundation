@@ -2,9 +2,12 @@ import Foundation
 
 // MARK: - Reader
 
+public protocol ScalarIn {
+  static var stdin: Self { get }
+}
+
 public protocol SingleRead {
-  static func read() -> Self
-  static func _read() throws -> Self
+  static func read() throws -> Self
 }
 
 public protocol TupleRead: SingleRead {}
@@ -12,131 +15,169 @@ public protocol ArrayRead: SingleRead {}
 public protocol FullRead: ArrayRead & TupleRead {}
 
 extension Collection where Element: ArrayRead {
-  @inlinable @inline(__always)
-  public static func read(columns: Int) -> [Element] {
-    (0..<columns).map { _ in Element.read() }
+
+  @inlinable
+  static func _read(columns: Int) throws -> [Element] {
+    try (0..<columns).map { _ in try Element.read() }
   }
+
+  @inlinable
+  static func _read(rows: Int) throws -> [Element] {
+    try (0..<rows).map { _ in try Element.read() }
+  }
+
   @inlinable @inline(__always)
-  public static func read(rows: Int) -> [Element] {
-    (0..<rows).map { _ in Element.read() }
+  public static func stdin(columns: Int) -> [Element] {
+    try! _read(columns: columns)
+  }
+
+  @inlinable @inline(__always)
+  public static func stdin(rows: Int) -> [Element] {
+    try! _read(rows: rows)
   }
 }
 
 extension Collection where Element: Collection, Element.Element: ArrayRead {
+
+  @inlinable
+  static func _read(rows: Int, columns: Int) throws -> [[Element.Element]] {
+    try (0..<rows).map { _ in try Element._read(columns: columns) }
+  }
+
   @inlinable @inline(__always)
-  public static func read(rows: Int, columns: Int) -> [[Element.Element]] {
-    (0..<rows).map { _ in Element.read(columns: columns) }
+  public static func stdin(rows: Int, columns: Int) -> [[Element.Element]] {
+    try! _read(rows: rows, columns: columns)
   }
 }
 
-extension Int: FullRead {}
-extension UInt: FullRead {}
-extension Double: FullRead {}
-extension CInt: FullRead {}
-extension CUnsignedInt: FullRead {}
-extension CLongLong: FullRead {}
-extension CUnsignedLongLong: FullRead {}
+extension Int: ScalarIn & FullRead {}
+extension UInt: ScalarIn & FullRead {}
+extension Double: ScalarIn & FullRead {}
+extension CInt: ScalarIn & FullRead {}
+extension CUnsignedInt: ScalarIn & FullRead {}
+extension CLongLong: ScalarIn & FullRead {}
+extension CUnsignedLongLong: ScalarIn & FullRead {}
 
-extension String: TupleRead {}
-extension Character: TupleRead {}
-extension UInt8: TupleRead {}
+extension String: ScalarIn & TupleRead {}
+extension Character: ScalarIn & TupleRead {}
+extension UInt8: ScalarIn & TupleRead {}
 
 extension FixedWidthInteger {
+
   @inlinable @inline(__always)
-  public static func read() -> Self { .init(try! ATOL.read()!) }
+  public static func read() throws -> Self { .init(try ATOL.read()!) }
+
   @inlinable @inline(__always)
-  public static func _read() throws -> Self { .init(try ATOL.read()!) }
+  public static var stdin: Self { try! read() }
 }
 
 extension BinaryFloatingPoint {
+
   @inlinable @inline(__always)
-  public static func read() -> Self { .init(try! ATOF.read()!) }
+  public static func read() throws -> Self { .init(try ATOF.read()!) }
+
   @inlinable @inline(__always)
-  public static func _read() throws -> Self { .init(try ATOF.read()!) }
+  public static var stdin: Self { try! read() }
 }
 
 extension String {
-  @inlinable @inline(__always)
-  public static func read() -> String { ATOS.read() }
-  @inlinable @inline(__always)
-  public static func _read() throws -> String { ATOS.read() }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int) -> String { ATOS.read(columns: columns) }
+  public static func read() throws -> String { ATOS.read() }
+
+  @inlinable @inline(__always)
+  public static var stdin: Self { try! read() }
+
+  @inlinable
+  public static func stdin(columns: Int) -> String { ATOS.read(columns: columns) }
 }
 
 extension Array where Element == String {
-  @inlinable @inline(__always)
-  public static func read(rows: Int) -> [String] {
-    (0..<rows).map { _ in .read() }
+
+  @inlinable
+  public static func stdin(rows: Int) -> [String] {
+    (0..<rows).map { _ in try! .read() }
   }
-  @inlinable @inline(__always)
-  public static func read(rows: Int, columns: Int) -> [String] {
-    (0..<rows).map { _ in .read(columns: columns) }
+
+  @inlinable
+  public static func stdin(rows: Int, columns: Int) -> [String] {
+    (0..<rows).map { _ in .stdin(columns: columns) }
   }
 }
 
 extension UInt8 {
-  @inlinable
-  public static func read() -> UInt8 { ATOB.read(columns: 1).first! }
-  @inlinable
-  public static func _read() throws -> UInt8 { ATOB.read(columns: 1).first! }
+
+  @inlinable @inline(__always)
+  public static func read() throws -> UInt8 { ATOB.read(columns: 1).first! }
+
+  @inlinable @inline(__always)
+  public static var stdin: Self { try! read() }
 }
 
 extension Array where Element == UInt8 {
-  @inlinable @inline(__always)
-  public static func read() -> [UInt8] { ATOB.read() }
 
   @inlinable @inline(__always)
-  public static func _read() throws -> [UInt8] { ATOB.read() }
+  public static func read() throws -> [UInt8] { ATOB.read() }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int) -> [UInt8] { ATOB.read(columns: columns) }
+  public static var stdin: Self { try! read() }
+
+  @inlinable
+  public static func stdin(columns: Int) -> [UInt8] { ATOB.read(columns: columns) }
 }
 
 extension Array where Element == [UInt8] {
-  @inlinable @inline(__always)
-  public static func read(rows: Int) -> [[UInt8]] {
-    (0..<rows).map { _ in .read() }
+
+  @inlinable
+  public static func stdin(rows: Int) -> [[UInt8]] {
+    (0..<rows).map { _ in try! .read() }
   }
-  @inlinable @inline(__always)
-  public static func read(rows: Int, columns: Int) -> [[UInt8]] {
-    (0..<rows).map { _ in .read(columns: columns) }
+
+  @inlinable
+  public static func stdin(rows: Int, columns: Int) -> [[UInt8]] {
+    (0..<rows).map { _ in .stdin(columns: columns) }
   }
 }
 
 extension Character {
+
   @inlinable
-  public static func read() -> Character { Character(String.read(columns: 1)) }
+  public static func read() throws -> Character { Character(String.stdin(columns: 1)) }
+
   @inlinable
-  public static func _read() throws -> Character { Character(String.read(columns: 1)) }
+  public static var stdin: Self { try! read() }
 }
 
 extension Array where Element == Character {
-  @inlinable @inline(__always)
-  public static func read() -> [Character] {
-    String.read().map { $0 }
+
+  @inlinable
+  public static func read() throws -> [Character] {
+    try String.read().map { $0 }
   }
-  @inlinable @inline(__always)
-  public static func _read() throws -> [Character] {
-    String.read().map { $0 }
-  }
-  @inlinable @inline(__always)
-  public static func read(columns: Int) -> [Character] {
-    String.read(columns: columns).map { $0 }
+
+  @inlinable
+  public static var stdin: Self { try! read() }
+
+  @inlinable
+  public static func stdin(columns: Int) -> [Character] {
+    String.stdin(columns: columns).map { $0 }
   }
 }
 
 extension Array where Element == [Character] {
-  @inlinable @inline(__always)
-  public static func read(rows: Int) -> [[Character]] {
-    (0..<rows).map { _ in .read() }
+
+  @inlinable
+  public static func stdin(rows: Int) -> [[Character]] {
+    (0..<rows).map { _ in try! .read() }
   }
-  @inlinable @inline(__always)
-  public static func read(rows: Int, columns: Int) -> [[Character]] {
-    (0..<rows).map { _ in .read(columns: columns) }
+
+  @inlinable
+  public static func stdin(rows: Int, columns: Int) -> [[Character]] {
+    (0..<rows).map { _ in .stdin(columns: columns) }
   }
 }
+
+// MARK: - IOReader
 
 @usableFromInline
 enum IOReaderError: Swift.Error {

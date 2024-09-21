@@ -6,7 +6,7 @@
 
 #### Reader
 
-以下の型に、標準入力から空白または改行までを取り出すread()メソッドを付与します。
+以下の型に、標準入力から空白または改行までを取り出すstdinメンバーを付与します。
 
 - 固定長整数
 - バイナリ浮動小数
@@ -14,14 +14,14 @@
 - C文字配列
 
 ```swift
-let N: Int = .read()
-let A: [Int] = .read(columns: N)
-let S: String = .read()
+let N: Int = .stdin
+let A: [Int] = .stdin(columns: N)
+let S: String = .stdin()
 ```
 
 ```swift
-let (H,W): (Int, Int) = (.read(), .read())
-let G: [[CChar]] = .read(rows: H, columns: W)
+let (H,W): (Int, Int) = (.stdin, .stdin)
+let G: [[CChar]] = .stdin(rows: H, columns: W)
 ```
 
 getchar_unlocked()を用いた読み込みとなっていて、必要最小限しか読みません。
