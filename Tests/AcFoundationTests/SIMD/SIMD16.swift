@@ -2,32 +2,36 @@ import Foundation
 
 public struct SIMD16<Scalar: SIMDScalar> {
   @inlinable
-  init(v0: Scalar, v1: Scalar, v2: Scalar, v3: Scalar,
-       v4: Scalar, v5: Scalar, v6: Scalar, v7: Scalar,
-       v8: Scalar, v9: Scalar, v10: Scalar, v11: Scalar,
-       v12: Scalar, v13: Scalar, v14: Scalar, v15: Scalar) {
-      (
-        self.v0, self.v1, self.v2, self.v3,
-        self.v4, self.v5, self.v6, self.v7,
-        self.v8, self.v9, self.v10, self.v11,
-        self.v12, self.v13, self.v14, self.v15
-      ) = (
-        v0, v1, v2, v3,
-        v4, v5, v6, v7,
-        v8, v9, v10, v11,
-        v12, v13, v14, v15
-      )
+  init(
+    v0: Scalar, v1: Scalar, v2: Scalar, v3: Scalar,
+    v4: Scalar, v5: Scalar, v6: Scalar, v7: Scalar,
+    v8: Scalar, v9: Scalar, v10: Scalar, v11: Scalar,
+    v12: Scalar, v13: Scalar, v14: Scalar, v15: Scalar
+  ) {
+    (
+      self.v0, self.v1, self.v2, self.v3,
+      self.v4, self.v5, self.v6, self.v7,
+      self.v8, self.v9, self.v10, self.v11,
+      self.v12, self.v13, self.v14, self.v15
+    ) = (
+      v0, v1, v2, v3,
+      v4, v5, v6, v7,
+      v8, v9, v10, v11,
+      v12, v13, v14, v15
+    )
   }
   @usableFromInline
-  var v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15: Scalar
+  var v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15: Scalar
 }
 extension SIMD16: Codable where Scalar: SIMDScalar {}
 extension SIMD16: SIMDStorage where Scalar: SIMDScalar & AdditiveArithmetic {
   @inlinable
   public init() {
-    (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15) =
-      (.zero, .zero, .zero, .zero, .zero, .zero, .zero, .zero,
-       .zero, .zero, .zero, .zero, .zero, .zero, .zero, .zero)
+    (v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
+      (
+        .zero, .zero, .zero, .zero, .zero, .zero, .zero, .zero,
+        .zero, .zero, .zero, .zero, .zero, .zero, .zero, .zero
+      )
   }
 }
 extension SIMD16: SIMD where Scalar: SIMDScalar & AdditiveArithmetic {
@@ -85,17 +89,21 @@ extension SIMD16: Hashable where Scalar: Hashable {}
 extension SIMD16: ExpressibleByArrayLiteral {
   @inlinable
   public init(arrayLiteral elements: Scalar...) {
-      (v0,v1,v2,v3,v4,v5,v6,v7,v8,v9,v10,v11,v12,v13,v14,v15) =
-      (elements[0], elements[1], elements[2], elements[3],
-       elements[4], elements[5], elements[6], elements[7],
-       elements[8], elements[9], elements[10], elements[11],
-       elements[12], elements[13], elements[14], elements[15])
+    (v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) =
+      (
+        elements[0], elements[1], elements[2], elements[3],
+        elements[4], elements[5], elements[6], elements[7],
+        elements[8], elements[9], elements[10], elements[11],
+        elements[12], elements[13], elements[14], elements[15]
+      )
   }
 }
 extension SIMD16: CustomStringConvertible {
   @inlinable
   public var description: String {
-      [v0,v1,v2,v3,v4,v5,v6,v7,
-       v8,v9,v10,v11,v12,v13,v14,v15].description
+    [
+      v0, v1, v2, v3, v4, v5, v6, v7,
+      v8, v9, v10, v11, v12, v13, v14, v15,
+    ].description
   }
 }

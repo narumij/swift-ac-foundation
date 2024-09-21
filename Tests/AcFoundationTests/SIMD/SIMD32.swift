@@ -12,25 +12,25 @@ public struct SIMD32<Scalar: SIMDScalar> {
     v24: Scalar, v25: Scalar, v26: Scalar, v27: Scalar,
     v28: Scalar, v29: Scalar, v30: Scalar, v31: Scalar
   ) {
-      (
-        self.v0, self.v1, self.v2, self.v3,
-        self.v4, self.v5, self.v6, self.v7,
-        self.v8, self.v9, self.v10, self.v11,
-        self.v12, self.v13, self.v14, self.v15,
-        self.v16, self.v17, self.v18, self.v19,
-        self.v20, self.v21, self.v22, self.v23,
-        self.v24, self.v25, self.v26, self.v27,
-        self.v28, self.v29, self.v30, self.v31
-      ) = (
-        v0, v1, v2, v3,
-        v4, v5, v6, v7,
-        v8, v9, v10, v11,
-        v12, v13, v14, v15,
-        v16, v17, v18, v19,
-        v20, v21, v22, v23,
-        v24, v25, v26, v27,
-        v28, v29, v30, v31
-      )
+    (
+      self.v0, self.v1, self.v2, self.v3,
+      self.v4, self.v5, self.v6, self.v7,
+      self.v8, self.v9, self.v10, self.v11,
+      self.v12, self.v13, self.v14, self.v15,
+      self.v16, self.v17, self.v18, self.v19,
+      self.v20, self.v21, self.v22, self.v23,
+      self.v24, self.v25, self.v26, self.v27,
+      self.v28, self.v29, self.v30, self.v31
+    ) = (
+      v0, v1, v2, v3,
+      v4, v5, v6, v7,
+      v8, v9, v10, v11,
+      v12, v13, v14, v15,
+      v16, v17, v18, v19,
+      v20, v21, v22, v23,
+      v24, v25, v26, v27,
+      v28, v29, v30, v31
+    )
   }
   @usableFromInline
   var v0, v1, v2, v3, v4, v5, v6, v7,
@@ -144,10 +144,10 @@ extension SIMD32: ExpressibleByArrayLiteral {
   @inlinable
   public init(arrayLiteral elements: Scalar...) {
     (
-        v0, v1, v2, v3, v4, v5, v6, v7,
-        v8, v9, v10, v11, v12, v13, v14, v15,
-        v16, v17, v18, v19, v20, v21, v22, v23,
-        v24, v25, v26, v27, v28, v29, v30, v31
+      v0, v1, v2, v3, v4, v5, v6, v7,
+      v8, v9, v10, v11, v12, v13, v14, v15,
+      v16, v17, v18, v19, v20, v21, v22, v23,
+      v24, v25, v26, v27, v28, v29, v30, v31
     ) =
       (
         elements[0], elements[1], elements[2], elements[3],
@@ -165,10 +165,10 @@ extension SIMD32: CustomStringConvertible {
   @inlinable
   public var description: String {
     [
-        v0, v1, v2, v3, v4, v5, v6, v7,
-        v8, v9, v10, v11, v12, v13, v14, v15,
-        v16, v17, v18, v19, v20, v21, v22, v23,
-        v24, v25, v26, v27, v28, v29, v30, v31
+      v0, v1, v2, v3, v4, v5, v6, v7,
+      v8, v9, v10, v11, v12, v13, v14, v15,
+      v16, v17, v18, v19, v20, v21, v22, v23,
+      v24, v25, v26, v27, v28, v29, v30, v31,
     ].description
   }
 }
