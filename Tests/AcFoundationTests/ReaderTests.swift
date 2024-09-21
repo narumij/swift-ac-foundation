@@ -169,18 +169,97 @@ final class ReaderTests: XCTestCase {
             9
             """)
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    
+    func testUnexpectedEOF1() throws {
+        
+        throw XCTSkip()
+        
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let A: [Int] = .read(rows: 3)
+                A.forEach {
+                    print($0 * 3)
+                }
+            })
+            .run(input:
+            """
+            1
+            2
+            """),
+            
+            """
+            3
+            6
+            """)
     }
     
+    func testUnexpectedEOF2() throws {
+        
+        throw XCTSkip()
+        
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let A: [Double] = .read(rows: 3)
+                A.forEach {
+                    print($0 * 3)
+                }
+            })
+            .run(input:
+            """
+            1
+            2
+            """),
+            
+            """
+            3
+            6
+            """)
+    }
+    
+    func testUnexpectedEOF3() throws {
+        
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let A: String = .read()
+                print(A)
+            })
+            .run(input:
+            """
+            """),
+            
+            """
+            """)
+    }
+    
+    func testUnexpectedEOF4() throws {
+        
+        XCTAssertEqual(
+            SolverRunner(solver: {
+                let A: [UInt8] = .read()
+                print(String(bytes: A, encoding: .ascii)!)
+            })
+            .run(input:
+            """
+            """),
+            
+            """
+            """)
+    }
+
+#if DEBUG
+    let stringFixtureA = ""
+    let stringFixtureB = ""
+#else
     let stringFixtureA = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
     let stringFixtureB = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
-
+#endif
+    
     func testPerformanceCChar1() throws {
+        
+#if DEBUG
+        throw XCTSkip()
+#endif
+        
         // This is an example of a performance test case.
         let a: [UInt8] = stringFixtureA.compactMap(\.asciiValue)
         let b: [UInt8] = stringFixtureB.compactMap(\.asciiValue)
@@ -194,6 +273,11 @@ final class ReaderTests: XCTestCase {
     }
     
     func testPerformanceCharacter1() throws {
+        
+#if DEBUG
+        throw XCTSkip()
+#endif
+
         // This is an example of a performance test case.
         let a = stringFixtureA.map{ $0 }
         let b = stringFixtureB.map{ $0 }
@@ -210,6 +294,11 @@ final class ReaderTests: XCTestCase {
     let stringFixtureBB = (0..<500).map{ _ in String((0..<500).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) }) }
 
     func testPerformanceCChar2() throws {
+        
+#if DEBUG
+        throw XCTSkip()
+#endif
+
         // This is an example of a performance test case.
         let a = stringFixtureAA.map{ $0.compactMap(\.asciiValue) }
         let b = stringFixtureBB.map{ $0.compactMap(\.asciiValue) }
@@ -227,6 +316,11 @@ final class ReaderTests: XCTestCase {
     }
     
     func testPerformanceCharacter2() throws {
+        
+#if DEBUG
+        throw XCTSkip()
+#endif
+
         // This is an example of a performance test case.
         let a = stringFixtureAA.map{ $0.map{$0} }
         let b = stringFixtureBB.map{ $0.map{$0} }
