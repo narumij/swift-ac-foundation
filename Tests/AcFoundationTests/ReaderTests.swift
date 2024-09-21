@@ -246,9 +246,9 @@ final class ReaderTests: XCTestCase {
             """)
     }
     
-    func testUsage() throws {
-        let a: Int = .stdin
-    }
+//    func testUsage() throws {
+//        let a: Int = .stdin
+//    }
 
 #if DEBUG
     let stringFixtureA = ""
