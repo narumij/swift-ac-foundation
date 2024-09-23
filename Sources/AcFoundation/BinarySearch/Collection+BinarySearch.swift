@@ -5,8 +5,8 @@ import Foundation
 extension Collection where Index == Int, Element: Comparable {
 
   @inlinable
-  func left(_ x: Element, start left: Index, end right: Index) -> Index {
-    var (left, right) = (left, right)
+  public func left(_ x: Element) -> Index {
+    var (left, right) = (startIndex, endIndex)
     while left < right {
       let mid = (left + right) >> 1
       if self[mid] < x {
@@ -19,13 +19,8 @@ extension Collection where Index == Int, Element: Comparable {
   }
 
   @inlinable
-  func left(_ x: Element) -> Index {
-    left(x, start: startIndex, end: endIndex)
-  }
-
-  @inlinable
-  func right(_ x: Element, start left: Index, end right: Index) -> Index {
-    var (left, right) = (left, right)
+  public func right(_ x: Element) -> Index {
+    var (left, right) = (startIndex, endIndex)
     while left < right {
       let mid = (left + right) >> 1
       if x < self[mid] {
@@ -35,10 +30,5 @@ extension Collection where Index == Int, Element: Comparable {
       }
     }
     return left
-  }
-
-  @inlinable
-  func right(_ x: Element) -> Index {
-    right(x, start: startIndex, end: endIndex)
   }
 }
