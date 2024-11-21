@@ -4,7 +4,6 @@ import XCTest
 #else
 import AcFoundation
 #endif
-import simd
 
 final class AcFoundationTests: XCTestCase {
     func testExample() throws {
