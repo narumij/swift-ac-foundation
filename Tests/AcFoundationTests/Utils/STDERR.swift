@@ -23,6 +23,7 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
 #elseif canImport(Musl)
       // 6.0.2ジャッジでコンパイルが通るか不明なため、一旦コメントアウト
       // Musl.write(fileno(self), bytes.baseAddress!, data.count)
+      fatalError()
 #endif
     }
   }
