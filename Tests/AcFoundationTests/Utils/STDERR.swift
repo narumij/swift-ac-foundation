@@ -21,7 +21,8 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
 #elseif canImport(Glibc)
       Glibc.write(fileno(self), bytes.baseAddress!, data.count)
 #elseif canImport(Musl)
-      Musl.write(fileno(self), bytes.baseAddress!, data.count)
+      // 6.0.2ジャッジでコンパイルが通るか不明なため、一旦コメントアウト
+      // Musl.write(fileno(self), bytes.baseAddress!, data.count)
 #endif
     }
   }
