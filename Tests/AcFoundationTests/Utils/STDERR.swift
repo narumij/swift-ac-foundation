@@ -12,7 +12,8 @@ import ucrt
 
 // MARK: - STDERR
 
-extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == FILE {
+#if os(macOS) || os(iOS)
+extension UnsafeMutablePointer: TextOutputStream where Pointee == FILE {
   public mutating func write(_ string: String) {
     guard let data = string.data(using: .utf8) else { return }
     _ = data.withUnsafeBytes { bytes in
@@ -28,3 +29,4 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
     }
   }
 }
+#endif
