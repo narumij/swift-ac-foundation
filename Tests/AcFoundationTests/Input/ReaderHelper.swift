@@ -1,6 +1,21 @@
 import Foundation
 import AcFoundation
 
+public protocol TupleRead: SingleReadable {}
+public protocol FullRead: ArrayReadable & TupleRead {}
+
+extension Int: FullRead {}
+extension UInt: FullRead {}
+extension Double: FullRead {}
+extension CInt: FullRead {}
+extension CUnsignedInt: FullRead {}
+extension CLongLong: FullRead {}
+extension CUnsignedLongLong: FullRead {}
+
+extension String: TupleRead {}
+extension Character: TupleRead {}
+extension UInt8: TupleRead {}
+
 // MARK: - ReadHelper
 
 public typealias Int2 = (Int, Int)
@@ -14,7 +29,7 @@ public enum Input {}
 extension Input {
 
   @inlinable @inline(__always)
-  public static func read<A>() -> A! where A: SingleRead {
+  public static func read<A>() -> A! where A: SingleReadable {
     try! .read()
   }
 

@@ -2,65 +2,48 @@ import Foundation
 
 // MARK: - Reader
 
-public protocol ScalarIn {
+public protocol ConvenienceInput {
   static var stdin: Self { get }
 }
 
-public protocol SingleRead {
+public protocol SingleReadable {
   static func read() throws -> Self
 }
 
-public protocol TupleRead: SingleRead {}
-public protocol ArrayRead: SingleRead {}
-public protocol FullRead: ArrayRead & TupleRead {}
+public protocol ArrayReadable: SingleReadable {}
 
-extension Collection where Element: ArrayRead {
-
-  @inlinable
-  static func _read(columns: Int) throws -> [Element] {
-    try (0..<columns).map { _ in try Element.read() }
-  }
-
-  @inlinable
-  static func _read(rows: Int) throws -> [Element] {
-    try (0..<rows).map { _ in try Element.read() }
-  }
+extension Collection where Element: ArrayReadable {
 
   @inlinable @inline(__always)
   public static func stdin(columns: Int) -> [Element] {
-    try! _read(columns: columns)
+    try! (0..<columns).map { _ in try .read() }
   }
 
   @inlinable @inline(__always)
   public static func stdin(rows: Int) -> [Element] {
-    try! _read(rows: rows)
+    try! (0..<rows).map { _ in try .read() }
   }
 }
 
-extension Collection where Element: Collection, Element.Element: ArrayRead {
-
-  @inlinable
-  static func _read(rows: Int, columns: Int) throws -> [[Element.Element]] {
-    try (0..<rows).map { _ in try Element._read(columns: columns) }
-  }
+extension Collection where Element: Collection, Element.Element: ArrayReadable {
 
   @inlinable @inline(__always)
   public static func stdin(rows: Int, columns: Int) -> [[Element.Element]] {
-    try! _read(rows: rows, columns: columns)
+    try! (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
   }
 }
 
-extension Int: ScalarIn & FullRead {}
-extension UInt: ScalarIn & FullRead {}
-extension Double: ScalarIn & FullRead {}
-extension CInt: ScalarIn & FullRead {}
-extension CUnsignedInt: ScalarIn & FullRead {}
-extension CLongLong: ScalarIn & FullRead {}
-extension CUnsignedLongLong: ScalarIn & FullRead {}
+extension Int: ConvenienceInput & ArrayReadable {}
+extension UInt: ConvenienceInput & ArrayReadable {}
+extension Double: ConvenienceInput & ArrayReadable {}
+extension CInt: ConvenienceInput & ArrayReadable {}
+extension CUnsignedInt: ConvenienceInput & ArrayReadable {}
+extension CLongLong: ConvenienceInput & ArrayReadable {}
+extension CUnsignedLongLong: ConvenienceInput & ArrayReadable {}
 
-extension String: ScalarIn & TupleRead {}
-extension Character: ScalarIn & TupleRead {}
-extension UInt8: ScalarIn & TupleRead {}
+extension String: ConvenienceInput & SingleReadable {}
+extension Character: ConvenienceInput & SingleReadable {}
+extension UInt8: ConvenienceInput & SingleReadable {}
 
 extension FixedWidthInteger {
 

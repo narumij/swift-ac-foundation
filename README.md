@@ -16,7 +16,7 @@
 ```swift
 let N: Int = .stdin
 let A: [Int] = .stdin(columns: N)
-let S: String = .stdin()
+let S: String = .stdin
 ```
 
 ```swift
