@@ -1,5 +1,6 @@
 import Foundation
 
+
 extension Collection where Index == Int {
     
     @inlinable
