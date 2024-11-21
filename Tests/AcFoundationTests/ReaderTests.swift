@@ -12,6 +12,7 @@ import XCTest
 import AcFoundation
 #endif
 
+#if os(macOS) || os(iOS)
 extension CChar: ExpressibleByStringLiteral {
     public init(stringLiteral s: String) {
         self = Character(s).asciiValue.map{ Int8($0) }!
@@ -341,3 +342,4 @@ final class ReaderTests: XCTestCase {
         }
     }
 }
+#endif
