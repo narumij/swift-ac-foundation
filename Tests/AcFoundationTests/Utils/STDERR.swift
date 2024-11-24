@@ -22,7 +22,7 @@ extension UnsafeMutablePointer: TextOutputStream where Pointee == FILE {
 #elseif canImport(Glibc)
       Glibc.write(fileno(self), bytes.baseAddress!, data.count)
 #elseif canImport(Musl)
-      // 6.0.2ジャッジでコンパイルが通るか不明なため、一旦コメントアウト
+      // Static Linux SDKのケース
       // Musl.write(fileno(self), bytes.baseAddress!, data.count)
       fatalError()
 #endif

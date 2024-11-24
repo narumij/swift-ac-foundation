@@ -2,48 +2,195 @@ import Foundation
 
 // MARK: - Reader
 
-public protocol ConvenienceInput {
-  static var stdin: Self { get }
-}
-
+/// 単一の数値や文字列に対する読み込み方法を与えるプロトコルです
+///
+/// 現在は以下の型に対して適用されています
+///
+/// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+///
+/// 浮動小数: Double
+///
+/// 文字: Character, UInt8
+///
+/// 文字列: String, [Character], [UInt8]
+///
+/// UInt8型は文字や文字列の一種となっており、整数の入力を受け付けることはできません
+///
+/// また文字列に対して使用した場合、空白または改行までを読み込みます
+///
 public protocol SingleReadable {
+  
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  ///
+  /// 入力例1
+  /// ```
+  /// 1
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(Int.stdin) // 1
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// 1 2
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(Int.stdin, Int.stdin) // 1 2
+  /// ```
+  ///
+  /// EOFを超えて読もうとした場合、クラッシュします
+  ///
+  static var stdin: Self { get }
+  
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  ///
+  /// 入力例1
+  /// ```
+  /// 1
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(try! Int.read()) // 1
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// 1 2
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(try! Int.read(), try! Int.read()) // 1 2
+  /// ```
+  ///
+  /// EOFを超えて読もうとした場合、例外を投げます
+  ///
   static func read() throws -> Self
 }
 
+/// Array型に、数値の配列に対する読み込み方法を加えるプロトコルです
+///
+/// 現在は以下の要素型に対して適用されています
+///
+/// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+///
+/// 浮動小数: Double
+///
+/// 入力例1
+/// ```
+/// 1
+/// 2
+/// ```
+///
+/// 読み込み例1
+/// ```
+/// [Int].stdin(rows: 2) // [1, 2]
+/// ```
+///
+/// 入力例2
+/// ```
+/// 1 2
+/// ```
+///
+/// 読み込み例2
+/// ```
+/// [Int].stdin(columns: 2) // [1, 2]
+/// ```
+///
+/// 実際には空白や改行区切りの文字列として扱うため、例1と例2の読み込みコードを入れ替えても動作します。
+///
+///
+/// 配列の配列にもメソッドが追加され、以下のような使用例が可能です
+///
+/// 入力例3
+/// ```
+/// 1 2
+/// 3 4
+/// ```
+///
+/// 読み込み例3
+/// ```
+/// [Int].stdin(rows: 2, columns: 2) // [[1, 2], [3, 4]]
+/// ```
 public protocol ArrayReadable: SingleReadable {}
+
+/// Array型に、文字列の配列に対する読み込み方法を加えるプロトコルです
+///
+/// 現在は以下の要素型に対して適用されています
+///
+/// 文字列: String, [Character], [UInt8]
+///
+/// 数値の場合とは異なり、columns引数は文字列の横幅の指定となります。
+///
+/// 入力例1
+/// ```
+/// ####
+/// #..#
+/// ####
+/// ```
+///
+/// 読み込み例1
+/// ```
+/// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
+/// ```
+///
+/// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
+///
+public protocol StringReadable: SingleReadable {}
+
+extension Int: ArrayReadable {}
+extension UInt: ArrayReadable {}
+extension Double: ArrayReadable {}
+extension CInt: ArrayReadable {}
+extension CUnsignedInt: ArrayReadable {}
+extension CLongLong: ArrayReadable {}
+extension CUnsignedLongLong: ArrayReadable {}
+
+extension String: StringReadable {}
+extension Character: StringReadable {}
+extension UInt8: StringReadable {}
+
 
 extension Collection where Element: ArrayReadable {
 
   @inlinable @inline(__always)
+  public static func read(columns: Int) throws -> [Element] {
+    try (0..<columns).map { _ in try .read() }
+  }
+
+  @inlinable @inline(__always)
+  public static func read(rows: Int) throws -> [Element] {
+    try (0..<rows).map { _ in try .read() }
+  }
+  
+  @inlinable @inline(__always)
   public static func stdin(columns: Int) -> [Element] {
-    try! (0..<columns).map { _ in try .read() }
+    try! read(columns: columns)
   }
 
   @inlinable @inline(__always)
   public static func stdin(rows: Int) -> [Element] {
-    try! (0..<rows).map { _ in try .read() }
+    try! read(rows: rows)
   }
 }
 
 extension Collection where Element: Collection, Element.Element: ArrayReadable {
 
   @inlinable @inline(__always)
+  public static func read(rows: Int, columns: Int) throws -> [[Element.Element]] {
+    try (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
+  }
+
+  @inlinable @inline(__always)
   public static func stdin(rows: Int, columns: Int) -> [[Element.Element]] {
-    try! (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
+    try! read(rows: rows, columns: columns)
   }
 }
-
-extension Int: ConvenienceInput & ArrayReadable {}
-extension UInt: ConvenienceInput & ArrayReadable {}
-extension Double: ConvenienceInput & ArrayReadable {}
-extension CInt: ConvenienceInput & ArrayReadable {}
-extension CUnsignedInt: ConvenienceInput & ArrayReadable {}
-extension CLongLong: ConvenienceInput & ArrayReadable {}
-extension CUnsignedLongLong: ConvenienceInput & ArrayReadable {}
-
-extension String: ConvenienceInput & SingleReadable {}
-extension Character: ConvenienceInput & SingleReadable {}
-extension UInt8: ConvenienceInput & SingleReadable {}
 
 extension FixedWidthInteger {
 
