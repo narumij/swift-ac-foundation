@@ -14,7 +14,13 @@ import ucrt
 
 // MARK: - STDERR
 
-extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == FILE {
+extension UnsafeMutablePointer: TextOutputStream where Pointee == FILE {
+  /// FILEを指すポインタにTextOutputStreamプロトコルを適用しています
+  ///
+  /// これにより、stderrやstdoutを以下のように利用することができます。
+  /// ```
+  /// print("Hello, world!", to: &stderr)
+  /// ```
   @inlinable
   public mutating func write(_ string: String) {
     guard let data = string.data(using: .utf8) else { return }
