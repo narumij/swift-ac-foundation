@@ -19,7 +19,7 @@ import Foundation
 /// また文字列に対して使用した場合、空白または改行までを読み込みます
 ///
 public protocol SingleReadable {
-  
+
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
   ///
   /// 入力例1
@@ -45,7 +45,7 @@ public protocol SingleReadable {
   /// EOFを超えて読もうとした場合、クラッシュします
   ///
   static var stdin: Self { get }
-  
+
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
   ///
   /// 入力例1
@@ -155,7 +155,6 @@ extension String: StringReadable {}
 extension Character: StringReadable {}
 extension UInt8: StringReadable {}
 
-
 extension Collection where Element: ArrayReadable {
 
   @inlinable @inline(__always)
@@ -167,7 +166,7 @@ extension Collection where Element: ArrayReadable {
   public static func read(rows: Int) throws -> [Element] {
     try (0..<rows).map { _ in try .read() }
   }
-  
+
   /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
   ///
   /// 現在は以下の要素型に対して適用されています
@@ -665,13 +664,14 @@ extension Array where Element: FixedWidthInteger {
   @inlinable @inline(__always)
   static func __readBytes(count: Int) throws -> Self {
     let h: Element = try .__readHead()
-    return try [h] + (1..<count).map { _ in
-      let c = getchar_unlocked()
-      if c == -1 {
-        throw IOReaderError.unexpectedEOF
+    return try [h]
+      + (1..<count).map { _ in
+        let c = getchar_unlocked()
+        if c == -1 {
+          throw IOReaderError.unexpectedEOF
+        }
+        return numericCast(c)
       }
-      return numericCast(c)
-    }
   }
 }
 
