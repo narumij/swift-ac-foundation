@@ -56,7 +56,7 @@ dependencies: [
 
 ソースコードに以下を追加します。
 ```
-import AtCoder
+import AcFoundation
 ```
 
 ## ライセンス
