@@ -35,6 +35,30 @@ getchar_unlocked()を用いた読み込みとなっていて、必要最小限�
 
 盆栽等、どうぞご自由にご利用ください。
 
+## 利用の仕方
+
+SwiftPMで swift-ac-libraryを利用する場合は、
+
+以下をPackage.swift に追加してください。
+```
+dependencies: [
+  .package(url: "https://github.com/narumij/swift-ac-foundation.git", from: "0.0.4"),
+],
+```
+
+ビルドターゲットに以下を追加します。
+
+```
+    dependencies: [
+      .product(name: "AtCoder", package: "swift-ac-foundation")
+    ]
+```
+
+ソースコードに以下を追加します。
+```
+import AtCoder
+```
+
 ## ライセンス
 
 CC0-1.0
