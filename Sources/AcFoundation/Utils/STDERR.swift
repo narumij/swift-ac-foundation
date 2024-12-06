@@ -14,7 +14,6 @@ import ucrt
 
 // MARK: - STDERR
 
-#if os(macOS) || os(iOS)
 extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == FILE {
   @inlinable
   public mutating func write(_ string: String) {
@@ -30,4 +29,3 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
     }
   }
 }
-#endif
