@@ -168,11 +168,46 @@ extension Collection where Element: ArrayReadable {
     try (0..<rows).map { _ in try .read() }
   }
   
+  /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
+  ///
+  /// 現在は以下の要素型に対して適用されています
+  ///
+  /// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+  ///
+  /// 浮動小数: Double
+  ///
+  /// 入力例1
+  /// ```
+  /// 1 2
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// [Int].stdin(columns: 2) // [1, 2]
+  /// ```
   @inlinable @inline(__always)
   public static func stdin(columns: Int) -> [Element] {
     try! read(columns: columns)
   }
 
+  /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
+  ///
+  /// 現在は以下の要素型に対して適用されています
+  ///
+  /// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+  ///
+  /// 浮動小数: Double
+  ///
+  /// 入力例1
+  /// ```
+  /// 1
+  /// 2
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// [Int].stdin(rows: 2) // [1, 2]
+  /// ```
   @inlinable @inline(__always)
   public static func stdin(rows: Int) -> [Element] {
     try! read(rows: rows)
@@ -186,6 +221,26 @@ extension Collection where Element: Collection, Element.Element: ArrayReadable {
     try (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
   }
 
+  /// 標準入力から、空白または改行区切りの整数の連続を配列の配列に読み込みます
+  ///
+  /// 現在は以下の要素型に対して適用されています
+  ///
+  /// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+  ///
+  /// 浮動小数: Double
+  ///
+  /// 配列の配列にもメソッドが追加され、以下のような使用例が可能です
+  ///
+  /// 入力例3
+  /// ```
+  /// 1 2
+  /// 3 4
+  /// ```
+  ///
+  /// 読み込み例3
+  /// ```
+  /// [Int].stdin(rows: 2, columns: 2) // [[1, 2], [3, 4]]
+  /// ```
   @inlinable @inline(__always)
   public static func stdin(rows: Int, columns: Int) -> [[Element.Element]] {
     try! read(rows: rows, columns: columns)
@@ -197,6 +252,30 @@ extension FixedWidthInteger {
   @inlinable @inline(__always)
   public static func read() throws -> Self { .init(try ATOL.read()!) }
 
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  ///
+  /// 入力例1
+  /// ```
+  /// 1
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(Int.stdin) // 1
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// 1 2
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(Int.stdin, Int.stdin) // 1 2
+  /// ```
+  ///
+  /// EOFを超えて読もうとした場合、クラッシュします
+  ///
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
 }
@@ -206,6 +285,30 @@ extension BinaryFloatingPoint {
   @inlinable @inline(__always)
   public static func read() throws -> Self { .init(try ATOF.read()!) }
 
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  ///
+  /// 入力例1
+  /// ```
+  /// 1.25
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(Double.stdin) // 1.25
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// 1.25 2.5
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(Double.stdin, Double.stdin) // 1.25 2.t
+  /// ```
+  ///
+  /// EOFを超えて読もうとした場合、クラッシュします
+  ///
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
 }
@@ -215,20 +318,92 @@ extension String {
   @inlinable @inline(__always)
   public static func read() throws -> String { ATOS.read() }
 
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(String.stdin) // abcde
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abc def
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(String.stdin, String.stdin) // abc def
+  /// ```
+  ///
+  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(String.stdin(columns: 5)) // abcde
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abcdef
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // abc def
+  /// ```
   @inlinable
   public static func stdin(columns: Int) -> String { ATOS.read(columns: columns) }
 }
 
 extension Array where Element == String {
 
+  /// 標準入力から空白や改行以外の文字列を行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// String.stdin(rows: 3) // ["####","#..#","####"]
+  /// ```
   @inlinable
   public static func stdin(rows: Int) -> [String] {
     (0..<rows).map { _ in try! .read() }
   }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
+  /// ```
+  ///
+  /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [String] {
     (0..<rows).map { _ in .stdin(columns: columns) }
@@ -249,20 +424,92 @@ extension Array where Element == UInt8 {
   @inlinable @inline(__always)
   public static func read() throws -> [UInt8] { ATOB.read() }
 
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(String.stdin) // [0x61, 0x62, 0x63, 0x64, 0x65]
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abc def
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(String.stdin, String.stdin) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
+  /// ```
+  ///
+  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print(String.stdin(columns: 5)) // [0x61, 0x62, 0x63, 0x64, 0x65]
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abcdef
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
+  /// ```
   @inlinable
   public static func stdin(columns: Int) -> [UInt8] { ATOB.read(columns: columns) }
 }
 
 extension Array where Element == [UInt8] {
 
+  /// 標準入力から空白や改行以外の文字列を行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// String.stdin(rows: 3) // [[0x23,0x23,0x23,0x23],[0x23,0x2e,0x2e,0x23],[0x23,0x23,0x23,0x23]]
+  /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[UInt8]] {
     (0..<rows).map { _ in try! .read() }
   }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
+  /// ```
+  ///
+  /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[UInt8]] {
     (0..<rows).map { _ in .stdin(columns: columns) }
@@ -285,9 +532,53 @@ extension Array where Element == Character {
     try String.read().map { $0 }
   }
 
+  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print([Character].stdin) // ["a","b","c","d","e"]
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abc def
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print([Character].stdin, [Character].stdin) // ["a","b","c"] ["d","e","f"]
+  /// ```
+  ///
+  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   public static var stdin: Self { try! read() }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// print([Character].stdin(columns: 5)) // ["a","b","c","d","e"]
+  /// ```
+  ///
+  /// 入力例2
+  /// ```
+  /// abcdef
+  /// ```
+  ///
+  /// 読み込み例2
+  /// ```
+  /// print([Character].stdin(columns: 3), [Character].stdin(columns: 3)) // [["a","b","c"],["d","e","f"]]
+  /// ```
   @inlinable
   public static func stdin(columns: Int) -> [Character] {
     String.stdin(columns: columns).map { $0 }
@@ -296,11 +587,39 @@ extension Array where Element == Character {
 
 extension Array where Element == [Character] {
 
+  /// 標準入力から空白や改行以外の文字列を行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// [Character].stdin(rows: 3) // [["#","#","#","#"],["#",".",".","#"],["#","#","#","#"]]
+  /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[Character]] {
     (0..<rows).map { _ in try! .read() }
   }
 
+  /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
+  ///
+  /// 入力例1
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例1
+  /// ```
+  /// [Character].stdin(rows: 3, columns: 4) // [["#","#","#","#"],["#",".",".","#"],["#","#","#","#"]]
+  /// ```
+  ///
+  /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[Character]] {
     (0..<rows).map { _ in .stdin(columns: columns) }
@@ -328,10 +647,14 @@ extension FixedWidthInteger {
 extension FixedWidthInteger {
 
   @inlinable @inline(__always)
-  static func __readHead() -> Self {
+  static func __readHead() throws -> Self {
     var head: Self
     repeat {
-      head = numericCast(getchar_unlocked())
+      let c = getchar_unlocked()
+      if c == -1 {
+        throw IOReaderError.unexpectedEOF
+      }
+      head = numericCast(c)
     } while head == .SP || head == .LF
     return head
   }
@@ -340,10 +663,15 @@ extension FixedWidthInteger {
 extension Array where Element: FixedWidthInteger {
 
   @inlinable @inline(__always)
-  static func __readBytes(count: Int) -> Self? {
-    let h: Element = .__readHead()
-    guard h != EOF else { return nil }
-    return [h] + (1..<count).map { _ in numericCast(getchar_unlocked()) }
+  static func __readBytes(count: Int) throws -> Self {
+    let h: Element = try .__readHead()
+    return try [h] + (1..<count).map { _ in
+      let c = getchar_unlocked()
+      if c == -1 {
+        throw IOReaderError.unexpectedEOF
+      }
+      return numericCast(c)
+    }
   }
 }
 
@@ -353,7 +681,7 @@ extension FixedBufferIOReader {
   mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T? {
     var current = 0
     return try buffer.withUnsafeMutableBufferPointer { buffer in
-      buffer.baseAddress![current] = .__readHead()
+      buffer.baseAddress![current] = try .__readHead()
       while buffer.baseAddress![current] != .SP,
         buffer.baseAddress![current] != .LF,
         buffer.baseAddress![current] != EOF
@@ -377,9 +705,9 @@ extension FixedBufferIOReader {
 
 extension VariableBufferIOReader {
   @inlinable @inline(__always)
-  mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) -> T? {
+  mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> T? {
     var current = 0
-    buffer[current] = .__readHead()
+    buffer[current] = try .__readHead()
     while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
       current += 1
       if current == buffer.count {
@@ -428,11 +756,11 @@ extension IOReaderInstance2 {
 @usableFromInline struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
   public var buffer: [UInt8] = .init(repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() -> [UInt8]? { _next { Array($0[0..<$1]) } }
+  public mutating func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
   public static var instance = Self()
   @inlinable @inline(__always) static func read(columns: Int) -> [UInt8] {
     defer { getchar_unlocked() }
-    return .__readBytes(count: columns) ?? []
+    return try! .__readBytes(count: columns)
   }
 }
 
@@ -440,11 +768,11 @@ extension IOReaderInstance2 {
   public var buffer = [UInt8](repeating: 0, count: 32)
   @inlinable @inline(__always)
   public mutating func next() -> String? {
-    _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+    try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
   public static var instance = Self()
   @inlinable @inline(__always) static func read(columns: Int) -> String! {
     defer { getchar_unlocked() }
-    return String(bytes: Array.__readBytes(count: columns) ?? [], encoding: .ascii)
+    return String(bytes: try! Array.__readBytes(count: columns), encoding: .ascii)
   }
 }
