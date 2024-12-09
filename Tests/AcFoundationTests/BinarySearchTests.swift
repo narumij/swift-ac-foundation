@@ -13,20 +13,20 @@ final class BinarySearchTests: XCTestCase {
 
     func testBinarySearch() throws {
         
-        XCTAssertEqual((0..<10).left(-1), (0..<10).left(-1, <) { $0 })
-        XCTAssertEqual((0..<10).right(-1), (0..<10).right(-1, <) { $0 })
+        XCTAssertEqual((0..<10).left(-1), (0..<10).left(-1) { $0 })
+        XCTAssertEqual((0..<10).right(-1), (0..<10).right(-1) { $0 })
         
-        XCTAssertEqual((0..<10).left(0), (0..<10).left(0, <) { $0 })
-        XCTAssertEqual((0..<10).right(0), (0..<10).right(0, <) { $0 })
+        XCTAssertEqual((0..<10).left(0), (0..<10).left(0) { $0 })
+        XCTAssertEqual((0..<10).right(0), (0..<10).right(0) { $0 })
         
-        XCTAssertEqual((0..<10).left(5), (0..<10).left(5, <) { $0 })
-        XCTAssertEqual((0..<10).right(5), (0..<10).right(5, <) { $0 })
+        XCTAssertEqual((0..<10).left(5), (0..<10).left(5) { $0 })
+        XCTAssertEqual((0..<10).right(5), (0..<10).right(5) { $0 })
         
-        XCTAssertEqual((0..<10).left(9), (0..<10).left(9, <) { $0 })
-        XCTAssertEqual((0..<10).right(9), (0..<10).right(9, <) { $0 })
+        XCTAssertEqual((0..<10).left(9), (0..<10).left(9) { $0 })
+        XCTAssertEqual((0..<10).right(9), (0..<10).right(9) { $0 })
         
-        XCTAssertEqual((0..<10).left(10), (0..<10).left(10, <) { $0 })
-        XCTAssertEqual((0..<10).right(10), (0..<10).right(10, <) { $0 })
+        XCTAssertEqual((0..<10).left(10), (0..<10).left(10) { $0 })
+        XCTAssertEqual((0..<10).right(10), (0..<10).right(10) { $0 })
     }
 
     func testPerformanceExample() throws {
