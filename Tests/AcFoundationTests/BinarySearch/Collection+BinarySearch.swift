@@ -14,7 +14,7 @@
 //
 // This code is based on work originally distributed under the Python License 2.0:
 //
-// Copyright © [年] Python Software Foundation.
+// Copyright © 2001 Python Software Foundation.
 // Licensed under the Python License, Version 2.0.
 // The original license can be found at https://docs.python.org/2/license.html
 //
