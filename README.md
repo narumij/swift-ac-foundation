@@ -17,7 +17,7 @@ dependencies: [
 
 ```swift
 dependencies: [
-  .product(name: "AtCoder", package: "swift-ac-foundation")
+  .product(name: "AcFoundation", package: "swift-ac-foundation")
 ]
 ```
 
