@@ -4,26 +4,37 @@
 import PackageDescription
 
 let package = Package(
-    name: "AcFoundation",
-    products: [
-        // Products define the executables and libraries a package produces, making them visible to other packages.
-        .library(
-            name: "AcFoundation",
-            targets: ["AcFoundation"]),
-    ],
-    dependencies: [
-        .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0"),
-    ],
-    targets: [
-        // Targets are the basic building blocks of a package, defining a module or a test suite.
-        // Targets can depend on other targets in this package and products from dependencies.
-        .target(
-            name: "AcFoundation"),
-        .testTarget(
-            name: "AcFoundationTests",
-            dependencies: [
-                "AcFoundation",
-                .product(name: "Algorithms", package: "swift-algorithms"),
-            ]),
-    ]
+  name: "AcFoundation",
+  products: [
+    // Products define the executables and libraries a package produces, making them visible to other packages.
+    .library(
+      name: "AcFoundation",
+      targets: ["AcFoundation"])
+  ],
+  dependencies: [
+    .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0")
+  ],
+  targets: [
+    // Targets are the basic building blocks of a package, defining a module or a test suite.
+    // Targets can depend on other targets in this package and products from dependencies.
+    .target(
+      name: "Reader"),
+    .target(
+      name: "Bisect"),
+    .target(
+      name: "IOUtil"),
+    .target(
+      name: "AcFoundation",
+      dependencies: [
+        "Reader",
+        "Bisect",
+        "IOUtil",
+      ]),
+    .testTarget(
+      name: "AcFoundationTests",
+      dependencies: [
+        "AcFoundation",
+        .product(name: "Algorithms", package: "swift-algorithms"),
+      ]),
+  ]
 )
