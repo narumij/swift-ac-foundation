@@ -7,9 +7,7 @@ let package = Package(
   name: "AcFoundation",
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(
-      name: "AcFoundation",
-      targets: ["AcFoundation"])
+    .library(name: "AcFoundation", targets: ["AcFoundation"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-algorithms", from: "1.1.0")
