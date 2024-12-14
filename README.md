@@ -1,122 +1,120 @@
 # swift-ac-foundation
 
-[![Swift](https://github.com/narumij/swift-ac-foundation/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-library/actions/workflows/swift.yml)
+[![Swift](https://github.com/narumij/swift-ac-foundation/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-library/actions/workflows/swift.yml)  
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 
-## 利用の仕方
+## 利用方法
 
-SwiftPMで swift-ac-libraryを利用する場合は、
+SwiftPM で `swift-ac-foundation` を利用するには、以下を `Package.swift` に追加してください。
 
-以下をPackage.swift に追加してください。
-```
+```swift
 dependencies: [
   .package(url: "https://github.com/narumij/swift-ac-foundation.git", from: "0.0.5"),
-],
+]
 ```
 
 ビルドターゲットに以下を追加します。
 
-```
-    dependencies: [
-      .product(name: "AtCoder", package: "swift-ac-foundation")
-    ]
+```swift
+dependencies: [
+  .product(name: "AtCoder", package: "swift-ac-foundation")
+]
 ```
 
-ソースコードに以下を追加します。
-```
+ソースコードに以下を記述してインポートします。
+
+```swift
 import AcFoundation
 ```
+
+---
 
 ## 内容
 
 ### IOReader
 
-以下の型に、標準入力から空白または改行までを取り出すstdinプロパティとメンバー関数を付与します。
+以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティやメンバー関数を追加します。
 
 - 固定長整数
-- バイナリ浮動小数
+- 浮動小数点数
 - 文字列
-- C文字配列
+- C 文字配列
 
-空白または改行を区切り文字として扱います。
+**入力の区切り**  
+空白または改行を区切り文字として使用します。
 
 ```swift
 let N: Int = Int.stdin
-let N: Double = Double.stdin
+let D: Double = Double.stdin
 let S: String = String.stdin
 let T: [UInt8] = [UInt8].stdin
 ```
 
-応用として、問題の入力が、H Wと並んでる場合に、以下のような書き方ができます。
+**応用例 1: ペアの入力**  
+例えば、問題の入力が `H W` のように並んでいる場合は、次のように記述できます。
 
 ```swift
-let (H,W): (Int, Int) = (.stdin, .stdin)
+let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
-個数Nと、数列Aとを入力で受け取る場合、以下のような書き方ができます。
-
-読む挙動に縦横の区別がないため、縦に並んでいる場合でも同様に読めます。
+**応用例 2: 配列の入力**  
+個数 `N` と数列 `A` を入力する場合は以下のように記述します。縦横に並ぶデータにも対応可能です。
 
 ```swift
 let N: Int = Int.stdin
-let A: [Int] = (0..<N).map{ .stdin }
+let A: [Int] = (0..<N).map { .stdin }
 ```
 
-個数Qと、2種のクエリーを入力で受け取る場合、以下のような書き方ができます。
+**応用例 3: クエリの処理**  
+クエリ `Q` とそれに応じた入力を処理する例です。
 
 ```swift
 let Q: Int = Int.stdin
-for _ in 0 ..< Q {
+for _ in 0..<Q {
   switch Int.stdin {
     case 1:
-      let (A,B) = (Int.stdin, Int.stdin)
-      // do something
-      break
+      let (A, B) = (Int.stdin, Int.stdin)
+      // 処理
     case 2:
       let C = Int.stdin
-      // do soomething
-      break
+      // 処理
     default:
       break
   }
 }
 ```
 
-#### 便利メンバー関数
+#### 便利なメンバー関数
 
-配列や配列の配列を読む便利メンバー関数も追加してあります。
-
-以下のような利用方法が可能です。
+配列や配列の配列を効率的に読み込むためのメンバー関数も利用できます。
 
 ```swift
 let A: [Int] = .stdin(columns: N)
-```
-
-```swift
 let G: [[CChar]] = .stdin(rows: H, columns: W)
 ```
 
 #### 部分利用
 
-この機能だけを用いる場合は、以下のようにすることができます。
+IOReader 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
 import IOReader
 ```
 
-#### その他
+#### その他の情報
 
-このIOReaderは、分割をする部分と、数値化する部分の無駄が少なくなるように作られています。
-数値が多数並んでいるケースでは、readLine()を用いるより実行時間を削れる場合が多いです。
-一方、非常に長い文字列を1行まるまる入力として与えられた場合、readLine()のほうが速いです。
+この IOReader は、データ分割や数値化の無駄を最小限に抑えるよう設計されています。  
+数値が多数並んでいる場合、`readLine()` を使用するよりも実行時間を短縮できる場合があります。
 
-Swiftの文字列を安直に使うと、AtCoderの問題ではTLEとなりやすい傾向があるため、問題に応じて使い分けてください。
+一方で、非常に長い文字列を1行丸ごと読み取る場合は、`readLine()` の方が高速です。  
+**Swift の文字列操作は AtCoder の問題では TLE となることがあるため、問題に応じた使い分けを推奨します。**
 
+---
 
 ### IOUtil
 
-print関数のto:に対して、FILEのポインタを渡せるようになります。
-このため、以下のような書き方ができるようになります。
+`print` 関数の `to:` パラメータで `FILE` ポインタを指定できるようになります。  
+これにより、以下のような記述が可能です。
 
 ```swift
 print("Hello, world!", to: &stderr)
@@ -124,42 +122,47 @@ print("Hello, world!", to: &stderr)
 
 #### 部分利用
 
-この機能だけを用いる場合は、以下のようにすることができます。
+IOUtil 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
 import IOUtil
 ```
 
+---
+
 ### Bisect
 
-pythonのbisectをswiftに移植したもので、二分探索が利用可能になります。
+Python の `bisect` を移植したもので、Swift で二分探索を利用可能にします。
 
 ```swift
-let sortedList = [1,4,8,100,1000]
-print(sortedList.bisectLeft(99))
+let sortedList = [1, 4, 8, 100, 1000]
+print(sortedList.bisectLeft(99)) // 3
 ```
 
-探索の範囲を限定する場合は、以下のようにArraySliceを利用することで可能になります。
-
+**探索範囲の限定**  
+`ArraySlice` を使用することで探索範囲を限定できます。
 
 ```swift
-let sortedList = [1,4,8,100,1000]
-print(sortedList[0 ..< 3].bisectLeft(99))
+let sortedList = [1, 4, 8, 100, 1000]
+print(sortedList[0..<3].bisectLeft(99)) // 3
 ```
 
 #### 部分利用
 
-この機能だけを用いる場合は、以下のようにすることができます。
+Bisect 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
 import Bisect
 ```
 
-## Testsに含まれるものについて
+---
 
-盆栽等、どうぞご自由にご利用ください。
+## テストについて
+
+テストコードには参考実装が含まれています。どうぞご自由にご利用ください。
+
+---
 
 ## ライセンス
 
-CC0-1.0
-
+このライブラリは CC0-1.0 ライセンスで提供されています。
