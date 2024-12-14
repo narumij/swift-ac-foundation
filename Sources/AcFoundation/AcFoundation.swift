@@ -1,3 +1,3 @@
-@_exported import Reader
-@_exported import Bisect
+@_exported import IOReader
 @_exported import IOUtil
+@_exported import Bisect
