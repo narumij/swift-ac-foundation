@@ -743,21 +743,21 @@ extension IOReaderInstance2 {
   public var buffer = [UInt8](repeating: 0, count: 32)
   @inlinable @inline(__always)
   public mutating func next() throws -> Int? { try _next { atol($0) } }
-  public static var instance = Self()
+  nonisolated(unsafe) public static var instance = Self()
 }
 
 @usableFromInline struct ATOF: FixedBufferIOReader, IOReaderInstance2 {
   public var buffer = [UInt8](repeating: 0, count: 64)
   @inlinable @inline(__always)
   public mutating func next() throws -> Double? { try _next { atof($0) } }
-  public static var instance = Self()
+  nonisolated(unsafe) public static var instance = Self()
 }
 
 @usableFromInline struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
   public var buffer: [UInt8] = .init(repeating: 0, count: 32)
   @inlinable @inline(__always)
   public mutating func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
-  public static var instance = Self()
+  nonisolated(unsafe) public static var instance = Self()
   @inlinable @inline(__always) static func read(columns: Int) -> [UInt8] {
     defer { getchar_unlocked() }
     return try! .__readBytes(count: columns)
@@ -770,7 +770,7 @@ extension IOReaderInstance2 {
   public mutating func next() -> String? {
     try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
-  public static var instance = Self()
+  nonisolated(unsafe) public static var instance = Self()
   @inlinable @inline(__always) static func read(columns: Int) -> String! {
     defer { getchar_unlocked() }
     return String(bytes: try! Array.__readBytes(count: columns), encoding: .ascii)

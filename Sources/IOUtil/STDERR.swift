@@ -14,7 +14,7 @@ import ucrt
 
 // MARK: - STDERR
 
-extension UnsafeMutablePointer: TextOutputStream where Pointee == FILE {
+extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == FILE {
   /// FILEを指すポインタにTextOutputStreamプロトコルを適用しています
   ///
   /// これにより、stderrやstdoutを以下のように利用することができます。
