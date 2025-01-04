@@ -247,10 +247,6 @@ final class ReaderTests: XCTestCase {
             """)
     }
     
-//    func testUsage() throws {
-//        let a: Int = .stdin
-//    }
-
 #if DEBUG
     let stringFixtureA = ""
     let stringFixtureB = ""
@@ -260,10 +256,6 @@ final class ReaderTests: XCTestCase {
 #endif
     
     func testPerformanceCChar1() throws {
-        
-#if DEBUG
-        throw XCTSkip()
-#endif
         
         // This is an example of a performance test case.
         let a: [UInt8] = stringFixtureA.compactMap(\.asciiValue)
@@ -279,10 +271,6 @@ final class ReaderTests: XCTestCase {
     
     func testPerformanceCharacter1() throws {
         
-#if DEBUG
-        throw XCTSkip()
-#endif
-
         // This is an example of a performance test case.
         let a = stringFixtureA.map{ $0 }
         let b = stringFixtureB.map{ $0 }
@@ -300,10 +288,6 @@ final class ReaderTests: XCTestCase {
 
     func testPerformanceCChar2() throws {
         
-#if DEBUG
-        throw XCTSkip()
-#endif
-
         // This is an example of a performance test case.
         let a = stringFixtureAA.map{ $0.compactMap(\.asciiValue) }
         let b = stringFixtureBB.map{ $0.compactMap(\.asciiValue) }
@@ -322,10 +306,6 @@ final class ReaderTests: XCTestCase {
     
     func testPerformanceCharacter2() throws {
         
-#if DEBUG
-        throw XCTSkip()
-#endif
-
         // This is an example of a performance test case.
         let a = stringFixtureAA.map{ $0.map{$0} }
         let b = stringFixtureBB.map{ $0.map{$0} }
