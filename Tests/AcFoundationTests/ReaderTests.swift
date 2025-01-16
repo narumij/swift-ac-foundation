@@ -23,7 +23,6 @@ extension Array where Element == UInt8 {
     var characters: [Character] { map{ Character(UnicodeScalar($0)) } }
 }
 
-@STDIO
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {

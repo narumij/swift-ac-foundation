@@ -722,27 +722,27 @@ extension VariableBufferIOReader {
 }
 
 @usableFromInline
-protocol IOReaderInstance: IteratorProtocol {
-  static var instance: Self { get set }
+protocol IOReaderInstance: IteratorProtocol where Element: Sendable {
+  static var instance: Mutex<Self> { get }
 }
 
 extension IOReaderInstance {
   @inlinable
   @inline(__always)
-  static func read() -> Element! { instance.next() }
+  static func read() -> Element! { instance.withLock{ $0.next() } }
 }
 
 @usableFromInline
-protocol IOReaderInstance2 {
+protocol IOReaderInstance2 where Element: Sendable {
   associatedtype Element
   mutating func next() throws -> Self.Element?
-  static var instance: Self { get set }
+  static var instance: Mutex<Self> { get }
 }
 
 extension IOReaderInstance2 {
   @inlinable
   @inline(__always)
-  static func read() throws -> Element! { try instance.next() }
+  static func read() throws -> Element! { try instance.withLock{ try $0.next() } }
 }
 
 @usableFromInline final class ATOL: FixedBufferIOReader, IOReaderInstance2 {
@@ -758,8 +758,7 @@ extension IOReaderInstance2 {
     try _next { atol($0) }
   }
   
-  nonisolated(unsafe)
-  public static var instance: ATOL = .init()
+  public static let instance: Mutex<ATOL> = .init(.init())
 }
 
 @usableFromInline final class ATOF: FixedBufferIOReader, IOReaderInstance2 {
@@ -775,8 +774,7 @@ extension IOReaderInstance2 {
     try _next { atof($0) }
   }
   
-  nonisolated(unsafe)
-  public static var instance: ATOF = .init()
+  public static let instance: Mutex<ATOF> = .init(.init())
 }
 
 @usableFromInline final class ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
@@ -790,8 +788,7 @@ extension IOReaderInstance2 {
   @inline(__always)
   public func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
   
-  nonisolated(unsafe)
-  public static var instance: ATOB = .init()
+  public static let instance: Mutex<ATOB> = .init(.init())
   
   @nonobjc
   @inlinable
@@ -815,8 +812,7 @@ extension IOReaderInstance2 {
     try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
   
-  nonisolated(unsafe)
-  public static var instance: ATOS = .init()
+  public static let instance: Mutex<ATOS> = .init(.init())
   
   @nonobjc
   @inlinable
