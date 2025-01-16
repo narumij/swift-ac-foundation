@@ -1,4 +1,5 @@
 import Foundation
+import Synchronization
 
 // MARK: - Reader
 
@@ -632,7 +633,7 @@ enum IOReaderError: Swift.Error {
   case unexpectedEOF
 }
 
-@usableFromInline protocol IOReader {}
+@usableFromInline protocol IOReader: AnyObject {}
 
 @usableFromInline protocol FixedBufferIOReader: IOReader {
   var buffer: [UInt8] { get set }
@@ -678,7 +679,7 @@ extension Array where Element: FixedWidthInteger {
 extension FixedBufferIOReader {
 
   @inlinable @inline(__always)
-  mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T? {
+  func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T? {
     var current = 0
     return try buffer.withUnsafeMutableBufferPointer { buffer in
       buffer.baseAddress![current] = try .__readHead()
@@ -704,8 +705,9 @@ extension FixedBufferIOReader {
 }
 
 extension VariableBufferIOReader {
-  @inlinable @inline(__always)
-  mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> T? {
+  @inlinable
+  @inline(__always)
+  func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> T? {
     var current = 0
     buffer[current] = try .__readHead()
     while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
@@ -725,7 +727,9 @@ protocol IOReaderInstance: IteratorProtocol {
 }
 
 extension IOReaderInstance {
-  @inlinable @inline(__always) static func read() -> Element! { instance.next() }
+  @inlinable
+  @inline(__always)
+  static func read() -> Element! { instance.next() }
 }
 
 @usableFromInline
@@ -736,42 +740,88 @@ protocol IOReaderInstance2 {
 }
 
 extension IOReaderInstance2 {
-  @inlinable @inline(__always) static func read() throws -> Element! { try instance.next() }
+  @inlinable
+  @inline(__always)
+  static func read() throws -> Element! { try instance.next() }
 }
 
-@usableFromInline struct ATOL: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline final class ATOL: FixedBufferIOReader, IOReaderInstance2 {
+  
+  init() { }
+  
   public var buffer = [UInt8](repeating: 0, count: 32)
-  @inlinable @inline(__always)
-  public mutating func next() throws -> Int? { try _next { atol($0) } }
-  nonisolated(unsafe) public static var instance = Self()
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func next() throws -> Int? {
+    try _next { atol($0) }
+  }
+  
+  nonisolated(unsafe)
+  public static var instance: ATOL = .init()
 }
 
-@usableFromInline struct ATOF: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline final class ATOF: FixedBufferIOReader, IOReaderInstance2 {
+  
+  init() { }
+  
   public var buffer = [UInt8](repeating: 0, count: 64)
-  @inlinable @inline(__always)
-  public mutating func next() throws -> Double? { try _next { atof($0) } }
-  nonisolated(unsafe) public static var instance = Self()
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func next() throws -> Double? {
+    try _next { atof($0) }
+  }
+  
+  nonisolated(unsafe)
+  public static var instance: ATOF = .init()
 }
 
-@usableFromInline struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline final class ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+  
+  init() { }
+  
   public var buffer: [UInt8] = .init(repeating: 0, count: 32)
-  @inlinable @inline(__always)
-  public mutating func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
-  nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int) -> [UInt8] {
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
+  
+  nonisolated(unsafe)
+  public static var instance: ATOB = .init()
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  static func read(columns: Int) -> [UInt8] {
     defer { getchar_unlocked() }
     return try! .__readBytes(count: columns)
   }
 }
 
-@usableFromInline struct ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline final class ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+  
+  init() { }
+  
   public var buffer = [UInt8](repeating: 0, count: 32)
-  @inlinable @inline(__always)
-  public mutating func next() -> String? {
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  public func next() -> String? {
     try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
-  nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int) -> String! {
+  
+  nonisolated(unsafe)
+  public static var instance: ATOS = .init()
+  
+  @nonobjc
+  @inlinable
+  @inline(__always)
+  static func read(columns: Int) -> String! {
     defer { getchar_unlocked() }
     return String(bytes: try! Array.__readBytes(count: columns), encoding: .ascii)
   }
