@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 #if os(macOS) || os(iOS)
 import Darwin

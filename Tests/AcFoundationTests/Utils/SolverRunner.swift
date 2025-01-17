@@ -1,5 +1,4 @@
 @preconcurrency import Foundation
-// linuxに限らず、stdinやstdoutがnonisolated(unsafe)になっていないため。
 
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
