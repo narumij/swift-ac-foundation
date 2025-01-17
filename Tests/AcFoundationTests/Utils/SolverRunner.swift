@@ -3,14 +3,6 @@ import Algorithms
 import IOUtil
 
 @available(macOS, introduced: 10.15)
-@globalActor
-public struct STDIO {
-    public static let shared: ActorType = ActorType()
-    public actor ActorType { }
-}
-
-@available(macOS, introduced: 10.15)
-@MainActor
 public struct SolverRunner {
     
     public init(solver: @escaping SolverRunner.Solver) {
@@ -21,8 +13,10 @@ public struct SolverRunner {
     
     public typealias Solver = () -> Void
     
-    let solver: Solver
+  nonisolated(unsafe)
+  let solver: Solver
     
+  nonisolated(unsafe)
     public func run(input: String) -> String {
         
         var input = input
