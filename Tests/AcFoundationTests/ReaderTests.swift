@@ -5,12 +5,7 @@
 //  Created by narumij on 2023/12/18.
 //
 
-#if canImport(Glibc)
-@preconcurrency import XCTest
-#else
 import XCTest
-#endif
-
 #if DEBUG
 @testable import AcFoundation
 #else
@@ -27,7 +22,6 @@ extension Array where Element == UInt8 {
     var characters: [Character] { map{ Character(UnicodeScalar($0)) } }
 }
 
-@MainActor
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {
