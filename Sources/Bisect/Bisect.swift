@@ -40,7 +40,7 @@ extension Collection where Index == Int, Element: Comparable {
   public func bisectRight(_ x: Element) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
-      let mid = (lo + hi) / 2
+      let mid = lo + (hi - lo) / 2
       if x < self[mid] {
         hi = mid
       } else {
@@ -66,7 +66,7 @@ extension Collection where Index == Int, Element: Comparable {
   public func bisectLeft(_ x: Element) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
-      let mid = (lo + hi) / 2
+      let mid = lo + (hi - lo) / 2
       if self[mid] < x {
         lo = mid + 1
       } else {
@@ -99,7 +99,7 @@ extension Collection where Index == Int {
   public func bisectRight<T: Comparable>(_ x: T, key: ((Element) -> T)) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
-      let mid = (lo + hi) / 2
+      let mid = lo + (hi - lo) / 2
       if x < key(self[mid]) {
         hi = mid
       } else {
@@ -129,7 +129,7 @@ extension Collection where Index == Int {
   public func bisectLeft<T: Comparable>(_ x: T, key: ((Element) -> T)) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
-      let mid = (lo + hi) / 2
+      let mid = lo + (hi - lo) / 2
       if key(self[mid]) < x {
         lo = mid + 1
       } else {
