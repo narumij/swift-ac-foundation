@@ -6,13 +6,6 @@ import Foundation
 #endif
 
 @available(macOS, introduced: 10.15)
-@globalActor
-public struct STDIO {
-    public static let shared: ActorType = ActorType()
-    public actor ActorType { }
-}
-
-@available(macOS, introduced: 10.15)
 public struct SolverRunner {
     
     public init(solver: @escaping SolverRunner.Solver) {

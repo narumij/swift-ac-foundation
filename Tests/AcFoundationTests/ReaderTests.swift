@@ -5,14 +5,18 @@
 //  Created by narumij on 2023/12/18.
 //
 
+#if canImport(Glibc)
+@preconcurrency import XCTest
+#else
 import XCTest
+#endif
+
 #if DEBUG
 @testable import AcFoundation
 #else
 import AcFoundation
 #endif
 
-//#if os(macOS) || os(iOS)
 extension CChar: ExpressibleByStringLiteral {
     public init(stringLiteral s: String) {
         self = Character(s).asciiValue.map{ Int8($0) }!
@@ -23,6 +27,7 @@ extension Array where Element == UInt8 {
     var characters: [Character] { map{ Character(UnicodeScalar($0)) } }
 }
 
+@MainActor
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -321,4 +326,3 @@ final class ReaderTests: XCTestCase {
         }
     }
 }
-//#endif
