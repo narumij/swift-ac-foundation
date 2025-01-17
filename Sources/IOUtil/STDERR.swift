@@ -36,5 +36,6 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
   }
 }
 
-//extension UnsafeMutablePointer: @unchecked Sendable {}
-
+#if swift(>=5.5)
+extension UnsafeMutablePointer: @unchecked @retroactive Sendable {}
+#endif
