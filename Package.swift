@@ -42,7 +42,7 @@ let package = Package(
         "IOUtil",
         "Bisect",
       ],
-      swiftSettings: _settings + Ounchecked
+      swiftSettings: _settings
     ),
     .testTarget(
       name: "AcFoundationTests",
@@ -50,7 +50,7 @@ let package = Package(
         "AcFoundation",
         .product(name: "Algorithms", package: "swift-algorithms"),
       ],
-      swiftSettings: _settings + Ounchecked
+      swiftSettings: _settings
     ),
   ]
 )
