@@ -8,6 +8,12 @@ let Ounchecked: [SwiftSetting] = [
   .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
 ]
 
+var defines: [String] = [
+//  "TEST_FATAL_ERROR"
+]
+
+var _settings: [SwiftSetting] = defines.map { .define($0) }
+
 let package = Package(
   name: "AcFoundation",
   products: [
@@ -22,25 +28,29 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "IOReader",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "IOUtil",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "Bisect",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
         "IOUtil",
         "Bisect",
-      ]),
+      ],
+      swiftSettings: _settings + Ounchecked
+    ),
     .testTarget(
       name: "AcFoundationTests",
       dependencies: [
         "AcFoundation",
         .product(name: "Algorithms", package: "swift-algorithms"),
-      ]),
+      ],
+      swiftSettings: _settings + Ounchecked
+    ),
   ]
 )

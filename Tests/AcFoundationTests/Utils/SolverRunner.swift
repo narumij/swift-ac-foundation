@@ -1,9 +1,5 @@
-#if canImport(Glibc)
 @preconcurrency import Foundation
-// linux環境のstdinやstdoutがnonisolated(unsafe)になっていないため。
-#else
-import Foundation
-#endif
+// linuxに限らず、stdinやstdoutがnonisolated(unsafe)になっていないため。
 
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
@@ -57,7 +53,7 @@ public struct SolverRunner {
             let bytesRead = read(pipefd[0], &readBuffer, 1024)
             if bytesRead > 0 {
                 // 読み取ったデータを文字列に変換して追加
-                completeOutput += String(cString: readBuffer + [0])
+              completeOutput += String(utf8String: readBuffer) ?? ""
             } else {
                 // もう読み取るデータがない場合
                 break

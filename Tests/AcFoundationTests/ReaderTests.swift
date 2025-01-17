@@ -12,7 +12,9 @@ import XCTest
 import AcFoundation
 #endif
 
-extension CChar: ExpressibleByStringLiteral {
+extension Int8: @retroactive ExpressibleByExtendedGraphemeClusterLiteral {}
+extension Int8: @retroactive ExpressibleByUnicodeScalarLiteral {}
+extension CChar: @retroactive ExpressibleByStringLiteral {
     public init(stringLiteral s: String) {
         self = Character(s).asciiValue.map{ Int8($0) }!
     }
@@ -169,9 +171,8 @@ final class ReaderTests: XCTestCase {
             """)
     }
     
+#if TEST_FATAL_ERROR
     func testUnexpectedEOF1() throws {
-        
-        throw XCTSkip()
         
         XCTAssertEqual(
             SolverRunner(solver: {
@@ -194,8 +195,6 @@ final class ReaderTests: XCTestCase {
     
     func testUnexpectedEOF2() throws {
         
-        throw XCTSkip()
-        
         XCTAssertEqual(
             SolverRunner(solver: {
                 let A: [Double] = .stdin(rows: 3)
@@ -214,6 +213,7 @@ final class ReaderTests: XCTestCase {
             6
             """)
     }
+#endif
     
     func testUnexpectedEOF3() throws {
         
