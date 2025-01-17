@@ -633,10 +633,10 @@ enum IOReaderError: Swift.Error {
   case unexpectedEOF
 }
 
-@usableFromInline protocol IOReader: AnyObject {}
+@usableFromInline protocol IOReader {}
 
 @usableFromInline protocol FixedBufferIOReader: IOReader {
-  var buffer: [UInt8] { get set }
+  var _buffer: [UInt8] { get set }
 }
 
 extension FixedWidthInteger {
@@ -679,9 +679,9 @@ extension Array where Element: FixedWidthInteger {
 extension FixedBufferIOReader {
 
   @inlinable @inline(__always)
-  func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T? {
+  mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T? {
     var current = 0
-    return try buffer.withUnsafeMutableBufferPointer { buffer in
+    return try _buffer.withUnsafeMutableBufferPointer { buffer in
       buffer.baseAddress![current] = try .__readHead()
       while buffer.baseAddress![current] != .SP,
         buffer.baseAddress![current] != .LF,
@@ -701,35 +701,38 @@ extension FixedBufferIOReader {
 
 @usableFromInline protocol VariableBufferIOReader: IOReader {
   associatedtype BufferElement: FixedWidthInteger
-  var buffer: [BufferElement] { get set }
+  var _buffer: [BufferElement] { get set }
 }
 
 extension VariableBufferIOReader {
   @inlinable
   @inline(__always)
-  func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> T? {
+  mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> T? {
     var current = 0
-    buffer[current] = try .__readHead()
-    while buffer[current] != .SP, buffer[current] != .LF, buffer[current] != 0 {
+    _buffer[current] = try .__readHead()
+    while _buffer[current] != .SP, _buffer[current] != .LF, _buffer[current] != 0 {
       current += 1
-      if current == buffer.count {
-        buffer.append(contentsOf: repeatElement(0, count: buffer.count))
+      if current == _buffer.count {
+        _buffer.append(contentsOf: repeatElement(0, count: _buffer.count))
       }
-      buffer[current] = BufferElement(truncatingIfNeeded: getchar_unlocked())
+      _buffer[current] = BufferElement(truncatingIfNeeded: getchar_unlocked())
     }
-    return buffer.withUnsafeBufferPointer { f($0, current) }
+    return _buffer.withUnsafeBufferPointer { f($0, current) }
   }
 }
 
 @usableFromInline
-protocol IOReaderInstance: IteratorProtocol where Element: Sendable {
+protocol IOReaderInstance: IteratorProtocol
+where Element: Sendable {
   static var instance: Mutex<Self> { get }
 }
 
 extension IOReaderInstance {
   @inlinable
   @inline(__always)
-  static func read() -> Element! { instance.withLock{ $0.next() } }
+  static func read() -> Element! {
+    instance.withLock{ $0.next() }
+  }
 }
 
 @usableFromInline
@@ -742,55 +745,52 @@ protocol IOReaderInstance2 where Element: Sendable {
 extension IOReaderInstance2 {
   @inlinable
   @inline(__always)
-  static func read() throws -> Element! { try instance.withLock{ try $0.next() } }
+  static func read() throws -> Element! {
+    try instance.withLock{ try $0.next() }
+  }
 }
 
-@usableFromInline final class ATOL: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline
+struct ATOL: FixedBufferIOReader, IOReaderInstance2 {
   
-  init() { }
+  public var _buffer = [UInt8](repeating: 0, count: 32)
   
-  public var buffer = [UInt8](repeating: 0, count: 32)
-  
-  @nonobjc
   @inlinable
   @inline(__always)
-  public func next() throws -> Int? {
+  public mutating func next() throws -> Int? {
     try _next { atol($0) }
   }
   
-  public static let instance: Mutex<ATOL> = .init(.init())
+  public static let instance = Mutex(ATOL())
 }
 
-@usableFromInline final class ATOF: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline
+struct ATOF: FixedBufferIOReader, IOReaderInstance2 {
   
-  init() { }
+  public var _buffer = [UInt8](repeating: 0, count: 64)
   
-  public var buffer = [UInt8](repeating: 0, count: 64)
-  
-  @nonobjc
   @inlinable
   @inline(__always)
-  public func next() throws -> Double? {
+  public mutating func next() throws -> Double? {
     try _next { atof($0) }
   }
   
-  public static let instance: Mutex<ATOF> = .init(.init())
+  public static let instance = Mutex(ATOF())
 }
 
-@usableFromInline final class ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline
+struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
   
-  init() { }
+  public var _buffer: [UInt8] = .init(repeating: 0, count: 32)
   
-  public var buffer: [UInt8] = .init(repeating: 0, count: 32)
-  
-  @nonobjc
   @inlinable
   @inline(__always)
-  public func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
+  public mutating func next() -> [UInt8]? {
+    try! _next { Array($0[0..<$1]) }
+  }
   
-  public static let instance: Mutex<ATOB> = .init(.init())
-  
-  @nonobjc
+  public static let instance = Mutex(ATOB())
+
   @inlinable
   @inline(__always)
   static func read(columns: Int) -> [UInt8] {
@@ -799,22 +799,19 @@ extension IOReaderInstance2 {
   }
 }
 
-@usableFromInline final class ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline
+struct ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
   
-  init() { }
+  public var _buffer = [UInt8](repeating: 0, count: 32)
   
-  public var buffer = [UInt8](repeating: 0, count: 32)
-  
-  @nonobjc
   @inlinable
   @inline(__always)
-  public func next() -> String? {
+  public mutating func next() -> String? {
     try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
   
-  public static let instance: Mutex<ATOS> = .init(.init())
+  public static let instance = Mutex(ATOS())
   
-  @nonobjc
   @inlinable
   @inline(__always)
   static func read(columns: Int) -> String! {
