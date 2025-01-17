@@ -3,11 +3,6 @@
 
 import PackageDescription
 
-let Ounchecked: [SwiftSetting] = [
-  // -Ounchecked フラグを追加
-  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
-]
-
 let package = Package(
   name: "AcFoundation",
   platforms: [.macOS(.v15), .iOS(.v18), .tvOS(.v18), .watchOS(.v11), .macCatalyst(.v18)],
@@ -22,14 +17,11 @@ let package = Package(
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "IOReader",
-      swiftSettings: Ounchecked),
+      name: "IOReader"),
     .target(
-      name: "IOUtil",
-      swiftSettings: Ounchecked),
+      name: "IOUtil"),
     .target(
-      name: "Bisect",
-      swiftSettings: Ounchecked),
+      name: "Bisect"),
     .target(
       name: "AcFoundation",
       dependencies: [
