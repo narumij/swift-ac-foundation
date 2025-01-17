@@ -3,11 +3,6 @@
 
 import PackageDescription
 
-let Ounchecked: [SwiftSetting] = [
-  // -Ounchecked フラグを追加
-  .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
-]
-
 var defines: [String] = [
 //  "TEST_FATAL_ERROR"
 ]
@@ -28,13 +23,13 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "IOReader",
-      swiftSettings: _settings + Ounchecked),
+      swiftSettings: _settings),
     .target(
       name: "IOUtil",
-      swiftSettings: _settings + Ounchecked),
+      swiftSettings: _settings),
     .target(
       name: "Bisect",
-      swiftSettings: _settings + Ounchecked),
+      swiftSettings: _settings),
     .target(
       name: "AcFoundation",
       dependencies: [
