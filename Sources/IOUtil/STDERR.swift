@@ -35,3 +35,6 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
     }
   }
 }
+
+extension UnsafeMutablePointer: @unchecked Sendable {}
+
