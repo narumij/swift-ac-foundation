@@ -1,5 +1,18 @@
+#if canImport(Glibc)
 @preconcurrency import Foundation
+// linux環境のstdinやstdoutがnonisolated(unsafe)になっていないため。
+#else
+import Foundation
+#endif
 
+@available(macOS, introduced: 10.15)
+@globalActor
+public struct STDIO {
+    public static let shared: ActorType = ActorType()
+    public actor ActorType { }
+}
+
+@MainActor
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
     
@@ -11,10 +24,8 @@ public struct SolverRunner {
     
     public typealias Solver = () -> Void
     
-//  nonisolated(unsafe)
-  let solver: Solver
+    let solver: Solver
     
-//  nonisolated(unsafe)
     public func run(input: String) -> String {
         
         var input = input
