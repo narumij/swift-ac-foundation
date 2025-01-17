@@ -1,6 +1,4 @@
-import Foundation
-import Algorithms
-import IOUtil
+@preconcurrency import Foundation
 
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
@@ -13,10 +11,10 @@ public struct SolverRunner {
     
     public typealias Solver = () -> Void
     
-  nonisolated(unsafe)
+//  nonisolated(unsafe)
   let solver: Solver
     
-  nonisolated(unsafe)
+//  nonisolated(unsafe)
     public func run(input: String) -> String {
         
         var input = input
