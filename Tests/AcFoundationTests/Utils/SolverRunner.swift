@@ -9,6 +9,7 @@ public struct STDIO {
 }
 
 @available(macOS, introduced: 10.15)
+@MainActor
 public struct SolverRunner {
     
     public init(solver: @escaping SolverRunner.Solver) {
