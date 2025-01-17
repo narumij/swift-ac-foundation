@@ -23,7 +23,6 @@ extension Array where Element == UInt8 {
     var characters: [Character] { map{ Character(UnicodeScalar($0)) } }
 }
 
-@MainActor
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -248,11 +247,11 @@ final class ReaderTests: XCTestCase {
     }
     
 #if DEBUG
-    let stringFixtureA = ""
-    let stringFixtureB = ""
+  let stringFixtureA = ""
+  let stringFixtureB = ""
 #else
-    let stringFixtureA = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
-    let stringFixtureB = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
+  let stringFixtureA = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
+  let stringFixtureB = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
 #endif
     
     func testPerformanceCChar1() throws {

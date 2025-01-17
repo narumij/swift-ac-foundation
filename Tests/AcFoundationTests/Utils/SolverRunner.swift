@@ -12,7 +12,6 @@ public struct STDIO {
     public actor ActorType { }
 }
 
-@MainActor
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
     
