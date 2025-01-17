@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 #if os(macOS) || os(iOS)
 import Darwin
@@ -35,3 +35,7 @@ extension UnsafeMutablePointer: @retroactive TextOutputStream where Pointee == F
     }
   }
 }
+
+#if swift(>=5.5)
+extension UnsafeMutablePointer: @unchecked @retroactive Sendable {}
+#endif

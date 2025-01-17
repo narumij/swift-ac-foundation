@@ -117,7 +117,24 @@ import IOReader
 これにより、以下のような記述が可能です。
 
 ```swift
+@preconcurrency import Foundation
+
 print("Hello, world!", to: &stderr)
+```
+
+`Foundation`に`@preconcurrency`を付与しない場合、以下のようになり、CEとなります。
+
+```
+ 9 | @inlinable
+10 | public func Answer() throws {
+11 |     print("Hello, STDERRO!", to: &stderr)
+   |                                   `- error: reference to var 'stderr' is not concurrency-safe because it involves shared mutable state
+12 | }
+13 | 
+
+SwiftGlibc.stderr:1:12: note: var declared here
+1 | public var stderr: UnsafeMutablePointer<FILE>!
+  |            `- note: var declared here
 ```
 
 #### 部分利用

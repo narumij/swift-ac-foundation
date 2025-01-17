@@ -1,4 +1,4 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -7,6 +7,12 @@ let Ounchecked: [SwiftSetting] = [
   // -Ounchecked フラグを追加
   .unsafeFlags(["-Ounchecked"], .when(configuration: .release))
 ]
+
+var defines: [String] = [
+//  "TEST_FATAL_ERROR"
+]
+
+var _settings: [SwiftSetting] = defines.map { .define($0) }
 
 let package = Package(
   name: "AcFoundation",
@@ -22,25 +28,29 @@ let package = Package(
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
       name: "IOReader",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "IOUtil",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "Bisect",
-      swiftSettings: Ounchecked),
+      swiftSettings: _settings + Ounchecked),
     .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
         "IOUtil",
         "Bisect",
-      ]),
+      ],
+      swiftSettings: _settings
+    ),
     .testTarget(
       name: "AcFoundationTests",
       dependencies: [
         "AcFoundation",
         .product(name: "Algorithms", package: "swift-algorithms"),
-      ]),
+      ],
+      swiftSettings: _settings
+    ),
   ]
 )

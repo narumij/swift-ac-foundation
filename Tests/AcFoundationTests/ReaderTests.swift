@@ -12,8 +12,9 @@ import XCTest
 import AcFoundation
 #endif
 
-#if os(macOS) || os(iOS)
-extension CChar: ExpressibleByStringLiteral {
+extension Int8: @retroactive ExpressibleByExtendedGraphemeClusterLiteral {}
+extension Int8: @retroactive ExpressibleByUnicodeScalarLiteral {}
+extension CChar: @retroactive ExpressibleByStringLiteral {
     public init(stringLiteral s: String) {
         self = Character(s).asciiValue.map{ Int8($0) }!
     }
@@ -23,7 +24,6 @@ extension Array where Element == UInt8 {
     var characters: [Character] { map{ Character(UnicodeScalar($0)) } }
 }
 
-@STDIO
 final class ReaderTests: XCTestCase {
 
     override func setUpWithError() throws {
@@ -171,9 +171,8 @@ final class ReaderTests: XCTestCase {
             """)
     }
     
+#if TEST_FATAL_ERROR
     func testUnexpectedEOF1() throws {
-        
-        throw XCTSkip()
         
         XCTAssertEqual(
             SolverRunner(solver: {
@@ -196,8 +195,6 @@ final class ReaderTests: XCTestCase {
     
     func testUnexpectedEOF2() throws {
         
-        throw XCTSkip()
-        
         XCTAssertEqual(
             SolverRunner(solver: {
                 let A: [Double] = .stdin(rows: 3)
@@ -216,6 +213,7 @@ final class ReaderTests: XCTestCase {
             6
             """)
     }
+#endif
     
     func testUnexpectedEOF3() throws {
         
@@ -248,11 +246,11 @@ final class ReaderTests: XCTestCase {
     }
     
 #if DEBUG
-    let stringFixtureA = ""
-    let stringFixtureB = ""
+  let stringFixtureA = ""
+  let stringFixtureB = ""
 #else
-    let stringFixtureA = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
-    let stringFixtureB = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
+  let stringFixtureA = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
+  let stringFixtureB = String((0..<5_000_000).map{ _ in Character(UnicodeScalar((UInt8(0x21)..<0x7e).randomElement()!)) })
 #endif
     
     func testPerformanceCChar1() throws {
@@ -322,4 +320,3 @@ final class ReaderTests: XCTestCase {
         }
     }
 }
-#endif

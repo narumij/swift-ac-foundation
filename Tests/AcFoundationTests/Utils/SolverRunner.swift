@@ -1,15 +1,6 @@
-import Foundation
-import Algorithms
+@preconcurrency import Foundation
 
 @available(macOS, introduced: 10.15)
-@globalActor
-public struct STDIO {
-    public static let shared: ActorType = ActorType()
-    public actor ActorType { }
-}
-
-@available(macOS, introduced: 10.15)
-@STDIO
 public struct SolverRunner {
     
     public init(solver: @escaping SolverRunner.Solver) {
@@ -61,7 +52,7 @@ public struct SolverRunner {
             let bytesRead = read(pipefd[0], &readBuffer, 1024)
             if bytesRead > 0 {
                 // 読み取ったデータを文字列に変換して追加
-                completeOutput += String(cString: readBuffer + [0])
+              completeOutput += String(utf8String: readBuffer) ?? ""
             } else {
                 // もう読み取るデータがない場合
                 break

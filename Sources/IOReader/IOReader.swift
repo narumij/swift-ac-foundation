@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 // MARK: - Reader
 
@@ -628,7 +628,7 @@ extension Array where Element == [Character] {
 // MARK: - IOReader
 
 @usableFromInline
-enum IOReaderError: Swift.Error {
+enum Error: Swift.Error {
   case unexpectedEOF
 }
 
@@ -651,7 +651,7 @@ extension FixedWidthInteger {
     repeat {
       let c = getchar_unlocked()
       if c == -1 {
-        throw IOReaderError.unexpectedEOF
+        throw Error.unexpectedEOF
       }
       head = numericCast(c)
     } while head == .SP || head == .LF
@@ -668,7 +668,7 @@ extension Array where Element: FixedWidthInteger {
       + (1..<count).map { _ in
         let c = getchar_unlocked()
         if c == -1 {
-          throw IOReaderError.unexpectedEOF
+          throw Error.unexpectedEOF
         }
         return numericCast(c)
       }
@@ -689,7 +689,7 @@ extension FixedBufferIOReader {
         current += 1
         let c = getchar_unlocked()
         if c == -1 {
-          throw IOReaderError.unexpectedEOF
+          throw Error.unexpectedEOF
         }
         buffer[current] = numericCast(c)
       }
@@ -720,7 +720,9 @@ extension VariableBufferIOReader {
 }
 
 @usableFromInline
-protocol IOReaderInstance: IteratorProtocol {
+protocol IOReaderInstance {
+  associatedtype Element
+  mutating func next() -> Self.Element?
   static var instance: Self { get set }
 }
 
