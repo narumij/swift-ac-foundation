@@ -127,8 +127,8 @@ print("Hello, world!", to: &stderr)
 ```
  9 | @inlinable
 10 | public func Answer() throws {
-11 |     print("Hello, STDERRO!", to: &stderr)
-   |                                   `- error: reference to var 'stderr' is not concurrency-safe because it involves shared mutable state
+11 |     print("Hello, STDERR!", to: &stderr)
+   |                                  `- error: reference to var 'stderr' is not concurrency-safe because it involves shared mutable state
 12 | }
 13 | 
 
