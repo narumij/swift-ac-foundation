@@ -4,7 +4,7 @@
 import PackageDescription
 
 var defines: [String] = [
-//  "TEST_FATAL_ERROR"
+  //  "TEST_FATAL_ERROR"
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }
@@ -13,10 +13,12 @@ let package = Package(
   name: "AcFoundation",
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(name: "AcFoundation", targets: ["AcFoundation"]),
+    .library(name: "AcFoundation", targets: ["AcFoundation"])
   ],
   dependencies: [
-    .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0")
+    .package(
+      url: "https://github.com/apple/swift-algorithms",
+      exact: "1.2.0")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
