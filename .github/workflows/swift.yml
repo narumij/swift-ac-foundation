@@ -16,6 +16,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Import GPG Public Key
+      run: |
+        gpg --keyserver hkp://keyserver.ubuntu.com --recv-keys EF80A866B47A981F
+
+    - name: Verify Signature
+      run: |
+        gpg --verify file.sig file
     
     - name: Use ccache
       uses: hendrikmuhs/ccache-action@v1.2
