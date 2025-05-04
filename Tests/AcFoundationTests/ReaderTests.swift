@@ -42,10 +42,14 @@ final class ReaderTests: XCTestCase {
                 assert(F == 3.14)
                 let S = String.stdin
                 let CC = [UInt8].stdin
+                let C0 = UInt8.stdin
+                let C1 = UInt8.stdin
                 print((N + 1))
                 print((F * 2))
                 print(S.uppercased())
                 print(String(CC.characters + "1"))
+                print(String(bytes: [C1], encoding: .ascii)!)
+                print(String(bytes: [C0], encoding: .ascii)!)
             })
             .run(input:
             """
@@ -53,6 +57,7 @@ final class ReaderTests: XCTestCase {
             3.14
             abc
             1111
+            Z Y
             """),
             
             """
@@ -60,6 +65,8 @@ final class ReaderTests: XCTestCase {
             6.28
             ABC
             11111
+            Y
+            Z
             """)
     }
     
