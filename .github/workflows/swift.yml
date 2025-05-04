@@ -13,10 +13,16 @@ jobs:
   build:
 
     runs-on: ubuntu-24.04
-    
+
     steps:
     - uses: actions/checkout@v4
     
+    - name: Import GPG Public Key
+      run: |
+        echo "${{ secrets.GPG_PUBLIC_KEY }}" | gpg --import
+      env:
+        GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+
     - name: Set up Swift
       uses: SwiftyLab/setup-swift@latest
     
