@@ -180,6 +180,58 @@ import Bisect
 
 ---
 
+## その他
+
+2025/05/02に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
+
+```swift
+extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
+  @inlinable @inline(__always)
+  public static var stdin: Self {
+    try! read()
+  }
+  @inlinable @inline(__always)
+  public static func read() throws -> Self {
+    .init(try Int.read())
+  }
+}
+```
+
+```swift
+extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
+  @inlinable @inline(__always)
+  public static var stdin: Self {
+    try! read()
+  }
+  @inlinable @inline(__always)
+  public static func read() throws -> Self {
+    .init(try Int.read())
+  }
+}
+```
+
+このライブラリの0.1.2以降では、以下で足りるようになります。
+
+```swift
+extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
+  @inlinable @inline(__always)
+  public static func read() throws -> Self {
+    .init(try Int.read())
+  }
+}
+```
+
+```swift
+extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
+  @inlinable @inline(__always)
+  public static func read() throws -> Self {
+    .init(try Int.read())
+  }
+}
+```
+
+---
+
 ## ライセンス
 
 このライブラリは CC0-1.0 ライセンスで提供されていますが、一部Apache 2.0 Licenceのコードを含みます。
