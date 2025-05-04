@@ -18,7 +18,7 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-algorithms",
-      exact: "1.2.0")
+      exact: "1.2.1")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
