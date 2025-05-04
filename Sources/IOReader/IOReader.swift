@@ -143,6 +143,14 @@ public protocol ArrayReadable: SingleReadable {}
 ///
 public protocol StringReadable: SingleReadable {}
 
+extension SingleReadable {
+  @inlinable
+  @inline(__always)
+  public static var stdin: Self {
+    try! read()
+  }
+}
+
 extension Int: ArrayReadable {}
 extension UInt: ArrayReadable {}
 extension Double: ArrayReadable {}
@@ -250,66 +258,12 @@ extension FixedWidthInteger {
 
   @inlinable @inline(__always)
   public static func read() throws -> Self { .init(try ATOL.read()!) }
-
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
-  ///
-  /// 入力例1
-  /// ```
-  /// 1
-  /// ```
-  ///
-  /// 読み込み例1
-  /// ```
-  /// print(Int.stdin) // 1
-  /// ```
-  ///
-  /// 入力例2
-  /// ```
-  /// 1 2
-  /// ```
-  ///
-  /// 読み込み例2
-  /// ```
-  /// print(Int.stdin, Int.stdin) // 1 2
-  /// ```
-  ///
-  /// EOFを超えて読もうとした場合、クラッシュします
-  ///
-  @inlinable @inline(__always)
-  public static var stdin: Self { try! read() }
 }
 
 extension BinaryFloatingPoint {
 
   @inlinable @inline(__always)
   public static func read() throws -> Self { .init(try ATOF.read()!) }
-
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
-  ///
-  /// 入力例1
-  /// ```
-  /// 1.25
-  /// ```
-  ///
-  /// 読み込み例1
-  /// ```
-  /// print(Double.stdin) // 1.25
-  /// ```
-  ///
-  /// 入力例2
-  /// ```
-  /// 1.25 2.5
-  /// ```
-  ///
-  /// 読み込み例2
-  /// ```
-  /// print(Double.stdin, Double.stdin) // 1.25 2.t
-  /// ```
-  ///
-  /// EOFを超えて読もうとした場合、クラッシュします
-  ///
-  @inlinable @inline(__always)
-  public static var stdin: Self { try! read() }
 }
 
 extension String {
