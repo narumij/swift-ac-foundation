@@ -47,6 +47,9 @@ let package = Package(
         "AcFoundation",
         .product(name: "Algorithms", package: "swift-algorithms"),
       ],
+      resources: [
+          .copy("Resources")
+      ],
       swiftSettings: _settings
     ),
   ]
