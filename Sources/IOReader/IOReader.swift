@@ -269,7 +269,7 @@ extension BinaryFloatingPoint {
 extension String {
 
   @inlinable @inline(__always)
-  public static func read() throws -> String { ATOS.read() }
+  public static func read() throws -> String { try ATOS.read()! }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
   ///
@@ -319,7 +319,13 @@ extension String {
   /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // abc def
   /// ```
   @inlinable
-  public static func stdin(columns: Int) -> String { ATOS.read(columns: columns) }
+  public static func stdin(columns: Int) -> String { try! read(columns: columns) }
+}
+
+extension String {
+ 
+  @inlinable @inline(__always)
+  public static func read(columns: Int) throws -> String { try ATOS.read(columns: columns)! }
 }
 
 extension Array where Element == String {
@@ -366,7 +372,7 @@ extension Array where Element == String {
 extension UInt8 {
 
   @inlinable @inline(__always)
-  public static func read() throws -> UInt8 { ATOB.read(columns: 1).first! }
+  public static func read() throws -> UInt8 { try ATOB.read(columns: 1).first! }
 
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
@@ -375,7 +381,7 @@ extension UInt8 {
 extension Array where Element == UInt8 {
 
   @inlinable @inline(__always)
-  public static func read() throws -> [UInt8] { ATOB.read() }
+  public static func read() throws -> [UInt8] { try ATOB.read()! }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
   ///
@@ -425,7 +431,13 @@ extension Array where Element == UInt8 {
   /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   @inlinable
-  public static func stdin(columns: Int) -> [UInt8] { ATOB.read(columns: columns) }
+  public static func stdin(columns: Int) -> [UInt8] { try! ATOB.read(columns: columns) }
+}
+
+extension Array where Element == UInt8 {
+
+  @inlinable @inline(__always)
+  public static func read(columns: Int) throws -> [UInt8] { try ATOB.read(columns: columns) }
 }
 
 extension Array where Element == [UInt8] {
@@ -643,7 +655,7 @@ extension FixedBufferIOReader {
         current += 1
         let c = getchar_unlocked()
         if c == -1 {
-          throw Error.unexpectedEOF
+          break
         }
         buffer[current] = numericCast(c)
       }
@@ -667,7 +679,11 @@ extension VariableBufferIOReader {
       if current == buffer.count {
         buffer.append(contentsOf: repeatElement(0, count: buffer.count))
       }
-      buffer[current] = BufferElement(truncatingIfNeeded: getchar_unlocked())
+      let c = getchar_unlocked()
+      if c == -1 {
+        break
+      }
+      buffer[current] = BufferElement(truncatingIfNeeded: c)
     }
     return buffer.withUnsafeBufferPointer { f($0, current) }
   }
@@ -676,12 +692,12 @@ extension VariableBufferIOReader {
 @usableFromInline
 protocol IOReaderInstance {
   associatedtype Element
-  mutating func next() -> Self.Element?
+  mutating func next() throws -> Self.Element
   static var instance: Self { get set }
 }
 
 extension IOReaderInstance {
-  @inlinable @inline(__always) static func read() -> Element! { instance.next() }
+  @inlinable @inline(__always) static func read() throws -> Element! { try instance.next() }
 }
 
 @usableFromInline
@@ -709,26 +725,26 @@ extension IOReaderInstance2 {
   nonisolated(unsafe) public static var instance = Self()
 }
 
-@usableFromInline struct ATOB: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline struct ATOB: VariableBufferIOReader, IOReaderInstance {
   public var buffer: [UInt8] = .init(repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() -> [UInt8]? { try! _next { Array($0[0..<$1]) } }
+  public mutating func next() throws -> [UInt8]? { try _next { Array($0[0..<$1]) } }
   nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int) -> [UInt8] {
+  @inlinable @inline(__always) static func read(columns: Int) throws -> [UInt8] {
     defer { getchar_unlocked() }
-    return try! .__readBytes(count: columns)
+    return try .__readBytes(count: columns)
   }
 }
 
-@usableFromInline struct ATOS: IteratorProtocol, VariableBufferIOReader, IOReaderInstance {
+@usableFromInline struct ATOS: VariableBufferIOReader, IOReaderInstance {
   public var buffer = [UInt8](repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() -> String? {
-    try! _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+  public mutating func next() throws -> String? {
+    try _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
   }
   nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int) -> String! {
+  @inlinable @inline(__always) static func read(columns: Int) throws -> String? {
     defer { getchar_unlocked() }
-    return String(bytes: try! Array.__readBytes(count: columns), encoding: .ascii)
+    return String(bytes: try Array.__readBytes(count: columns), encoding: .ascii)
   }
 }
