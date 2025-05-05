@@ -405,7 +405,7 @@ extension Array where Element == UInt8 {
   /// print(String.stdin, String.stdin) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   ///
-  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
   public static var stdin: Self { try! read() }
 
@@ -431,7 +431,7 @@ extension Array where Element == UInt8 {
   /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   @inlinable
-  public static func stdin(columns: Int) -> [UInt8] { try! ATOB.read(columns: columns) }
+  public static func stdin(columns: Int) -> [UInt8] { try! read(columns: columns) }
 }
 
 extension Array where Element == UInt8 {
@@ -519,7 +519,7 @@ extension Array where Element == Character {
   /// print([Character].stdin, [Character].stdin) // ["a","b","c"] ["d","e","f"]
   /// ```
   ///
-  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   public static var stdin: Self { try! read() }
 
