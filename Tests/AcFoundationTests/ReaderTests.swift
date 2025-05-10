@@ -475,6 +475,8 @@ final class ReaderTests: XCTestCase {
       SolverRunner(solver: {
         let A: [Int] = .readLine()!
         print(A)
+        let B: [Int] = (0..<5).map { _ in .stdin }
+        XCTAssertEqual(B, [6,7,8,9,10])
       })
       .run(
         input:
@@ -491,6 +493,8 @@ final class ReaderTests: XCTestCase {
       SolverRunner(solver: {
         let A: [Double] = .readLine()!
         print(A)
+        let B: [Int] = (0..<5).map { _ in .stdin }
+        XCTAssertEqual(B, [6,7,8,9,10])
       })
       .run(
         input:
@@ -507,6 +511,8 @@ final class ReaderTests: XCTestCase {
       SolverRunner(solver: {
         let A: [String] = .readLine()!
         print(A)
+        let B: [String] = (0..<2).map { _ in .stdin }
+        XCTAssertEqual(B, ["Tanaka","Aoi"])
       })
       .run(
         input:
@@ -523,6 +529,8 @@ final class ReaderTests: XCTestCase {
       SolverRunner(solver: {
         let A: [[UInt8]] = .readLine()!
         print(A.map{ String(bytes: $0, encoding: .ascii)! })
+        let B: [String] = (0..<2).map { _ in .stdin }
+        XCTAssertEqual(B, ["Tanaka","Aoi"])
       })
       .run(
         input:
