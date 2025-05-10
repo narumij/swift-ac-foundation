@@ -390,10 +390,10 @@ extension String {
   }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator: Bool) throws -> (
+  public static func read(columns: Int, hasSeparator sep: Bool) throws -> (
     value: String, separator: UInt8
   ) {
-    try asException(try ATOS.read(columns: columns, hasSeparator: true))
+    try asException(try ATOS.read(columns: columns, hasSeparator: sep))
   }
 }
 
@@ -525,10 +525,10 @@ extension Array where Element == UInt8 {
   }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator: Bool) throws -> (
+  public static func read(columns: Int, hasSeparator sep: Bool) throws -> (
     value: [UInt8], separator: UInt8
   ) {
-    try ATOB.read(columns: columns, hasSeparator: true)
+    try ATOB.read(columns: columns, hasSeparator: sep)
   }
 }
 
