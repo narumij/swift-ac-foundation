@@ -386,14 +386,14 @@ extension String {
 
   @inlinable @inline(__always)
   public static func read(columns: Int) throws -> String {
-    try asException(ATOS.read(columns: columns, hasSeparator: true)).value
+    try read(columns: columns, hasSeparator: true).value
   }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator sep: Bool) throws -> (
+  public static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: String, separator: UInt8
   ) {
-    try asException(ATOS.read(columns: columns, hasSeparator: sep))
+    try asException(ATOS.read(columns: columns, hasSeparator: hasSeparator))
   }
 }
 
