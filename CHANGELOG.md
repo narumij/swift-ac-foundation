@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 区切り文字に水平タブと復帰を追加
 ### Added
 - readLine()メソッドを追加
+- Foundationのpreconcurrencyでのエキスポートを追加
 
 ## [0.1.3] - 2025-5-5
 ### Fixed
