@@ -234,8 +234,9 @@ extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
 ```swift
 extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
   @inlinable @inline(__always)
-  public static func read() throws -> Self {
-    .init(try Int.read().value)
+  public static func read() throws -> (value: Self, separator: UInt8) {
+    let (a,b) = try Int.read()
+    return (.init(a),b)
   }
 }
 ```
@@ -243,8 +244,9 @@ extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable
 ```swift
 extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
   @inlinable @inline(__always)
-  public static func read() throws -> Self {
-    .init(try Int.read().value)
+  public static func read() throws -> (value: Self, separator: UInt8) {
+    let (a,b) = try Int.read()
+    return (.init(a),b)
   }
 }
 ```
