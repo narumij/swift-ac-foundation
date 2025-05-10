@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - read()等メソッドの戻り値を変更
 - 区切り文字に水平タブと復帰を追加
+- 一部のread()の実装からforce unwrapを除去する変更
 ### Added
 - readLine()メソッドを追加
 - Foundationのpreconcurrencyでのエキスポートを追加
