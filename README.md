@@ -33,15 +33,33 @@ import AcFoundation
 
 ### IOReader
 
+#### とりあえず使う場合
+
+```swift
+let A = [Int].readLine()!
+let G = [String].readLine()!
+let H = [[UInt8]].readLine()!
+```
+
+それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
+
+```swift
+let A = readLine()!.split(separator: " ").map { Int($0)! }
+let G = readLine()!.split(separator: " ").map { $0 }
+let H: [[UInt8]] = readLine()!.split(separator: " ").map { $0.map{ $0.asciiValue! } }
+```
+
+#### 細かい話
+
 以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティやメンバー関数を追加します。
 
 - 固定長整数
 - 浮動小数点数
 - 文字列
-- C 文字配列
+- C 文字配列 (UInt8)
 
 **入力の区切り**  
-空白または改行を区切り文字として使用します。
+空白、タブ、改行を区切り文字として使用します。
 
 ```swift
 let N: Int = Int.stdin
@@ -84,13 +102,14 @@ for _ in 0..<Q {
 }
 ```
 
-#### 便利なメンバー関数
+#### 他の便利なメンバー関数
 
-配列や配列の配列を効率的に読み込むためのメンバー関数も利用できます。
+数を指定して読む場合
 
 ```swift
-let A: [Int] = .stdin(columns: N)
-let G: [[CChar]] = .stdin(rows: H, columns: W)
+let A = [Int].stdin(columns: N)
+let G = [String].stdin(rows: H, columns: W)
+let H = [[UInt8]].stdin(rows: H, columns: W)
 ```
 
 #### 部分利用
@@ -107,7 +126,7 @@ import IOReader
 数値が多数並んでいる場合、`readLine()` を使用するよりも実行時間を短縮できる場合があります。
 
 一方で、非常に長い文字列を1行丸ごと読み取る場合は、`readLine()` の方が高速です。  
-**Swift の文字列操作は AtCoder の問題では TLE となることがあるため、問題に応じた使い分けを推奨します。**
+**Swift の文字列操作は AtCoder の問題によって TLE となりやすいため、問題に応じた使い分けを推奨します。**
 
 ---
 
@@ -210,13 +229,13 @@ extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
 }
 ```
 
-このライブラリの0.1.2以降では、以下で足りるようになります。
+このライブラリの0.1.3以降では、以下で足りるようになります。
 
 ```swift
 extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
   @inlinable @inline(__always)
   public static func read() throws -> Self {
-    .init(try Int.read())
+    .init(try Int.read().value)
   }
 }
 ```
@@ -225,7 +244,7 @@ extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable
 extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
   @inlinable @inline(__always)
   public static func read() throws -> Self {
-    .init(try Int.read())
+    .init(try Int.read().value)
   }
 }
 ```

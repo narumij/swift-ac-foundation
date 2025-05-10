@@ -45,7 +45,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineInt.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try Int.read()
+      let N = try Int.read().0
       XCTAssertEqual(N, 1000)
     }
   }
@@ -88,7 +88,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineDouble.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try Double.read()
+      let N = try Double.read().0
       XCTAssertEqual(N, 0.1234, accuracy: 0.0001)
     }
   }
@@ -131,12 +131,12 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineString.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try String.read()
+      let N = try String.read().0
       XCTAssertEqual(N, "TakahashiAoki")
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try String.read(columns: 13)
+      let N = try String.read(columns: 13).0
       XCTAssertEqual(N, "TakahashiAoki")
     }
 
@@ -191,12 +191,12 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineString.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try [UInt8].read()
+      let N = try [UInt8].read().0
       XCTAssertEqual(N, "TakahashiAoki".compactMap(\.asciiValue))
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try [UInt8].read(columns: 13)
+      let N = try [UInt8].read(columns: 13).0
       XCTAssertEqual(N, "TakahashiAoki".compactMap(\.asciiValue))
     }
 
@@ -466,6 +466,69 @@ final class ReaderTests: XCTestCase {
           """),
 
       """
+      """)
+  }
+  
+  func testReadLine() throws {
+
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [Int] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          1 2 3 4 5
+          """),
+
+      """
+      [1, 2, 3, 4, 5]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [Double] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          1 2 3 4 5
+          """),
+
+      """
+      [1.0, 2.0, 3.0, 4.0, 5.0]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [String] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          """),
+
+      """
+      ["Takahashi", "Aoki"]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [[UInt8]] = .readLine()!
+        print(A.map{ String(bytes: $0, encoding: .ascii)! })
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          """),
+
+      """
+      ["Takahashi", "Aoki"]
       """)
   }
 
