@@ -355,7 +355,7 @@ extension String {
   ///
   /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
-  public static var stdin: Self { try! readWithSeparator().value }
+  public static var stdin: Self { try! read() }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
   ///
