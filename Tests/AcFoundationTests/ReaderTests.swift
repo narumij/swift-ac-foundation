@@ -136,7 +136,7 @@ final class ReaderTests: XCTestCase {
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try String.read(columns: 13).0
+      let N = try String.read(columns: 13)
       XCTAssertEqual(N, "TakahashiAoki")
     }
 
@@ -196,7 +196,7 @@ final class ReaderTests: XCTestCase {
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try [UInt8].read(columns: 13).0
+      let N = try [UInt8].read(columns: 13)
       XCTAssertEqual(N, "TakahashiAoki".compactMap(\.asciiValue))
     }
 
