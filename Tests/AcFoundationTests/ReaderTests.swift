@@ -468,6 +468,69 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
+  
+  func testReadLine() throws {
+
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [Int] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          1 2 3 4 5
+          """),
+
+      """
+      [1, 2, 3, 4, 5]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [Double] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          1 2 3 4 5
+          """),
+
+      """
+      [1.0, 2.0, 3.0, 4.0, 5.0]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [String] = .readLine()!
+        print(A)
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          """),
+
+      """
+      ["Takahashi", "Aoki"]
+      """)
+    
+    XCTAssertEqual(
+      SolverRunner(solver: {
+        let A: [[UInt8]] = .readLine()!
+        print(A.map{ String(bytes: $0, encoding: .ascii)! })
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          """),
+
+      """
+      ["Takahashi", "Aoki"]
+      """)
+  }
 
   #if DEBUG
     let stringFixtureA = ""
