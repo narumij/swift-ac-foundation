@@ -480,6 +480,7 @@ final class ReaderTests: XCTestCase {
         input:
           """
           1 2 3 4 5
+          6 7 8 9 10
           """),
 
       """
@@ -495,6 +496,7 @@ final class ReaderTests: XCTestCase {
         input:
           """
           1 2 3 4 5
+          6 7 8 9 10
           """),
 
       """
@@ -510,6 +512,7 @@ final class ReaderTests: XCTestCase {
         input:
           """
           Takahashi Aoki
+          Tanaka Aoi
           """),
 
       """
@@ -525,6 +528,7 @@ final class ReaderTests: XCTestCase {
         input:
           """
           Takahashi Aoki
+          Tanaka Aoi
           """),
 
       """
