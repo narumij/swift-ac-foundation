@@ -229,7 +229,7 @@ extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
 }
 ```
 
-このライブラリの0.1.3以降では、以下で足りるようになります。
+このライブラリの0.1.4以降では、以下で足りるようになります。
 
 ```swift
 extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
