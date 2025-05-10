@@ -379,13 +379,18 @@ extension String {
   /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // abc def
   /// ```
   @inlinable
-  public static func stdin(columns: Int) -> String { try! read(columns: columns).value }
+  public static func stdin(columns: Int) -> String { try! read(columns: columns) }
 }
 
 extension String {
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator: Bool = true) throws -> (
+  public static func read(columns: Int) throws -> String {
+    try asException(try ATOS.read(columns: columns, hasSeparator: true)).value
+  }
+
+  @inlinable @inline(__always)
+  public static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: String, separator: UInt8
   ) {
     try asException(try ATOS.read(columns: columns, hasSeparator: true))
@@ -509,13 +514,18 @@ extension Array where Element == UInt8 {
   /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   @inlinable
-  public static func stdin(columns: Int) -> [UInt8] { try! read(columns: columns).value }
+  public static func stdin(columns: Int) -> [UInt8] { try! read(columns: columns) }
 }
 
 extension Array where Element == UInt8 {
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator: Bool = true) throws -> (
+  public static func read(columns: Int) throws -> [UInt8] {
+    try ATOB.read(columns: columns, hasSeparator: true).value
+  }
+
+  @inlinable @inline(__always)
+  public static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: [UInt8], separator: UInt8
   ) {
     try ATOB.read(columns: columns, hasSeparator: true)
@@ -567,7 +577,7 @@ extension Character {
 
   @inlinable
   public static func read() throws -> Character {
-    try Character(String.read(columns: 1).value)
+    try Character(String.read(columns: 1))
   }
 
   @inlinable
