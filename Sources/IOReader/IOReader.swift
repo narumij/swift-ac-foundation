@@ -446,8 +446,8 @@ extension UInt8 {
   }
 
   @inlinable @inline(__always)
-  public static func read(hasSeparator sep: Bool) throws -> UInt8 {
-    try asException(ATOB.read(columns: 1, hasSeparator: sep).value.first)
+  public static func read(hasSeparator: Bool) throws -> UInt8 {
+    try asException(ATOB.read(columns: 1, hasSeparator: hasSeparator).value.first)
   }
 
   @inlinable @inline(__always)
@@ -525,10 +525,10 @@ extension Array where Element == UInt8 {
   }
 
   @inlinable @inline(__always)
-  public static func read(columns: Int, hasSeparator sep: Bool) throws -> (
+  public static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: [UInt8], separator: UInt8
   ) {
-    try ATOB.read(columns: columns, hasSeparator: sep)
+    try ATOB.read(columns: columns, hasSeparator: hasSeparator)
   }
 }
 
