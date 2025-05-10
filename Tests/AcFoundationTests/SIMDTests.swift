@@ -82,9 +82,9 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1]
-            .description)
+            )
     }
     
     func testSIMD3_literal() throws {
@@ -92,9 +92,9 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2]
-            .description)
+            )
     }
 
     func testSIMD4_literal() throws {
@@ -102,9 +102,9 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3]
-            .description)
+            )
     }
 
     func testSIMD8_literal() throws {
@@ -112,9 +112,9 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7]
-            .description)
+            )
     }
 
     func testSIMD16_literal() throws {
@@ -123,10 +123,10 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7,
                         8,9,10,11,12,13,14,15]
-            .description)
+            )
     }
     
     func testSIMD32_literal() throws {
@@ -137,12 +137,12 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7,
                         8,9,10,11,12,13,14,15,
                         16,17,18,19,20,21,22,23,
                         24,25,26,27,28,29,30,31]
-            .description)
+            )
     }
 
     func testSIMD2_init() throws {
@@ -150,9 +150,7 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
-                       [0,1]
-            .description)
+        XCTAssertEqual(s, [0,1])
     }
     
     func testSIMD3_init() throws {
@@ -160,9 +158,7 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
-                       [0,1,2]
-            .description)
+        XCTAssertEqual(s, [0,1,2])
     }
     
     func testSIMD4_init() throws {
@@ -170,60 +166,58 @@ final class SIMDTests: XCTestCase {
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
-                       [0,1,2,3]
-            .description)
+        XCTAssertEqual(s, [0,1,2,3])
     }
 
     func testSIMD8_init() throws {
         let s = SIMD8<Int>(
-            v0: 0, v1: 1, v2: 2, v3: 3,
-            v4: 4, v5: 5, v6: 6, v7: 7
+          0, 1, 2, 3,
+          4, 5, 6, 7
         )
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7]
-            .description)
+            )
     }
 
     func testSIMD16_init() throws {
         let s = SIMD16<Int>(
-            v0: 0, v1: 1, v2: 2, v3: 3,
-            v4: 4, v5: 5, v6: 6, v7: 7,
-            v8: 8, v9: 9, v10: 10, v11: 11,
-            v12: 12, v13: 13, v14: 14, v15: 15
+          0, 1, 2, 3,
+          4, 5, 6, 7,
+          8, 9, 10, 11,
+          12, 13, 14, 15
             )
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7,
                         8,9,10,11,12,13,14,15]
-            .description)
+            )
     }
 
     func testSIMD32_init() throws {
         let s = SIMD32<Int>(
-            v0: 0, v1: 1, v2: 2, v3: 3,
-            v4: 4, v5: 5, v6: 6, v7: 7,
-            v8: 8, v9: 9, v10: 10, v11: 11,
-            v12: 12, v13: 13, v14: 14, v15: 15,
-            v16: 16, v17: 17, v18: 18, v19: 19,
-            v20: 20, v21: 21, v22: 22, v23: 23,
-            v24: 24, v25: 25, v26: 26, v27: 27,
-            v28: 28, v29: 29, v30: 30, v31: 31
+          0, 1, 2, 3,
+          4, 5, 6, 7,
+          8, 9, 10, 11,
+          12, 13, 14, 15,
+          16, 17, 18, 19,
+          20, 21, 22, 23,
+          24, 25, 26, 27,
+          28, 29, 30, 31
             )
         for i in 0..<s.scalarCount {
             XCTAssertEqual(s[i], i)
         }
-        XCTAssertEqual(s.description,
+        XCTAssertEqual(s,
                        [0,1,2,3,4,5,6,7,
                         8,9,10,11,12,13,14,15,
                         16,17,18,19,20,21,22,23,
                         24,25,26,27,28,29,30,31]
-            .description)
+            )
     }
 
     

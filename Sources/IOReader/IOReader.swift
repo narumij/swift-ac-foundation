@@ -162,14 +162,14 @@ extension LineReadable {
 }
 
 public protocol IntegerReadable: SingleReadable, ArrayReadable, LineReadable {
-  init(_ :Int)
+  init(_: Int)
 }
 
 extension IntegerReadable {
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    let (a,b) = try Int.readWithSeparator()
-    return (.init(a),b)
+    let (a, b) = try Int.readWithSeparator()
+    return (.init(a), b)
   }
 }
 
@@ -246,7 +246,7 @@ extension Collection where Element: ArrayReadable {
 }
 
 extension Collection where Element: LineReadable {
-  
+
   @inlinable @inline(__always)
   public static func readLine() -> [Element]? {
     do {
@@ -324,7 +324,8 @@ extension FixedWidthInteger {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try asException(ATOL.read().map { (.init($0.value), $0.separator) })
+    let (a, b) = try ATOL.read()
+    return (.init(a), b)
   }
 }
 
@@ -332,7 +333,8 @@ extension BinaryFloatingPoint {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try asException(ATOF.read().map { (.init($0.value), $0.separator) })
+    let (a, b) = try ATOF.read()
+    return (.init(a), b)
   }
 }
 
@@ -340,7 +342,7 @@ extension String {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: String, separator: UInt8) {
-    try asException(ATOS.read())
+    try ATOS.read()
   }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
@@ -405,7 +407,7 @@ extension String {
   public static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: String, separator: UInt8
   ) {
-    try asException(ATOS.read(columns: columns, hasSeparator: hasSeparator))
+    try ATOS.read(columns: columns, hasSeparator: hasSeparator)
   }
 }
 
@@ -459,7 +461,7 @@ extension UInt8 {
 
   @inlinable @inline(__always)
   public static func read(hasSeparator: Bool) throws -> UInt8 {
-    try asException(ATOB.read(columns: 1, hasSeparator: hasSeparator).value.first)
+    try asNilException(ATOB.read(columns: 1, hasSeparator: hasSeparator).value.first)
   }
 
   @inlinable @inline(__always)
@@ -475,7 +477,7 @@ extension Array where Element == UInt8 {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
-    try asException(ATOB.read())
+    try ATOB.read()
   }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
@@ -705,16 +707,11 @@ extension Array where Element == [Character] {
 
 // MARK: - IOReader
 
-@usableFromInline
-enum Error: Swift.Error {
+public
+  enum Error: Swift.Error
+{
   case unexpectedNil
   case unexpectedEOF
-}
-
-@usableFromInline protocol IOReader {}
-
-@usableFromInline protocol FixedBufferIOReader: IOReader {
-  var buffer: [UInt8] { get set }
 }
 
 extension FixedWidthInteger {
@@ -725,10 +722,29 @@ extension FixedWidthInteger {
   @inlinable @inline(__always) static var SP: Self { 0x20 }
 }
 
+@inlinable @inline(__always)
+func asSeparator(_ c: Int32) -> UInt8 {
+  c == -1 ? .NULL : UInt8(c)
+}
+
+@inlinable @inline(__always)
+func asNilException<T>(_ value: T?) throws -> T {
+  guard let value else {
+    throw Error.unexpectedNil
+  }
+  return value
+}
+
+@usableFromInline protocol IOReader {}
+
+@usableFromInline protocol FixedBufferIOReader: IOReader {
+  var buffer: [UInt8] { get set }
+}
+
 extension FixedWidthInteger {
 
   @inlinable @inline(__always)
-  static func __readHead() throws -> Self {
+  static func readHead() throws -> Self {
     var head: Self
     repeat {
       let c = getchar_unlocked()
@@ -744,8 +760,8 @@ extension FixedWidthInteger {
 extension Array where Element: FixedWidthInteger {
 
   @inlinable @inline(__always)
-  static func __readBytes(count: Int) throws -> Self {
-    let h: Element = try .__readHead()
+  static func readBytes(count: Int) throws -> Self {
+    let h: Element = try .readHead()
     return try [h]
       + (1..<count).map { _ in
         let c = getchar_unlocked()
@@ -760,10 +776,10 @@ extension Array where Element: FixedWidthInteger {
 extension FixedBufferIOReader {
 
   @inlinable @inline(__always)
-  mutating func _next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> (T, UInt8)? {
+  mutating func next<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> (T, UInt8) {
     var current = 0
     return try buffer.withUnsafeMutableBufferPointer { buffer in
-      buffer.baseAddress![current] = try .__readHead()
+      buffer.baseAddress![current] = try .readHead()
       while buffer.baseAddress![current] != .NULL,
         buffer.baseAddress![current] != .HT,
         buffer.baseAddress![current] != .LF,
@@ -774,7 +790,10 @@ extension FixedBufferIOReader {
         let c = getchar_unlocked()
         buffer[current] = c == -1 ? .NULL : numericCast(c)
       }
-      return current == 0 ? nil : (f(buffer.baseAddress!), buffer.baseAddress![current])
+      if current == 0 {
+        throw Error.unexpectedEOF
+      }
+      return (f(buffer.baseAddress!), buffer.baseAddress![current])
     }
   }
 }
@@ -786,11 +805,11 @@ extension FixedBufferIOReader {
 
 extension VariableBufferIOReader {
   @inlinable @inline(__always)
-  mutating func _next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> (
+  mutating func next<T>(_ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?) throws -> (
     T, BufferElement
-  )? {
+  ) {
     var current = 0
-    buffer[current] = try .__readHead()
+    buffer[current] = try .readHead()
     while buffer[current] != .NULL,
       buffer[current] != .HT,
       buffer[current] != .LF,
@@ -804,7 +823,12 @@ extension VariableBufferIOReader {
       let c = getchar_unlocked()
       buffer[current] = c == -1 ? .NULL : BufferElement(truncatingIfNeeded: c)
     }
-    return buffer.withUnsafeBufferPointer { f($0, current) }.map { ($0, buffer[current]) }
+    if current == 0 {
+      throw Error.unexpectedEOF
+    }
+    return try buffer.withUnsafeBufferPointer {
+      (try asNilException(f($0, current)), buffer[current])
+    }
   }
 }
 
@@ -816,76 +840,63 @@ protocol IOReaderInstance {
 }
 
 extension IOReaderInstance {
-  @inlinable @inline(__always) static func read() throws -> Element! { try instance.next() }
+  @inlinable @inline(__always) static func read() throws -> Element { try instance.next() }
 }
 
-@usableFromInline
-protocol IOReaderInstance2 {
-  associatedtype Element
-  mutating func next() throws -> Self.Element?
-  static var instance: Self { get set }
-}
-
-extension IOReaderInstance2 {
-  @inlinable @inline(__always) static func read() throws -> Element! { try instance.next() }
-}
-
-@usableFromInline struct ATOL: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline struct ATOL: FixedBufferIOReader, IOReaderInstance {
   public var buffer = [UInt8](repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() throws -> (value: Int, separator: UInt8)? { try _next { atol($0) } }
+  public mutating func next() throws -> (value: Int, separator: UInt8) {
+    try next { atol($0) }
+  }
   nonisolated(unsafe) public static var instance = Self()
 }
 
-@usableFromInline struct ATOF: FixedBufferIOReader, IOReaderInstance2 {
+@usableFromInline struct ATOF: FixedBufferIOReader, IOReaderInstance {
   public var buffer = [UInt8](repeating: 0, count: 64)
   @inlinable @inline(__always)
-  public mutating func next() throws -> (value: Double, separator: UInt8)? {
-    try _next { atof($0) }
+  public mutating func next() throws -> (value: Double, separator: UInt8) {
+    try next { atof($0) }
   }
   nonisolated(unsafe) public static var instance = Self()
-}
-
-@inlinable @inline(__always)
-func asSeparator(_ c: Int32) -> UInt8 {
-  c == -1 ? .NULL : UInt8(c)
-}
-
-@inlinable @inline(__always)
-func asException<T>(_ a: T?) throws -> T {
-  guard let a else {
-    throw Error.unexpectedNil
-  }
-  return a
 }
 
 @usableFromInline struct ATOB: VariableBufferIOReader, IOReaderInstance {
   public var buffer: [UInt8] = .init(repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() throws -> (value: [UInt8], separator: UInt8)? {
-    try _next { Array($0[0..<$1]) }
+  public mutating func next() throws -> (value: [UInt8], separator: UInt8) {
+    try next { Array($0[0..<$1]) }
   }
-  nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int, hasSeparator: Bool) throws -> (
+  @inlinable @inline(__always)
+  static func read(columns: Int, hasSeparator: Bool) throws -> (
     value: [UInt8], separator: UInt8
   ) {
     return (
-      try .__readBytes(count: columns), hasSeparator ? asSeparator(getchar_unlocked()) : .NULL
+      try Array.readBytes(count: columns),
+      hasSeparator ? asSeparator(getchar_unlocked()) : .NULL
     )
   }
+  nonisolated(unsafe) public static var instance = Self()
 }
 
 @usableFromInline struct ATOS: VariableBufferIOReader, IOReaderInstance {
   public var buffer = [UInt8](repeating: 0, count: 32)
   @inlinable @inline(__always)
-  public mutating func next() throws -> (value: String, separator: UInt8)? {
-    try _next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+  public mutating func next() throws -> (value: String, separator: UInt8) {
+    try next { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+  }
+  @inlinable @inline(__always)
+  static func read(columns: Int, hasSeparator: Bool) throws -> (
+    value: String, separator: UInt8
+  ) {
+    return try asNilException(
+      String(bytes: Array.readBytes(count: columns), encoding: .ascii)
+        .map {
+          (
+            $0,
+            hasSeparator ? asSeparator(getchar_unlocked()) : .NULL
+          )
+        })
   }
   nonisolated(unsafe) public static var instance = Self()
-  @inlinable @inline(__always) static func read(columns: Int, hasSeparator: Bool) throws -> (
-    value: String, separator: UInt8
-  )? {
-    return String(bytes: try Array.__readBytes(count: columns), encoding: .ascii)
-      .map { ($0, hasSeparator ? asSeparator(getchar_unlocked()) : .NULL) }
-  }
 }

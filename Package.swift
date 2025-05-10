@@ -4,7 +4,6 @@
 import PackageDescription
 
 var defines: [String] = [
-  //  "TEST_FATAL_ERROR"
 ]
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }
