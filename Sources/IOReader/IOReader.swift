@@ -588,7 +588,7 @@ extension Array where Element == Character {
 
   @inlinable
   public static func read() throws -> [Character] {
-    try readWithSeparator().value
+    try String.read().map { $0 }
   }
 
   @inlinable
