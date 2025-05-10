@@ -232,23 +232,11 @@ extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
 このライブラリの0.1.4以降では、以下で足りるようになります。
 
 ```swift
-extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
-  @inlinable @inline(__always)
-  public static func read() throws -> (value: Self, separator: UInt8) {
-    let (a,b) = try Int.read()
-    return (.init(a),b)
-  }
-}
+extension static_modint: IntegerReadable { }
 ```
 
 ```swift
-extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
-  @inlinable @inline(__always)
-  public static func read() throws -> (value: Self, separator: UInt8) {
-    let (a,b) = try Int.read()
-    return (.init(a),b)
-  }
-}
+extension static_modint: IntegerReadable { }
 ```
 
 ---
