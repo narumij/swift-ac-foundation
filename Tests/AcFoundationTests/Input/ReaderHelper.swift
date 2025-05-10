@@ -30,37 +30,37 @@ extension Input {
 
   @inlinable @inline(__always)
   public static func read<A>() -> A! where A: SingleReadable {
-    try! .read().value
+    try! .read()
   }
 
   @inlinable
   public static func read<A, B>() -> (A, B)!
   where A: TupleRead, B: TupleRead {
-    (try! .read().value, try! .read().value)
+    (try! .read(), try! .read())
   }
 
   @inlinable
   public static func read<A, B, C>() -> (A, B, C)!
   where A: TupleRead, B: TupleRead, C: TupleRead {
-    (try! .read().value, try! .read().value, try! .read().value)
+    (try! .read(), try! .read(), try! .read())
   }
 
   @inlinable
   public static func read<A, B, C, D>() -> (A, B, C, D)!
   where A: TupleRead, B: TupleRead, C: TupleRead, D: TupleRead {
-    (try! .read().value, try! .read().value, try! .read().value, try! .read().value)
+    (try! .read(), try! .read(), try! .read(), try! .read())
   }
 
   @inlinable
   public static func read<A, B, C, D, E>() -> (A, B, C, D, E)!
   where A: TupleRead, B: TupleRead, C: TupleRead, D: TupleRead, E: TupleRead {
-    (try! .read().value, try! .read().value, try! .read().value, try! .read().value, try! .read().value)
+    (try! .read(), try! .read(), try! .read(), try! .read(), try! .read())
   }
 
   @inlinable
   public static func read<A, B, C, D, E, F>() -> (A, B, C, D, E, F)!
   where A: TupleRead, B: TupleRead, C: TupleRead, D: TupleRead, E: TupleRead, F: TupleRead {
-    (try! .read().value, try! .read().value, try! .read().value, try! .read().value, try! .read().value, try! .read().value)
+    (try! .read(), try! .read(), try! .read(), try! .read(), try! .read(), try! .read())
   }
 }
 

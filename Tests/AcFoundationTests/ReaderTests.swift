@@ -45,7 +45,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineInt.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try Int.read().0
+      let N = try Int.read()
       XCTAssertEqual(N, 1000)
     }
   }
@@ -88,7 +88,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineDouble.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try Double.read().0
+      let N = try Double.read()
       XCTAssertEqual(N, 0.1234, accuracy: 0.0001)
     }
   }
@@ -131,7 +131,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineString.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try String.read().0
+      let N = try String.read()
       XCTAssertEqual(N, "TakahashiAoki")
     }
 
@@ -191,7 +191,7 @@ final class ReaderTests: XCTestCase {
       .appendingPathComponent("OneLineString.txt")
 
     try withStdinRedirectedThreadSafe(to: url) {
-      let N = try [UInt8].read().0
+      let N = try [UInt8].read()
       XCTAssertEqual(N, "TakahashiAoki".compactMap(\.asciiValue))
     }
 

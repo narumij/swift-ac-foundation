@@ -70,7 +70,7 @@ public protocol SingleReadable {
   ///
   /// EOFを超えて読もうとした場合、例外を投げます
   ///
-  static func read() throws -> (value: Self, separator: UInt8)
+  static func read() throws -> Self
 }
 
 /// Array型に、数値の配列に対する読み込み方法を加えるプロトコルです
@@ -147,19 +147,31 @@ extension SingleReadable {
   @inlinable
   @inline(__always)
   public static var stdin: Self {
-    try! read().value
+    try! read()
   }
 }
 
-extension Int: ArrayReadable {}
-extension UInt: ArrayReadable {}
-extension Double: ArrayReadable {}
-extension CInt: ArrayReadable {}
-extension CUnsignedInt: ArrayReadable {}
-extension CLongLong: ArrayReadable {}
-extension CUnsignedLongLong: ArrayReadable {}
+public protocol LineReadable: SingleReadable {
+  static func readWithSeparator() throws -> (value: Self, separator: UInt8)
+}
 
-extension String: StringReadable {}
+extension LineReadable {
+  public static func read() throws -> Self {
+    try readWithSeparator().value
+  }
+}
+
+// MARK: -
+
+extension Int: ArrayReadable & LineReadable {}
+extension UInt: ArrayReadable & LineReadable {}
+extension Double: ArrayReadable & LineReadable {}
+extension CInt: ArrayReadable & LineReadable {}
+extension CUnsignedInt: ArrayReadable & LineReadable {}
+extension CLongLong: ArrayReadable & LineReadable {}
+extension CUnsignedLongLong: ArrayReadable & LineReadable {}
+
+extension String: StringReadable & LineReadable {}
 extension Character: StringReadable {}
 extension UInt8: StringReadable {}
 
@@ -167,12 +179,12 @@ extension Collection where Element: ArrayReadable {
 
   @inlinable @inline(__always)
   public static func read(columns: Int) throws -> [Element] {
-    try (0..<columns).map { _ in try .read().value }
+    try (0..<columns).map { _ in try .read() }
   }
 
   @inlinable @inline(__always)
   public static func read(rows: Int) throws -> [Element] {
-    try (0..<rows).map { _ in try .read().value }
+    try (0..<rows).map { _ in try .read() }
   }
 
   /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
@@ -221,36 +233,16 @@ extension Collection where Element: ArrayReadable {
   }
 }
 
-extension Collection where Element: ArrayReadable {
+extension Collection where Element: LineReadable {
   
   @inlinable @inline(__always)
   public static func readLine() -> [Element]? {
     do {
       var result = [Element]()
       while true {
-        let item = try Element.read()
-        result.append(item.value)
-        if item.separator == .LF || item.separator == .CR || item.separator == .NULL {
-          break
-        }
-      }
-      return result
-    } catch {
-      return nil
-    }
-  }
-}
-
-extension Collection where Element: StringReadable {
-
-  @inlinable @inline(__always)
-  public static func readLine() -> [Element]? {
-    do {
-      var result = [Element]()
-      while true {
-        let item = try Element.read()
-        result.append(item.value)
-        if item.separator == .LF || item.separator == .CR || item.separator == .NULL {
+        let (element, separator) = try Element.readWithSeparator()
+        result.append(element)
+        if separator == .LF || separator == .CR || separator == .NULL {
           break
         }
       }
@@ -268,9 +260,9 @@ extension Collection where Element == [UInt8] {
     do {
       var result = [Element]()
       while true {
-        let item = try Element.read()
-        result.append(item.value)
-        if item.separator == .LF || item.separator == .CR || item.separator == .NULL {
+        let (element, separator) = try Element.readWithSeparator()
+        result.append(element)
+        if separator == .LF || separator == .CR || separator == .NULL {
           break
         }
       }
@@ -285,7 +277,7 @@ extension Collection where Element: Collection, Element.Element: ArrayReadable {
 
   @inlinable @inline(__always)
   public static func read(rows: Int, columns: Int) throws -> [[Element.Element]] {
-    try (0..<rows).map { _ in try (0..<columns).map { _ in try .read().value } }
+    try (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
   }
 
   /// 標準入力から、空白または改行区切りの整数の連続を配列の配列に読み込みます
@@ -314,10 +306,12 @@ extension Collection where Element: Collection, Element.Element: ArrayReadable {
   }
 }
 
+// MARK: -
+
 extension FixedWidthInteger {
 
   @inlinable @inline(__always)
-  public static func read() throws -> (value: Self, separator: UInt8) {
+  public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
     try asException(try ATOL.read().map { (.init($0.value), $0.separator) })
   }
 }
@@ -325,7 +319,7 @@ extension FixedWidthInteger {
 extension BinaryFloatingPoint {
 
   @inlinable @inline(__always)
-  public static func read() throws -> (value: Self, separator: UInt8) {
+  public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
     try asException(try ATOF.read().map { (.init($0.value), $0.separator) })
   }
 }
@@ -333,7 +327,7 @@ extension BinaryFloatingPoint {
 extension String {
 
   @inlinable @inline(__always)
-  public static func read() throws -> (value: String, separator: UInt8) {
+  public static func readWithSeparator() throws -> (value: String, separator: UInt8) {
     try asException(try ATOS.read())
   }
 
@@ -361,7 +355,7 @@ extension String {
   ///
   /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
-  public static var stdin: Self { try! read().value }
+  public static var stdin: Self { try! readWithSeparator().value }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
   ///
@@ -415,7 +409,7 @@ extension Array where Element == String {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [String] {
-    (0..<rows).map { _ in try! .read().value }
+    (0..<rows).map { _ in try! .read() }
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
@@ -458,7 +452,12 @@ extension UInt8 {
 extension Array where Element == UInt8 {
 
   @inlinable @inline(__always)
-  public static func read() throws -> (value: [UInt8], separator: UInt8) {
+  public static func read() throws -> [UInt8] {
+    try readWithSeparator().value
+  }
+
+  @inlinable @inline(__always)
+  public static func readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
     try asException(try ATOB.read())
   }
 
@@ -486,7 +485,7 @@ extension Array where Element == UInt8 {
   ///
   /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable @inline(__always)
-  public static var stdin: Self { try! read().value }
+  public static var stdin: Self { try! read() }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
   ///
@@ -540,7 +539,7 @@ extension Array where Element == [UInt8] {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[UInt8]] {
-    (0..<rows).map { _ in try! .read().value }
+    (0..<rows).map { _ in try! .read() }
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
@@ -567,20 +566,24 @@ extension Array where Element == [UInt8] {
 extension Character {
 
   @inlinable
-  public static func read() throws -> (value: Character, separator: UInt8) {
-    let (a, b) = try String.read(columns: 1)
-    return (Character(a), b)
+  public static func read() throws -> Character {
+    try Character(String.read(columns: 1).value)
   }
 
   @inlinable
-  public static var stdin: Self { try! read().value }
+  public static var stdin: Self { try! read() }
 }
 
 extension Array where Element == Character {
 
   @inlinable
-  public static func read() throws -> (value: [Character], separator: UInt8) {
-    let (a, b) = try String.read()
+  public static func read() throws -> [Character] {
+    try readWithSeparator().value
+  }
+
+  @inlinable
+  public static func readWithSeparator() throws -> (value: [Character], separator: UInt8) {
+    let (a, b) = try String.readWithSeparator()
     return (a.map { $0 }, b)
   }
 
@@ -608,7 +611,7 @@ extension Array where Element == Character {
   ///
   /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
-  public static var stdin: Self { try! read().value }
+  public static var stdin: Self { try! read() }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
   ///
@@ -654,7 +657,7 @@ extension Array where Element == [Character] {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[Character]] {
-    (0..<rows).map { _ in try! .read().value }
+    (0..<rows).map { _ in try! .read() }
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
