@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 #if os(Linux)
   import Glibc  // dup, dup2, open, close

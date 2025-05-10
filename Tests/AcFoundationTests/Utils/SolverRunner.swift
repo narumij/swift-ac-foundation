@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 @available(macOS, introduced: 10.15)
 public struct SolverRunner {
