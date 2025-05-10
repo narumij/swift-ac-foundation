@@ -312,7 +312,7 @@ extension FixedWidthInteger {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try asException(try ATOL.read().map { (.init($0.value), $0.separator) })
+    try asException(ATOL.read().map { (.init($0.value), $0.separator) })
   }
 }
 
@@ -320,7 +320,7 @@ extension BinaryFloatingPoint {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try asException(try ATOF.read().map { (.init($0.value), $0.separator) })
+    try asException(ATOF.read().map { (.init($0.value), $0.separator) })
   }
 }
 
@@ -328,7 +328,7 @@ extension String {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: String, separator: UInt8) {
-    try asException(try ATOS.read())
+    try asException(ATOS.read())
   }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
@@ -386,14 +386,14 @@ extension String {
 
   @inlinable @inline(__always)
   public static func read(columns: Int) throws -> String {
-    try asException(try ATOS.read(columns: columns, hasSeparator: true)).value
+    try asException(ATOS.read(columns: columns, hasSeparator: true)).value
   }
 
   @inlinable @inline(__always)
   public static func read(columns: Int, hasSeparator sep: Bool) throws -> (
     value: String, separator: UInt8
   ) {
-    try asException(try ATOS.read(columns: columns, hasSeparator: sep))
+    try asException(ATOS.read(columns: columns, hasSeparator: sep))
   }
 }
 
@@ -447,7 +447,7 @@ extension UInt8 {
 
   @inlinable @inline(__always)
   public static func read(hasSeparator sep: Bool) throws -> UInt8 {
-    try asException(try ATOB.read(columns: 1, hasSeparator: sep).value.first)
+    try asException(ATOB.read(columns: 1, hasSeparator: sep).value.first)
   }
 
   @inlinable @inline(__always)
@@ -463,7 +463,7 @@ extension Array where Element == UInt8 {
 
   @inlinable @inline(__always)
   public static func readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
-    try asException(try ATOB.read())
+    try asException(ATOB.read())
   }
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
