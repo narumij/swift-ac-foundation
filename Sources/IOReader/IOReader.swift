@@ -397,18 +397,16 @@ extension String {
 }
 
 extension Array where Element == String {
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int) throws -> [String]
-  {
+  public static func read(rows: Int) throws -> [String] {
     try (0..<rows).map { _ in try .read() }
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int, columns: Int) throws -> [String]
-  {
+  public static func read(rows: Int, columns: Int) throws -> [String] {
     try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
@@ -556,26 +554,26 @@ extension Array where Element == UInt8 {
 
   @inlinable
   @inline(__always)
-  public static func _read(columns: Int, hasSeparator: Bool) throws -> (
-    value: [UInt8], separator: UInt8
-  ) {
+  public static func _read(
+    columns: Int,
+    hasSeparator: Bool
+  ) throws -> (value: [UInt8], separator: UInt8) {
+
     try _atob.read(columns: columns, hasSeparator: hasSeparator)
   }
 }
 
 extension Array where Element == [UInt8] {
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int) throws -> [[UInt8]]
-  {
+  public static func read(rows: Int) throws -> [[UInt8]] {
     try (0..<rows).map { _ in try .read() }
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int, columns: Int) throws -> [[UInt8]]
-  {
+  public static func read(rows: Int, columns: Int) throws -> [[UInt8]] {
     try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
@@ -712,27 +710,27 @@ extension Array where Element == Character {
 
   @inlinable
   @inline(__always)
-  public static func _read(columns: Int, hasSeparator: Bool) throws -> (
-    value: [Character], separator: UInt8
-  ) {
+  public static func _read(
+    columns: Int,
+    hasSeparator: Bool
+  ) throws -> (value: [Character], separator: UInt8) {
+
     let (a, b) = try _atos.read(columns: columns, hasSeparator: hasSeparator)
     return (a.map { $0 }, b)
   }
 }
 
 extension Array where Element == [Character] {
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int) throws -> [[Character]]
-  {
+  public static func read(rows: Int) throws -> [[Character]] {
     try (0..<rows).map { _ in try .read() }
   }
-  
+
   @inlinable
   @inline(__always)
-  public static func read(rows: Int, columns: Int) throws -> [[Character]]
-  {
+  public static func read(rows: Int, columns: Int) throws -> [[Character]] {
     try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
@@ -869,11 +867,11 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
 }
 
 extension Optional {
-    @inlinable @inline(__always)
-    func unwrap(or error: @autoclosure () -> Error) throws -> Wrapped {
-        guard let value = self else { throw error() }
-        return value
-    }
+  @inlinable @inline(__always)
+  func unwrap(or error: @autoclosure () -> Error) throws -> Wrapped {
+    guard let value = self else { throw error() }
+    return value
+  }
 }
 
 @usableFromInline
@@ -929,7 +927,7 @@ extension FixedBufferIOReader {
   @inlinable
   @inline(__always)
   mutating func read<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> (T, UInt8) {
-    
+
     return try buffer.withUnsafeMutableBufferPointer { buffer in
       let buffer = buffer.baseAddress!
       var current = 0
@@ -959,8 +957,7 @@ extension VariableBufferIOReader {
 
     var current = 0
     buffer[current] = try .readHead()
-    while !isASCIIWhitespaceOrNull(buffer[current])
-    {
+    while !isASCIIWhitespaceOrNull(buffer[current]) {
       current += 1
       if current == buffer.count {
         buffer.append(contentsOf: repeatElement(0, count: buffer.count))
