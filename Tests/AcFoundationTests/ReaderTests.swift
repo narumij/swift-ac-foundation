@@ -770,7 +770,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String.read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -802,7 +802,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -837,7 +837,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character].read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -869,7 +869,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -904,7 +904,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -936,7 +936,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
         }
       })
       .run(
@@ -1064,6 +1064,132 @@ final class ReaderTests: XCTestCase {
           4 5 6
           """),
 
+      """
+      """)
+  }
+  
+  func testUnexpectedEOF10() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          c c
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          a\ta
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          a a
+          bbb
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          b\tb
+          """),
+      """
+      """)
+  }
+  
+  func testUnexpectedEOF11() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          c c
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          a\ta
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          a a
+          bbb
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          b\tb
+          """),
       """
       """)
   }

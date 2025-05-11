@@ -840,7 +840,7 @@ public
   enum Error: Swift.Error
 {
   case unexpectedNil
-  case unexpectedNewLine
+  case unexpectedSpace
   case unexpectedEOF
 }
 
@@ -881,13 +881,14 @@ extension FixedWidthInteger {
   @inline(__always)
   static func readHead() throws -> Self {
     var head: Self
+    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     repeat {
       let c = getchar_unlocked()
       if c == -1 {
         throw Error.unexpectedEOF
       }
       head = numericCast(c)
-    } while head == .SP || head == .LF || head == .CR || head == .HT
+    } while (1 << head) & spaces != 0
     return head
   }
 }
@@ -898,14 +899,15 @@ extension Array where Element: FixedWidthInteger {
   @inline(__always)
   static func readBytes(count: Int) throws -> Self {
     let h: Element = try .readHead()
+    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     return try [h]
       + (1..<count).map { _ in
         let c = getchar_unlocked()
-        if c == .LF || c == .CR {
-          throw Error.unexpectedNewLine
-        }
         if c == -1 {
           throw Error.unexpectedEOF
+        }
+        if (1 << c) & spaces != 0  {
+          throw Error.unexpectedSpace
         }
         return numericCast(c)
       }
@@ -920,14 +922,12 @@ extension FixedBufferIOReader {
     _ f: (UnsafePointer<UInt8>) -> T
   ) throws -> (T, UInt8) {
     var current = 0
+    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     return try buffer.withUnsafeMutableBufferPointer { buffer in
       let buffer = buffer.baseAddress!
       buffer[current] = try .readHead()
       while buffer[current] != .NULL,
-        buffer[current] != .HT,
-        buffer[current] != .LF,
-        buffer[current] != .CR,
-        buffer[current] != .SP
+        (1 << buffer[current]) & spaces == 0
       {
         current += 1
         let c = getchar_unlocked()
@@ -956,12 +956,10 @@ extension VariableBufferIOReader {
   ) throws -> (T, BufferElement) {
 
     var current = 0
+    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     buffer[current] = try .readHead()
     while buffer[current] != .NULL,
-      buffer[current] != .HT,
-      buffer[current] != .LF,
-      buffer[current] != .CR,
-      buffer[current] != .SP
+          (1 << buffer[current]) & spaces == 0
     {
       current += 1
       if current == buffer.count {
