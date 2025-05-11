@@ -3,58 +3,6 @@ import Foundation
 
 // MARK: - Vector
 
-public
-  struct SIMD2<Scalar: SIMDScalar>
-{
-  @inlinable
-  init(x: Scalar, y: Scalar) {
-    (self.x, self.y) = (x, y)
-  }
-  @inlinable
-  init(_ x: Scalar, _ y: Scalar) {
-    (self.x, self.y) = (x, y)
-  }
-  @inlinable
-  init(_ v: [Scalar]) {
-    (x, y) = (v[0], v[1])
-  }
-  @usableFromInline
-  var x, y: Scalar
-}
-extension SIMD2: ExpressibleByArrayLiteral {
-  @inlinable
-  public init(arrayLiteral elements: Scalar...) {
-    (x, y) = (elements[0], elements[1])
-  }
-}
-extension SIMD2: Codable where Scalar: SIMDScalar {}
-extension SIMD2: SIMDStorage where Scalar: SIMDScalar & AdditiveArithmetic {
-  public init() {
-    (x, y) = (.zero, .zero)
-  }
-}
-extension SIMD2: SIMD where Scalar: SIMDScalar & AdditiveArithmetic {
-  public typealias MaskStorage = SIMD2<Scalar.SIMDMaskScalar>
-  @inlinable
-  public subscript(index: Int) -> Scalar {
-    @inline(__always) get {
-      index == 0 ? x : y
-    }
-    set(newValue) {
-      x = index == 0 ? newValue : x
-      y = index != 0 ? newValue : y
-    }
-  }
-  @inlinable
-  public var scalarCount: Int { 2 }
-}
-extension SIMD2: Equatable where Scalar: Equatable {}
-extension SIMD2: Hashable where Scalar: Hashable {}
-extension SIMD2: CustomStringConvertible {
-  @inlinable
-  public var description: String { [x, y].description }
-}
-
 extension SIMD2 where Scalar: FixedWidthInteger {
   @inlinable
   func sum() -> Scalar { x + y }

@@ -9,11 +9,11 @@ public struct SolverRunner {
     
     public typealias Print = (String) -> Void
     
-    public typealias Solver = () -> Void
+    public typealias Solver = () throws -> Void
     
     let solver: Solver
     
-    public func run(input: String) -> String {
+    public func run(input: String) throws -> String {
         
         var input = input
         if input.last != "\n" {
@@ -29,14 +29,14 @@ public struct SolverRunner {
         dup2(pipefd[1], STDOUT_FILENO)
         close(pipefd[1])
         
-        var inputBuffer: [Int8] = input.utf8CString.dropLast() + [0x00,0x00]
+        var inputBuffer: [Int8] = input.utf8CString.dropLast()
         let count = inputBuffer.count
-        inputBuffer.withUnsafeMutableBytes {
+        try inputBuffer.withUnsafeMutableBytes {
             let file = fmemopen($0.baseAddress, count, "r")
             assert(file != nil)
             let backup = stdin
             stdin = file!
-            solver()
+            try solver()
             stdin = backup
         }
         
