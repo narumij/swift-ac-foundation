@@ -510,6 +510,20 @@ final class ReaderTests: XCTestCase {
   func testStrings1() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
+        let SS: [String] = [.stdin(columns: 1)]
+        XCTAssertEqual(SS, ["a"])
+      })
+      .run(
+        input:
+          """
+          a
+          """),
+
+      """
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
         let SS: [String] = [.stdin,.stdin,.stdin]
         XCTAssertEqual(SS, ["aaa","bb","ccc"])
       })

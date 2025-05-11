@@ -900,18 +900,22 @@ extension Array where Element: FixedWidthInteger {
   @inlinable
   @inline(__always)
   static func readBytes(count: Int) throws -> Self {
-    let h: Element = try .readHead()
-    return try [h]
-      + (1..<count).map { _ in
+    return try .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      var current = 0
+      buffer[current] = try .readHead()
+      while current < count - 1, buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0 {
+        current += 1
         let c = getchar_unlocked()
-        if c == -1 {
-          throw Error.unexpectedEOF
-        }
-        if (1 << c) & spaces != 0  {
-          throw Error.unexpectedSpace
-        }
-        return numericCast(c)
+        buffer[current] = c == -1 ? .NULL : numericCast(c)
       }
+      if buffer[current] == .NULL {
+        throw Error.unexpectedEOF
+      }
+      if (1 << buffer[current]) & spaces != 0 {
+        throw Error.unexpectedSpace
+      }
+      initializedCount = count
+    }
   }
 }
 
@@ -919,22 +923,16 @@ extension FixedBufferIOReader {
 
   @inlinable
   @inline(__always)
-  mutating func read<T>(
-    _ f: (UnsafePointer<UInt8>) -> T
-  ) throws -> (T, UInt8) {
-    var current = 0
+  mutating func read<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> (T, UInt8) {
+    
     return try buffer.withUnsafeMutableBufferPointer { buffer in
       let buffer = buffer.baseAddress!
+      var current = 0
       buffer[current] = try .readHead()
-      while buffer[current] != .NULL,
-        (1 << buffer[current]) & spaces == 0
-      {
+      while buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0 {
         current += 1
         let c = getchar_unlocked()
         buffer[current] = c == -1 ? .NULL : numericCast(c)
-      }
-      if current == 0 {
-        throw Error.unexpectedEOF
       }
       return (f(buffer), buffer[current])
     }
@@ -957,8 +955,7 @@ extension VariableBufferIOReader {
 
     var current = 0
     buffer[current] = try .readHead()
-    while buffer[current] != .NULL,
-          (1 << buffer[current]) & spaces == 0
+    while buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0
     {
       current += 1
       if current == buffer.count {
@@ -966,9 +963,6 @@ extension VariableBufferIOReader {
       }
       let c = getchar_unlocked()
       buffer[current] = c == -1 ? .NULL : BufferElement(truncatingIfNeeded: c)
-    }
-    if current == 0 {
-      throw Error.unexpectedEOF
     }
     return try buffer.withUnsafeBufferPointer {
       (try asNilException(f($0, current)), buffer[current])

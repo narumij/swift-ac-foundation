@@ -29,7 +29,7 @@ public struct SolverRunner {
         dup2(pipefd[1], STDOUT_FILENO)
         close(pipefd[1])
         
-        var inputBuffer: [Int8] = input.utf8CString.dropLast() + [0x00,0x00]
+        var inputBuffer: [Int8] = input.utf8CString.dropLast()
         let count = inputBuffer.count
         try inputBuffer.withUnsafeMutableBytes {
             let file = fmemopen($0.baseAddress, count, "r")
