@@ -276,6 +276,27 @@ extension Collection where Element: LineReadable {
   }
 }
 
+extension Collection where Element == [Character] {
+
+  @inlinable
+  @inline(__always)
+  public static func readLine() -> [Element]? {
+    do {
+      var result = [Element]()
+      while true {
+        let (element, separator) = try Element.readWithSeparator()
+        result.append(element)
+        if separator == .LF || separator == .CR || separator == .NULL {
+          break
+        }
+      }
+      return result
+    } catch {
+      return nil
+    }
+  }
+}
+
 extension Collection where Element == [UInt8] {
 
   @inlinable
@@ -375,6 +396,23 @@ extension String {
   }
 }
 
+extension Array where Element == String {
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int) throws -> [String]
+  {
+    try (0..<rows).map { _ in try .read() }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int, columns: Int) throws -> [String]
+  {
+    try (0..<rows).map { _ in try .read(columns: columns) }
+  }
+}
+
 extension String {
 
   /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
@@ -450,7 +488,7 @@ extension Array where Element == String {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [String] {
-    (0..<rows).map { _ in try! .read() }
+    try! read(rows: rows)
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
@@ -470,7 +508,7 @@ extension Array where Element == String {
   /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [String] {
-    (0..<rows).map { _ in try! .read(columns: columns) }
+    try! read(rows: rows, columns: columns)
   }
 }
 
@@ -496,31 +534,48 @@ extension UInt8 {
 }
 
 extension Array where Element == UInt8 {
-  
+
   @inlinable
   @inline(__always)
   public static func read() throws -> [UInt8] {
     try readWithSeparator().value
   }
-  
+
   @inlinable
   @inline(__always)
   public static func readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
     try _atob.read()
   }
-  
+
   @inlinable
   @inline(__always)
   public static func read(columns: Int) throws -> [UInt8] {
     try _atob.read(columns: columns, hasSeparator: true).value
   }
-  
+
   @inlinable
   @inline(__always)
   public static func _read(columns: Int, hasSeparator: Bool) throws -> (
     value: [UInt8], separator: UInt8
   ) {
     try _atob.read(columns: columns, hasSeparator: hasSeparator)
+  }
+}
+
+extension Array where Element == [UInt8] {
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int) throws -> [[UInt8]]
+  {
+    try (0..<rows).map { _ in try .read() }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int, columns: Int) throws -> [[UInt8]]
+  {
+    try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
 
@@ -599,7 +654,7 @@ extension Array where Element == [UInt8] {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[UInt8]] {
-    (0..<rows).map { _ in try! .read() }
+    try! read(rows: rows)
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
@@ -619,7 +674,7 @@ extension Array where Element == [UInt8] {
   /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[UInt8]] {
-    (0..<rows).map { _ in try! .read(columns: columns) }
+    try! read(rows: rows, columns: columns)
   }
 }
 
@@ -637,30 +692,47 @@ extension Character {
 }
 
 extension Array where Element == Character {
-  
+
   @inlinable
   public static func read() throws -> [Character] {
-    try _atos.read { $0.map{ $0 } }.value
+    try _atos.read { $0.map { $0 } }.value
   }
-  
+
   @inlinable
   public static func readWithSeparator() throws -> (value: [Character], separator: UInt8) {
-    try _atos.read { $0.map{ $0 } }
+    try _atos.read { $0.map { $0 } }
   }
-  
+
   @inlinable
   @inline(__always)
   public static func read(columns: Int) throws -> [Character] {
-    try _atos.read(columns: columns, hasSeparator: true).value.map{ $0 }
+    try _atos.read(columns: columns, hasSeparator: true).value.map { $0 }
   }
-  
+
   @inlinable
   @inline(__always)
   public static func _read(columns: Int, hasSeparator: Bool) throws -> (
     value: [Character], separator: UInt8
   ) {
-    let (a,b) = try _atos.read(columns: columns, hasSeparator: hasSeparator)
+    let (a, b) = try _atos.read(columns: columns, hasSeparator: hasSeparator)
     return (a.map { $0 }, b)
+  }
+}
+
+extension Array where Element == [Character] {
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int) throws -> [[Character]]
+  {
+    try (0..<rows).map { _ in try .read() }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func read(rows: Int, columns: Int) throws -> [[Character]]
+  {
+    try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
 
@@ -717,7 +789,7 @@ extension Array where Element == Character {
   /// ```
   @inlinable
   public static func stdin(columns: Int) -> [Character] {
-    try! .read(columns: columns)
+    try! read(columns: columns)
   }
 }
 
@@ -738,7 +810,7 @@ extension Array where Element == [Character] {
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[Character]] {
-    (0..<rows).map { _ in try! .read() }
+    try! read(rows: rows)
   }
 
   /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
@@ -758,7 +830,7 @@ extension Array where Element == [Character] {
   /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[Character]] {
-    (0..<rows).map { _ in try! .read(columns: columns) }
+    try! read(rows: rows, columns: columns)
   }
 }
 
@@ -768,6 +840,7 @@ public
   enum Error: Swift.Error
 {
   case unexpectedNil
+  case unexpectedNewLine
   case unexpectedEOF
 }
 
@@ -828,6 +901,9 @@ extension Array where Element: FixedWidthInteger {
     return try [h]
       + (1..<count).map { _ in
         let c = getchar_unlocked()
+        if c == .LF || c == .CR {
+          throw Error.unexpectedNewLine
+        }
         if c == -1 {
           throw Error.unexpectedEOF
         }
@@ -926,12 +1002,12 @@ extension IOReaderInstance {
   public static func read() throws -> Item {
     try instance.read()
   }
-  
+
   @inlinable
   @inline(__always)
   public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
-    let (a,b) = try instance.read()
-    return (f(a),b)
+    let (a, b) = try instance.read()
+    return (f(a), b)
   }
 }
 

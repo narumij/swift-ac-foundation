@@ -418,6 +418,192 @@ final class ReaderTests: XCTestCase {
       9
       """)
   }
+  
+  func testStrings1() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [String] = [.stdin,.stdin,.stdin]
+        XCTAssertEqual(SS, ["aaa","bb","ccc"])
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [String] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"])
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [String] = .stdin(rows: 3)
+        XCTAssertEqual(SS, ["aaa","bb","ccc"])
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [String] = .stdin(rows: 3, columns: 3)
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"])
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+
+      """
+      """)
+  }
+  
+  func testStrings2() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[Character]] = [.stdin,.stdin,.stdin]
+        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.map{ $0 } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[Character]] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.map{ $0 } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[Character]] = .stdin(rows: 3)
+        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.map{ $0 } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[Character]] = .stdin(rows: 3, columns: 3)
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.map{ $0 } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+
+      """
+      """)
+  }
+  
+  func testStrings3() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt8]] = [.stdin,.stdin,.stdin]
+        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt8]] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt8]] = .stdin(rows: 3)
+        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bb
+          ccc
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt8]] = .stdin(rows: 3, columns: 3)
+        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+
+      """
+      """)
+  }
 
   func testUnexpectedEOF1() throws {
 
@@ -490,6 +676,207 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
+  
+  func testUnexpectedEOF5() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String.read(columns: 4)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String].read(rows: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String].read(rows: 3, columns: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [String].read(rows: 4, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+  }
+  
+  func testUnexpectedEOF6() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[Character].read(columns: 4)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[Character]].read(rows: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[Character]].read(rows: 3, columns: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[Character]].read(rows: 4, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+  }
+  
+  func testUnexpectedEOF7() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8].read(columns: 4)]) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8]].read(rows: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8]].read(rows: 3, columns: 4)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedNewLine)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        XCTAssertThrowsError(try [[UInt8]].read(rows: 4, columns: 3)) {
+          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        }
+      })
+      .run(
+        input:
+          """
+          aaa
+          bbb
+          ccc
+          """),
+      """
+      """)
+  }
 
   func testReadLine() throws {
 
@@ -544,6 +931,27 @@ final class ReaderTests: XCTestCase {
         let C: [String] = .readLine()!
         XCTAssertEqual(C, ["Foo", "Bar"])
         XCTAssertNil([String].readLine())
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          Tanaka Aoi Foo Bar
+          """),
+
+      """
+      ["Takahashi", "Aoki"]
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A: [[Character]] = .readLine()!
+        print(A.map { String($0) })
+        let B: [String] = (0..<2).map { _ in .stdin }
+        XCTAssertEqual(B, ["Tanaka", "Aoi"])
+        let C: [String] = .readLine()!
+        XCTAssertEqual(C, ["Foo", "Bar"])
+        XCTAssertNil([[UInt8]].readLine())
       })
       .run(
         input:
