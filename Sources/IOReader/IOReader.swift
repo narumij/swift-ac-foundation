@@ -523,7 +523,8 @@ extension UInt8 {
   @inlinable
   @inline(__always)
   public static func _read(hasSeparator: Bool) throws -> UInt8 {
-    try asNilException(_atob.read(columns: 1, hasSeparator: hasSeparator).value.first)
+    try _atob.read(columns: 1, hasSeparator: hasSeparator).value.first
+      .unwrap(or: Error.unexpectedNil)
   }
 
   @inlinable
@@ -857,17 +858,22 @@ let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
 
 @inlinable
 @inline(__always)
-func asSeparator(_ c: Int32) -> UInt8 {
-  c == -1 ? .NULL : UInt8(c)
+func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
+  c == .NULL || (1 << c) & spaces != 0
 }
 
 @inlinable
 @inline(__always)
-func asNilException<T>(_ value: T?) throws -> T {
-  guard let value else {
-    throw Error.unexpectedNil
-  }
-  return value
+func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
+  c == -1 ? .NULL : numericCast(c)
+}
+
+extension Optional {
+    @inlinable @inline(__always)
+    func unwrap(or error: @autoclosure () -> Error) throws -> Wrapped {
+        guard let value = self else { throw error() }
+        return value
+    }
 }
 
 @usableFromInline
@@ -903,10 +909,9 @@ extension Array where Element: FixedWidthInteger {
     return try .init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
       var current = 0
       buffer[current] = try .readHead()
-      while current < count - 1, buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0 {
+      while current < count - 1, !isASCIIWhitespaceOrNull(buffer[current]) {
         current += 1
-        let c = getchar_unlocked()
-        buffer[current] = c == -1 ? .NULL : numericCast(c)
+        buffer[current] = nullIfEOF(getchar_unlocked())
       }
       if buffer[current] == .NULL {
         throw Error.unexpectedEOF
@@ -929,10 +934,9 @@ extension FixedBufferIOReader {
       let buffer = buffer.baseAddress!
       var current = 0
       buffer[current] = try .readHead()
-      while buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0 {
+      while !isASCIIWhitespaceOrNull(buffer[current]) {
         current += 1
-        let c = getchar_unlocked()
-        buffer[current] = c == -1 ? .NULL : numericCast(c)
+        buffer[current] = nullIfEOF(getchar_unlocked())
       }
       return (f(buffer), buffer[current])
     }
@@ -955,24 +959,23 @@ extension VariableBufferIOReader {
 
     var current = 0
     buffer[current] = try .readHead()
-    while buffer[current] != .NULL, (1 << buffer[current]) & spaces == 0
+    while !isASCIIWhitespaceOrNull(buffer[current])
     {
       current += 1
       if current == buffer.count {
         buffer.append(contentsOf: repeatElement(0, count: buffer.count))
       }
-      let c = getchar_unlocked()
-      buffer[current] = c == -1 ? .NULL : BufferElement(truncatingIfNeeded: c)
+      buffer[current] = nullIfEOF(getchar_unlocked())
     }
     return try buffer.withUnsafeBufferPointer {
-      (try asNilException(f($0, current)), buffer[current])
+      (try f($0, current).unwrap(or: Error.unexpectedNil), buffer[current])
     }
   }
 
   @inlinable
   @inline(__always)
   static func separator(_ hasSeparator: Bool) -> UInt8 {
-    hasSeparator ? asSeparator(getchar_unlocked()) : .NULL
+    hasSeparator ? nullIfEOF(getchar_unlocked()) : .NULL
   }
 }
 
@@ -1086,10 +1089,8 @@ struct _atos: VariableBufferIOReader, IOReaderInstance {
   static func read(columns: Int, hasSeparator: Bool) throws -> Item {
 
     return (
-      try asNilException(
-        String(
-          bytes: Array.readBytes(count: columns),
-          encoding: .ascii)),
+      try String(bytes: Array.readBytes(count: columns), encoding: .ascii)
+        .unwrap(or: Error.unexpectedNil),
       separator(hasSeparator)
     )
   }
