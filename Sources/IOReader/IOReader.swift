@@ -852,6 +852,9 @@ extension FixedWidthInteger {
   @inlinable @inline(__always) static var SP: Self { 0x20 }
 }
 
+@usableFromInline
+let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
+
 @inlinable
 @inline(__always)
 func asSeparator(_ c: Int32) -> UInt8 {
@@ -881,7 +884,6 @@ extension FixedWidthInteger {
   @inline(__always)
   static func readHead() throws -> Self {
     var head: Self
-    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     repeat {
       let c = getchar_unlocked()
       if c == -1 {
@@ -899,7 +901,6 @@ extension Array where Element: FixedWidthInteger {
   @inline(__always)
   static func readBytes(count: Int) throws -> Self {
     let h: Element = try .readHead()
-    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     return try [h]
       + (1..<count).map { _ in
         let c = getchar_unlocked()
@@ -922,7 +923,6 @@ extension FixedBufferIOReader {
     _ f: (UnsafePointer<UInt8>) -> T
   ) throws -> (T, UInt8) {
     var current = 0
-    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     return try buffer.withUnsafeMutableBufferPointer { buffer in
       let buffer = buffer.baseAddress!
       buffer[current] = try .readHead()
@@ -956,7 +956,6 @@ extension VariableBufferIOReader {
   ) throws -> (T, BufferElement) {
 
     var current = 0
-    let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
     buffer[current] = try .readHead()
     while buffer[current] != .NULL,
           (1 << buffer[current]) & spaces == 0
