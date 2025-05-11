@@ -435,7 +435,7 @@ extension String {
   /// print(String.stdin, String.stdin) // abc def
   /// ```
   ///
-  /// 区切りがなく、一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 区切りがなく、一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
   public static var stdin: Self {
@@ -589,7 +589,7 @@ extension Array where Element == UInt8 {
   ///
   /// 読み込み例1
   /// ```
-  /// print(String.stdin) // [0x61, 0x62, 0x63, 0x64, 0x65]
+  /// print([UInt8].stdin) // [0x61, 0x62, 0x63, 0x64, 0x65]
   /// ```
   ///
   /// 入力例2
@@ -599,10 +599,10 @@ extension Array where Element == UInt8 {
   ///
   /// 読み込み例2
   /// ```
-  /// print(String.stdin, String.stdin) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
+  /// print([UInt8].stdin, [UInt8].stdin) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   ///
-  /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 区切りがない一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
   public static var stdin: Self {
@@ -618,7 +618,7 @@ extension Array where Element == UInt8 {
   ///
   /// 読み込み例1
   /// ```
-  /// print(String.stdin(columns: 5)) // [0x61, 0x62, 0x63, 0x64, 0x65]
+  /// print([UInt8].stdin(columns: 5)) // [0x61, 0x62, 0x63, 0x64, 0x65]
   /// ```
   ///
   /// 入力例2
@@ -628,7 +628,7 @@ extension Array where Element == UInt8 {
   ///
   /// 読み込み例2
   /// ```
-  /// print(String.stdin(columns: 3), String.stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
+  /// print([UInt8].stdin(columns: 3), [UInt8].stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   @inlinable
   public static func stdin(columns: Int) -> [UInt8] {
@@ -649,7 +649,7 @@ extension Array where Element == [UInt8] {
   ///
   /// 読み込み例1
   /// ```
-  /// String.stdin(rows: 3) // [[0x23,0x23,0x23,0x23],[0x23,0x2e,0x2e,0x23],[0x23,0x23,0x23,0x23]]
+  /// [UInt8].stdin(rows: 3) // [[0x23,0x23,0x23,0x23],[0x23,0x2e,0x2e,0x23],[0x23,0x23,0x23,0x23]]
   /// ```
   @inlinable
   public static func stdin(rows: Int) -> [[UInt8]] {
@@ -667,7 +667,7 @@ extension Array where Element == [UInt8] {
   ///
   /// 読み込み例1
   /// ```
-  /// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
+  /// [UInt8].stdin(rows: 3, columns: 4) // ["####","#..#","####"]
   /// ```
   ///
   /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
@@ -759,7 +759,7 @@ extension Array where Element == Character {
   /// print([Character].stdin, [Character].stdin) // ["a","b","c"] ["d","e","f"]
   /// ```
   ///
-  /// 区切りがない一行を読む場合、Swfit.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 区切りがない一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   public static var stdin: Self {
     try! read()
