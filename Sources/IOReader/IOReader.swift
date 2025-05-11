@@ -255,17 +255,19 @@ extension Collection where Element: ArrayReadable {
   }
 }
 
-extension Collection where Element: LineReadable {
+extension Collection {
 
   @inlinable
   @inline(__always)
-  public static func readLine() -> [Element]? {
+  static func readLine(
+    _ readWithSeparator: () throws -> (value: Element, separator: UInt8)
+  ) -> [Element]? {
     do {
       var result = [Element]()
       while true {
-        let (element, separator) = try Element.readWithSeparator()
+        let (element, separator) = try readWithSeparator()
         result.append(element)
-        if separator == .LF || separator == .CR || separator == .NULL {
+        if isASCIINewlineOrNull(separator) {
           break
         }
       }
@@ -273,6 +275,15 @@ extension Collection where Element: LineReadable {
     } catch {
       return nil
     }
+  }
+}
+
+extension Collection where Element: LineReadable {
+
+  @inlinable
+  @inline(__always)
+  public static func readLine() -> [Element]? {
+    readLine(Element.readWithSeparator)
   }
 }
 
@@ -281,19 +292,7 @@ extension Collection where Element == [Character] {
   @inlinable
   @inline(__always)
   public static func readLine() -> [Element]? {
-    do {
-      var result = [Element]()
-      while true {
-        let (element, separator) = try Element.readWithSeparator()
-        result.append(element)
-        if separator == .LF || separator == .CR || separator == .NULL {
-          break
-        }
-      }
-      return result
-    } catch {
-      return nil
-    }
+    readLine(Element.readWithSeparator)
   }
 }
 
@@ -302,19 +301,7 @@ extension Collection where Element == [UInt8] {
   @inlinable
   @inline(__always)
   public static func readLine() -> [Element]? {
-    do {
-      var result = [Element]()
-      while true {
-        let (element, separator) = try Element.readWithSeparator()
-        result.append(element)
-        if separator == .LF || separator == .CR || separator == .NULL {
-          break
-        }
-      }
-      return result
-    } catch {
-      return nil
-    }
+    readLine(Element.readWithSeparator)
   }
 }
 
@@ -854,10 +841,19 @@ extension FixedWidthInteger {
 @usableFromInline
 let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
 
+@usableFromInline
+let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
+
 @inlinable
 @inline(__always)
 func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
   c == .NULL || (1 << c) & spaces != 0
+}
+
+@inlinable
+@inline(__always)
+func isASCIINewlineOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
+  c == .NULL || (1 << c) & newlines != 0
 }
 
 @inlinable
