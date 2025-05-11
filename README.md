@@ -156,6 +156,8 @@ SwiftGlibc.stderr:1:12: note: var declared here
   |            `- note: var declared here
 ```
 
+Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るケースがあり、注意が必要です。
+
 #### 部分利用
 
 IOUtil 機能のみを利用したい場合は以下をインポートしてください。
