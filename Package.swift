@@ -9,7 +9,7 @@ var defines: [String] = [
 var _settings: [SwiftSetting] = defines.map { .define($0) }
 
 let package = Package(
-  name: "AcFoundation",
+  name: "swift-ac-foundation",
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "AcFoundation", targets: ["AcFoundation"])
