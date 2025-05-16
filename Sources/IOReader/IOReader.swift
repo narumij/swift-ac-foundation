@@ -154,7 +154,7 @@ extension SingleReadable {
 
 public protocol LineReadable: SingleReadable {
 
-  static func readWithSeparator() throws -> (value: Self, separator: UInt8)
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8)
 }
 
 extension LineReadable {
@@ -162,7 +162,7 @@ extension LineReadable {
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
-    try readWithSeparator().value
+    try _readWithSeparator().value
   }
 }
 
@@ -174,7 +174,7 @@ extension IntegerReadable {
 
   @inlinable
   @inline(__always)
-  public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
     try _atol.read { Self($0) }
   }
 }
@@ -283,7 +283,7 @@ extension Collection where Element: LineReadable {
   @inlinable
   @inline(__always)
   public static func readLine() -> [Element]? {
-    readLine(Element.readWithSeparator)
+    readLine(Element._readWithSeparator)
   }
 }
 
@@ -292,7 +292,7 @@ extension Collection where Element == [Character] {
   @inlinable
   @inline(__always)
   public static func readLine() -> [Element]? {
-    readLine(Element.readWithSeparator)
+    readLine(Element._readWithSeparator)
   }
 }
 
@@ -301,7 +301,25 @@ extension Collection where Element == [UInt8] {
   @inlinable
   @inline(__always)
   public static func readLine() -> [Element]? {
-    readLine(Element.readWithSeparator)
+    readLine(Element._readWithSeparator)
+  }
+}
+
+extension Collection where Element == Character {
+
+  @inlinable
+  @inline(__always)
+  public static func readLine(strippingNewline: Bool = true) -> [Element]? {
+    Swift.readLine(strippingNewline: strippingNewline)?.map{ $0 }
+  }
+}
+
+extension Collection where Element == UInt8 {
+
+  @inlinable
+  @inline(__always)
+  public static func readLine(strippingNewline: Bool = true) -> [Element]? {
+    Swift.readLine(strippingNewline: strippingNewline)?.compactMap{ $0.asciiValue }
   }
 }
 
@@ -346,7 +364,7 @@ extension FixedWidthInteger {
 
   @inlinable
   @inline(__always)
-  public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
     try _atol.read { Self($0) }
   }
 }
@@ -355,7 +373,7 @@ extension BinaryFloatingPoint {
 
   @inlinable
   @inline(__always)
-  public static func readWithSeparator() throws -> (value: Self, separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
     try _atof.read { Self($0) }
   }
 }
@@ -364,7 +382,7 @@ extension String {
 
   @inlinable
   @inline(__always)
-  public static func readWithSeparator() throws -> (value: String, separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: String, separator: UInt8) {
     try _atos.read()
   }
 
@@ -524,12 +542,12 @@ extension Array where Element == UInt8 {
   @inlinable
   @inline(__always)
   public static func read() throws -> [UInt8] {
-    try readWithSeparator().value
+    try _readWithSeparator().value
   }
 
   @inlinable
   @inline(__always)
-  public static func readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: [UInt8], separator: UInt8) {
     try _atob.read()
   }
 
@@ -685,7 +703,7 @@ extension Array where Element == Character {
   }
 
   @inlinable
-  public static func readWithSeparator() throws -> (value: [Character], separator: UInt8) {
+  public static func _readWithSeparator() throws -> (value: [Character], separator: UInt8) {
     try _atos.read { $0.map { $0 } }
   }
 

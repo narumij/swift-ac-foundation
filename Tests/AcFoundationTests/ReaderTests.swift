@@ -1314,6 +1314,48 @@ final class ReaderTests: XCTestCase {
       """
       ["Takahashi", "Aoki"]
       """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A = String(bytes: [UInt8].readLine()!, encoding: .ascii)!
+        let B = String([Character].readLine()!)
+        print(A)
+        print(B)
+        XCTAssertEqual(A, "Takahashi Aoki")
+        XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          Tanaka Aoi Foo Bar
+          """),
+
+      """
+      Takahashi Aoki
+      Tanaka Aoi Foo Bar
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A = String([Character].readLine()!)
+        let B = String(bytes: [UInt8].readLine()!, encoding: .ascii)!
+        print(A)
+        print(B)
+        XCTAssertEqual(A, "Takahashi Aoki")
+        XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
+      })
+      .run(
+        input:
+          """
+          Takahashi Aoki
+          Tanaka Aoi Foo Bar
+          """),
+
+      """
+      Takahashi Aoki
+      Tanaka Aoi Foo Bar
+      """)
   }
 
   #if DEBUG
