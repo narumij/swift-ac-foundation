@@ -419,7 +419,54 @@ final class ReaderTests: XCTestCase {
       """)
   }
   
+  func testUInt() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt.max)
+          """),
+      """
+      \(UInt.max)
+      """)
+  }
+  
   func testInt() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(Int.stdin)
+        print(Int.stdin)
+      })
+      .run(
+        input:
+          """
+          \(Int.max)
+          \(Int.min)
+          """),
+      """
+      \(Int.max)
+      \(Int.min)
+      """)
+    
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Int]] = [[.stdin,.stdin,.stdin],[.stdin,.stdin,.stdin]]
