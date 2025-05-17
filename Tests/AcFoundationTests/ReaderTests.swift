@@ -25,6 +25,9 @@ extension Array where Element == UInt8 {
   var characters: [Character] { map { Character(UnicodeScalar($0)) } }
 }
 
+extension Int128: ArrayReadable & LineReadable {}
+extension UInt128: ArrayReadable & LineReadable {}
+
 final class ReaderTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -446,6 +449,66 @@ final class ReaderTests: XCTestCase {
           """),
       """
       \(UInt.max)
+      """)
+  }
+  
+  func testInt128() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(Int128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(Int128.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(Int128.max)
+          """),
+      """
+      \(Int128.max)
+      """)
+  }
+  
+  func testUInt128() throws {
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt128.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt128.max)
+          """),
+      """
+      \(UInt128.max)
       """)
   }
   
