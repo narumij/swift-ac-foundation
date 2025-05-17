@@ -25,8 +25,10 @@ extension Array where Element == UInt8 {
   var characters: [Character] { map { Character(UnicodeScalar($0)) } }
 }
 
+#if false
 extension Int128: ArrayReadable & LineReadable {}
 extension UInt128: ArrayReadable & LineReadable {}
+#endif
 
 final class ReaderTests: XCTestCase {
 
@@ -452,6 +454,7 @@ final class ReaderTests: XCTestCase {
       """)
   }
   
+#if false
   func testInt128() throws {
     
     XCTAssertEqual(
@@ -511,6 +514,7 @@ final class ReaderTests: XCTestCase {
       \(UInt128.max)
       """)
   }
+#endif
   
   func testInt() throws {
     

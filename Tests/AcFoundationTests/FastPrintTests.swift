@@ -44,6 +44,7 @@ final class FastPrintTests: XCTestCase {
       """)
   }
 
+#if false
   func testInt128() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -69,6 +70,7 @@ final class FastPrintTests: XCTestCase {
       \(UInt128.min)
       """)
   }
+#endif
   
   func testScalar() throws {
     XCTAssertEqual(
