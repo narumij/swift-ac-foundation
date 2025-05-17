@@ -69,13 +69,62 @@ final class FastPrintTests: XCTestCase {
       \(UInt128.min)
       """)
   }
+  
+  func testScalar() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint(Int(10))
+        fastPrint(UInt(100))
+      }).run(input:""),
+      """
+      10
+      100
+      """)
+  }
+  
+  func testCollection() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint([10,20])
+        fastPrint([100,200] as [UInt])
+      }).run(input:""),
+      """
+      10 20
+      100 200
+      """)
+  }
 
-  func testExample() throws {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    // Any test you write for XCTest can be annotated as throws and async.
-    // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-    // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+  func testCombination() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint(4, terminater: 0x20)
+        fastPrint([0,1], terminater: 0x20)
+        fastPrint([2,3])
+        fastPrint(UInt(3), terminater: 0x20)
+        fastPrint([100,200] as [UInt], terminater: 0x20)
+        fastPrint([300] as [UInt])
+      }).run(input:""),
+      """
+      4 0 1 2 3
+      3 100 200 300
+      """)
+  }
+  
+  func testRows() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint([0,1,2,3], separator: 0x0A, terminater: 0x0A)
+        fastPrint([100,200,300] as [UInt], separator: 0x0A, terminater: 0x0A)
+      }).run(input:""),
+      """
+      0
+      1
+      2
+      3
+      100
+      200
+      300
+      """)
   }
 
   func testPerformanceExample() throws {
