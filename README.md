@@ -158,6 +158,8 @@ SwiftGlibc.stderr:1:12: note: var declared here
 
 Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るケースがあり、注意が必要です。
 
+他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
+
 #### 部分利用
 
 IOUtil 機能のみを利用したい場合は以下をインポートしてください。
