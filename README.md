@@ -75,6 +75,14 @@ let T: [UInt8] = [UInt8].stdin
 let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
+```swift
+let (H, W): (Int, Int) = readLine()!
+```
+
+```swift
+let (H, W): (Int, Int) = try read()
+```
+
 **応用例 2: 配列の入力**  
 個数 `N` と数列 `A` を入力する場合は以下のように記述します。縦横に並ぶデータにも対応可能です。
 
