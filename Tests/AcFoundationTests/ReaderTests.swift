@@ -1417,6 +1417,15 @@ final class ReaderTests: XCTestCase {
       111.0
       """)
   }
+  
+  func testUnwrap() throws {
+    let a: Int? = 0
+    XCTAssertNoThrow(try a.unwrap(or: Error.unexpectedNil))
+    let b: Int? = nil
+    XCTAssertThrowsError(try b.unwrap(or: Error.unexpectedNil)) {
+      XCTAssertEqual($0 as? Error, Error.unexpectedNil)
+    }
+  }
 
   #if DEBUG
     let stringFixtureA = ""

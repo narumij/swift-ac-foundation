@@ -1,6 +1,17 @@
 import Bisect
 import XCTest
 
+struct C {
+  var value: Int
+  var serial: Int
+}
+
+extension C: Comparable {
+  static func < (lhs: C, rhs: C) -> Bool {
+    lhs.value < rhs.value
+  }
+}
+
 final class BinarySearchTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -39,6 +50,30 @@ final class BinarySearchTests: XCTestCase {
     XCTAssertNotEqual(mid1(Int.max, Int.max), Int.max) // オーバーフローまたはクラッシュとなる
     XCTAssertEqual(mid1(Int.max / 2, Int.max / 2), Int.max / 2)
     XCTAssertEqual(mid2(Int.max, Int.max), Int.max)
+  }
+  
+  func testInsort1() throws {
+    var list = [0,1,2,2,2,3,4].map{ C(value: $0, serial: 0) }
+    list.insortLeft(C(value: 2, serial: 1))
+    XCTAssertEqual(list.map{ $0.serial }, [0,0,1,0,0,0,0,0])
+  }
+  
+  func testInsort2() throws {
+    var list = [0,1,2,2,2,3,4].map{ C(value: $0, serial: 0) }
+    list.insortRight(C(value: 2, serial: 1))
+    XCTAssertEqual(list.map{ $0.serial }, [0,0,0,0,0,1,0,0])
+  }
+
+  func testInsort3() throws {
+    var list = [0,1,2,2,2,3,4].map{ C(value: 0, serial: $0) }
+    list.insortLeft(C(value: 1, serial: 2), key: { $0.serial })
+    XCTAssertEqual(list.map{ $0.value }, [0,0,1,0,0,0,0,0])
+  }
+  
+  func testInsort4() throws {
+    var list = [0,1,2,2,2,3,4].map{ C(value: 0, serial: $0) }
+    list.insortRight(C(value: 1, serial: 2), key: { $0.serial })
+    XCTAssertEqual(list.map{ $0.value }, [0,0,0,0,0,1,0,0])
   }
 
   func testPerformanceExample() throws {
