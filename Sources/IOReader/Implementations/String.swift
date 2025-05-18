@@ -2,11 +2,9 @@ import Foundation
 
 extension String: SingleReadable & LineReadable {}
 
-// MARK: - Ascii Array Readable
-
 extension String {
 
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
+  /// 標準入力から区切り無しの文字列を読み、返します
   ///
   /// 入力例1
   /// ```
@@ -28,14 +26,14 @@ extension String {
   /// print(String.stdin, String.stdin) // abc def
   /// ```
   ///
-  /// 区切りがなく、一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
   public static var stdin: Self {
     try! read()
   }
 
-  /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
+  /// 標準入力から指定した長さの文字列を読み、返します
   ///
   /// 入力例1
   /// ```
@@ -64,7 +62,7 @@ extension String {
 
 extension Array where Element == String {
 
-  /// 標準入力から空白や改行以外の文字列を行ごとに取得します
+  /// 標準入力から文字列を指定した回数読み、配列で返します
   ///
   /// 入力例1
   /// ```
@@ -82,7 +80,7 @@ extension Array where Element == String {
     try! read(rows: rows)
   }
 
-  /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
+  /// 標準入力から指定した長さの文字列を指定した回数読み、配列で返します
   ///
   /// 入力例1
   /// ```
@@ -95,8 +93,6 @@ extension Array where Element == String {
   /// ```
   /// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
   /// ```
-  ///
-  /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   public static func stdin(rows: Int, columns: Int) -> [String] {
     try! read(rows: rows, columns: columns)
@@ -114,20 +110,17 @@ extension String {
     try _atos.read()
   }
   
+  @inlinable
+  @inline(__always)
+  public static func read(columns: Int) throws -> String {
+    try _atos.read(count: columns)
+  }
+
   /// Line Readable
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: String, separator: UInt8) {
     try _atos.read()
-  }
-}
-
-extension String {
-  
-  @inlinable
-  @inline(__always)
-  public static func read(columns: Int) throws -> String {
-    try _atos.read(count: columns)
   }
 }
 

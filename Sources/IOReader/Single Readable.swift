@@ -18,7 +18,7 @@ import Foundation
 ///
 public protocol SingleReadable {
 
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  /// 標準入力の値を読み、値として返します
   ///
   /// 入力例1
   /// ```
@@ -40,11 +40,9 @@ public protocol SingleReadable {
   /// print(Int.stdin, Int.stdin) // 1 2
   /// ```
   ///
-  /// EOFを超えて読もうとした場合、クラッシュします
-  ///
   static var stdin: Self { get }
 
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得し、値に変換した結果を返します
+  /// 標準入力の値を読み、値として返します
   ///
   /// 入力例1
   /// ```
@@ -65,8 +63,6 @@ public protocol SingleReadable {
   /// ```
   /// print(try! Int.read(), try! Int.read()) // 1 2
   /// ```
-  ///
-  /// EOFを超えて読もうとした場合、例外を投げます
   ///
   static func read() throws -> Self
 }

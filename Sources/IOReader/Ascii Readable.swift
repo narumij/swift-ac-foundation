@@ -15,17 +15,7 @@ public protocol AsciiReadable: SingleReadable {
   /// let c3 = Character.stdin // "C"
   /// ```
   ///
-  /// 文字種を問わずデリミタを強制で消費するため、以下の様な場合には注意が必要です
-  ///
-  /// ```
-  /// ABCDE
-  /// ```
-  ///
-  /// ```
-  /// let c1 = Character.stdin // "A"
-  /// let c2 = Character.stdin // "C"
-  /// let c3 = Character.stdin // "E"
-  /// ```
+  /// 文字種を問わずデリミタ分の文字を強制で消費します
   static var stdin: Self { get }
 
   static func read() throws -> Self
@@ -36,6 +26,7 @@ public protocol AsciiReadable: SingleReadable {
 extension AsciiReadable {
   
   @inlinable
+  @inline(__always)
   public static var stdin: Self {
     try! .read()
   }

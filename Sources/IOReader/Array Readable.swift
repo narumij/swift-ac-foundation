@@ -48,11 +48,11 @@ public protocol ArrayReadable: SingleReadable {}
 
 extension Collection where Element: ArrayReadable {
 
-  /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
+  /// 標準入力から、値を連続で読み、配列で返します
   ///
   /// 現在は以下の要素型に対して適用されています
   ///
-  /// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+  /// 整数: Int, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
   ///
   /// 浮動小数: Double
   ///
@@ -71,11 +71,11 @@ extension Collection where Element: ArrayReadable {
     try! read(columns: columns)
   }
 
-  /// 標準入力から、空白または改行区切りの整数の連続を配列に読み込みます
+  /// 標準入力から、値を連続で読み、配列で返します
   ///
   /// 現在は以下の要素型に対して適用されています
   ///
-  /// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+  /// 整数: Int, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
   ///
   /// 浮動小数: Double
   ///
@@ -98,7 +98,7 @@ extension Collection where Element: ArrayReadable {
 
 extension Collection where Element: Collection, Element.Element: ArrayReadable {
 
-  /// 標準入力から、空白または改行区切りの整数の連続を配列の配列に読み込みます
+  /// 標準入力から、値を連続で読み、配列の配列で返します
   ///
   /// 現在は以下の要素型に対して適用されています
   ///

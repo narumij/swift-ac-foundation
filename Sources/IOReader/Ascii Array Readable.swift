@@ -19,9 +19,6 @@ import Foundation
 /// ```
 /// String.stdin(rows: 3, columns: 4) // ["####","#..#","####"]
 /// ```
-///
-/// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
-///
 public protocol AsciiArrayReadable {
   static func read() throws -> [Self]
   static func read(columns: Int) throws -> [Self]
@@ -30,7 +27,7 @@ public protocol AsciiArrayReadable {
 
 extension Array where Element: AsciiArrayReadable {
 
-  /// 標準入力から空白や改行以外の文字列を空白や改行やEOFまで取得します
+  /// 標準入力から区切り無しの文字列を読み、配列で返します
   ///
   /// 入力例1
   /// ```
@@ -52,14 +49,14 @@ extension Array where Element: AsciiArrayReadable {
   /// print([UInt8].stdin, [UInt8].stdin) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
   ///
-  /// 区切りがない一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
+  /// 一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
   public static var stdin: [Element] {
     try! .read()
   }
   
-  /// 標準入力から空白や改行以外の文字列を文字数を指定して取得します
+  /// 標準入力から指定した長さの文字列を読み、配列で返します
   ///
   /// 入力例1
   /// ```
@@ -89,7 +86,7 @@ extension Array where Element: AsciiArrayReadable {
 
 extension Collection where Element: Collection, Element.Element: AsciiArrayReadable {
   
-  /// 標準入力から空白や改行以外の文字列を行ごとに取得します
+  /// 標準入力から文字列を指定した回数読み、配列の配列で返します
   ///
   /// 入力例1
   /// ```
@@ -108,7 +105,7 @@ extension Collection where Element: Collection, Element.Element: AsciiArrayReada
     try! .read(rows: rows)
   }
   
-  /// 標準入力から空白や改行以外の文字列を文字数を指定し、行ごとに取得します
+  /// 標準入力から指定した長さの文字列を指定した回数読み、配列の配列で返します
   ///
   /// 入力例1
   /// ```
@@ -121,8 +118,6 @@ extension Collection where Element: Collection, Element.Element: AsciiArrayReada
   /// ```
   /// [UInt8].stdin(rows: 3, columns: 4) // ["####","#..#","####"]
   /// ```
-  ///
-  /// 入力側の文字列がcolumn引数より長い場合、残りの文字は標準入力に残したままとなり、次の読み込みの際に使われます
   @inlinable
   @inline(__always)
   public static func stdin(rows: Int, columns: Int) -> [[Element.Element]] {
@@ -132,12 +127,16 @@ extension Collection where Element: Collection, Element.Element: AsciiArrayReada
 
 
 extension Array: SingleReadable where Element: AsciiArrayReadable {
+  @inlinable
+  @inline(__always)
   public static func read() throws -> [Element] {
     try Element.read()
   }
 }
 
 extension Array: LineReadable where Element: AsciiArrayReadable {
+  @inlinable
+  @inline(__always)
   public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8) {
     try Element._readWithSeparator()
   }
