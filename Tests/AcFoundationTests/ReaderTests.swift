@@ -1377,6 +1377,48 @@ final class ReaderTests: XCTestCase {
       Tanaka Aoi Foo Bar
       """)
   }
+  
+  func testTuple1() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let (A,B,C): (UInt8, [UInt8], Int) = try read()
+        print(String(bytes: [A], encoding: .ascii)!)
+        print(String(bytes: B, encoding: .ascii)!)
+        print(C)
+      })
+      .run(
+        input:
+          """
+          A BB 111
+          """),
+
+      """
+      A
+      BB
+      111
+      """)
+  }
+  
+  func testTuple2() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let (A,B,C): (Character, [Character], Double) = readLine()!
+        print(String([A]))
+        print(String(B))
+        print(C)
+      })
+      .run(
+        input:
+          """
+          A BB 111
+          """),
+
+      """
+      A
+      BB
+      111.0
+      """)
+  }
 
   #if DEBUG
     let stringFixtureA = ""

@@ -1,6 +1,6 @@
 import Foundation
 
-extension String: AsciiArrayReadable & LineReadable {}
+extension String: SingleReadable & LineReadable {}
 
 // MARK: - Ascii Array Readable
 
@@ -107,14 +107,14 @@ extension Array where Element == String {
 
 extension String {
   
-  /// Ascii Array Readable
+  /// Single Readable
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
     try _atos.read()
   }
   
-  /// Ascii Array Line Readable
+  /// Line Readable
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: String, separator: UInt8) {
