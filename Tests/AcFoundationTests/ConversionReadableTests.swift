@@ -7,7 +7,6 @@ import XCTest
   import IOReader
 #endif
 
-#if false
 //extension UInt: IOReadableInteger { }
 
 extension UInt: IOStringConversionReadable {
@@ -15,6 +14,7 @@ extension UInt: IOStringConversionReadable {
   static public func convert(from: String) -> UInt { .init(from)! }
 }
 
+#if false
 extension Int128: IOStringConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: String) -> Self { .init(from)! }
@@ -24,6 +24,7 @@ extension UInt128: IOStringConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: String) -> Self { .init(from)! }
 }
+#endif
 
 extension BigInt: IOStringConversionReadable {
   @inlinable @inline(__always)
@@ -35,6 +36,42 @@ extension BigInt: IOStringConversionReadable {
 //  public static func convert(from: Int) -> Self { .init(from) }
 //}
 
+struct IntegerStub {
+  var value: Int
+}
+
+extension IntegerStub: IOIntegerConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: Int) -> Self { .init(value: from) }
+}
+
+struct FloatingPointStub {
+  var value: Double
+}
+
+extension FloatingPointStub: IOFloatingPointConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: Double) -> Self { .init(value: from) }
+}
+
+struct BytesStub {
+  var value: [UInt8]
+}
+
+extension BytesStub: IOBytesConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: [UInt8]) -> Self { .init(value: from) }
+}
+
+struct StringStub {
+  var value: String
+}
+
+extension StringStub: IOStringConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: String) -> Self { .init(value: from) }
+}
+
 final class ConversionReadableTests: XCTestCase {
 
   override func setUpWithError() throws {
@@ -43,6 +80,108 @@ final class ConversionReadableTests: XCTestCase {
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+  }
+  
+  func testIntegerStub() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(IntegerStub.stdin.value)
+      })
+      .run(
+        input:
+          """
+          \(Int.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        [IntegerStub].readLine()?.forEach { print($0.value) }
+      })
+      .run(
+        input:
+          """
+          \(Int.max) \(Int.max)
+          """),
+      """
+      \(Int.max)
+      \(Int.max)
+      """)
+  }
+
+  func testFloatingPointStub() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(FloatingPointStub.stdin.value)
+      })
+      .run(
+        input:
+          """
+          \(Double.ulpOfOne)
+          """),
+      """
+      \(Double.ulpOfOne)
+      """)
+  }
+
+  func testStringStub() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(StringStub.stdin.value)
+      })
+      .run(
+        input:
+          """
+          \(Int.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        [StringStub].readLine()?.forEach { print($0.value) }
+      })
+      .run(
+        input:
+          """
+          \(Int.max) \(Int.max)
+          """),
+      """
+      \(Int.max)
+      \(Int.max)
+      """)
+  }
+
+  func testBytesStub() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(String(bytes: BytesStub.stdin.value, encoding: .ascii)!)
+      })
+      .run(
+        input:
+          """
+          \(Int.max)
+          """),
+      """
+      \(Int.max)
+      """)
+    
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        [BytesStub].readLine()?.forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
+      })
+      .run(
+        input:
+          """
+          \(Int.max) \(Int.max)
+          """),
+      """
+      \(Int.max)
+      \(Int.max)
+      """)
   }
 
   func testUInt() throws {
@@ -61,6 +200,7 @@ final class ConversionReadableTests: XCTestCase {
       """)
   }
 
+#if false
   func testInt128() throws {
 
     XCTAssertEqual(
@@ -117,6 +257,7 @@ final class ConversionReadableTests: XCTestCase {
       \(UInt128.max)
       """)
   }
+#endif
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
@@ -124,6 +265,4 @@ final class ConversionReadableTests: XCTestCase {
       // Put the code you want to measure the time of here.
     }
   }
-
 }
-#endif
