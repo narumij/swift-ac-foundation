@@ -99,10 +99,10 @@ extension Array where Element: FixedWidthInteger {
 }
 
 extension FixedBufferIOReader {
-  
+
   @inlinable
   @inline(__always)
-  mutating func read<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> T {
+  mutating func read<T>(_ f: (UnsafePointer<UInt8>, Int) -> T) throws -> T {
 
     try buffer.withUnsafeMutableBufferPointer { buffer in
       let buffer = buffer.baseAddress!
@@ -112,23 +112,7 @@ extension FixedBufferIOReader {
         current += 1
         buffer[current] = nullIfEOF(getchar_unlocked())
       }
-      return f(buffer)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func read<T>(_ f: (UnsafePointer<UInt8>) -> T) throws -> (T, UInt8) {
-
-    try buffer.withUnsafeMutableBufferPointer { buffer in
-      let buffer = buffer.baseAddress!
-      var current = 0
-      buffer[current] = try .readHead()
-      while !isASCIIWhitespaceOrNull(buffer[current]) {
-        current += 1
-        buffer[current] = nullIfEOF(getchar_unlocked())
-      }
-      return (f(buffer), buffer[current])
+      return f(buffer, current)
     }
   }
 }
@@ -140,7 +124,7 @@ protocol VariableBufferIOReader: IOReader {
 }
 
 extension VariableBufferIOReader {
-  
+
   @inlinable
   @inline(__always)
   mutating func read<T>(
@@ -158,26 +142,6 @@ extension VariableBufferIOReader {
     }
     return try buffer.withUnsafeBufferPointer {
       try f($0, current).unwrap(or: Error.unexpectedNil)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  mutating func read<T>(
-    _ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?
-  ) throws -> (T, BufferElement) {
-
-    var current = 0
-    buffer[current] = try .readHead()
-    while !isASCIIWhitespaceOrNull(buffer[current]) {
-      current += 1
-      if current == buffer.count {
-        buffer.append(contentsOf: repeatElement(0, count: buffer.count))
-      }
-      buffer[current] = nullIfEOF(getchar_unlocked())
-    }
-    return try buffer.withUnsafeBufferPointer {
-      (try f($0, current).unwrap(or: Error.unexpectedNil), buffer[current])
     }
   }
 }
@@ -206,7 +170,7 @@ extension IOReaderInstance {
   public static func read() throws -> Item {
     try instance.read()
   }
-  
+
   @inlinable
   @inline(__always)
   public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
@@ -226,13 +190,13 @@ struct _atol: FixedBufferIOReader, IOReaderInstance {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { atol($0) }
+    try read { b, _ in atol(b) }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { atol($0) }
+    try read { b,c in (atol(b), b[c]) }
   }
 
   nonisolated(unsafe)
@@ -250,13 +214,13 @@ struct _atof: FixedBufferIOReader, IOReaderInstance {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { atof($0) }
+    try read { b,_ in atof(b) }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { atof($0) }
+    try read { b, c in (atof(b), b[c]) }
   }
 
   nonisolated(unsafe)
@@ -280,7 +244,9 @@ struct _atob: VariableBufferIOReader, IOReaderInstance {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { Array($0[0..<$1]) }
+    try read { b, c in
+      (Array(b[0..<c]), b[c])
+    }
   }
 
   @inlinable
@@ -312,8 +278,15 @@ struct _atos: VariableBufferIOReader, IOReaderInstance {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-
-    try read { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+    try read { b, c in
+      String(
+        bytes: b[0..<c],
+        encoding: .ascii
+      )
+      .map {
+        ($0, b[c])
+      }
+    }
   }
 
   @inlinable
@@ -321,7 +294,7 @@ struct _atos: VariableBufferIOReader, IOReaderInstance {
   static func read(count: Int) throws -> Element {
     defer { getchar_unlocked() }
     return try String(bytes: Array.readBytes(count: count), encoding: .ascii)
-        .unwrap(or: Error.unexpectedNil)
+      .unwrap(or: Error.unexpectedNil)
   }
 
   nonisolated(unsafe)

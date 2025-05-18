@@ -5,7 +5,6 @@ public protocol TupleRead: SingleReadable {}
 public protocol FullRead: ArrayReadable & TupleRead {}
 
 extension Int: FullRead {}
-extension UInt: FullRead {}
 extension Double: FullRead {}
 extension CInt: FullRead {}
 extension CUnsignedInt: FullRead {}
