@@ -4,7 +4,7 @@ import Foundation
 ///
 /// 現在は以下の型に対して適用されています
 ///
-/// 整数: Int, UInt, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
+/// 整数: Int, CInt, CUnsignedInt, CLongLong, CUnsignedLongLong
 ///
 /// 浮動小数: Double
 ///
