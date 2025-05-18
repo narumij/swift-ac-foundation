@@ -203,11 +203,9 @@ import Bisect
 
 ```swift
 extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
-  @inlinable @inline(__always)
   public static var stdin: Self {
     try! read()
   }
-  @inlinable @inline(__always)
   public static func read() throws -> Self {
     .init(try Int.read())
   }
@@ -216,11 +214,9 @@ extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable
 
 ```swift
 extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
-  @inlinable @inline(__always)
   public static var stdin: Self {
     try! read()
   }
-  @inlinable @inline(__always)
   public static func read() throws -> Self {
     .init(try Int.read())
   }
@@ -253,7 +249,6 @@ extension UInt: IOReadableInteger { }
 以下の場合、やや速度が落ちます。
 ```swift
 extension UInt: IOConversionReadableString {
-  @inlinable @inline(__always)
   static public func convert(from: String) -> UInt { .init(from)! }
 }
 ```
@@ -263,7 +258,6 @@ BigIntでの利用にも同様の制限があります。
 以下の場合、Int.maxまでしか読めません。
 ```swift
 extension BigInt: IOIntegerConversionReadable {
-  @inlinable @inline(__always)
   public static func convert(from: Int) -> Self { .init(from) }
 }
 ```
