@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11] - 2025-5-18
+#### Changed
+- IOReader関連プロトコルの継承階層を変更
+- IOReaderのUIntのプロトコル適合方法を変更
+- Intのメソッド呼び出し階層を短絡化する修正
+#### Removed
+- IOReaderのUIntのプロトコル適合を削除
+- デリミタの消費を選択できるreadメソッドを削除
+
+## [0.1.10] - 2025-5-17
+#### Removed
+- CI対応でInt128のテストコードを削除
+
+## [0.1.9] - 2025-5-17
+### Added
+- IOUtilにfastPrintを追加
+
+## [0.1.8] - 2025-5-14
+#### Changed
+- Package名をswift-ac-foundationに変更
+
+## [0.1.7] - 2025-5-12
+#### Changed
+- コメントドキュメントの修正
+
 ## [0.1.6] - 2025-5-11
 #### Changed
 - Foundationのpreconcurrencyでのエキスポートを復帰

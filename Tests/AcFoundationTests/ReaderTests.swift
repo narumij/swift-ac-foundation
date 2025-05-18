@@ -13,6 +13,8 @@ import XCTest
   import AcFoundation
 #endif
 
+import BigInt
+
 extension Int8: @retroactive ExpressibleByExtendedGraphemeClusterLiteral {}
 extension Int8: @retroactive ExpressibleByUnicodeScalarLiteral {}
 extension CChar: @retroactive ExpressibleByStringLiteral {
@@ -24,11 +26,6 @@ extension CChar: @retroactive ExpressibleByStringLiteral {
 extension Array where Element == UInt8 {
   var characters: [Character] { map { Character(UnicodeScalar($0)) } }
 }
-
-#if false
-extension Int128: ArrayReadable & LineReadable {}
-extension UInt128: ArrayReadable & LineReadable {}
-#endif
 
 final class ReaderTests: XCTestCase {
 
@@ -424,97 +421,6 @@ final class ReaderTests: XCTestCase {
       """)
   }
   
-  func testUInt() throws {
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt.stdin)
-      })
-      .run(
-        input:
-          """
-          \(UInt.max)
-          """),
-      """
-      \(Int.max)
-      """)
-    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt.stdin)
-      })
-      .run(
-        input:
-          """
-          \(UInt.max)
-          """),
-      """
-      \(UInt.max)
-      """)
-  }
-  
-#if false
-  func testInt128() throws {
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(Int128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(Int128.max)
-          """),
-      """
-      \(Int.max)
-      """)
-    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(Int128.max)
-          """),
-      """
-      \(Int128.max)
-      """)
-  }
-  
-  func testUInt128() throws {
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(UInt128.max)
-          """),
-      """
-      \(Int.max)
-      """)
-    throw XCTSkip("atolの制限で以下への未対応は制限事項となる。上記のようにInt.maxに丸められます。")
-    
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(UInt128.max)
-          """),
-      """
-      \(UInt128.max)
-      """)
-  }
-#endif
   
   func testInt() throws {
     

@@ -231,15 +231,54 @@ extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
 }
 ```
 
-このライブラリの0.1.4以降では、以下で足りるようになります。
+このライブラリの0.1.11以降では、以下のようになります。
 
 ```swift
-extension static_modint: IntegerReadable { }
+extension static_modint: IOIntegerConversionReadable {
+  public static func convert(from: Int) -> Self { .init(from) }
+}
 ```
 
 ```swift
-extension static_modint: IntegerReadable { }
+extension BigInt: IOStringConversionReadable {
+  public static func convert(from: String) -> Self { .init(from)! }
+}
 ```
+
+UIntには制限が生じるため、デフォルトで設定がありません。
+
+以下の二つを必要に応じて使い分けてください。
+
+以下の場合、Int.maxまでしか読めません。
+```swift
+extension UInt: IOReadableInteger { }
+```
+
+以下の場合、やや速度が落ちます。
+```swift
+extension UInt: IOConversionReadableString {
+  @inlinable @inline(__always)
+  static public func convert(from: String) -> UInt { .init(from)! }
+}
+```
+
+BigIntでの利用にも同様の制限があります。
+
+以下の場合、Int.maxまでしか読めません。
+```swift
+extension BigInt: IOIntegerConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: Int) -> Self { .init(from) }
+}
+```
+
+以下の場合、やや速度が落ちます。
+```swift
+extension BigInt: IOStringConversionReadable {
+  public static func convert(from: String) -> Self { .init(from)! }
+}
+```
+
 
 ---
 
