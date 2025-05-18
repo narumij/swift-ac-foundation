@@ -13,8 +13,6 @@ import XCTest
   import IOReader
 #endif
 
-extension Int8: @retroactive ExpressibleByExtendedGraphemeClusterLiteral {}
-extension Int8: @retroactive ExpressibleByUnicodeScalarLiteral {}
 extension CChar: @retroactive ExpressibleByStringLiteral {
   public init(stringLiteral s: String) {
     self = Character(s).asciiValue.map { Int8($0) }!
