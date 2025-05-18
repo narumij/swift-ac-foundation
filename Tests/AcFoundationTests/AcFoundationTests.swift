@@ -1,10 +1,10 @@
 @preconcurrency import XCTest
 
 #if DEBUG
-  @testable import AcFoundation
+  @testable import Bisect
 #else
   //import AcFoundation
-  import AcFoundation
+  import Bisect
 #endif
 
 final class AcFoundationTests: XCTestCase {

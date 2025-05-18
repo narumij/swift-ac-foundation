@@ -8,12 +8,10 @@
 import XCTest
 
 #if DEBUG
-  @testable import AcFoundation
+  @testable import IOReader
 #else
-  import AcFoundation
+  import IOReader
 #endif
-
-import BigInt
 
 extension Int8: @retroactive ExpressibleByExtendedGraphemeClusterLiteral {}
 extension Int8: @retroactive ExpressibleByUnicodeScalarLiteral {}
@@ -63,7 +61,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try Int.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -79,7 +77,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try Int.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -110,7 +108,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try Double.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -126,7 +124,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try Double.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -152,7 +150,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try String.read(columns: 14)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -168,13 +166,13 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try String.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try String.read(columns: 13)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -190,13 +188,13 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try String.read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try String.read(columns: 13)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -222,7 +220,7 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try [UInt8].read(columns: 14)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -238,13 +236,13 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try [UInt8].read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try [UInt8].read(columns: 13)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -260,13 +258,13 @@ final class ReaderTests: XCTestCase {
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try [UInt8].read()) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
 
     try withStdinRedirectedThreadSafe(to: url) {
       XCTAssertThrowsError(try [UInt8].read(columns: 13)) {
-        XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
       }
     }
   }
@@ -732,7 +730,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [Int].read(rows: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -751,7 +749,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [Double].read(rows: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -770,7 +768,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try String.read()) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -787,7 +785,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [UInt8].read()) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -804,7 +802,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String.read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -820,7 +818,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -836,7 +834,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -852,7 +850,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 4, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -871,7 +869,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character].read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -887,7 +885,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -903,7 +901,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -919,7 +917,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 4, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -938,7 +936,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 4)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -954,7 +952,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -970,7 +968,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 3, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -986,7 +984,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 4, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -1006,7 +1004,7 @@ final class ReaderTests: XCTestCase {
         XCTAssertThrowsError(try [
           [Int.read(),Int.read(),Int.read(),Int.read()],
           [Int.read(),Int.read(),Int.read()]]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -1023,7 +1021,7 @@ final class ReaderTests: XCTestCase {
         XCTAssertThrowsError(try [
           [Int].read(columns: 4),
           [Int].read(columns: 3)]) {
-            XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+            XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
           }
       })
       .run(
@@ -1037,7 +1035,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Int]].read(rows: 2, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -1057,7 +1055,7 @@ final class ReaderTests: XCTestCase {
         XCTAssertThrowsError(try [
           [Double.read(),Double.read(),Double.read(),Double.read()],
           [Double.read(),Double.read(),Double.read()]]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -1074,7 +1072,7 @@ final class ReaderTests: XCTestCase {
         XCTAssertThrowsError(try [
           [Double].read(columns: 4),
           [Double].read(columns: 3)]) {
-            XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+            XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
           }
       })
       .run(
@@ -1088,7 +1086,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Double]].read(rows: 2, columns: 4)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedEOF)
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
       .run(
@@ -1107,7 +1105,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1122,7 +1120,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1137,7 +1135,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1152,7 +1150,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1170,7 +1168,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1185,7 +1183,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1200,7 +1198,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(
@@ -1215,7 +1213,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
-          XCTAssertEqual($0 as? IOReader.Error, IOReader.Error.unexpectedSpace)
+          XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
       .run(

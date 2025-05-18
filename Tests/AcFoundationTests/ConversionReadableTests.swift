@@ -2,9 +2,9 @@ import BigInt
 import XCTest
 
 #if DEBUG
-  @testable import AcFoundation
+  @testable import IOReader
 #else
-  import AcFoundation
+  import IOReader
 #endif
 
 #if false

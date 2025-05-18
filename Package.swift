@@ -47,7 +47,9 @@ let package = Package(
     .testTarget(
       name: "AcFoundationTests",
       dependencies: [
-        "AcFoundation",
+        "IOReader",
+        "IOUtil",
+        "Bisect",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
