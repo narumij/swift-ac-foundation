@@ -24,8 +24,12 @@ dependencies: [
 ソースコードに以下を記述してインポートします。
 
 ```swift
+@preconcurrency import Foundation
 import AcFoundation
 ```
+
+新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。
+ご注意ください。
 
 ---
 
