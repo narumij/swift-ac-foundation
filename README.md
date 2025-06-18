@@ -209,6 +209,47 @@ import Bisect
 
 ---
 
+### Pack
+
+SE-283が凍結になっているため、辞書のキーにタプルを使うことは不可能なままのようです。
+このため、例えばABC393Cなど、グラフ問題を盆栽なしにSwiftで解こうと思った際、C++のPairに相当するものもないため、
+辞書のキーに、都度構造体をかき、Hashable適用をするコードを書く必要が生じます。
+カジュアルに競技プログラミングを楽しもうとしている人にそこまでのプロトコルの知識を要求するのはどうかと思い、用意しました。
+
+これを使うことでABC393Cは以下のようにコンパクトな提出でACできる、予定です。
+
+```swift
+import AcFoundation
+
+let (_,M) = (Int.stdin, Int.stdin)
+var m: [Pack<Int,Int>: Int] = [:]
+var ans = 0
+for _ in 0 ..< M {
+  var (u,v) = (Int.stdin, Int.stdin)
+  if u == v {
+    ans += 1
+    continue
+  }
+  if u > v {
+    swap(&u, &v)
+  }
+  m[.init(u, v), default: 0] += 1
+}
+m.forEach {
+  ans += $0.value - 1
+}
+print(ans)
+```
+
+#### 部分利用
+
+Pack 機能のみを利用したい場合は以下をインポートしてください。
+
+```swift
+import Pack
+```
+---
+
 ## その他
 
 2025/05/02に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。

@@ -10,7 +10,7 @@ var _settings: [SwiftSetting] = defines.map { .define($0) }
 
 let package = Package(
   name: "swift-ac-foundation",
-//  platforms: [.macOS(.v15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
+  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "AcFoundation", targets: ["AcFoundation"])
@@ -18,10 +18,10 @@ let package = Package(
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-algorithms",
-      exact: "1.2.1"),
+      from: "1.2.1"),
     .package(
       url: "https://github.com/attaswift/BigInt",
-      exact: "5.5.1"),
+      from: "5.6.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -36,11 +36,15 @@ let package = Package(
       name: "Bisect",
       swiftSettings: _settings),
     .target(
+      name: "Pack",
+      swiftSettings: _settings),
+    .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
         "IOUtil",
         "Bisect",
+        "Pack",
       ],
       swiftSettings: _settings
     ),
@@ -50,6 +54,7 @@ let package = Package(
         "IOReader",
         "IOUtil",
         "Bisect",
+        "Pack",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
