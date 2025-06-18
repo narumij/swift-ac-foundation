@@ -222,8 +222,8 @@ SE-283が凍結になっているため、辞書のキーにタプルを使う�
 import AcFoundation
 
 let (_,M) = (Int.stdin, Int.stdin)
-var m: [Pack<Int,Int>: Int] = [:]
-var ans = 0
+nonisolated(unsafe) var m: [Pack<Int,Int>: Int] = [:]
+nonisolated(unsafe) var ans = 0
 for _ in 0 ..< M {
   var (u,v) = (Int.stdin, Int.stdin)
   if u == v {
