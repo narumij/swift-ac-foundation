@@ -16,9 +16,9 @@ final class PackTests: XCTestCase {
 
   func testExample() throws {
     let p: Pack<Int, Int, Int> = .init(1, 2, 3)
-    XCTAssertEqual(p.tuple.0, 1)
-    XCTAssertEqual(p.tuple.1, 2)
-    XCTAssertEqual(p.tuple.2, 3)
+    XCTAssertEqual(p.rawValue.0, 1)
+    XCTAssertEqual(p.rawValue.1, 2)
+    XCTAssertEqual(p.rawValue.2, 3)
     let a: [Pack<Int>: Int] = [.init(1): 1]
     let b: [Pack<Int, Int>: Int] = [.init(1, 1): 1]
     let c: [Pack<Int, Int, Int>: Int] = [.init(1, 1, 1): 1]
@@ -42,8 +42,8 @@ final class PackTests: XCTestCase {
     let a = [(1,1),(1,2),(2,1),(1,3),(3,1),(3,3),(2,3)].sorted(by: <)
     let b = [(1,1),(1,2),(2,1),(1,3),(3,1),(3,3),(2,3)].map(Pack.init).sorted(by: <)
     
-    XCTAssertEqual(a.map(\.0), b.map(\.tuple.0))
-    XCTAssertEqual(a.map(\.1), b.map(\.tuple.1))
+    XCTAssertEqual(a.map(\.0), b.map(\.rawValue.0))
+    XCTAssertEqual(a.map(\.1), b.map(\.rawValue.1))
   }
 
   func testPerformanceExample() throws {
