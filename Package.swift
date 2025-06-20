@@ -3,8 +3,7 @@
 
 import PackageDescription
 
-var defines: [String] = [
-]
+var defines: [String] = []
 
 var _settings: [SwiftSetting] = defines.map { .define($0) }
 
@@ -39,12 +38,23 @@ let package = Package(
       name: "Pack",
       swiftSettings: _settings),
     .target(
+      name: "cxx",
+      cxxSettings: [
+          .headerSearchPath("include"),
+          .unsafeFlags(["-std=c++17"])
+      ]),
+    .target(
+      name: "CxxWrapped",
+      dependencies: ["cxx"],
+    ),
+    .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
         "IOUtil",
         "Bisect",
         "Pack",
+        "CxxWrapped",
       ],
       swiftSettings: _settings
     ),
@@ -55,6 +65,7 @@ let package = Package(
         "IOUtil",
         "Bisect",
         "Pack",
+        "CxxWrapped",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
