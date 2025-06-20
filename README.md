@@ -252,6 +252,36 @@ import Pack
 ```
 ---
 
+### CxxWrapped
+
+std::gcdとstd::lcmが利用できます。
+
+std::gcdっぽいものではなく、実際にstd::gcdを呼んでいます。
+
+std::lcmっぽいオレオレ実装ではなく、実際にstd::lcmを呼んでいます。
+
+CxxInteropで呼ぶつもりでしたが軽く挫折したため、extern "C"して、C Interopで呼んでいます。
+
+
+```swift
+import AcFoundation
+
+print(gcd(12,16)) // 4
+
+print(lcm(12,16)) // 48
+
+```
+
+#### 部分利用
+
+CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
+
+```swift
+import CxxWrapped
+```
+
+---
+
 ## その他
 
 2025/05/02に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
