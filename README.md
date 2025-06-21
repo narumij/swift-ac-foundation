@@ -5,16 +5,16 @@
 
 ## 利用方法
 
-SwiftPM で `swift-ac-foundation` を利用するには、以下のように `Package.swift` に追加することで使えるようにしたいのはやまやまなのですが、
+SwiftPM で `swift-ac-foundation` を利用するには、以下を `Package.swift` に追加します。
 
 ```swift
 dependencies: [
-  .package(url: "https://github.com/narumij/swift-ac-foundation",
-  from: "0.1.18"),
+  .package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
 ]
 ```
 
-C++の埋め込みに関するunsafeFlagsのチェックがあり、直接revision指定しないとビルド拒否が発生します。
+タグでの指定はC++の埋め込みに関するunsafeFlagsのチェックがありビルド拒否となるため、
+必要な場合は直接revision指定してください。
 
 ```swift
 dependencies: [
