@@ -372,23 +372,23 @@ extension static_modint: @retroactive IOIntegerConversionReadable {
 
 ```swift
 extension SIMD2 where Scalar: SingleReadable {
-  @inlinable
-  static var stdin: Self {
-    [Scalar.stdin, Scalar.stdin]
+
+  @inlinable static func read() throws -> Self {
+    .init(try Scalar.read(), try Scalar.read())
   }
 }
 
 extension SIMD3 where Scalar: SingleReadable {
-  @inlinable
-  static var stdin: Self {
-    [Scalar.stdin, Scalar.stdin, Scalar.stdin]
+
+  @inlinable static func read() throws -> Self {
+    .init(try Scalar.read(), try Scalar.read(), try Scalar.read())
   }
 }
 
 extension SIMD4 where Scalar: SingleReadable {
-  @inlinable
-  static var stdin: Self {
-    [Scalar.stdin, Scalar.stdin, Scalar.stdin, Scalar.stdin]
+
+  @inlinable static func read() throws -> Self {
+    .init(try Scalar.read(), try Scalar.read(), try Scalar.read(), try Scalar.read())
   }
 }
 ```
