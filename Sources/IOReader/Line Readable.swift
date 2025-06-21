@@ -8,11 +8,11 @@ public protocol LineReadable: SingleReadable {
 // MARK: - LineReadable.readLine()
 
 extension Collection where Element: LineReadable {
-
+  
   @inlinable
   @inline(__always)
-  public static func readLine() -> [Element]? {
-    readLine(Element._readWithSeparator)
+  public static func readLine() throws -> [Element] {
+    try readLine(Element._readWithSeparator)
   }
 }
 
@@ -20,8 +20,8 @@ extension Collection where Element == [Character] {
 
   @inlinable
   @inline(__always)
-  public static func readLine() -> [Element]? {
-    readLine(Element._readWithSeparator)
+  public static func readLine() throws -> [Element] {
+    try readLine(Element._readWithSeparator)
   }
 }
 
@@ -29,8 +29,8 @@ extension Collection where Element == [UInt8] {
 
   @inlinable
   @inline(__always)
-  public static func readLine() -> [Element]? {
-    readLine(Element._readWithSeparator)
+  public static func readLine() throws -> [Element] {
+    try readLine(Element._readWithSeparator)
   }
 }
 
@@ -62,21 +62,15 @@ extension Collection {
   @inline(__always)
   static func readLine(
     _ readWithSeparator: () throws -> (value: Element, separator: UInt8)
-  ) -> [Element]? {
-    do {
-      var result = [Element]()
-      while true {
-        let (element, separator) = try readWithSeparator()
-        result.append(element)
-        if isASCIINewlineOrNull(separator) {
-          break
-        }
+  ) throws -> [Element] {
+    var result = [Element]()
+    while true {
+      let (element, separator) = try readWithSeparator()
+      result.append(element)
+      if isASCIINewlineOrNull(separator) {
+        break
       }
-      return result
-    } catch {
-      return nil
     }
+    return result
   }
 }
-
-

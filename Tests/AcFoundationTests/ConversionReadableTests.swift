@@ -98,7 +98,7 @@ final class ConversionReadableTests: XCTestCase {
     
     XCTAssertEqual(
       try SolverRunner(solver: {
-        [IntegerStub].readLine()?.forEach { print($0.value) }
+        try [IntegerStub].readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -142,7 +142,7 @@ final class ConversionReadableTests: XCTestCase {
     
     XCTAssertEqual(
       try SolverRunner(solver: {
-        [StringStub].readLine()?.forEach { print($0.value) }
+        try [StringStub].readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -171,7 +171,7 @@ final class ConversionReadableTests: XCTestCase {
     
     XCTAssertEqual(
       try SolverRunner(solver: {
-        [BytesStub].readLine()?.forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
+        try [BytesStub].readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
       })
       .run(
         input:

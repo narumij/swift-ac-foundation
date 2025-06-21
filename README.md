@@ -43,22 +43,30 @@ import AcFoundation
 #### とりあえず使う場合
 
 ```swift
-let A = [Int].readLine()!
-let G = [String].readLine()!
-let H = [[UInt8]].readLine()!
+let N: Int = try read()
+let (H, W): (Int, Int) = try read()
+let (X, Y, Z): (Int, Int, Int) = try read()
+let (A, B): (Int, String) = try read()
+let (C, D): (Int, [Character]) = try read()
+```
+
+```swift
+let A = try [Int].readLine()
+let G = try [String].readLine()
+let H = try [[Character]].readLine()
 ```
 
 それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
 
 ```swift
-let A = readLine()!.split(separator: " ").map { Int($0)! }
-let G = readLine()!.split(separator: " ").map { $0 }
-let H: [[UInt8]] = readLine()!.split(separator: " ").map { $0.map{ $0.asciiValue! } }
+let A = readLine()!.components(separator: " ").map { Int($0)! }
+let G = readLine()!.components(separator: " ").map { $0 }
+let H: [[Character]] = readLine()!.components(separator: " ").map { $0.map{ $0 } }
 ```
 
 #### 細かい話
 
-以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティやメンバー関数を追加します。
+以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティや`read()`メンバー関数を追加します。
 
 - 固定長整数
 - 浮動小数点数
@@ -73,22 +81,23 @@ let H: [[UInt8]] = readLine()!.split(separator: " ").map { $0.map{ $0.asciiValue
 let N: Int = Int.stdin
 let D: Double = Double.stdin
 let S: String = String.stdin
-let T: [UInt8] = [UInt8].stdin
+let T: [Character] = [Character].stdin
+let U: [UInt8] = [UInt8].stdin
 ```
 
 **応用例 1: ペアの入力**  
 例えば、問題の入力が `H W` のように並んでいる場合は、次のように記述できます。
 
 ```swift
+let (H, W): (Int, Int) = try read()
+```
+
+```swift
 let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
 ```swift
-let (H, W): (Int, Int) = readLine()!
-```
-
-```swift
-let (H, W): (Int, Int) = try read()
+let (H, W): (Int, Int) = (try .read(), try .read())
 ```
 
 **応用例 2: 配列の入力**  
@@ -125,8 +134,21 @@ for _ in 0..<Q {
 ```swift
 let A = [Int].stdin(columns: N)
 let G = [String].stdin(rows: H, columns: W)
-let H = [[UInt8]].stdin(rows: H, columns: W)
+let H = [[Character]].stdin(rows: H, columns: W)
+let I = [[UInt8]].stdin(rows: H, columns: W)
 ```
+
+#### `read`と`stdin`
+
+基礎となるメソッドや関数は命名のセオリーに従い、動詞の`read`が識別子に絡んでいます。
+
+それに対して`try`を省ける便利プロパティ、便利メソッドの識別子は`stdin`になっています。
+
+これはC++の`cin`を意識したことが一つあります。
+
+もう一つは、`stdin`識別子をこんな風変わりに使う人は滅多にいないだろうという打算によりこの識別子にしています。
+
+コンテスト中に`ambiguous`を解決するのはかなり困難なので、極力これを避けたいからです。
 
 #### 部分利用
 
@@ -364,7 +386,7 @@ extension SIMD3 where Scalar: SingleReadable {
 extension SIMD4 where Scalar: SingleReadable {
   @inlinable
   static var stdin: Self {
-    [Scalar.stdin, Scalar.stdin, Scalar.stdin]
+    [Scalar.stdin, Scalar.stdin, Scalar.stdin, Scalar.stdin]
   }
 }
 ```

@@ -1241,13 +1241,13 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [Int] = .readLine()!
+        let A: [Int] = try .readLine()
         print(A)
         let B: [Int] = (0..<5).map { _ in .stdin }
         XCTAssertEqual(B, [6, 7, 8, 9, 10])
-        let C: [Int] = .readLine()!
+        let C: [Int] = try .readLine()
         XCTAssertEqual(C, [11, 12])
-        XCTAssertNil([Int].readLine())
+        XCTAssertNil(try? [Int].readLine())
       })
       .run(
         input:
@@ -1262,13 +1262,13 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [Double] = .readLine()!
+        let A: [Double] = try .readLine()
         print(A)
         let B: [Int] = (0..<5).map { _ in .stdin }
         XCTAssertEqual(B, [6, 7, 8, 9, 10])
-        let C: [Double] = .readLine()!
+        let C: [Double] = try .readLine()
         XCTAssertEqual(C, [11, 12])
-        XCTAssertNil([Int].readLine())
+        XCTAssertNil(try? [Int].readLine())
       })
       .run(
         input:
@@ -1283,13 +1283,13 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [String] = .readLine()!
+        let A: [String] = try .readLine()
         print(A)
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .readLine()!
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil([String].readLine())
+        XCTAssertNil(try? [String].readLine())
       })
       .run(
         input:
@@ -1304,13 +1304,13 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[Character]] = .readLine()!
+        let A: [[Character]] = try .readLine()
         print(A.map { String($0) })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .readLine()!
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil([[UInt8]].readLine())
+        XCTAssertNil(try? [[UInt8]].readLine())
       })
       .run(
         input:
@@ -1325,13 +1325,13 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[UInt8]] = .readLine()!
+        let A: [[UInt8]] = try .readLine()
         print(A.map { String(bytes: $0, encoding: .ascii)! })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .readLine()!
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil([[UInt8]].readLine())
+        XCTAssertNil(try? [[UInt8]].readLine())
       })
       .run(
         input:
@@ -1405,27 +1405,6 @@ final class ReaderTests: XCTestCase {
       A
       BB
       111
-      """)
-  }
-
-  func testTuple2() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let (A, B, C): (Character, [Character], Double) = _readLine()!
-        print(String([A]))
-        print(String(B))
-        print(C)
-      })
-      .run(
-        input:
-          """
-          A BB 111
-          """),
-
-      """
-      A
-      BB
-      111.0
       """)
   }
   
