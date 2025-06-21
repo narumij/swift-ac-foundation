@@ -297,31 +297,7 @@ import CxxWrapped
 
 ## その他
 
-2025/05/02に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
-
-```swift
-extension static_modint: @retroactive SingleReadable, @retroactive ArrayReadable {
-  public static var stdin: Self {
-    try! read()
-  }
-  public static func read() throws -> Self {
-    .init(try Int.read())
-  }
-}
-```
-
-```swift
-extension BigInt: @retroactive SingleReadable, @retroactive ArrayReadable {
-  public static var stdin: Self {
-    try! read()
-  }
-  public static func read() throws -> Self {
-    .init(try Int.read())
-  }
-}
-```
-
-このライブラリの0.1.11以降では、以下のようになります。
+2025/06/04以降に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
 
 ```swift
 extension static_modint: IOIntegerConversionReadable {
@@ -367,6 +343,14 @@ extension BigInt: IOStringConversionReadable {
 }
 ```
 
+modintは制約次第によっては、以下で速度が多少稼げる予定です。
+
+```swift
+extension static_modint: @retroactive IOIntegerConversionReadable {
+  // 入力の制約が0からmod未満までの場合のみ利用可
+  public static func convert(from: Int) -> Self { .init(rawValue: UInt(bitPattern: from)) }
+}
+```
 
 ---
 
