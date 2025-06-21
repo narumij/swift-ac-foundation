@@ -344,6 +344,31 @@ extension static_modint: @retroactive IOIntegerConversionReadable {
 }
 ```
 
+他に、SIMDでは以下のようにします。
+
+```swift
+extension SIMD2 where Scalar: SingleReadable {
+  @inlinable
+  static var stdin: Self {
+    [Scalar.stdin, Scalar.stdin]
+  }
+}
+
+extension SIMD3 where Scalar: SingleReadable {
+  @inlinable
+  static var stdin: Self {
+    [Scalar.stdin, Scalar.stdin, Scalar.stdin]
+  }
+}
+
+extension SIMD4 where Scalar: SingleReadable {
+  @inlinable
+  static var stdin: Self {
+    [Scalar.stdin, Scalar.stdin, Scalar.stdin]
+  }
+}
+```
+
 ---
 
 ## ライセンス
