@@ -322,7 +322,7 @@ extension UInt: IOReadableInteger { }
 
 以下の場合、やや速度が落ちます。
 ```swift
-extension UInt: IOConversionReadableString {
+extension UInt: IOStringConversionReadable {
   static public func convert(from: String) -> UInt { .init(from)! }
 }
 ```
