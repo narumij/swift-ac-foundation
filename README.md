@@ -248,11 +248,11 @@ SE-283が凍結になっているため、辞書のキーにタプルを使う�
 ```swift
 import AcFoundation
 
-let (_,M) = (Int.stdin, Int.stdin)
-nonisolated(unsafe) var m: [Pack<Int,Int>: Int] = [:]
+let (_, M): (Int, Int) = stdin()
+nonisolated(unsafe) var m: [Pack<Int, Int>: Int] = [:]
 nonisolated(unsafe) var ans = 0
 for _ in 0 ..< M {
-  var (u,v) = (Int.stdin, Int.stdin)
+  var (u,v): (Int, Int) = stdin()
   if u == v {
     ans += 1
     continue
