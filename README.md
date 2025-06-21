@@ -7,20 +7,12 @@
 
 SwiftPM で `swift-ac-foundation` を利用するには、以下を `Package.swift` に追加します。
 
-```swift
-dependencies: [
-  .package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
-]
-```
-
-タグでの指定はC++の埋め込みに関するunsafeFlagsのチェックがありビルド拒否となるため、
+タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、
 必要な場合は直接revision指定してください。
 
 ```swift
 dependencies: [
-  .package(
-    url: "https://github.com/narumij/swift-ac-foundation",
-      revision: "5879aefd6c0a7cf03f99d7eaad5cb4a128dd62bd"),
+  .package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
 ]
 ```
 
