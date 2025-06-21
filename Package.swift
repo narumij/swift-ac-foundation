@@ -36,6 +36,7 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "Pack",
+      dependencies: ["IOReader"],
       swiftSettings: _settings),
     .target(
       name: "cxx",

@@ -1,4 +1,5 @@
 import Foundation
+import IOReader
 
 /// 複数の値を、辞書のキーやHeapの要素にする際に用いる、ラッパーオブジェクトです
 ///
@@ -94,4 +95,11 @@ extension Pack: CustomStringConvertible {
 
 extension Pack: CustomDebugStringConvertible {
   public var debugDescription: String { description }
+}
+
+extension Pack: SingleReadable where repeat each T: SingleReadable {
+  
+  public static func read() throws -> Pack<repeat each T> {
+    .init(repeat try (each T).read())
+  }
 }

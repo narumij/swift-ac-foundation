@@ -9,8 +9,10 @@ import XCTest
 
 #if DEBUG
   @testable import IOReader
+  import Pack
 #else
   import IOReader
+  import Pack
 #endif
 
 extension CChar: @retroactive ExpressibleByStringLiteral {
@@ -416,10 +418,9 @@ final class ReaderTests: XCTestCase {
       9
       """)
   }
-  
-  
+
   func testInt() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         print(Int.stdin)
@@ -435,11 +436,11 @@ final class ReaderTests: XCTestCase {
       \(Int.max)
       \(Int.min)
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Int]] = [[.stdin,.stdin,.stdin],[.stdin,.stdin,.stdin]]
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        let SS: [[Int]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -452,8 +453,8 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Int]] = [.stdin(columns: 3),.stdin(columns: 3)]
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        let SS: [[Int]] = [.stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -466,7 +467,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Int]] = .stdin(rows: 2, columns: 3)
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -478,12 +479,12 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testDouble() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Double]] = [[.stdin,.stdin,.stdin],[.stdin,.stdin,.stdin]]
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        let SS: [[Double]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -496,8 +497,8 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Double]] = [.stdin(columns: 3),.stdin(columns: 3)]
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        let SS: [[Double]] = [.stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -510,7 +511,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Double]] = .stdin(rows: 2, columns: 3)
-        XCTAssertEqual(SS, [[1,2,3],[4,5,6]])
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
       })
       .run(
         input:
@@ -522,7 +523,7 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testStrings1() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -540,8 +541,8 @@ final class ReaderTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [String] = [.stdin,.stdin,.stdin]
-        XCTAssertEqual(SS, ["aaa","bb","ccc"])
+        let SS: [String] = [.stdin, .stdin, .stdin]
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"])
       })
       .run(
         input:
@@ -555,8 +556,8 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [String] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"])
+        let SS: [String] = [.stdin(columns: 3), .stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"])
       })
       .run(
         input:
@@ -570,7 +571,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [String] = .stdin(rows: 3)
-        XCTAssertEqual(SS, ["aaa","bb","ccc"])
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"])
       })
       .run(
         input:
@@ -585,7 +586,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [String] = .stdin(rows: 3, columns: 3)
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"])
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"])
       })
       .run(
         input:
@@ -598,12 +599,12 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testStrings2() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Character]] = [.stdin,.stdin,.stdin]
-        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.map{ $0 } })
+        let SS: [[Character]] = [.stdin, .stdin, .stdin]
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"].map { $0.map { $0 } })
       })
       .run(
         input:
@@ -617,8 +618,8 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[Character]] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.map{ $0 } })
+        let SS: [[Character]] = [.stdin(columns: 3), .stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"].map { $0.map { $0 } })
       })
       .run(
         input:
@@ -632,7 +633,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Character]] = .stdin(rows: 3)
-        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.map{ $0 } })
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"].map { $0.map { $0 } })
       })
       .run(
         input:
@@ -647,7 +648,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Character]] = .stdin(rows: 3, columns: 3)
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.map{ $0 } })
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"].map { $0.map { $0 } })
       })
       .run(
         input:
@@ -660,12 +661,12 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testStrings3() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[UInt8]] = [.stdin,.stdin,.stdin]
-        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+        let SS: [[UInt8]] = [.stdin, .stdin, .stdin]
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"].map { $0.compactMap { $0.asciiValue } })
       })
       .run(
         input:
@@ -679,8 +680,8 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [[UInt8]] = [.stdin(columns: 3),.stdin(columns: 3),.stdin(columns: 3)]
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+        let SS: [[UInt8]] = [.stdin(columns: 3), .stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"].map { $0.compactMap { $0.asciiValue } })
       })
       .run(
         input:
@@ -694,7 +695,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[UInt8]] = .stdin(rows: 3)
-        XCTAssertEqual(SS, ["aaa","bb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+        XCTAssertEqual(SS, ["aaa", "bb", "ccc"].map { $0.compactMap { $0.asciiValue } })
       })
       .run(
         input:
@@ -709,7 +710,7 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[UInt8]] = .stdin(rows: 3, columns: 3)
-        XCTAssertEqual(SS, ["aaa","bbb","ccc"].map{ $0.compactMap{ $0.asciiValue } })
+        XCTAssertEqual(SS, ["aaa", "bbb", "ccc"].map { $0.compactMap { $0.asciiValue } })
       })
       .run(
         input:
@@ -794,9 +795,9 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF5() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String.read(columns: 4)]) {
@@ -812,7 +813,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 4)) {
@@ -844,7 +845,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 4, columns: 3)) {
@@ -861,9 +862,9 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF6() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character].read(columns: 4)]) {
@@ -879,7 +880,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 4)) {
@@ -911,7 +912,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[Character]].read(rows: 4, columns: 3)) {
@@ -928,9 +929,9 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF7() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 4)]) {
@@ -946,7 +947,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 4)) {
@@ -978,7 +979,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 4, columns: 3)) {
@@ -995,13 +996,16 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF8() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [
-          [Int.read(),Int.read(),Int.read(),Int.read()],
-          [Int.read(),Int.read(),Int.read()]]) {
+        XCTAssertThrowsError(
+          try [
+            [Int.read(), Int.read(), Int.read(), Int.read()],
+            [Int.read(), Int.read(), Int.read()],
+          ]
+        ) {
           XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
@@ -1016,11 +1020,14 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [
-          [Int].read(columns: 4),
-          [Int].read(columns: 3)]) {
-            XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
-          }
+        XCTAssertThrowsError(
+          try [
+            [Int].read(columns: 4),
+            [Int].read(columns: 3),
+          ]
+        ) {
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+        }
       })
       .run(
         input:
@@ -1050,9 +1057,12 @@ final class ReaderTests: XCTestCase {
   func testUnexpectedEOF9() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [
-          [Double.read(),Double.read(),Double.read(),Double.read()],
-          [Double.read(),Double.read(),Double.read()]]) {
+        XCTAssertThrowsError(
+          try [
+            [Double.read(), Double.read(), Double.read(), Double.read()],
+            [Double.read(), Double.read(), Double.read()],
+          ]
+        ) {
           XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
         }
       })
@@ -1067,11 +1077,14 @@ final class ReaderTests: XCTestCase {
       """)
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [
-          [Double].read(columns: 4),
-          [Double].read(columns: 3)]) {
-            XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
-          }
+        XCTAssertThrowsError(
+          try [
+            [Double].read(columns: 4),
+            [Double].read(columns: 3),
+          ]
+        ) {
+          XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+        }
       })
       .run(
         input:
@@ -1097,12 +1110,12 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF10() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
+        XCTAssertThrowsError(try [String.read(columns: 3), String.read(columns: 3)]) {
           XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
@@ -1114,10 +1127,10 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
-        XCTAssertThrowsError(try [String.read(columns: 3),String.read(columns: 3)]) {
+        XCTAssertThrowsError(try [String.read(columns: 3), String.read(columns: 3)]) {
           XCTAssertEqual($0 as? Error, Error.unexpectedSpace)
         }
       })
@@ -1129,7 +1142,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
@@ -1144,7 +1157,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [String].read(rows: 2, columns: 3)) {
@@ -1160,9 +1173,9 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testUnexpectedEOF11() throws {
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
@@ -1177,7 +1190,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8].read(columns: 3), [UInt8].read(columns: 3)]) {
@@ -1192,7 +1205,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
@@ -1207,7 +1220,7 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         XCTAssertThrowsError(try [[UInt8]].read(rows: 2, columns: 3)) {
@@ -1330,7 +1343,7 @@ final class ReaderTests: XCTestCase {
       """
       ["Takahashi", "Aoki"]
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         let A = String(bytes: [UInt8].readLine()!, encoding: .ascii)!
@@ -1351,7 +1364,7 @@ final class ReaderTests: XCTestCase {
       Takahashi Aoki
       Tanaka Aoi Foo Bar
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         let A = String([Character].readLine()!)
@@ -1373,11 +1386,11 @@ final class ReaderTests: XCTestCase {
       Tanaka Aoi Foo Bar
       """)
   }
-  
+
   func testTuple1() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let (A,B,C): (UInt8, [UInt8], Int) = try read()
+        let (A, B, C): (UInt8, [UInt8], Int) = try read()
         print(String(bytes: [A], encoding: .ascii)!)
         print(String(bytes: B, encoding: .ascii)!)
         print(C)
@@ -1394,11 +1407,11 @@ final class ReaderTests: XCTestCase {
       111
       """)
   }
-  
+
   func testTuple2() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let (A,B,C): (Character, [Character], Double) = readLine()!
+        let (A, B, C): (Character, [Character], Double) = _readLine()!
         print(String([A]))
         print(String(B))
         print(C)
@@ -1416,6 +1429,27 @@ final class ReaderTests: XCTestCase {
       """)
   }
   
+  func testPack() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A: Pack<Character, [Character], Double> = try .read()
+        print(String([A.rawValue.0]))
+        print(String(A.rawValue.1))
+        print(A.rawValue.2)
+      })
+      .run(
+        input:
+          """
+          A BB 111
+          """),
+
+      """
+      A
+      BB
+      111.0
+      """)
+  }
+
   func testUnwrap() throws {
     let a: Int? = 0
     XCTAssertNoThrow(try a.unwrap(or: Error.unexpectedNil))
