@@ -3,3 +3,4 @@
 @_exported import IOUtil
 @_exported import Bisect
 @_exported import Pack
+@_exported import CxxWrapped
