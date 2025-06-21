@@ -138,6 +138,14 @@ let H = [[Character]].stdin(rows: H, columns: W)
 let I = [[UInt8]].stdin(rows: H, columns: W)
 ```
 
+#### 部分利用
+
+IOReader 機能のみを利用したい場合は以下をインポートしてください。
+
+```swift
+import IOReader
+```
+
 #### `read`と`stdin`
 
 基礎となるメソッドや関数は命名のセオリーに従い、動詞の`read`が識別子に絡んでいます。
@@ -150,13 +158,7 @@ let I = [[UInt8]].stdin(rows: H, columns: W)
 
 コンテスト中に`ambiguous`を解決するのはかなり困難なので、極力これを避けたいからです。
 
-#### 部分利用
-
-IOReader 機能のみを利用したい場合は以下をインポートしてください。
-
-```swift
-import IOReader
-```
+風変わりな識別子というのは割と忘れやすいものなので、その点でも`stdin`が一番ましという判断をしています。
 
 #### その他
 
