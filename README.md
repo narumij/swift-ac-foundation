@@ -59,9 +59,9 @@ let H = try [[Character]].readLine()
 readLine()メソッドは、それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
 
 ```swift
-let A = readLine()!.components(separator: " ").map { Int($0)! }
-let G = readLine()!.components(separator: " ").map { $0 }
-let H: [[Character]] = readLine()!.components(separator: " ").map { $0.map{ $0 } }
+let A = readLine()!.components(separatedBy: " ").map { Int($0)! }
+let G = readLine()!.components(separatedBy: " ").map { $0 }
+let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map{ $0 } }
 ```
 
 #### 細かい話
