@@ -56,7 +56,7 @@ let G = try [String].readLine()
 let H = try [[Character]].readLine()
 ```
 
-それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
+readLine()メソッドは、それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
 
 ```swift
 let A = readLine()!.components(separator: " ").map { Int($0)! }
