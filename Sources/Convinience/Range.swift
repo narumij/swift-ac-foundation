@@ -1,7 +1,5 @@
 import Foundation
 
-// MARK: - Range Convinience
-
 infix operator ..<= : RangeFormationPrecedence
 
 /// ...演算子は右辺が左辺より小さいと範囲チェックで落ちるので、その代替に使います。
