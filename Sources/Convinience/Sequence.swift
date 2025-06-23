@@ -35,3 +35,29 @@ extension Sequence where Element: BinaryInteger {
   @inlinable
   func xor() -> Element { reduce(0, ^) }
 }
+
+extension Array where Element: IteratorProtocol {
+  @inlinable
+  mutating func next() -> [Element.Element]? {
+    indices
+      .map { self[$0].next() }
+      .reduce([]) { partial, item in
+        guard let partial, let item else { return nil }
+        return partial + [item]
+      }
+  }
+}
+
+extension Sequence where Element: Sequence {
+  
+  /// 2次元配列を転置します
+  @inlinable
+  public func transposed() -> [[Element.Element]] {
+    var result: [[Element.Element]] = []
+    var iterators = map { $0.makeIterator() }
+    while let n = iterators.next() {
+      result.append(n)
+    }
+    return result
+  }
+}
