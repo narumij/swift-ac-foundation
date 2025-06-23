@@ -69,6 +69,7 @@ let package = Package(
         "CxxWrapped",
         "CharacterUtil",
         "Miscellaneous",
+        "Convinience",
       ],
       swiftSettings: _settings
     ),
