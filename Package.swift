@@ -47,7 +47,14 @@ let package = Package(
     .target(
       name: "CxxWrapped",
       dependencies: ["cxx"],
-    ),
+      swiftSettings: _settings),
+    .target(
+      name: "Miscellaneous",
+      dependencies: ["IOReader"],
+      swiftSettings: _settings),
+    .target(
+      name: "Convinience",
+      swiftSettings: _settings),
     .target(
       name: "AcFoundation",
       dependencies: [

@@ -311,6 +311,28 @@ import CxxWrapped
 
 ---
 
+### Miscellaneous
+
+盆栽にずーっといて邪魔くさいけど捨てにくいものたちです。
+
+#### 部分利用
+
+```swift
+import Miscellaneous
+```
+
+---
+
+### Convinience
+
+手抜き用です。個別importでしか提供していません。
+
+```swift
+import Convinience
+```
+
+---
+
 ## その他
 
 2025/06/04以降に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
