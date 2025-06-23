@@ -325,7 +325,7 @@ import Miscellaneous
 
 ### Convinience
 
-手抜き用です。個別importでしか提供していません。
+横着用です。個別importでしか提供していません。
 
 ```swift
 import Convinience

@@ -63,6 +63,7 @@ let package = Package(
         "Bisect",
         "Pack",
         "CxxWrapped",
+        "Miscellaneous",
       ],
       swiftSettings: _settings
     ),
