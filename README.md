@@ -311,6 +311,41 @@ import CxxWrapped
 
 ---
 
+### CharacterUtil
+
+文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。
+
+文字の配列を利用する際に困るのが、文字のループを書くのがやや面倒くさいことと、辞書順比較がわかりにくいところです。
+
+このモジュールではまず、ascii文字限定ですが、CharacterにStridableを付与します。
+
+これがどう嬉しいかというと、文字のループが以下のように書けるようになります。
+
+```swift
+import AcFoundation
+
+for c: Character in "a"..."z" {
+  print(c) // aからzまで順に出力する
+}
+```
+
+このモジュールでは他に、Characterの配列に辞書順比較を行う比較演算子を追加します。
+
+```swift
+import AcFoundation
+
+print(Array("abc") < Array("abd")) // true
+```
+
+#### 部分利用
+
+CharacterUtil 機能のみを利用したい場合は以下をインポートしてください。
+
+```swift
+import CharacterUtil
+```
+---
+
 ### Miscellaneous
 
 盆栽にずーっといて邪魔くさいけど捨てにくいものたちです。
