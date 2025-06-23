@@ -58,6 +58,7 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "Convinience",
+      dependencies: ["Pack"],
       swiftSettings: _settings),
     .target(
       name: "AcFoundation",

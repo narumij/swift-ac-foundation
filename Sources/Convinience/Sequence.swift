@@ -61,3 +61,18 @@ extension Sequence where Element: Sequence {
     return result
   }
 }
+
+extension Sequence {
+  
+  /// 条件に合致する数を数えます
+  @inlinable
+  func count(where f: (Element) -> Bool) -> Int {
+    reduce(0) { $0 + (f($1) ? 1 : 0) }
+  }
+  
+  /// 要素と同じものの数を数えます
+  @inlinable
+  func count(_ element: Element) -> Int where Element: Equatable {
+    reduce(0) { $0 + ($1 == element ? 1 : 0) }
+  }
+}
