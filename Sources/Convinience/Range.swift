@@ -4,7 +4,7 @@ import Foundation
 
 infix operator ..<= : RangeFormationPrecedence
 
-/// C++の写経をしているとき挙動の違いで...で落ちる場合に代替で使います
+/// ...演算子は右辺が左辺より小さいと範囲チェックで落ちるので、その代替に使います。
 ///
 /// `for (int i = 0; i <= 10; ++i) { ... }`みたいなケースと同等です
 @inlinable
