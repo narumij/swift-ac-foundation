@@ -1,16 +1,22 @@
 /// 床関数
+///
+/// evimaさんを参考にした記憶です
 @inlinable
 func floor(_ n: Int, _ d: Int) -> Int {
   (n - (n % d + d) % d) / d
 }
 
 /// 天井関数
+///
+/// evimaさんを参考にした記憶です
 @inlinable
 func ceil(_ n: Int, _ d: Int) -> Int {
   (n + (d - n % d) % d) / d
 }
 
 /// ユークリッド剰余関数
+///
+/// evimaさんを参考にした記憶です
 @inlinable
 func mod(_ n: Int, _ d: Int) -> Int {
   let a = n % d
