@@ -1,9 +1,5 @@
 extension FixedWidthInteger {
   
-  /// Nを半開区間の末尾と想定した場合の、最後の要素番号
-  @inlinable
-  public var last: Self { self - 1 }
-  
   /// 0からNの半開区間
   ///
   /// pythonでよく見かけて便利そうだったので中途半端な真似のまま追加
