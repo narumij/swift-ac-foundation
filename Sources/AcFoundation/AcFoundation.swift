@@ -4,3 +4,4 @@
 @_exported import Bisect
 @_exported import Pack
 @_exported import CxxWrapped
+@_exported import CharacterUtil

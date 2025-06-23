@@ -49,6 +49,10 @@ let package = Package(
       dependencies: ["cxx"],
     ),
     .target(
+      name: "CharacterUtil",
+      dependencies: ["cxx"],
+    ),
+    .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
@@ -56,6 +60,7 @@ let package = Package(
         "Bisect",
         "Pack",
         "CxxWrapped",
+        "CharacterUtil",
       ],
       swiftSettings: _settings
     ),
@@ -67,6 +72,7 @@ let package = Package(
         "Bisect",
         "Pack",
         "CxxWrapped",
+        "CharacterUtil",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
