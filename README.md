@@ -100,6 +100,10 @@ let (H, W): (Int, Int) = (.stdin, .stdin)
 let (H, W): (Int, Int) = (try .read(), try .read())
 ```
 
+```swift
+let (H, W): (Int, Int) = stdin()
+```
+
 **応用例 2: 配列の入力**  
 個数 `N` と数列 `A` を入力する場合は以下のように記述します。縦横に並ぶデータにも対応可能です。
 
