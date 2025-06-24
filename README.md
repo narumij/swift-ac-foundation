@@ -365,7 +365,7 @@ print("abc".compactMap(\.asciiValue) < "abd".compactMap(\.asciiValue)) // true
 
 UInt8を利用する場合、他に困るのがCharacterにあるような便利メソッドが無いことですが、これはオレオレ実装感が高いのことと、UInt8を選択するレベルの人は自前で用意できると想定していることもあり、これ以上は追加していません。
 
-本モジュールを利用するには個別importが必要です。以下をファイルの割と先頭に記述してください。
+本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
 
 ```swift
 import UInt8Util
