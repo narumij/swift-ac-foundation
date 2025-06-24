@@ -357,7 +357,7 @@ UInt8を利用する場合に困るのが、文字定数が使えないことで
 let c: UInt8 = "A"
 ```
 
-本モジュールでは他に、Characterの配列に辞書順比較を行う比較演算子を追加します。
+本モジュールでは他に、UInt8の配列に辞書順比較を行う比較演算子を追加します。
 
 ```swift
 print("abc".compactMap(\.asciiValue) < "abd".compactMap(\.asciiValue)) // true
