@@ -93,7 +93,7 @@ let (H, W): (Int, Int) = try read()
 ```
 
 ```swift
-let (H, W): (Int, Int) = (.stdin, .stdin)
+let (H, W): (Int, Int) = stdin()
 ```
 
 ```swift
@@ -101,7 +101,7 @@ let (H, W): (Int, Int) = (try .read(), try .read())
 ```
 
 ```swift
-let (H, W): (Int, Int) = stdin()
+let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
 **応用例 2: 配列の入力**  
