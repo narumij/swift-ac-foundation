@@ -360,7 +360,9 @@ let c: UInt8 = "A"
 本モジュールでは他に、UInt8の配列に辞書順比較を行う比較演算子を追加します。
 
 ```swift
-print("abc".compactMap(\.asciiValue) < "abd".compactMap(\.asciiValue)) // true
+let abc: [UInt8] = "abc".compactMap(\.asciiValue)
+let abd: [UInt8] = "abd".compactMap(\.asciiValue)
+print(abc < abd) // true
 ```
 
 UInt8を利用する場合、他に困るのがCharacterにあるような便利メソッドが無いことですが、これはオレオレ実装感が高いのことと、UInt8を選択するレベルの人は自前で用意できると想定していることもあり、これ以上は追加していません。
