@@ -2,13 +2,14 @@ extension Sequence where Element: CustomStringConvertible {
   /// 空白区切りで標準出力へ出力する
   @inlinable
   public func print(separator: String = " ", terminator: String = "\n") {
-    var it = makeIterator()
-    if let first = it.next() {
-      Swift.print(first, terminator: "")
-    }
-    while let n = it.next() {
-      Swift.print(separator)
-      Swift.print(n, terminator: "")
+    var first = true
+    forEach { element in
+      if first {
+        first = false
+      } else {
+        Swift.print(separator, terminator: "")
+      }
+      Swift.print(element.description, terminator: "")
     }
     Swift.print("", terminator: terminator)
   }
