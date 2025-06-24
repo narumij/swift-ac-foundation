@@ -2,7 +2,7 @@ import Pack
 
 /// びっくり！です
 @inlinable
-func factorial<Number>(_ n: Number) -> Number
+public func factorial<Number>(_ n: Number) -> Number
 where Number: Numeric & Hashable & ExpressibleByIntegerLiteral & Comparable {
 
   var memo: [Pack<Number>: Number] = .init()

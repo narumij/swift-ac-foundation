@@ -2,7 +2,7 @@
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
-func floor(_ n: Int, _ d: Int) -> Int {
+public func floor(_ n: Int, _ d: Int) -> Int {
   (n - (n % d + d) % d) / d
 }
 
@@ -10,7 +10,7 @@ func floor(_ n: Int, _ d: Int) -> Int {
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
-func ceil(_ n: Int, _ d: Int) -> Int {
+public func ceil(_ n: Int, _ d: Int) -> Int {
   (n + (d - n % d) % d) / d
 }
 
@@ -18,13 +18,13 @@ func ceil(_ n: Int, _ d: Int) -> Int {
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
-func mod(_ n: Int, _ d: Int) -> Int {
+public func mod(_ n: Int, _ d: Int) -> Int {
   let a = n % d
   return a < 0 ? a + d : a
 }
 
 /// 割った余りを計算する時のやつパート1
-@usableFromInline let MOD_998_244_353 = 998_244_353
+public let MOD_998_244_353 = 998_244_353
 
 /// 割った余りを計算する時のやつパート2
-@usableFromInline let MOD_1_000_000_007 = 1_000_000_007
+public let MOD_1_000_000_007 = 1_000_000_007

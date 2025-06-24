@@ -2,7 +2,7 @@ extension SIMDMask {
   
   /// SIMDで比較演算した結果が全部真
   @inlinable
-  var all: Bool {
+  public var all: Bool {
     for i in 0..<scalarCount {
       if !self[i] {
         return false
@@ -13,7 +13,7 @@ extension SIMDMask {
 
   /// SIMDで比較演算した結果がどれか真
   @inlinable
-  var any: Bool {
+  public var any: Bool {
     for i in 0..<scalarCount {
       if self[i] {
         return true
