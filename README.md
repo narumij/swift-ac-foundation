@@ -368,7 +368,7 @@ UInt8を利用する場合、他に困るのがCharacterにあるような便利
 本モジュールを利用するには個別importが必要です。以下をファイルの割と先頭に記述してください。
 
 ```swift
-import CharacterUtil
+import UInt8Util
 ```
 
 ---
