@@ -7,6 +7,8 @@
   import Bisect
 #endif
 
+import Miscellaneous
+
 final class AcFoundationTests: XCTestCase {
   func testExample() throws {
     // XCTest Documentation
@@ -40,5 +42,16 @@ final class AcFoundationTests: XCTestCase {
 
     XCTAssertEqual(3, array.bisectLeft(6))
     XCTAssertEqual(3, array.bisectRight(6))
+  }
+  
+  func testInteger() throws {
+    
+    XCTAssertEqual(floor(10, 3), 3)
+    XCTAssertEqual(ceil(10, 3), 4)
+    XCTAssertEqual(mod(10, 3), 1)
+    
+    XCTAssertEqual(floor(-10, 3), -4)
+    XCTAssertEqual(ceil(-10, 3), -3)
+    XCTAssertEqual(mod(-10, 3), 2)
   }
 }

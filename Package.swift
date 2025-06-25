@@ -87,6 +87,7 @@ let package = Package(
         "CxxWrapped",
         "CharacterUtil",
         "UInt8Util",
+        "Miscellaneous",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
