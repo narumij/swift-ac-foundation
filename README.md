@@ -350,28 +350,6 @@ import CharacterUtil
 ```
 ---
 
-### Miscellaneous
-
-盆栽にずーっといて邪魔くさいけど捨てにくいものたちです。
-
-#### 部分利用
-
-```swift
-import Miscellaneous
-```
-
----
-
-### Convinience
-
-横着用です。個別importでしか提供していません。
-
-```swift
-import Convinience
-```
-
----
-
 ### UInt8Util
 
 文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、CやC++に慣れてる人にはUInt8の配列のほうが取り扱いが楽だったりもします。0x0端のcString関連メソッドがdeprecatedになりはじめたので、CCharではなく、UInt8を推しています。
@@ -396,6 +374,28 @@ UInt8を利用する場合、他に困るのがCharacterにあるような便利
 
 ```swift
 import UInt8Util
+```
+
+---
+
+### Miscellaneous
+
+盆栽にずーっといて邪魔くさいけど捨てにくいものたちです。
+
+#### 部分利用
+
+```swift
+import Miscellaneous
+```
+
+---
+
+### Convinience
+
+横着用です。個別importでしか提供していません。
+
+```swift
+import Convinience
 ```
 
 ---
