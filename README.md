@@ -347,6 +347,34 @@ import CharacterUtil
 
 ---
 
+### UInt8Util
+
+文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、CやC++に慣れてる人にはUInt8の配列のほうが取り扱いが楽だったりもします。0x0端のcString関連メソッドがdeprecatedになりはじめたので、CCharではなく、UInt8を推しています。
+
+UInt8を利用する場合に困るのが、文字定数が使えないことです。本モジュールではこれをカバーする拡張を追加してあり、以下のように書けます。
+
+```swift
+let c: UInt8 = "A"
+```
+
+本モジュールでは他に、UInt8の配列に辞書順比較を行う比較演算子を追加します。
+
+```swift
+let abc: [UInt8] = "abc".compactMap(\.asciiValue)
+let abd: [UInt8] = "abd".compactMap(\.asciiValue)
+print(abc < abd) // true
+```
+
+UInt8を利用する場合、他に困るのがCharacterにあるような便利メソッドが無いことですが、これはオレオレ実装感が高いのことと、UInt8を選択するレベルの人は自前で用意できると想定していることもあり、これ以上は追加していません。
+
+本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+
+```swift
+import UInt8Util
+```
+
+---
+
 ## その他
 
 2025/06/04以降に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
