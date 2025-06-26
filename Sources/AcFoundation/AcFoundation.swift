@@ -5,3 +5,4 @@
 @_exported import Pack
 @_exported import CxxWrapped
 @_exported import CharacterUtil
+@_exported import Miscellaneous

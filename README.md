@@ -93,11 +93,15 @@ let (H, W): (Int, Int) = try read()
 ```
 
 ```swift
-let (H, W): (Int, Int) = (.stdin, .stdin)
+let (H, W): (Int, Int) = stdin()
 ```
 
 ```swift
 let (H, W): (Int, Int) = (try .read(), try .read())
+```
+
+```swift
+let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
 **応用例 2: 配列の入力**  
@@ -344,7 +348,6 @@ CharacterUtil 機能のみを利用したい場合は以下をインポートし
 ```swift
 import CharacterUtil
 ```
-
 ---
 
 ### UInt8Util
@@ -371,6 +374,28 @@ UInt8を利用する場合、他に困るのがCharacterにあるような便利
 
 ```swift
 import UInt8Util
+```
+
+---
+
+### Miscellaneous
+
+盆栽にずーっといて邪魔くさいけど捨てにくいものたちです。
+
+#### 部分利用
+
+```swift
+import Miscellaneous
+```
+
+---
+
+### Convinience
+
+横着用です。個別importでしか提供していません。
+
+```swift
+import Convinience
 ```
 
 ---

@@ -47,13 +47,21 @@ let package = Package(
     .target(
       name: "CxxWrapped",
       dependencies: ["cxx"],
-    ),
+      swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
     ),
     .target(
       name: "UInt8Util",
     ),
+    .target(
+      name: "Miscellaneous",
+      dependencies: ["IOReader"],
+      swiftSettings: _settings),
+    .target(
+      name: "Convinience",
+      dependencies: ["Pack"],
+      swiftSettings: _settings),
     .target(
       name: "AcFoundation",
       dependencies: [
@@ -64,6 +72,8 @@ let package = Package(
         "CxxWrapped",
         "CharacterUtil",
         "UInt8Util",
+        "Miscellaneous",
+        "Convinience",
       ],
       swiftSettings: _settings
     ),
@@ -77,6 +87,7 @@ let package = Package(
         "CxxWrapped",
         "CharacterUtil",
         "UInt8Util",
+        "Miscellaneous",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
