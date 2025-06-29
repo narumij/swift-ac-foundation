@@ -86,3 +86,36 @@ final class UInt8ExtensionsTests: XCTestCase {
     XCTAssertFalse(nonHex.isHexDigit)
   }
 }
+
+final class StringAsciiExtensionsTests: XCTestCase {
+    
+    func testInitAsciiWithArray() {
+        let bytes: [UInt8] = [0x41, 0x42, 0x43]  // "A", "B", "C"
+        let s = String(ascii: bytes)
+        XCTAssertEqual(s, "ABC")
+    }
+    
+    func testInitAsciiWithDataSequence() {
+        let data = Data([0x68, 0x69, 0x21])  // "h", "i", "!"
+        let s = String(ascii: data)
+        XCTAssertEqual(s, "hi!")
+    }
+    
+    func testInitAsciiEmptySequence() {
+        let empty: [UInt8] = []
+        let s = String(ascii: empty)
+        XCTAssertEqual(s, "")
+    }
+    
+    func testAsciiValues_AllASCII() {
+        let s = "Hello, World!"
+        let expected: [UInt8] = Array("Hello, World!".utf8)
+        XCTAssertEqual(s.asciiValues, expected)
+    }
+    
+    func testAsciiValues_SkipsNonASCII() {
+        let s = "AéB👍C"
+        // 'A' = 0x41, 'B' = 0x42, 'C' = 0x43; 'é' and '👍' are non-ASCII
+        XCTAssertEqual(s.asciiValues, [0x41, 0x42, 0x43])
+    }
+}
