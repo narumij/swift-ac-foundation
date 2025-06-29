@@ -1,6 +1,5 @@
-import XCTest
-
 import UInt8Util
+import XCTest
 
 final class UInt8ExtensionsTests: XCTestCase {
 
@@ -52,7 +51,7 @@ final class UInt8ExtensionsTests: XCTestCase {
   }
 
   func testWholeNumberProperties() {
-    let zero = Character("0").asciiValue!
+    let zero: UInt8 = "0"
     let seven = Character("7").asciiValue!
     let nine = Character("9").asciiValue!
     let letterA = Character("A").asciiValue!
@@ -88,34 +87,52 @@ final class UInt8ExtensionsTests: XCTestCase {
 }
 
 final class StringAsciiExtensionsTests: XCTestCase {
-    
-    func testInitAsciiWithArray() {
-        let bytes: [UInt8] = [0x41, 0x42, 0x43]  // "A", "B", "C"
-        let s = String(ascii: bytes)
-        XCTAssertEqual(s, "ABC")
-    }
-    
-    func testInitAsciiWithDataSequence() {
-        let data = Data([0x68, 0x69, 0x21])  // "h", "i", "!"
-        let s = String(ascii: data)
-        XCTAssertEqual(s, "hi!")
-    }
-    
-    func testInitAsciiEmptySequence() {
-        let empty: [UInt8] = []
-        let s = String(ascii: empty)
-        XCTAssertEqual(s, "")
-    }
-    
-    func testAsciiValues_AllASCII() {
-        let s = "Hello, World!"
-        let expected: [UInt8] = Array("Hello, World!".utf8)
-        XCTAssertEqual(s.asciiValues, expected)
-    }
-    
-    func testAsciiValues_SkipsNonASCII() {
-        let s = "AéB👍C"
-        // 'A' = 0x41, 'B' = 0x42, 'C' = 0x43; 'é' and '👍' are non-ASCII
-        XCTAssertEqual(s.asciiValues, [0x41, 0x42, 0x43])
-    }
+
+  func testInitAsciiWithArray() {
+    let bytes: [UInt8] = [0x41, 0x42, 0x43]  // "A", "B", "C"
+    let s = String(ascii: bytes)
+    XCTAssertEqual(s, "ABC")
+  }
+
+  func testInitAsciiWithDataSequence() {
+    let data = Data([0x68, 0x69, 0x21])  // "h", "i", "!"
+    let s = String(ascii: data)
+    XCTAssertEqual(s, "hi!")
+  }
+
+  func testInitAsciiEmptySequence() {
+    let empty: [UInt8] = []
+    let s = String(ascii: empty)
+    XCTAssertEqual(s, "")
+  }
+
+  func testAsciiValues_AllASCII() {
+    let s = "Hello, World!"
+    let expected: [UInt8] = Array("Hello, World!".utf8)
+    XCTAssertEqual(s.asciiValues, expected)
+  }
+
+  func testAsciiValues_SkipsNonASCII() {
+    let s = "AéB👍C"
+    // 'A' = 0x41, 'B' = 0x42, 'C' = 0x43; 'é' and '👍' are non-ASCII
+    XCTAssertEqual(s.asciiValues, [0x41, 0x42, 0x43])
+  }
+
+  func testputchars_unlocked() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        "ABC".asciiValues.putchars_unlocked()
+        "DE".asciiValues.putchars_unlocked(terminator: 0x20)
+        "F".asciiValues.putchars_unlocked()
+      })
+      .run(
+        input:
+          """
+          """),
+
+      """
+      ABC
+      DE F
+      """)
+  }
 }
