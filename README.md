@@ -5,23 +5,20 @@
 
 ## 利用方法
 
-SwiftPM で `swift-ac-foundation` を利用するには、以下を `Package.swift` に追加します。
-
-タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、
-必要な場合は直接revision指定してください。
+SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用するには、Package.swift ファイルの dependencies に次の行を追加します。
 
 ```swift
-dependencies: [
-  .package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
-]
+.package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
 ```
 
-ビルドターゲットに以下を追加します。
+タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、必要な場合は直接revision指定してください。
+
+実行可能ターゲットの依存関係に「AcFoundation」を追加してください。
 
 ```swift
-dependencies: [
+.target(name: "<target>", dependencies: [
   .product(name: "AcFoundation", package: "swift-ac-foundation")
-]
+]),
 ```
 
 ソースコードに以下を記述してインポートします。
