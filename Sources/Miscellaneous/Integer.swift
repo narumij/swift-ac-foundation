@@ -2,6 +2,7 @@
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
+@inline(__always)
 public func floor(_ n: Int, _ d: Int) -> Int {
   (n - (n % d + d) % d) / d
 }
@@ -10,6 +11,7 @@ public func floor(_ n: Int, _ d: Int) -> Int {
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
+@inline(__always)
 public func ceil(_ n: Int, _ d: Int) -> Int {
   (n + (d - n % d) % d) / d
 }
@@ -18,6 +20,7 @@ public func ceil(_ n: Int, _ d: Int) -> Int {
 ///
 /// evimaさんを参考にした記憶です
 @inlinable
+@inline(__always)
 public func mod(_ n: Int, _ d: Int) -> Int {
   let a = n % d
   return a < 0 ? a + d : a

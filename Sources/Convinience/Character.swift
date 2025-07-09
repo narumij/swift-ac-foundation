@@ -6,6 +6,7 @@ extension Sequence where Element == Character {
   ///
   /// 末尾に改行を添えます
   @inlinable
+  @inline(__always)
   public func write<Target>(to target: inout Target, terminator: Character? = "\n") where Target: TextOutputStream {
     forEach {
       $0.write(to: &target)

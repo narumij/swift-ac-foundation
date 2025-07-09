@@ -17,6 +17,7 @@ infix operator ** : PowerPrecedence
 ///
 /// pythonでよく見かけて便利そうだったので追加
 @inlinable
+@inline(__always)
 public func ** <INT>(lhs: INT, rhs: Int) -> INT where INT: FixedWidthInteger {
   repeatElement(lhs, count: rhs).product()
 }
@@ -30,4 +31,5 @@ public func ** <INT>(lhs: INT, rhs: Int) -> INT where INT: FixedWidthInteger {
 ///
 /// pythonでよく見かけて便利そうだったので追加
 @inlinable
+@inline(__always)
 public func ** (lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }

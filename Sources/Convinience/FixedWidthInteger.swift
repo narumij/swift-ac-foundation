@@ -4,12 +4,14 @@ extension FixedWidthInteger {
   ///
   /// pythonでよく見かけて便利そうだったので中途半端な真似のまま追加
   @inlinable
+  @inline(__always)
   public var range: Range<Self> { 0..<self }
   
   /// N回繰り返す
   ///
   /// c++でよく見かけて便利そうだったので追加
   @inlinable
+  @inline(__always)
   @discardableResult
   public func rep<T>(_ f: () throws -> T) rethrows -> [T] {
     try (0..<self).map { _ in try f() }
@@ -19,6 +21,7 @@ extension FixedWidthInteger {
   ///
   /// c++でよく見かけて便利そうだったので追加
   @inlinable
+  @inline(__always)
   @discardableResult
   public func rep<T>(_ f: (Self) throws -> T) rethrows -> [T] {
     try (0..<self).map { i in try f(i) }

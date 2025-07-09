@@ -99,6 +99,8 @@ extension Pack: CustomDebugStringConvertible {
 
 extension Pack: SingleReadable where repeat each T: SingleReadable {
   
+  @inlinable
+  @inline(__always)
   public static func read() throws -> Pack<repeat each T> {
     .init(repeat try (each T).read())
   }

@@ -6,6 +6,7 @@ infix operator ..<= : RangeFormationPrecedence
 ///
 /// `for (int i = 0; i <= 10; ++i) { ... }`みたいなケースと同等です
 @inlinable
+@inline(__always)
 public func ..<= <Bound: Comparable>(lhs: Bound, rhs: Bound) -> StrideThrough<Bound> {
   stride(from: lhs, through: rhs, by: 1)
 }
@@ -16,6 +17,7 @@ infix operator ..>= : RangeFormationPrecedence
 ///
 /// `for (int i = 10; i >= 0; --i) { ... }`みたいなケースと同等です
 @inlinable
+@inline(__always)
 public func ..>= <Bound: Comparable>(lhs: Bound, rhs: Bound) -> StrideThrough<Bound> {
   stride(from: lhs, through: rhs, by: -1)
 }
@@ -26,6 +28,7 @@ infix operator ..> : RangeFormationPrecedence
 ///
 /// `for (int i = 10; i > 0; --i) { ... }`みたいなケースと同等です
 @inlinable
+@inline(__always)
 public func ..> <Bound: Comparable>(lhs: Bound, rhs: Bound) -> StrideTo<Bound> {
   stride(from: lhs, to: rhs, by: -1)
 }

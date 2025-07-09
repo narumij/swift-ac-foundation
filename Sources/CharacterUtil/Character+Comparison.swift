@@ -1,4 +1,5 @@
 @inlinable
+@inline(__always)
 public func < <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == Character,
@@ -8,6 +9,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func == <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Collection, LHS.Element == Character,
@@ -17,6 +19,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func != <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Collection, LHS.Element == Character,
@@ -26,6 +29,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func > <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == Character,
@@ -35,6 +39,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func <= <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == Character,
@@ -44,6 +49,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func >= <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == Character,

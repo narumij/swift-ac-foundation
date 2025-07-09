@@ -2,12 +2,14 @@ extension UInt8 {
   
   /// ASCII の小文字 a–z かどうか
   @inlinable
+  @inline(__always)
   public var isLowercase: Bool {
     // 'a'…'z' == 0x61…0x7A
     return (0x61...0x7A).contains(self)
   }
   
   @inlinable
+  @inline(__always)
   public func lowercased() -> Self {
     return isUppercase
       ? self + 0x20
@@ -16,12 +18,14 @@ extension UInt8 {
   
   /// ASCII の大文字 A–Z かどうか
   @inlinable
+  @inline(__always)
   public var isUppercase: Bool {
     // 'A'…'Z' == 0x41…0x5A
     return (0x41...0x5A).contains(self)
   }
   
   @inlinable
+  @inline(__always)
   public func uppercased() -> Self {
     // 0x61...0x7A が 'a'…'z'
     return isLowercase
@@ -33,6 +37,8 @@ extension UInt8 {
 extension UInt8 {
   
   /// ASCII および NEL を空白とみなす
+  @inlinable
+  @inline(__always)
   public var isWhitespace: Bool {
     switch self {
     case 0x09...0x0D,  // HT, LF, VT, FF, CR
@@ -46,6 +52,7 @@ extension UInt8 {
 
   // SwiftのCharacterProperties.swiftを一部流用しています
   @inlinable
+  @inline(__always)
   public var isNewline: Bool {
     switch self {
       case 0x000A...0x000D /* LF ... CR */: return true
@@ -56,11 +63,14 @@ extension UInt8 {
 
   // SwiftのCharacterProperties.swiftを一部流用しています
   @inlinable
+  @inline(__always)
   public var isWholeNumber: Bool {
     return wholeNumberValue != nil
   }
   
   // SwiftのCharacterProperties.swiftを一部流用しています
+  @inlinable
+  @inline(__always)
   public var wholeNumberValue: Int? {
     switch self {
     // DIGIT ZERO..DIGIT NINE
@@ -71,11 +81,14 @@ extension UInt8 {
   
   // SwiftのCharacterProperties.swiftを一部流用しています
   @inlinable
+  @inline(__always)
   public var isHexDigit: Bool {
     return hexDigitValue != nil
   }
   
   // SwiftのCharacterProperties.swiftを一部流用しています
+  @inlinable
+  @inline(__always)
   public var hexDigitValue: Int? {
     switch self {
     // DIGIT ZERO..DIGIT NINE

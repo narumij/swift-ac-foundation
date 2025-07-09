@@ -3,6 +3,7 @@ import Foundation
 extension UInt8: @retroactive ExpressibleByStringLiteral {
 
   @inlinable
+  @inline(__always)
   public init(stringLiteral value: String) {
     precondition(
       value.count == 1,
