@@ -37,6 +37,7 @@ extension Collection where Index == Int, Element: Comparable {
    - Returns: 挿入するべき最も右側のインデックス。
    */
   @inlinable
+  @inline(__always)
   public func bisectRight(_ x: Element) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
@@ -63,6 +64,7 @@ extension Collection where Index == Int, Element: Comparable {
    - Returns: 挿入するべき最も左側のインデックス。
    */
   @inlinable
+  @inline(__always)
   public func bisectLeft(_ x: Element) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
@@ -96,6 +98,7 @@ extension Collection where Index == Int {
    - Returns: 挿入するべき最も右側のインデックス。
    */
   @inlinable
+  @inline(__always)
   public func bisectRight<T: Comparable>(_ x: T, key: ((Element) -> T)) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
@@ -126,6 +129,7 @@ extension Collection where Index == Int {
    - Returns: 挿入するべき最も左側のインデックス。
    */
   @inlinable
+  @inline(__always)
   public func bisectLeft<T: Comparable>(_ x: T, key: ((Element) -> T)) -> Index {
     var (lo, hi): (Index, Index) = (startIndex, endIndex)
     while lo < hi {
@@ -151,6 +155,7 @@ extension RangeReplaceableCollection where Index == Int, Element: Comparable {
    - Parameter x: 挿入する要素。
    */
   @inlinable
+  @inline(__always)
   public mutating func insortRight(_ x: Element) {
     let lo = bisectRight(x)
     insert(x, at: lo)
@@ -165,6 +170,7 @@ extension RangeReplaceableCollection where Index == Int, Element: Comparable {
    - Parameter x: 挿入する要素。
    */
   @inlinable
+  @inline(__always)
   public mutating func insortLeft(_ x: Element) {
     let lo = bisectLeft(x)
     insert(x, at: lo)
@@ -184,6 +190,7 @@ extension RangeReplaceableCollection where Index == Int {
      - key: 各要素から比較に使用する値を取得するためのキー関数。
    */
   @inlinable
+  @inline(__always)
   public mutating func insortRight<T: Comparable>(_ x: Element, key: ((Element) -> T)) {
     let lo = bisectRight(key(x), key: key)
     insert(x, at: lo)
@@ -200,6 +207,7 @@ extension RangeReplaceableCollection where Index == Int {
      - key: 各要素から比較に使用する値を取得するためのキー関数。
    */
   @inlinable
+  @inline(__always)
   public mutating func insortLeft<T: Comparable>(_ x: Element, key: ((Element) -> T)) {
     let lo = bisectLeft(key(x), key: key)
     insert(x, at: lo)

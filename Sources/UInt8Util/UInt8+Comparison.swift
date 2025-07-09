@@ -1,4 +1,6 @@
+
 @inlinable
+@inline(__always)
 public func < <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == UInt8,
@@ -8,6 +10,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func == <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Collection, LHS.Element == UInt8,
@@ -17,6 +20,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func != <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Collection, LHS.Element == UInt8,
@@ -26,6 +30,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func > <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == UInt8,
@@ -35,6 +40,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func <= <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == UInt8,
@@ -44,6 +50,7 @@ where
 }
 
 @inlinable
+@inline(__always)
 public func >= <LHS, RHS>(lhs: LHS, rhs: RHS) -> Bool
 where
   LHS: Sequence, LHS.Element == UInt8,

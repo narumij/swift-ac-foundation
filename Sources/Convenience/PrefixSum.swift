@@ -18,6 +18,7 @@ public func prefixSum<T>(N: Int, _ A: [T]) -> [T] where T: AdditiveArithmetic, T
 ///
 /// evimaさんを参考にしました
 @inlinable
+@inline(__always)
 public func prefixSum<T>(_ A: [T]) -> [T] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   prefixSum(N: A.count, A)
 }
@@ -44,6 +45,7 @@ public func prefixSum<T>(N: Int, M: Int, _ A: [[T]]) -> [[T]] where T: AdditiveA
 ///
 /// evimaさんを参考にしました
 @inlinable
+@inline(__always)
 public func prefixSum<T>(_ A: [[T]]) -> [[T]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   let N = A.count
   let M = A[0].count
@@ -79,6 +81,7 @@ public func prefixSum<T>(N: Int, M: Int, L: Int, _ A: [[[T]]]) -> [[[T]]] where 
 ///
 /// evimaさんを参考にしました
 @inlinable
+@inline(__always)
 public func prefixSum<T>(_ A: [[[T]]]) -> [[[T]]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   let N = A.count
   let M = A[0].count

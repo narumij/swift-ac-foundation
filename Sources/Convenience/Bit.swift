@@ -1,6 +1,7 @@
 extension FixedWidthInteger {
   /// 整数のビット読み書きを横着するものです
   @inlinable
+  @inline(__always)
   public subscript(position: Int) -> Bool {
     get { self & (1 << position) != 0 }
     mutating set {

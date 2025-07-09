@@ -59,7 +59,7 @@ let package = Package(
       dependencies: ["IOReader"],
       swiftSettings: _settings),
     .target(
-      name: "Convinience",
+      name: "Convenience",
       dependencies: ["Pack"],
       swiftSettings: _settings),
     .target(
@@ -73,7 +73,7 @@ let package = Package(
         "CharacterUtil",
         "UInt8Util",
         "Miscellaneous",
-        "Convinience",
+        "Convenience",
       ],
       swiftSettings: _settings
     ),
