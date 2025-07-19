@@ -55,8 +55,7 @@ protocol IOReader {}
 
 @usableFromInline
 protocol FixedBufferIOReader: IOReader {
-  //  var buffer: [UInt8] { get set }
-  var bufferSize: Int { get }
+  var capacity: Int { get }
 }
 
 extension FixedWidthInteger {
@@ -104,7 +103,7 @@ extension FixedBufferIOReader {
   @inlinable
   @inline(__always)
   mutating func read<T>(_ f: (UnsafePointer<UInt8>, Int) -> T) throws -> T {
-    try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: bufferSize) { buffer in
+    try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: capacity) { buffer in
       let buffer = buffer.baseAddress!
       var current = 0
       buffer[current] = try .readHead()
@@ -187,7 +186,7 @@ struct _atol: FixedBufferIOReader, IOReaderInstance {
 
   @inlinable
   @inline(__always)
-  var bufferSize: Int { 32 }
+  var capacity: Int { 32 }
 
   @inlinable
   @inline(__always)
@@ -213,7 +212,7 @@ struct _atof: FixedBufferIOReader, IOReaderInstance {
 
   @inlinable
   @inline(__always)
-  var bufferSize: Int { 64 }
+  var capacity: Int { 64 }
 
   @inlinable
   @inline(__always)
