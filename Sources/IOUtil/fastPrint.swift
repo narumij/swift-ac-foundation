@@ -1,7 +1,7 @@
 @preconcurrency import Foundation
 
 extension UnsafeMutableBufferPointer where Element == UInt8 {
-  
+
   @inlinable
   @inline(__always)
   func _print<I>(_ x: I) where I: FixedWidthInteger {
@@ -19,14 +19,14 @@ extension UnsafeMutableBufferPointer where Element == UInt8 {
       putchar_unlocked(Int32(buf[i]))
     }
   }
-  
+
   @inlinable
   @inline(__always)
   func print<I>(_ x: I) where I: FixedWidthInteger & SignedInteger {
     if x < 0 {
       putchar_unlocked(0x2D)  // '-'
       let (x, r) = x.quotientAndRemainder(dividingBy: 10)
-      _print(-x) // 一桁削らないとInt.minは符号反転でInt.maxからあふれる
+      _print(-x)  // 一桁削らないとInt.minは符号反転でInt.maxからあふれる
       putchar_unlocked(0x30 | Int32(-r))
     } else {
       _print(x)
@@ -42,35 +42,39 @@ extension UnsafeMutableBufferPointer where Element == UInt8 {
 
 @inlinable
 @inline(__always)
-public func fastPrint<I>(_ x: I, terminater: Int32 = 0x0A)
+public func fastPrint<I>(_ x: I, terminater: Int32? = 0x0A)
 where I: FixedWidthInteger & SignedInteger {
   withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 39) { buf in
     buf.print(x)
   }
-  putchar_unlocked(terminater)
+  if let terminater {
+    putchar_unlocked(terminater)
+  }
 }
 
 @inlinable
 @inline(__always)
-public func fastPrint<I>(_ x: I, terminater: Int32 = 0x0A)
+public func fastPrint<I>(_ x: I, terminater: Int32? = 0x0A)
 where I: FixedWidthInteger & UnsignedInteger {
   withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 39) { buf in
     buf.print(x)
   }
-  putchar_unlocked(terminater)
+  if let terminater {
+    putchar_unlocked(terminater)
+  }
 }
 
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32 = 0x0A)
 where
-  C: Collection, C.Element == I,
+  C: Collection, C.Element == I, C.Index == Int,
   I: FixedWidthInteger & SignedInteger
 {
   withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 39) { buf in
-    for (idx, x) in a.enumerated() {
-      buf.print(x)
-      putchar_unlocked(idx == a.count - 1 ? terminater : separator)
+    for i in 0..<a.count {
+      buf.print(a[i])
+      putchar_unlocked(i == a.count - 1 ? terminater : separator)
     }
   }
 }
@@ -79,13 +83,13 @@ where
 @inline(__always)
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32 = 0x0A)
 where
-  C: Collection, C.Element == I,
+  C: Collection, C.Element == I, C.Index == Int,
   I: FixedWidthInteger & UnsignedInteger
 {
   withUnsafeTemporaryAllocation(of: UInt8.self, capacity: 39) { buf in
-    for (idx, x) in a.enumerated() {
-      buf.print(x)
-      putchar_unlocked(idx == a.count - 1 ? terminater : separator)
+    for i in 0..<a.count {
+      buf.print(a[i])
+      putchar_unlocked(i == a.count - 1 ? terminater : separator)
     }
   }
 }
