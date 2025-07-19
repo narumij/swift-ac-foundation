@@ -55,7 +55,7 @@ protocol IOReader {}
 
 @usableFromInline
 protocol FixedBufferIOReader: IOReader {
-  var buffer: [UInt8] { get set }
+  var capacity: Int { get }
 }
 
 extension FixedWidthInteger {
@@ -103,8 +103,7 @@ extension FixedBufferIOReader {
   @inlinable
   @inline(__always)
   mutating func read<T>(_ f: (UnsafePointer<UInt8>, Int) -> T) throws -> T {
-
-    try buffer.withUnsafeMutableBufferPointer { buffer in
+    try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: capacity) { buffer in
       let buffer = buffer.baseAddress!
       var current = 0
       buffer[current] = try .readHead()
@@ -185,7 +184,9 @@ struct _atol: FixedBufferIOReader, IOReaderInstance {
   @usableFromInline
   typealias Element = Int
 
-  public var buffer = [UInt8](repeating: 0, count: 32)
+  @inlinable
+  @inline(__always)
+  var capacity: Int { 32 }
 
   @inlinable
   @inline(__always)
@@ -196,7 +197,7 @@ struct _atol: FixedBufferIOReader, IOReaderInstance {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { b,c in (atol(b), b[c]) }
+    try read { b, c in (atol(b), b[c]) }
   }
 
   nonisolated(unsafe)
@@ -209,12 +210,14 @@ struct _atof: FixedBufferIOReader, IOReaderInstance {
   @usableFromInline
   typealias Element = Double
 
-  public var buffer = [UInt8](repeating: 0, count: 64)
+  @inlinable
+  @inline(__always)
+  var capacity: Int { 64 }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { b,_ in atof(b) }
+    try read { b, _ in atof(b) }
   }
 
   @inlinable
