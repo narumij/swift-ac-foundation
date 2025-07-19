@@ -522,6 +522,18 @@ final class ReaderTests: XCTestCase {
 
       """
       """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [Double] = [.stdin, .stdin, .stdin, .stdin]
+        XCTAssertEqual(SS, [Double.ulpOfOne, -Double.ulpOfOne, Double.greatestFiniteMagnitude, -Double.greatestFiniteMagnitude])
+      })
+      .run(
+        input:
+          """
+          2.220446049250313e-16 -2.220446049250313e-16 1.7976931348623157e+308 -1.7976931348623157e+308
+          """),
+      """
+      """)
   }
 
   func testStrings1() throws {
