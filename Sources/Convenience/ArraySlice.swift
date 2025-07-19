@@ -8,7 +8,7 @@ extension ArraySlice where Element: AdditiveArithmetic {
       removeLast(count - n)
       return
     }
-    reserveCapacity(Swift.max(count, n))
+    reserveCapacity(n)
     append(contentsOf: repeatElement(.zero, count: n - count))
   }
 }
