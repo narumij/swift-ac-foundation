@@ -136,6 +136,7 @@ extension VariableBufferIOReader {
     while !isASCIIWhitespaceOrNull(buffer[current]) {
       current += 1
       if current == buffer.count {
+        buffer.reserveCapacity(max(buffer.count * 2, 1)) // Double the capacity or set to 1 if empty
         buffer.append(nullIfEOF(getchar_unlocked()))
       } else {
         buffer[current] = nullIfEOF(getchar_unlocked())
