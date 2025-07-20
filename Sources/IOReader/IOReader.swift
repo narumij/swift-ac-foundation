@@ -132,13 +132,16 @@ extension VariableBufferIOReader {
 
     var current = 0
     buffer[current] = try .readHead()
+
     while !isASCIIWhitespaceOrNull(buffer[current]) {
       current += 1
       if current == buffer.count {
-        buffer.append(contentsOf: repeatElement(0, count: buffer.count))
+        buffer.append(nullIfEOF(getchar_unlocked()))
+      } else {
+        buffer[current] = nullIfEOF(getchar_unlocked())
       }
-      buffer[current] = nullIfEOF(getchar_unlocked())
     }
+
     return try buffer.withUnsafeBufferPointer {
       try f($0, current).unwrap(or: Error.unexpectedNil)
     }
@@ -236,7 +239,7 @@ struct _atob: VariableBufferIOReader, IOReaderInstance {
   @usableFromInline
   typealias Element = [UInt8]
 
-  public var buffer: [UInt8] = .init(repeating: 0, count: 32)
+  public var buffer: [UInt8] = [0]
 
   @inlinable
   @inline(__always)
