@@ -64,7 +64,7 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  mutating func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
     var element: Element = 0
     var negative: Bool = false
     var c: Element = try .readHead()
@@ -83,21 +83,21 @@ extension ZeroBufferIOReader {
     return (element, UInt8(truncatingIfNeeded: c))
   }
 
-//  @inlinable
-//  @inline(__always)
-//  mutating func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-//    var element: Element = 0
-//    var c: Element = try .readHead()
-//    element = c - .ZERO
-//    while true {
-//      c = nullIfEOF(getchar_unlocked())
-//      if isASCIIWhitespaceOrNull(c) {
-//        break
-//      }
-//      element = element * 10 + (c - .ZERO)
-//    }
-//    return (element, UInt8(truncatingIfNeeded: c))
-//  }
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var element: Element = 0
+    var c: Element = try .readHead()
+    element = c - .ZERO
+    while true {
+      c = nullIfEOF(getchar_unlocked())
+      if isASCIIWhitespaceOrNull(c) {
+        break
+      }
+      element = element * 10 + (c - .ZERO)
+    }
+    return (element, UInt8(truncatingIfNeeded: c))
+  }
 }
 
 @usableFromInline
@@ -196,6 +196,23 @@ extension VariableBufferIOReader {
 }
 
 @usableFromInline
+protocol IOReaderBase {
+  associatedtype Element
+  static func read() throws -> Element
+  static func read() throws -> (value: Element, separator: UInt8)
+}
+
+extension IOReaderBase {
+  
+  @inlinable
+  @inline(__always)
+  public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
+    let (a, b) = try read()
+    return (f(a), b)
+  }
+}
+
+@usableFromInline
 protocol IOReaderInstance {
   associatedtype Element
   mutating func read() throws -> Element
@@ -256,6 +273,38 @@ extension IOReaderInstance {
   }
 #else
   @usableFromInline
+  struct __atol<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, IOReaderBase {
+
+    @inlinable
+    @inline(__always)
+    public static func read() throws -> Element {
+      try Self._read().0
+    }
+
+    @inlinable
+    @inline(__always)
+    public static func read() throws -> (value: Element, separator: UInt8) {
+      try Self._read()
+    }
+  }
+
+  @usableFromInline
+  struct __atoul<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader, IOReaderBase {
+
+    @inlinable
+    @inline(__always)
+    public static func read() throws -> Element {
+      try Self._read().0
+    }
+
+    @inlinable
+    @inline(__always)
+    public static func read() throws -> (value: Element, separator: UInt8) {
+      try Self._read()
+    }
+  }
+
+  @usableFromInline
   struct _atol: ZeroBufferIOReader, IOReaderInstance {
 
     @usableFromInline
@@ -268,13 +317,39 @@ extension IOReaderInstance {
     @inlinable
     @inline(__always)
     public mutating func read() throws -> Element {
-      try _read().0
+      try Self._read().0
     }
 
     @inlinable
     @inline(__always)
     public mutating func read() throws -> Item {
-      try _read()
+      try Self._read()
+    }
+
+    nonisolated(unsafe)
+      public static var instance = Self()
+  }
+
+  @usableFromInline
+  struct _atoul: ZeroBufferIOReader, IOReaderInstance {
+
+    @usableFromInline
+    typealias Element = UInt
+
+    @inlinable
+    @inline(__always)
+    var capacity: Int { 32 }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Element {
+      try Self._read().0
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Item {
+      try Self._read()
     }
 
     nonisolated(unsafe)

@@ -4,6 +4,10 @@ public protocol IOIntegerConversionReadable: SingleReadable, ArrayReadable, Line
   static func convert(from: Int) -> Self
 }
 
+public protocol IOUnsignedIntegerConversionReadable: SingleReadable, ArrayReadable, LineReadable {
+  static func convert(from: UInt) -> Self
+}
+
 public protocol IOFloatingPointConversionReadable: SingleReadable, ArrayReadable, LineReadable {
   static func convert(from: Double) -> Self
 }
@@ -23,13 +27,28 @@ extension IOIntegerConversionReadable {
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
-    convert(from: try _atol.read())
+    convert(from: try __atol.read())
   }
 
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try _atol.read { convert(from: $0) }
+    try __atol.read { convert(from: $0) }
+  }
+}
+
+extension IOUnsignedIntegerConversionReadable {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Self {
+    convert(from: try __atoul.read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
+    try __atoul.read { convert(from: $0) }
   }
 }
 
