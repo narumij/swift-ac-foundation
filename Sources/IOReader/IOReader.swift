@@ -83,22 +83,21 @@ extension ZeroBufferIOReader {
     return (element, UInt8(truncatingIfNeeded: c))
   }
 
-  @inlinable
-  @inline(__always)
-  mutating func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var element: Element = 0
-    var negative: Bool = false
-    var c: Element = try .readHead()
-    element = c - .ZERO
-    while true {
-      c = nullIfEOF(getchar_unlocked())
-      if isASCIIWhitespaceOrNull(c) {
-        break
-      }
-      element = element * 10 + (c - .ZERO)
-    }
-    return (element, UInt8(truncatingIfNeeded: c))
-  }
+//  @inlinable
+//  @inline(__always)
+//  mutating func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+//    var element: Element = 0
+//    var c: Element = try .readHead()
+//    element = c - .ZERO
+//    while true {
+//      c = nullIfEOF(getchar_unlocked())
+//      if isASCIIWhitespaceOrNull(c) {
+//        break
+//      }
+//      element = element * 10 + (c - .ZERO)
+//    }
+//    return (element, UInt8(truncatingIfNeeded: c))
+//  }
 }
 
 @usableFromInline
