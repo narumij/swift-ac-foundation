@@ -1,24 +1,5 @@
 import Foundation
 
-extension Int: IOReadableInteger { }
-extension UInt: IOReadableUnsignedInteger { }
-
-#if true
-extension Int128: IOReadableInteger { }
-extension UInt128: IOReadableUnsignedInteger { }
-#endif
-
-extension CInt: IOReadableInteger { }
-extension CUnsignedInt: IOReadableUnsignedInteger { }
-extension CLongLong: IOReadableInteger { }
-extension CUnsignedLongLong: IOReadableUnsignedInteger { }
-
-extension FixedWidthInteger {
-  // _readWithSeparator()を一律で生やしてしまうと、
-  // Int128やUIntが文字列ベースを選択できなくなるので廃止
-  // _atol_read_implを付与する方式に変更
-}
-
 public protocol IOReadableInteger: SingleReadable, ArrayReadable, LineReadable
 where Self: FixedWidthInteger & SignedInteger { }
 
@@ -54,3 +35,16 @@ extension IOReadableUnsignedInteger {
     try _atoul<Self>.read()
   }
 }
+
+extension Int: IOReadableInteger { }
+extension UInt: IOReadableUnsignedInteger { }
+
+extension CInt: IOReadableInteger { }
+extension CUnsignedInt: IOReadableUnsignedInteger { }
+extension CLongLong: IOReadableInteger { }
+extension CUnsignedLongLong: IOReadableUnsignedInteger { }
+
+#if false
+extension Int128: IOReadableInteger { }
+extension UInt128: IOReadableUnsignedInteger { }
+#endif
