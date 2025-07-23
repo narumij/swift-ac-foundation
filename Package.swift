@@ -10,7 +10,6 @@ var _settings: [SwiftSetting] = defines.map { .define($0) }
 let package = Package(
   name: "swift-ac-foundation",
   platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
-//  platforms: [.macOS(.v15), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "AcFoundation", targets: ["AcFoundation"])
