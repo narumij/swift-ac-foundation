@@ -16,6 +16,8 @@ extension FixedWidthInteger {
   @inlinable @inline(__always) static var LF: Self { 0x0A }
   @inlinable @inline(__always) static var CR: Self { 0x0D }
   @inlinable @inline(__always) static var SP: Self { 0x20 }
+  @inlinable @inline(__always) static var MINUS: Self { 0x2D }
+  @inlinable @inline(__always) static var ZERO: Self { 0x30 }
 }
 
 @usableFromInline
@@ -52,6 +54,51 @@ extension Optional {
 
 @usableFromInline
 protocol IOReader {}
+
+@usableFromInline
+protocol ZeroBufferIOReader: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReader {
+
+  @inlinable
+  @inline(__always)
+  mutating func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var element: Element = 0
+    var negative: Bool = false
+    var c: Element = try .readHead()
+    if c == .MINUS {
+      negative = true
+    } else {
+      element = c - .ZERO
+    }
+    while true {
+      c = nullIfEOF(getchar_unlocked())
+      if isASCIIWhitespaceOrNull(c) {
+        break
+      }
+      element = element * 10 + (negative ? -(c - .ZERO) : (c - .ZERO))
+    }
+    return (element, UInt8(truncatingIfNeeded: c))
+  }
+
+//  @inlinable
+//  @inline(__always)
+//  mutating func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+//    var element: Element = 0
+//    var c: Element = try .readHead()
+//    element = c - .ZERO
+//    while true {
+//      c = nullIfEOF(getchar_unlocked())
+//      if isASCIIWhitespaceOrNull(c) {
+//        break
+//      }
+//      element = element * 10 + (c - .ZERO)
+//    }
+//    return (element, UInt8(truncatingIfNeeded: c))
+//  }
+}
 
 @usableFromInline
 protocol FixedBufferIOReader: IOReader {
@@ -181,31 +228,59 @@ extension IOReaderInstance {
   }
 }
 
-@usableFromInline
-struct _atol: FixedBufferIOReader, IOReaderInstance {
-
+#if false
   @usableFromInline
-  typealias Element = Int
+  struct _atol: FixedBufferIOReader, IOReaderInstance {
 
-  @inlinable
-  @inline(__always)
-  var capacity: Int { 32 }
+    @usableFromInline
+    typealias Element = Int
 
-  @inlinable
-  @inline(__always)
-  public mutating func read() throws -> Element {
-    try read { b, _ in atol(b) }
+    @inlinable
+    @inline(__always)
+    var capacity: Int { 32 }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Element {
+      try read { b, _ in atol(b) }
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Item {
+      try read { b, c in (atol(b), b[c]) }
+    }
+
+    nonisolated(unsafe)
+      public static var instance = Self()
   }
+#else
+  @usableFromInline
+  struct _atol: ZeroBufferIOReader, IOReaderInstance {
 
-  @inlinable
-  @inline(__always)
-  public mutating func read() throws -> Item {
-    try read { b, c in (atol(b), b[c]) }
+    @usableFromInline
+    typealias Element = Int
+
+    @inlinable
+    @inline(__always)
+    var capacity: Int { 32 }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Element {
+      try _read().0
+    }
+
+    @inlinable
+    @inline(__always)
+    public mutating func read() throws -> Item {
+      try _read()
+    }
+
+    nonisolated(unsafe)
+      public static var instance = Self()
   }
-
-  nonisolated(unsafe)
-    public static var instance = Self()
-}
+#endif
 
 @usableFromInline
 struct _atof: FixedBufferIOReader, IOReaderInstance {
