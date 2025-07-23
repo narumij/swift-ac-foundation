@@ -1,5 +1,6 @@
 import Foundation
 
+/// Swiftの多重配列の遅さへの対策の一つです
 struct IndexHelper2D {
   public init(_ width: Int,_ height: Int) {
     self.width = width
@@ -17,6 +18,7 @@ struct IndexHelper2D {
   }
 }
 
+/// Swiftの多重配列の遅さへの対策の一つです
 struct IndexHelper3D {
   public init(_ width: Int,_ height: Int,_ depth: Int) {
     self.width = width
