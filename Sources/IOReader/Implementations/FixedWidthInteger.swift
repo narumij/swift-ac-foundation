@@ -1,78 +1,17 @@
 import Foundation
 
-extension Int: SingleReadable & ArrayReadable & LineReadable {
-  
-  // 主力なのでキャストが削れる直接実装に変更
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Self {
-    try __atol<Self>.read()
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atol<Self>.read()
-  }
-}
-
-extension UInt: SingleReadable & ArrayReadable & LineReadable {
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Self {
-    try __atoul<Self>.read()
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atoul<Self>.read()
-  }
-}
+extension Int: IOReadableInteger { }
+extension UInt: IOReadableUnsignedInteger { }
 
 #if true
-extension Int128: SingleReadable & ArrayReadable & LineReadable {
-  
-  // 主力なのでキャストが削れる直接実装に変更
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Self {
-    try __atol<Self>.read()
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atol<Self>.read()
-  }
-}
-
-#if true
-extension UInt128: SingleReadable & ArrayReadable & LineReadable {
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Self {
-    try __atoul<Self>.read()
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atoul<Self>.read()
-  }
-}
-#endif
+extension Int128: IOReadableInteger { }
+extension UInt128: IOReadableUnsignedInteger { }
 #endif
 
-
-extension CInt: IOReadableInteger {}
-extension CUnsignedInt: IOReadableUnsignedInteger {}
-extension CLongLong: IOReadableInteger {}
-extension CUnsignedLongLong: IOReadableUnsignedInteger {}
+extension CInt: IOReadableInteger { }
+extension CUnsignedInt: IOReadableUnsignedInteger { }
+extension CLongLong: IOReadableInteger { }
+extension CUnsignedLongLong: IOReadableUnsignedInteger { }
 
 extension FixedWidthInteger {
   // _readWithSeparator()を一律で生やしてしまうと、
@@ -80,24 +19,38 @@ extension FixedWidthInteger {
   // _atol_read_implを付与する方式に変更
 }
 
-public protocol IOReadableInteger: IOIntegerConversionReadable
-where Self: FixedWidthInteger { }
+public protocol IOReadableInteger: SingleReadable, ArrayReadable, LineReadable
+where Self: FixedWidthInteger & SignedInteger { }
 
 extension IOReadableInteger {
+  
   @inlinable
   @inline(__always)
-  public static func convert(from: Int) -> Self {
-    Self(from)
+  public static func read() throws -> Self {
+    try _atol<Self>.read()
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
+    try _atol<Self>.read()
   }
 }
 
-public protocol IOReadableUnsignedInteger: IOUnsignedIntegerConversionReadable
-where Self: FixedWidthInteger { }
+public protocol IOReadableUnsignedInteger: SingleReadable, ArrayReadable, LineReadable
+where Self: FixedWidthInteger & UnsignedInteger { }
 
 extension IOReadableUnsignedInteger {
+  
   @inlinable
   @inline(__always)
-  public static func convert(from: UInt) -> Self {
-    Self(from)
+  public static func read() throws -> Self {
+    try _atoul<Self>.read()
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
+    try _atoul<Self>.read()
   }
 }

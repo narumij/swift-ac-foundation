@@ -27,13 +27,13 @@ extension IOIntegerConversionReadable {
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
-    convert(from: try __atol.read())
+    convert(from: try _atol.read())
   }
 
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atol.read { convert(from: $0) }
+    try _atol.read { convert(from: $0) }
   }
 }
 
@@ -42,13 +42,13 @@ extension IOUnsignedIntegerConversionReadable {
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
-    convert(from: try __atoul.read())
+    convert(from: try _atoul.read())
   }
 
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try __atoul.read { convert(from: $0) }
+    try _atoul.read { convert(from: $0) }
   }
 }
 
