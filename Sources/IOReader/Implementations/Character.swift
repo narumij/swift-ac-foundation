@@ -18,20 +18,21 @@ extension Character {
   /// Ascii Array Readable
   @inlinable
   public static func read() throws -> [Character] {
-    try _atos.read { $0.map { $0 } }.value
+    try _atob.read().map { Character(UnicodeScalar($0)) }
   }
   
   /// Ascii Array Readable
   @inlinable
   @inline(__always)
   public static func read(columns: Int) throws -> [Character] {
-    try _atos.read(count: columns).map { $0 }
+    try _atob.read(count: columns).map { Character(UnicodeScalar($0)) }
   }
 
   /// Ascii Array Readable
   @inlinable
   public static func _readWithSeparator() throws -> (value: [Character], separator: UInt8) {
-    try _atos.read { $0.map { $0 } }
+    let (buf, sep) = try _atob.read()
+    return (buf.map { Character(UnicodeScalar($0)) }, sep)
   }
 }
 
