@@ -71,14 +71,14 @@ extension ZeroBufferIOReader {
     if c == .MINUS {
       negative = true
     } else {
-      element = c - .ZERO
+      element = c &- .ZERO
     }
     while true {
       c = nullIfEOF(getchar_unlocked())
       if isASCIIWhitespaceOrNull(c) {
         break
       }
-      element = element * 10 + (negative ? -(c - .ZERO) : (c - .ZERO))
+      element = element * 10 + (negative ? -(c &- .ZERO) : (c &- .ZERO))
     }
     return (element, UInt8(truncatingIfNeeded: c))
   }
@@ -88,21 +88,16 @@ extension ZeroBufferIOReader {
   static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
     var element: Element = 0
     var c: Element = try .readHead()
-    element = c - .ZERO
+    element = c &- .ZERO
     while true {
       c = nullIfEOF(getchar_unlocked())
       if isASCIIWhitespaceOrNull(c) {
         break
       }
-      element = element * 10 + (c - .ZERO)
+      element = element * 10 + (c &- .ZERO)
     }
     return (element, UInt8(truncatingIfNeeded: c))
   }
-}
-
-@usableFromInline
-protocol FixedBufferIOReader: IOReader {
-  var capacity: Int { get }
 }
 
 extension FixedWidthInteger {
@@ -141,24 +136,6 @@ extension Array where Element: FixedWidthInteger {
         throw Error.unexpectedSpace
       }
       initializedCount = count
-    }
-  }
-}
-
-extension FixedBufferIOReader {
-
-  @inlinable
-  @inline(__always)
-  mutating func read<T>(_ f: (UnsafePointer<UInt8>, Int) -> T) throws -> T {
-    try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: capacity) { buffer in
-      let buffer = buffer.baseAddress!
-      var current = 0
-      buffer[current] = try .readHead()
-      while !isASCIIWhitespaceOrNull(buffer[current]) {
-        current += 1
-        buffer[current] = nullIfEOF(getchar_unlocked())
-      }
-      return f(buffer, current)
     }
   }
 }
@@ -278,25 +255,23 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader,
 }
 
 @usableFromInline
-struct _atof: FixedBufferIOReader, InstanceIOReader {
+struct _atof: VariableBufferIOReader, InstanceIOReader {
 
   @usableFromInline
   typealias Element = Double
 
-  @inlinable
-  @inline(__always)
-  var capacity: Int { 64 }
+  public var buffer: [UInt8] = [0]
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { b, _ in atof(b) }
+    try read { b, _ in atof(b.baseAddress!) }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { b, c in (atof(b), b[c]) }
+    try read { b, c in (atof(b.baseAddress!), b[c]) }
   }
 
   nonisolated(unsafe)
