@@ -1,44 +1,50 @@
 import Foundation
 
-extension Int: SingleReadable & ArrayReadable & LineReadable {
-  
-  // 主力なのでキャストが削れる直接実装に変更
+public protocol IOReadableInteger: SingleReadable, ArrayReadable, LineReadable
+where Self: FixedWidthInteger & SignedInteger { }
+
+extension IOReadableInteger {
   
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
-    try _atol.read()
+    try _atol<Self>.read()
   }
   
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
-    try _atol.read()
+    try _atol<Self>.read()
   }
 }
 
-extension CInt: IOReadableInteger {}
-extension CUnsignedInt: IOReadableInteger {}
-extension CLongLong: IOReadableInteger {}
-extension CUnsignedLongLong: IOReadableInteger {}
+public protocol IOReadableUnsignedInteger: SingleReadable, ArrayReadable, LineReadable
+where Self: FixedWidthInteger & UnsignedInteger { }
 
-// UIntは、IntベースだとUInt.maxが扱えず、Stringベースだと遅いので、ユーザーに委ねることに
-//extension UInt: ArrayReadable & LineReadable & _atol_read_impl {}
-
-extension FixedWidthInteger {
-  // _readWithSeparator()を一律で生やしてしまうと、
-  // Int128やUIntが文字列ベースを選択できなくなるので廃止
-  // _atol_read_implを付与する方式に変更
-}
-
-public protocol IOReadableInteger: IOIntegerConversionReadable
-where Self: FixedWidthInteger { }
-
-extension IOReadableInteger {
+extension IOReadableUnsignedInteger {
+  
   @inlinable
   @inline(__always)
-  public static func convert(from: Int) -> Self {
-    Self(from)
+  public static func read() throws -> Self {
+    try _atoul<Self>.read()
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8) {
+    try _atoul<Self>.read()
   }
 }
 
+extension Int: IOReadableInteger { }
+extension UInt: IOReadableUnsignedInteger { }
+
+extension CInt: IOReadableInteger { }
+extension CUnsignedInt: IOReadableUnsignedInteger { }
+extension CLongLong: IOReadableInteger { }
+extension CUnsignedLongLong: IOReadableUnsignedInteger { }
+
+#if false
+extension Int128: IOReadableInteger { }
+extension UInt128: IOReadableUnsignedInteger { }
+#endif

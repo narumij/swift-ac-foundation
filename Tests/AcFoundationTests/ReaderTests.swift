@@ -480,6 +480,67 @@ final class ReaderTests: XCTestCase {
       """)
   }
 
+  func testUInt() throws {
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt.stdin)
+        print(UInt.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt.max)
+          \(UInt.min)
+          """),
+      """
+      \(UInt.max)
+      \(UInt.min)
+      """)
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
+      })
+      .run(
+        input:
+          """
+          1 2 3
+          4 5 6
+          """),
+
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt]] = [.stdin(columns: 3), .stdin(columns: 3)]
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
+      })
+      .run(
+        input:
+          """
+          1 2 3
+          4 5 6
+          """),
+      """
+      """)
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [[UInt]] = .stdin(rows: 2, columns: 3)
+        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
+      })
+      .run(
+        input:
+          """
+          1 2 3
+          4 5 6
+          """),
+
+      """
+      """)
+  }
+
   func testDouble() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -525,7 +586,12 @@ final class ReaderTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [Double] = [.stdin, .stdin, .stdin, .stdin]
-        XCTAssertEqual(SS, [Double.ulpOfOne, -Double.ulpOfOne, Double.greatestFiniteMagnitude, -Double.greatestFiniteMagnitude])
+        XCTAssertEqual(
+          SS,
+          [
+            Double.ulpOfOne, -Double.ulpOfOne, Double.greatestFiniteMagnitude,
+            -Double.greatestFiniteMagnitude,
+          ])
       })
       .run(
         input:
@@ -1419,7 +1485,7 @@ final class ReaderTests: XCTestCase {
       111
       """)
   }
-  
+
   func testPack() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
