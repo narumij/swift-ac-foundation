@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 // MARK: - IOReader
 
@@ -169,9 +169,9 @@ extension StaticIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
     let (a, b) = try read()
-    return (f(a), b)
+    return (try f(a), b)
   }
 }
 
@@ -202,9 +202,9 @@ extension InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
     let (a, b) = try instance.read()
-    return (f(a), b)
+    return (try f(a), b)
   }
 }
 
