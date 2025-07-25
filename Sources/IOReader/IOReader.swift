@@ -151,6 +151,23 @@ extension VariableBufferIOReader {
   @inlinable
   @inline(__always)
   mutating func read<T>(
+    _ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?
+  ) throws -> T {
+    var current = 0
+    buffer.removeAll(keepingCapacity: true)
+    buffer.append(try .readHead())
+    while !isASCIIWhitespaceOrNull(buffer[current]) {
+      current += 1
+      buffer.append(nullIfEOF(getchar_unlocked()))
+    }
+    return try buffer.withUnsafeBufferPointer {
+      try f($0, current).unwrap(or: Error.unexpectedNil)
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func read<T>(
     _ f: ([BufferElement], BufferElement) -> T?
   ) throws -> T {
     buffer.removeAll(keepingCapacity: true)
@@ -251,18 +268,20 @@ struct _atof: VariableBufferIOReader, InstanceIOReader {
   @usableFromInline
   typealias Element = Double
 
-  public var buffer: [UInt8] = [0]
+  public var buffer: [UInt8] = []
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { b, _ in b.withUnsafeBufferPointer{ atof($0.baseAddress!) } }
+    // 末尾に区切り文字が必要な模様
+    try read { b, _ in atof(b.baseAddress!) }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { b, c in (b.withUnsafeBufferPointer{ atof($0.baseAddress!) }, c) }
+    // 末尾に区切り文字が必要な模様
+    try read { b, c in (atof(b.baseAddress!), b[c]) }
   }
 
   nonisolated(unsafe)
@@ -316,13 +335,14 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
 
     try read {
       (b: [UInt8], c: UInt8) in
-      String(bytes: b, encoding: .ascii) }
+      String(bytes: b, encoding: .ascii)
+    }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    
+
     try read { (b: [UInt8], c: UInt8) in
       String(
         bytes: b,

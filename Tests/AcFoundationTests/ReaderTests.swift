@@ -274,7 +274,7 @@ final class ReaderTests: XCTestCase {
       try SolverRunner(solver: {
         let N = Int.stdin
         let F = Double.stdin
-        assert(F == 3.14)
+        XCTAssertEqual(F, 3.14)
         let S = String.stdin
         let CC = [UInt8].stdin
         let C0 = UInt8.stdin
