@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 public protocol IOIntegerConversionReadable: SingleReadable, ArrayReadable, LineReadable {
   static func convert(from: Int) -> Self
@@ -8,7 +8,7 @@ public protocol IOUnsignedIntegerConversionReadable: SingleReadable, ArrayReadab
   static func convert(from: UInt) -> Self
 }
 
-public protocol IOFloatingPointConversionReadable: SingleReadable, ArrayReadable, LineReadable {
+public protocol IODoubleConversionReadable: SingleReadable, ArrayReadable, LineReadable {
   static func convert(from: Double) -> Self
 }
 
@@ -52,7 +52,7 @@ extension IOUnsignedIntegerConversionReadable {
   }
 }
 
-extension IOFloatingPointConversionReadable {
+extension IODoubleConversionReadable {
 
   @inlinable
   @inline(__always)

@@ -49,7 +49,7 @@ struct FloatingPointStub {
   var value: Double
 }
 
-extension FloatingPointStub: IOFloatingPointConversionReadable {
+extension FloatingPointStub: IODoubleConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: Double) -> Self { .init(value: from) }
 }

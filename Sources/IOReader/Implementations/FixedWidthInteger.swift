@@ -37,11 +37,11 @@ extension IOReadableUnsignedInteger {
 }
 
 extension Int: IOReadableInteger { }
-extension UInt: IOReadableUnsignedInteger { }
-
 extension CInt: IOReadableInteger { }
-extension CUnsignedInt: IOReadableUnsignedInteger { }
 extension CLongLong: IOReadableInteger { }
+
+extension UInt: IOReadableUnsignedInteger { }
+extension CUnsignedInt: IOReadableUnsignedInteger { }
 extension CUnsignedLongLong: IOReadableUnsignedInteger { }
 
 #if false

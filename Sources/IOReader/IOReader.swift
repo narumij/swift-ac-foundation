@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 // MARK: - IOReader
 
@@ -52,6 +52,23 @@ extension Optional {
   }
 }
 
+extension FixedWidthInteger {
+
+  @inlinable
+  @inline(__always)
+  static func readHead() throws -> Self {
+    var head: Self
+    repeat {
+      let c = getchar_unlocked()
+      if c == -1 {
+        throw Error.unexpectedEOF
+      }
+      head = numericCast(c)
+    } while (1 << head) & spaces != 0
+    return head
+  }
+}
+
 @usableFromInline
 protocol IOReader {}
 
@@ -100,23 +117,6 @@ extension ZeroBufferIOReader {
   }
 }
 
-extension FixedWidthInteger {
-
-  @inlinable
-  @inline(__always)
-  static func readHead() throws -> Self {
-    var head: Self
-    repeat {
-      let c = getchar_unlocked()
-      if c == -1 {
-        throw Error.unexpectedEOF
-      }
-      head = numericCast(c)
-    } while (1 << head) & spaces != 0
-    return head
-  }
-}
-
 @usableFromInline
 protocol VariableBufferIOReader: IOReader {
   associatedtype BufferElement: FixedWidthInteger
@@ -124,23 +124,6 @@ protocol VariableBufferIOReader: IOReader {
 }
 
 extension VariableBufferIOReader {
-
-  @inlinable
-  @inline(__always)
-  mutating func read<T>(
-    _ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?
-  ) throws -> T {
-    var current = 0
-    buffer.removeAll(keepingCapacity: true)
-    buffer.append(try .readHead())
-    while !isASCIIWhitespaceOrNull(buffer[current]) {
-      current += 1
-      buffer.append(nullIfEOF(getchar_unlocked()))
-    }
-    return try buffer.withUnsafeBufferPointer {
-      try f($0, current).unwrap(or: Error.unexpectedNil)
-    }
-  }
 
   @inlinable
   @inline(__always)
@@ -186,9 +169,9 @@ extension StaticIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
     let (a, b) = try read()
-    return (f(a), b)
+    return (try f(a), b)
   }
 }
 
@@ -219,9 +202,9 @@ extension InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
     let (a, b) = try instance.read()
-    return (f(a), b)
+    return (try f(a), b)
   }
 }
 
@@ -258,12 +241,29 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader,
 }
 
 @usableFromInline
-struct _atof: VariableBufferIOReader, InstanceIOReader {
+struct _atof: InstanceIOReader {
 
   @usableFromInline
   typealias Element = Double
 
   public var buffer: [UInt8] = []
+
+  @inlinable
+  @inline(__always)
+  mutating func read<T>(
+    _ f: (UnsafeBufferPointer<UInt8>, Int) -> T?
+  ) throws -> T {
+    var current = 0
+    buffer.removeAll(keepingCapacity: true)
+    buffer.append(try .readHead())
+    while !isASCIIWhitespaceOrNull(buffer[current]) {
+      current += 1
+      buffer.append(nullIfEOF(getchar_unlocked()))
+    }
+    return try buffer.withUnsafeBufferPointer {
+      try f($0, current).unwrap(or: Error.unexpectedNil)
+    }
+  }
 
   @inlinable
   @inline(__always)
