@@ -153,22 +153,30 @@ extension VariableBufferIOReader {
   mutating func read<T>(
     _ f: (UnsafeBufferPointer<BufferElement>, Int) -> T?
   ) throws -> T {
-
     var current = 0
-    buffer[current] = try .readHead()
-
+    buffer.removeAll(keepingCapacity: true)
+    buffer.append(try .readHead())
     while !isASCIIWhitespaceOrNull(buffer[current]) {
       current += 1
-      if current == buffer.count {
-        buffer.append(nullIfEOF(getchar_unlocked()))
-      } else {
-        buffer[current] = nullIfEOF(getchar_unlocked())
-      }
+      buffer.append(nullIfEOF(getchar_unlocked()))
     }
-
     return try buffer.withUnsafeBufferPointer {
       try f($0, current).unwrap(or: Error.unexpectedNil)
     }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func read<T>(
+    _ f: ([BufferElement], BufferElement) -> T?
+  ) throws -> T {
+    buffer.removeAll(keepingCapacity: true)
+    var current: BufferElement = try .readHead()
+    while !isASCIIWhitespaceOrNull(current) {
+      buffer.append(current)
+      current = nullIfEOF(getchar_unlocked())
+    }
+    return try f(buffer, current).unwrap(or: Error.unexpectedNil)
   }
 }
 
@@ -260,17 +268,19 @@ struct _atof: VariableBufferIOReader, InstanceIOReader {
   @usableFromInline
   typealias Element = Double
 
-  public var buffer: [UInt8] = [0]
+  public var buffer: [UInt8] = []
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
+    // 末尾に区切り文字が必要な模様
     try read { b, _ in atof(b.baseAddress!) }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
+    // 末尾に区切り文字が必要な模様
     try read { b, c in (atof(b.baseAddress!), b[c]) }
   }
 
@@ -284,19 +294,19 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
   @usableFromInline
   typealias Element = [UInt8]
 
-  public var buffer: [UInt8] = [0]
+  public var buffer: [UInt8] = []
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { Array($0[0..<$1]) }
+    try read { b, c in b }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
     try read { b, c in
-      (Array(b[0..<c]), b[c])
+      (b, c)
     }
   }
 
@@ -317,26 +327,27 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   @usableFromInline
   typealias Element = String
 
-  public var buffer = [UInt8](repeating: 0, count: 32)
+  public var buffer: [UInt8] = []
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
 
-    try read { b, c in String(bytes: b[0..<c], encoding: .ascii) }
+    try read {
+      (b: [UInt8], c: UInt8) in
+      String(bytes: b, encoding: .ascii)
+    }
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    try read { b, c in
+
+    try read { (b: [UInt8], c: UInt8) in
       String(
-        bytes: b[0..<c],
+        bytes: b,
         encoding: .ascii
-      )
-      .map {
-        ($0, b[c])
-      }
+      ).map { ($0, c) }
     }
   }
 
