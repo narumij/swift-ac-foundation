@@ -198,6 +198,76 @@ final class ReaderTests: XCTestCase {
       }
     }
   }
+  
+  func testOneLineFixtureCharacters() throws {
+
+    let here = URL(fileURLWithPath: #filePath)
+    let url =
+      here
+      .deletingLastPathComponent()
+      .appendingPathComponent("Resources")
+      .appendingPathComponent("OneLineString.txt")
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      let N = try [Character].read()
+      XCTAssertEqual(N, Array("TakahashiAoki"))
+    }
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      let N = try [Character].read(columns: 13)
+      XCTAssertEqual(N, Array("TakahashiAoki"))
+    }
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      XCTAssertThrowsError(try [Character].read(columns: 14)) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+      }
+    }
+  }
+
+  func testSpacesFixtureCharacters() throws {
+
+    let here = URL(fileURLWithPath: #filePath)
+    let url =
+      here
+      .deletingLastPathComponent()
+      .appendingPathComponent("Resources")
+      .appendingPathComponent("Spaces.txt")
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      XCTAssertThrowsError(try [Character].read()) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+      }
+    }
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      XCTAssertThrowsError(try [Character].read(columns: 13)) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+      }
+    }
+  }
+
+  func testEmptyFixtureCharacters() throws {
+
+    let here = URL(fileURLWithPath: #filePath)
+    let url =
+      here
+      .deletingLastPathComponent()
+      .appendingPathComponent("Resources")
+      .appendingPathComponent("Empty.txt")
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      XCTAssertThrowsError(try [Character].read()) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+      }
+    }
+
+    try withStdinRedirectedThreadSafe(to: url) {
+      XCTAssertThrowsError(try [Character].read(columns: 13)) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedEOF)
+      }
+    }
+  }
 
   func testOneLineFixtureBytes() throws {
 

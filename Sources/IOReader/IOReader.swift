@@ -283,6 +283,8 @@ struct _atof: VariableBufferIOReader, InstanceIOReader {
     public static var instance = Self()
 }
 
+let bufferCapcity = 16
+
 @usableFromInline
 struct _atob: VariableBufferIOReader, InstanceIOReader {
 
@@ -291,7 +293,7 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(256)
+    b.reserveCapacity(bufferCapcity)
     return b
   }()
 
@@ -328,7 +330,7 @@ struct _atoc: InstanceIOReader {
 
   public var buffer: [Character] = {
     var b = [Character]()
-    b.reserveCapacity(256)
+    b.reserveCapacity(bufferCapcity)
     return b
   }()
 
@@ -393,7 +395,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(256)
+    b.reserveCapacity(bufferCapcity)
     return b
   }()
 
