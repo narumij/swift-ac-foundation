@@ -480,6 +480,21 @@ final class ReaderTests: XCTestCase {
       """)
   }
 
+  func testIntRandom() throws {
+
+    for _ in 0..<1000 {
+      let i = Int.random(in: Int.min...Int.max)
+      _ = try SolverRunner(solver: {
+        XCTAssertEqual(Int.stdin, i)
+      })
+      .run(
+        input:
+          """
+          \(i)
+          """)
+    }
+  }
+
   func testUInt() throws {
 
     XCTAssertEqual(
@@ -541,6 +556,21 @@ final class ReaderTests: XCTestCase {
       """)
   }
 
+  func testUIntRandom() throws {
+
+    for _ in 0..<1000 {
+      let i = UInt.random(in: UInt.min...UInt.max)
+      _ = try SolverRunner(solver: {
+        XCTAssertEqual(UInt.stdin, i)
+      })
+      .run(
+        input:
+          """
+          \(i)
+          """)
+    }
+  }
+
   func testDouble() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -600,6 +630,21 @@ final class ReaderTests: XCTestCase {
           """),
       """
       """)
+  }
+  
+  func testDoubleRandom() throws {
+
+    for _ in 0..<1000 {
+      let i = Double.random(in: Double(Int.min)...Double(Int.max))
+      _ = try SolverRunner(solver: {
+        XCTAssertEqual(Double.stdin, i)
+      })
+      .run(
+        input:
+          """
+          \(i)
+          """)
+    }
   }
 
   func testStrings1() throws {
