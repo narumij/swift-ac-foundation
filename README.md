@@ -413,26 +413,17 @@ extension BigInt: IOStringConversionReadable {
 }
 ```
 
-BigIntでの利用にも同様の制限があります。
+制約によっては、以下で速度が多少稼げます。
 
-以下の場合、Int.maxまでしか読めません。
 ```swift
+// 入力の制約がInt.minからInt.maxまでの場合利用可
 extension BigInt: IOIntegerConversionReadable {
   public static func convert(from: Int) -> Self { .init(from) }
 }
 ```
 
-以下の場合、やや速度が落ちます。
 ```swift
-extension BigInt: IOStringConversionReadable {
-  public static func convert(from: String) -> Self { .init(from)! }
-}
-```
-
-modintは制約次第によっては、以下で速度が多少稼げる予定です。
-
-```swift
-// 入力の制約が0からmod未満までの場合のみ利用可
+// 入力の制約が0からmod未満までの場合利用可
 extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: UInt) -> Self { .init(rawValue: from) }
