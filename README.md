@@ -399,7 +399,7 @@ import Convinience
 
 ## その他
 
-2025/06/04以降に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
+modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
 
 ```swift
 extension static_modint: IOIntegerConversionReadable {
