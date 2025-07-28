@@ -399,7 +399,7 @@ import Convinience
 
 ## その他
 
-2025/06/04以降に公開された新ジャッジで、modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
+modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
 
 ```swift
 extension static_modint: IOIntegerConversionReadable {
@@ -413,44 +413,20 @@ extension BigInt: IOStringConversionReadable {
 }
 ```
 
-UIntには制限が生じるため、デフォルトで設定がありません。
+制約によっては、以下で速度が多少稼げます。
 
-以下の二つを必要に応じて使い分けてください。
-
-以下の場合、Int.maxまでしか読めません。
 ```swift
-extension UInt: IOReadableInteger { }
-```
-
-以下の場合、やや速度が落ちます。
-```swift
-extension UInt: IOStringConversionReadable {
-  static public func convert(from: String) -> UInt { .init(from)! }
-}
-```
-
-BigIntでの利用にも同様の制限があります。
-
-以下の場合、Int.maxまでしか読めません。
-```swift
+// 入力の制約がInt.minからInt.maxまでの場合利用可
 extension BigInt: IOIntegerConversionReadable {
   public static func convert(from: Int) -> Self { .init(from) }
 }
 ```
 
-以下の場合、やや速度が落ちます。
 ```swift
-extension BigInt: IOStringConversionReadable {
-  public static func convert(from: String) -> Self { .init(from)! }
-}
-```
-
-modintは制約次第によっては、以下で速度が多少稼げる予定です。
-
-```swift
-extension static_modint: @retroactive IOIntegerConversionReadable {
-  // 入力の制約が0からmod未満までの場合のみ利用可
-  public static func convert(from: Int) -> Self { .init(rawValue: UInt(bitPattern: from)) }
+// 入力の制約が0からmod未満までの場合利用可
+extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
+  @inlinable @inline(__always)
+  public static func convert(from: UInt) -> Self { .init(rawValue: from) }
 }
 ```
 
