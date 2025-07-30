@@ -1,10 +1,3 @@
-//
-//  FastPrint.c
-//  swift-ac-foundation
-//
-//  Created by narumij on 2025/07/30.
-//
-
 #include "FastPrint.h"
 
 int buffer[39] = {0};
@@ -12,9 +5,9 @@ int buffer[39] = {0};
 static inline void ___print_positive(uint64_t x) {
   int i = 0;
   do {
-    uint64_t r = x % 10;
+    int r = x % 10;
     x = x / 10;
-    buffer[i] = 0x30 | (int)r;
+    buffer[i] = 0x30 | r;
     i += 1;
   } while (x > 0);
   while (i > 0) {
@@ -27,9 +20,9 @@ static inline void ___print_negative(int64_t x) {
   putchar_unlocked(0x2D);
   int i = 0;
   do {
-    uint64_t r = x % 10;
+    int r = x % 10;
     x = x / 10;
-    buffer[i] = 0x30 | (int)-r;
+    buffer[i] = 0x30 | -r;
     ++i;
   } while (x < 0);
   while (i > 0) {

@@ -1,10 +1,3 @@
-//
-//  FastPrint.h
-//  swift-ac-foundation
-//
-//  Created by narumij on 2025/07/30.
-//
-
 #ifndef FastPrint_h
 #define FastPrint_h
 
