@@ -20,7 +20,7 @@ let package = Package(
       from: "1.2.1"),
     .package(
       url: "https://github.com/attaswift/BigInt",
-      from: "5.6.0"),
+      from: "5.7.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -29,7 +29,11 @@ let package = Package(
       name: "IOReader",
       swiftSettings: _settings),
     .target(
+      name: "_FastPrint",
+      cSettings: [.headerSearchPath("include")]),
+    .target(
       name: "IOUtil",
+      dependencies: ["_FastPrint"],
       swiftSettings: _settings),
     .target(
       name: "Bisect",
@@ -39,14 +43,14 @@ let package = Package(
       dependencies: ["IOReader"],
       swiftSettings: _settings),
     .target(
-      name: "cxx",
+      name: "_cxx",
       cxxSettings: [
           .headerSearchPath("include"),
           .unsafeFlags(["-std=c++17"])
       ]),
     .target(
       name: "CxxWrapped",
-      dependencies: ["cxx"],
+      dependencies: ["_cxx"],
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
