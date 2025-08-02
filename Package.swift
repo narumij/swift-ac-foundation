@@ -72,6 +72,7 @@ let package = Package(
         "IOReader",
         "Bisect",
         "Pack",
+        "IOUtil",
         "CxxWrapped",
         "CharacterUtil",
         "UInt8Util",
