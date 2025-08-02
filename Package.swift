@@ -84,6 +84,7 @@ let package = Package(
       name: "AcFoundationTests",
       dependencies: [
         "IOReader",
+        "IOUtil",
         "Bisect",
         "Pack",
         "CxxWrapped",
