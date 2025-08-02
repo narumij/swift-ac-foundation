@@ -70,7 +70,6 @@ let package = Package(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
-        "IOUtil",
         "Bisect",
         "Pack",
         "CxxWrapped",
