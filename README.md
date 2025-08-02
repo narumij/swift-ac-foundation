@@ -24,12 +24,8 @@ SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用する
 ソースコードに以下を記述してインポートします。
 
 ```swift
-@preconcurrency import Foundation
 import AcFoundation
 ```
-
-新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。
-ご注意ください。
 
 ---
 
@@ -178,7 +174,7 @@ import IOReader
 
 ```swift
 @preconcurrency import Foundation
-import AcFoundation
+import IOUtil
 
 print("Hello, world!", to: &stderr)
 ```
@@ -198,9 +194,20 @@ SwiftGlibc.stderr:1:12: note: var declared here
   |            `- note: var declared here
 ```
 
-Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るケースがあり、注意が必要です。
-
 他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
+
+Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るため、利用の際には注意が必要です。
+
+新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。
+ご注意ください。
+
+また、個別importでしか提供していません。
+Foundationとのimport記述順序問題と、swift-formatがアルファベット順に並べてくれることでCEが誘発される問題があり、個別importのみの提供になりました。
+
+
+```swift
+import IOUtil
+```
 
 #### 部分利用
 
