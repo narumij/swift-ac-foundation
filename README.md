@@ -194,24 +194,19 @@ SwiftGlibc.stderr:1:12: note: var declared here
   |            `- note: var declared here
 ```
 
-他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
-
 Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るため、利用の際には注意が必要です。
 
 新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。
 ご注意ください。
 
-また、個別importでしか提供していません。
-Foundationとのimport記述順序問題と、swift-formatがアルファベット順に並べてくれることでCEが誘発される問題があり、個別importのみの提供になりました。
-
-
-```swift
-import IOUtil
-```
+他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
 
 #### 部分利用
 
-IOUtil 機能のみを利用したい場合は以下をインポートしてください。
+個別importでしか提供していません。
+Foundationとのimport記述順序問題と、swift-formatがアルファベット順に並べてくれることでCEが誘発される問題があり、個別importのみの提供になりました。
+
+IOUtil 機能を利用したい場合は以下をインポートしてください。
 
 ```swift
 import IOUtil
