@@ -56,6 +56,9 @@ let package = Package(
       name: "CharacterUtil",
     ),
     .target(
+      name: "StringUtil",
+    ),
+    .target(
       name: "UInt8Util",
     ),
     .target(
@@ -74,6 +77,7 @@ let package = Package(
         "Pack",
         "IOUtil",
         "CxxWrapped",
+        "StringUtil",
         "CharacterUtil",
         "UInt8Util",
         "Miscellaneous",
@@ -89,9 +93,11 @@ let package = Package(
         "Bisect",
         "Pack",
         "CxxWrapped",
+        "StringUtil",
         "CharacterUtil",
         "UInt8Util",
         "Miscellaneous",
+        "Convenience",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],

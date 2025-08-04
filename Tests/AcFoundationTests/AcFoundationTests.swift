@@ -8,6 +8,7 @@
 #endif
 
 import Miscellaneous
+import StringUtil
 
 final class AcFoundationTests: XCTestCase {
   func testExample() throws {
@@ -54,4 +55,24 @@ final class AcFoundationTests: XCTestCase {
     XCTAssertEqual(ceil(-10, 3), -3)
     XCTAssertEqual(mod(-10, 3), 2)
   }
+  
+  func testSubstring() throws {
+    let s = "abcdef"
+    XCTAssertEqual(s, s[0..<s.count])
+    XCTAssertEqual("abcdef", s[0..<s.count])
+    XCTAssertEqual("abcdef", s[0...])
+    XCTAssertEqual("abcdef", s[..<s.count])
+    XCTAssertEqual("cd", s[2..<4])
+    XCTAssertEqual("cdef", s[2...])
+    XCTAssertEqual("abcd", s[..<4])
+    XCTAssertEqual("abcde", s[...4])
+    
+    XCTAssertEqual("a", s[0])
+    XCTAssertEqual(Array(s), (0..<s.count).map { s[$0] })
+    
+    XCTAssertEqual("ABCDEF", s.uppercased())
+    
+    print(s[0...])
+  }
 }
+
