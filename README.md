@@ -377,6 +377,35 @@ import UInt8Util
 
 ---
 
+### StringUtil
+
+文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、不慣れな人にこれを強いるのは酷だろうし、かといってSwiftの文字列は整数の添え字が使えず、ここが初心者泣かせなので、文字列に便利メソッドを用意しました。あくまで初心者用であることをご承知の上お使いください。Swiftの文字列はリッチが過ぎるため、競技プログラミングではTLEになりやすいです。この点も併せてご承知ください。
+
+
+```swift
+let s = "abcdef"
+// 1文字取得
+print(s[0]) // "a"
+
+// 文字列取得
+print(s[0..<s.count]) // "abcdef"
+print(s[0..<s.count]) // "abcdef"
+print(s[0...]) // "abcdef"
+print(s[..<s.count]) // "abcdef"
+print(s[2..<4]) // "cd"
+print(s[2...]) // "cdef"
+print(s[..<4]) // "abcd"
+print(s[...4]) // "abcde"
+```
+
+本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+
+```swift
+import StringUtil
+```
+
+---
+
 ### Miscellaneous
 
 これ以外の分類で浮いてしまっているものたちです。
