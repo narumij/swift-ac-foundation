@@ -17,13 +17,15 @@ private:
   std::mt19937_64 gen_;
 };
 
-mt19937_64* mt19937_64_create(uint32_t seed){
+mt19937_64* mt19937_64_create(uint32_t seed)
+{
   mt19937_64* result = new mt19937_64();
   result->handle = new mt19937_64_impl(seed);
   return result;
 }
 
-void mt19937_64_destroy(mt19937_64* h){
+void mt19937_64_destroy(mt19937_64* h)
+{
   delete h->handle;
   delete h;
 }

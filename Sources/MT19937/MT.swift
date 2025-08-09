@@ -3,7 +3,7 @@ import _MT19937
 @usableFromInline
 class _MT19937_64 {
   @usableFromInline
-  var rng: UnsafeMutablePointer<_MT19937.mt19937_64>?
+  var rng: UnsafeMutablePointer<_MT19937.mt19937_64>
   @inlinable
   public init(seed: UInt32) {
     rng = mt19937_64_create(seed)

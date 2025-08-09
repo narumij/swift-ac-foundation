@@ -61,7 +61,7 @@ let package = Package(
       cxxSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
-//        .unsafeFlags(["-std=c++17"])
+        .unsafeFlags(["-std=c++17"])
       ],
       swiftSettings: [
 //        .interoperabilityMode(.Cxx)
