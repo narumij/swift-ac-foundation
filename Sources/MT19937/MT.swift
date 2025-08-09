@@ -29,11 +29,11 @@ public struct mt19937_64: RandomNumberGenerator {
     rng = .init(seed: seed)
   }
   @inlinable
-  public func next() -> UInt64 {
+  public mutating func next() -> UInt64 {
     rng.next()
   }
   @inlinable
-  public func discard(_ z: UInt64) {
+  public mutating func discard(_ z: UInt64) {
     rng.discard(z)
   }
 }
