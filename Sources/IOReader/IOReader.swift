@@ -96,7 +96,7 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read_nevative() -> (Element, UInt8) where Element: SignedInteger {
+  static func _read_negative() -> (Element, UInt8) where Element: SignedInteger {
     var element: Element = 0
     var c: Element
     while true {
@@ -112,9 +112,9 @@ extension ZeroBufferIOReader {
   @inlinable
   @inline(__always)
   static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: Element = try .readHead()
+    let c: Element = try .readHead()
     if c == .MINUS {
-      return _read_nevative()
+      return _read_negative()
     } else {
       return _read_positive(c &- .ZERO)
     }
