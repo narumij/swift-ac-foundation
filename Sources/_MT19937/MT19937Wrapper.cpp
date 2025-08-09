@@ -30,7 +30,7 @@ void mt19937_64_destroy(mt19937_64* h){
 
 uint64_t mt19937_64_next_u64(mt19937_64* h)
 {
-  h->handle->next_u64();
+  return h->handle->next_u64();
 }
 
 void mt19937_64_discard(mt19937_64 *h, uint64_t z)
