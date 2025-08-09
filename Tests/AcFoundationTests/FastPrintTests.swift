@@ -22,14 +22,30 @@ final class FastPrintTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         fastPrint(Int.max)
+        fastPrint(Int(1))
         fastPrint(Int(0))
+        fastPrint(Int(-1))
         fastPrint(Int.min)
       }).run(input:""),
       """
       \(Int.max)
+      1
       0
+      -1
       \(Int.min)
       """)
+  }
+  
+  func testInt2() throws {
+    for i in -1_000...1_000 {
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          fastPrint(i)
+        }).run(input:""),
+      """
+      \(i)
+      """)
+    }
   }
   
   func testUInt() throws {
