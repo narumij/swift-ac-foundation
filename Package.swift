@@ -30,7 +30,11 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "_FastPrint",
-      cSettings: [.headerSearchPath("include")]),
+      publicHeadersPath: "include",
+      cSettings: [
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+      ]),
     .target(
       name: "IOUtil",
       dependencies: ["_FastPrint"],
@@ -44,10 +48,31 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "_cxx",
+      publicHeadersPath: "include",
       cxxSettings: [
           .headerSearchPath("include"),
+          .define("NDEBUG", .when(configuration: .release)),
           .unsafeFlags(["-std=c++17"])
+      ]
+    ),
+    .target(
+      name: "_MT19937",
+      publicHeadersPath: "include",
+      cxxSettings: [
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+        .unsafeFlags(["-std=c++17"])
+      ],
+      swiftSettings: [
+//        .interoperabilityMode(.Cxx)
       ]),
+    .target(
+      name: "MT19937",
+      dependencies: ["_MT19937"],
+//      swiftSettings: [
+//        .interoperabilityMode(.Cxx)
+//      ]
+    ),
     .target(
       name: "CxxWrapped",
       dependencies: ["_cxx"],
@@ -82,6 +107,7 @@ let package = Package(
         "UInt8Util",
         "Miscellaneous",
         "Convenience",
+        "MT19937",
       ],
       swiftSettings: _settings
     ),
@@ -98,6 +124,7 @@ let package = Package(
         "UInt8Util",
         "Miscellaneous",
         "Convenience",
+        "MT19937",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],

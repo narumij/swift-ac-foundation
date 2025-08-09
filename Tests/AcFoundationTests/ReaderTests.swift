@@ -198,7 +198,7 @@ final class ReaderTests: XCTestCase {
       }
     }
   }
-  
+
   func testOneLineFixtureCharacters() throws {
 
     let here = URL(fileURLWithPath: #filePath)
@@ -701,7 +701,7 @@ final class ReaderTests: XCTestCase {
       """
       """)
   }
-  
+
   func testDoubleRandom() throws {
 
     for _ in 0..<1000 {
@@ -1622,14 +1622,16 @@ final class ReaderTests: XCTestCase {
       """)
   }
 
-  func testUnwrap() throws {
-    let a: Int? = 0
-    XCTAssertNoThrow(try a.unwrap(or: Error.unexpectedNil))
-    let b: Int? = nil
-    XCTAssertThrowsError(try b.unwrap(or: Error.unexpectedNil)) {
-      XCTAssertEqual($0 as? Error, Error.unexpectedNil)
+  #if DEBUG
+    func testUnwrap() throws {
+      let a: Int? = 0
+      XCTAssertNoThrow(try a.unwrap(or: Error.unexpectedNil))
+      let b: Int? = nil
+      XCTAssertThrowsError(try b.unwrap(or: Error.unexpectedNil)) {
+        XCTAssertEqual($0 as? Error, Error.unexpectedNil)
+      }
     }
-  }
+  #endif
 
   #if DEBUG
     let stringFixtureA = ""

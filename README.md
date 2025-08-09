@@ -428,6 +428,16 @@ import Convinience
 
 ---
 
+### MT19937
+
+メルセンヌツイスターです。個別importでしか提供していません。
+
+```swift
+import MT19937
+```
+
+---
+
 ## その他
 
 modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
