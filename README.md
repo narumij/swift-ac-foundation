@@ -430,7 +430,16 @@ import Convinience
 
 ### MT19937
 
-メルセンヌツイスターです。個別importでしか提供していません。
+メルセンヌツイスターです。疑似乱数です。
+AHC等で、再現性のある乱数が使いたい場合にご利用ください。
+
+```swift
+var mt = mt19937_64(seed: 0)
+let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)
+let randomDouble = Double.random(in: 0...1, using: &mt)
+```
+
+個別importでしか提供していません。
 
 ```swift
 import MT19937

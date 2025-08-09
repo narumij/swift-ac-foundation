@@ -28,7 +28,9 @@ final class MT19937Tests: XCTestCase {
 
   func testRandom() throws {
     var mt = mt19937_64(seed: 0)
-    XCTAssertTrue((Int.min...Int.max).contains(Int.random(in: Int.min...Int.max, using: &mt)))
+    let randomNumber = Int.random(in: Int.min...Int.max, using: &mt)
+    let randomDouble = Double.random(in: 0...1, using: &mt)
+    XCTAssertTrue((Int.min...Int.max).contains(randomNumber))
   }
   
   func testRandom2() throws {
