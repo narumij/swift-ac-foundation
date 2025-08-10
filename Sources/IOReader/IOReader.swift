@@ -81,8 +81,29 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read_positive(_ element: Element) -> (Element, UInt8) {
-    var element = element
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var element: Element = 0
+    var negative: Bool = false
+    var c: Element = try .readHead()
+    if c == .MINUS {
+      negative = true
+    } else {
+      element = c - .ZERO
+    }
+    while true {
+      c = nullIfEOF(getchar_unlocked())
+      if isASCIIWhitespaceOrNull(c) {
+        break
+      }
+      element = element * 10 + (negative ? -(c &- .ZERO) : (c &- .ZERO))
+    }
+    return (element, UInt8(truncatingIfNeeded: c))
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var element: Element = try .readHead() &- .ZERO
     var c: Element
     while true {
       c = nullIfEOF(getchar_unlocked())
@@ -92,38 +113,6 @@ extension ZeroBufferIOReader {
       element = element * 10 + (c &- .ZERO)
     }
     return (element, UInt8(truncatingIfNeeded: c))
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read_negative() -> (Element, UInt8) where Element: SignedInteger {
-    var element: Element = 0
-    var c: Element
-    while true {
-      c = nullIfEOF(getchar_unlocked())
-      if isASCIIWhitespaceOrNull(c) {
-        break
-      }
-      element = element * 10 - (c &- .ZERO)
-    }
-    return (element, UInt8(truncatingIfNeeded: c))
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    let c: Element = try .readHead()
-    if c == .MINUS {
-      return _read_negative()
-    } else {
-      return _read_positive(c &- .ZERO)
-    }
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    _read_positive(try .readHead() &- .ZERO)
   }
 }
 
