@@ -95,7 +95,7 @@ extension ZeroBufferIOReader {
       if isASCIIWhitespaceOrNull(c) {
         break
       }
-      element = element * 10 + (negative ? -(c - .ZERO) : (c - .ZERO))
+      element = element * 10 + (negative ? -(c &- .ZERO) : (c &- .ZERO))
     }
     return (element, UInt8(truncatingIfNeeded: c))
   }
