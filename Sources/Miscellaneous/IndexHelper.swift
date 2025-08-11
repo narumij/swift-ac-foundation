@@ -13,8 +13,41 @@ public struct IndexHelper2D {
     return width * height
   }
   @inlinable
-  public subscript(x: Int, y: Int, z: Int) -> Int {
+  public subscript(x: Int, y: Int) -> Int {
     x + y * width
+  }
+  @inlinable
+  public func position(at index: Int) -> (Int, Int) {
+    (index % width, index / width)
+  }
+  @inlinable
+  public var transposed: TransposedIndexHelper2D {
+    .init(width, height)
+  }
+}
+
+public struct TransposedIndexHelper2D {
+  public init(_ width: Int,_ height: Int) {
+    self.width = width
+    self.height = height
+  }
+  @usableFromInline let width: Int
+  @usableFromInline let height: Int
+  @inlinable
+  public var count: Int {
+    return width * height
+  }
+  @inlinable
+  public subscript(x: Int, y: Int) -> Int {
+    x * width + y
+  }
+  @inlinable
+  public func position(at index: Int) -> (Int, Int) {
+    (index / width, index % width)
+  }
+  @inlinable
+  public var transposed: IndexHelper2D {
+    .init(width, height)
   }
 }
 

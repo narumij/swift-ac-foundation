@@ -19,9 +19,8 @@ final class IndexHelperTests: XCTestCase {
 
         for y in 0..<h {
             for x in 0..<w {
-                // z はダミー値（IndexHelper2D では無視される）
                 let expected = x + y * w
-                XCTAssertEqual(helper[x, y, 0], expected,
+                XCTAssertEqual(helper[x, y], expected,
                                "Mismatch at (x: \(x), y: \(y))")
             }
         }
