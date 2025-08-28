@@ -169,8 +169,11 @@ import IOReader
 
 ### IOUtil
 
-`print` 関数の `to:` パラメータで `FILE` ポインタを指定できるようになります。  
-これにより、以下のような記述が可能です。
+この機能はdeprecatedとさせてください。
+Swift 6.1.2ではコンパイルエラーを回避できませんでした。
+
+~~`print` 関数の `to:` パラメータで `FILE` ポインタを指定できるようになります。  ~~
+~~これにより、以下のような記述が可能です。~~
 
 ```swift
 @preconcurrency import Foundation
@@ -179,7 +182,7 @@ import IOUtil
 print("Hello, world!", to: &stderr)
 ```
 
-`Foundation`に`@preconcurrency`を付与しない場合、以下のようになり、CEとなります。
+~~`Foundation`に`@preconcurrency`を付与しない場合、以下のようになり、CEとなります。~~
 
 ```
  9 | @inlinable
@@ -194,10 +197,10 @@ SwiftGlibc.stderr:1:12: note: var declared here
   |            `- note: var declared here
 ```
 
-Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るため、利用の際には注意が必要です。
+~~Xcodeでは`@preconcurrency`の付与なしにコンパイルが通るため、利用の際には注意が必要です。~~
 
-新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。
-ご注意ください。
+~~新ジャッジでFoundationとAcFoundationの順番が異なる場合、stderrのprint文利用でCEとなることが確認されています。~~
+~~ご注意ください。~~
 
 他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
 
