@@ -144,6 +144,10 @@ final class FastPrintTests: XCTestCase {
       300
       """)
   }
+  
+  func testSmokeStderr() throws {
+    print("Hello, stderr!", to: &FileOutputStream.standardError)
+  }
 
   func testPerformanceExample() throws {
     
