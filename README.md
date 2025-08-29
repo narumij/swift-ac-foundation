@@ -202,7 +202,6 @@ swift-formatはimportの順番を整えるため、この問題が発生しが�
 #### 部分利用
 
 個別importでしか提供していません。
-Foundationとのimport記述順序問題と、swift-formatがアルファベット順に並べてくれることでCEが誘発される問題があり、個別importのみの提供になりました。
 
 IOUtil 機能を利用したい場合は以下をインポートしてください。
 
