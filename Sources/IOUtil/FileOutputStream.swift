@@ -3,7 +3,7 @@ import Foundation
 /// これが特別速い訳では無く、printと同程度の速度
 public typealias FileOutputStream = FileOutputStream_putchar_unlockd
 
-/// 定数倍の負担がかかる
+/// writeで定数倍の負担がかかる
 public struct FileOutputStream_naive: TextOutputStream {
 
   @usableFromInline let fileHandle: FileHandle
