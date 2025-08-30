@@ -254,7 +254,7 @@ m.forEach {
 print(ans)
 ```
 
-Comparableにも対応しているため、dijkstraを書く際にも利用できる予定です。
+Comparableにも対応しているため、dijkstraを書く際にも利用できます。
 
 #### 部分利用
 
