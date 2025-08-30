@@ -21,6 +21,7 @@ where I: FixedWidthInteger & UnsignedInteger {
   }
 }
 
+/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32 = 0x0A)
@@ -34,6 +35,7 @@ where
   }
 }
 
+/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32 = 0x0A)
@@ -47,6 +49,7 @@ where
   }
 }
 
+/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminater: Int32 = 0x0A)
@@ -60,6 +63,7 @@ where
   }
 }
 
+/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I,  separator: Int32 = 0x20, terminater: Int32 = 0x0A)
@@ -77,7 +81,7 @@ where
 
 @inlinable
 @inline(__always)
-public func fastPrint(_ s: [Int8], terminater: Int32? = 0x0A) {
+public func fastPrint(asciiValues s: [Int8], terminater: Int32? = 0x0A) {
   for c in s where c != 0 {
     putchar_unlocked(c)
   }
@@ -88,7 +92,7 @@ public func fastPrint(_ s: [Int8], terminater: Int32? = 0x0A) {
 
 @inlinable
 @inline(__always)
-public func fastPrint(_ s: [UInt8], terminater: Int32? = 0x0A) {
+public func fastPrint(asciiValues s: [UInt8], terminater: Int32? = 0x0A) {
   for c in s {
     putchar_unlocked(c)
   }

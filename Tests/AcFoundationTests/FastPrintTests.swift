@@ -175,7 +175,7 @@ final class FastPrintTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let a:[Int8] = "Hello".cString(using: .ascii)!
-        fastPrint(a)
+        fastPrint(asciiValues: a)
       }).run(input:""),
       """
       Hello
@@ -186,7 +186,7 @@ final class FastPrintTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let a:[UInt8] = "Hello".compactMap(\.asciiValue)
-        fastPrint(a)
+        fastPrint(asciiValues: a)
       }).run(input:""),
       """
       Hello
