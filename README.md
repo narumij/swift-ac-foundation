@@ -169,33 +169,17 @@ import IOReader
 
 ### IOUtil
 
-`print` 関数の `to:` パラメータで `FILE` ポインタを指定できるようになります。  
-これにより、以下のような記述が可能です。
+**stdoutやstderrによる方法は廃止しました**
+
+`print` 関数の `to:` パラメータで利用できる標準出力と標準エラーのTextOutputStremを提供します。
+これにより、以下のような記述で標準エラーへの出力が可能になります。
 
 ```swift
-@preconcurrency import Foundation
+import Foundation
 import IOUtil
 
-print("Hello, world!", to: &stderr)
+print("Hello, world!", to: &FileOutputStream.standardError)
 ```
-
-`Foundation`に`@preconcurrency`を付与したimport行が提出ファイルの先頭にない場合、以下のようになり、CEとなります。
-
-```
- 9 | @inlinable
-10 | public func Answer() throws {
-11 |     print("Hello, STDERR!", to: &stderr)
-   |                                  `- error: reference to var 'stderr' is not concurrency-safe because it involves shared mutable state
-12 | }
-13 | 
-
-SwiftGlibc.stderr:1:12: note: var declared here
-1 | public var stderr: UnsafeMutablePointer<FILE>!
-  |            `- note: var declared here
-```
-
-Xcodeでは`@preconcurrency`の付与なしにコンパイルが通りかつ順番にも非依存なため、利用の際には注意が必要です。
-swift-formatはimportの順番を整えるため、この問題が発生しがちです。
 
 他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
 
@@ -270,7 +254,7 @@ m.forEach {
 print(ans)
 ```
 
-Comparableにも対応しているため、dijkstraを書く際にも利用できる予定です。
+Comparableにも対応しているため、dijkstraを書く際にも利用できます。
 
 #### 部分利用
 

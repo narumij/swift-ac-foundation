@@ -633,8 +633,7 @@ final class ReaderTests: XCTestCase {
       _ = try SolverRunner(solver: {
         XCTAssertEqual(UInt.stdin, i)
       })
-      .run(
-        input:
+      .inputOnly(
           """
           \(i)
           """)
@@ -653,7 +652,6 @@ final class ReaderTests: XCTestCase {
           1 2 3
           4 5 6
           """),
-
       """
       """)
     XCTAssertEqual(

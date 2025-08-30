@@ -2,7 +2,7 @@ import Foundation
 
 /// 累積和1D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 public func prefixSum<T>(N: Int, _ A: [T]) -> [T] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   var s: [T] = [0] * (N + 1)
@@ -16,7 +16,7 @@ public func prefixSum<T>(N: Int, _ A: [T]) -> [T] where T: AdditiveArithmetic, T
 
 /// 累積和1D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 @inline(__always)
 public func prefixSum<T>(_ A: [T]) -> [T] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
@@ -25,7 +25,7 @@ public func prefixSum<T>(_ A: [T]) -> [T] where T: AdditiveArithmetic, T: Expres
 
 /// 累積和2D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 public func prefixSum<T>(N: Int, M: Int, _ A: [[T]]) -> [[T]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   var s: [[T]] = [0] * (N + 1, M + 1)
@@ -43,7 +43,7 @@ public func prefixSum<T>(N: Int, M: Int, _ A: [[T]]) -> [[T]] where T: AdditiveA
 
 /// 累積和2D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 @inline(__always)
 public func prefixSum<T>(_ A: [[T]]) -> [[T]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
@@ -55,7 +55,7 @@ public func prefixSum<T>(_ A: [[T]]) -> [[T]] where T: AdditiveArithmetic, T: Ex
 
 /// 累積和3D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 public func prefixSum<T>(N: Int, M: Int, L: Int, _ A: [[[T]]]) -> [[[T]]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   var s: [[[T]]] = [0] * (N + 1, M + 1, L + 1)
@@ -79,7 +79,7 @@ public func prefixSum<T>(N: Int, M: Int, L: Int, _ A: [[[T]]]) -> [[[T]]] where 
 
 /// 累積和3D
 ///
-/// evimaさんを参考にしました
+/// evimaさんの解説を参考にしました
 @inlinable
 @inline(__always)
 public func prefixSum<T>(_ A: [[[T]]]) -> [[[T]]] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
