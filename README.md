@@ -171,7 +171,7 @@ import IOReader
 
 **stdoutやstderrによる方法は廃止しました**
 
-`print` 関数の `to:` パラメータで利用できるIOStreamを提供します。
+`print` 関数の `to:` パラメータで利用できる標準出力と標準エラーのTextOutputStremを提供します。
 これにより、以下のような記述で標準エラーへの出力が可能になります。
 
 ```swift
