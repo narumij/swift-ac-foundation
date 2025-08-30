@@ -1,4 +1,4 @@
-import XCTest
+@preconcurrency import XCTest
 
 #if DEBUG
   @testable import Bisect
