@@ -145,8 +145,63 @@ final class FastPrintTests: XCTestCase {
       """)
   }
   
-  func testSmokeStderr() throws {
-    print("Hello, stderr!", to: &FileOutputStream.standardError)
+  func testFileOutputStream() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        // ややおそい
+        "stdout".write(to: &FileOutputStream_naive.standardOutput)
+        // ややおそい
+        "stderr".write(to: &FileOutputStream_naive.standardError)
+      }).run(input:""),
+      """
+      stdout
+      """)
+  }
+
+  func testPutCharUnlockedStream() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        // これが特別速い訳では無く、printと同程度の速度
+        "stdout".write(to: &FileOutputStream_putchar_unlockd.standardOutput)
+        // これが特別速い訳では無く、printと同程度の速度
+        "stderr".write(to: &FileOutputStream_putchar_unlockd.standardError)
+      }).run(input:""),
+      """
+      stdout
+      """)
+  }
+  
+  func testInt8() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let a:[Int8] = "Hello".cString(using: .ascii)!
+        fastPrint(a)
+      }).run(input:""),
+      """
+      Hello
+      """)
+  }
+
+  func testUInt8() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let a:[UInt8] = "Hello".compactMap(\.asciiValue)
+        fastPrint(a)
+      }).run(input:""),
+      """
+      Hello
+      """)
+  }
+
+  func testCharacter() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let a:[Character] = Array("Hello")
+        fastPrint(a)
+      }).run(input:""),
+      """
+      Hello
+      """)
   }
 
   func testPerformanceExample() throws {
