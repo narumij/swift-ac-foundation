@@ -1,6 +1,6 @@
 /// 床関数
 ///
-/// evimaさんを参考にした記憶です
+/// evimaさんの解説を参考にした記憶です
 @inlinable
 @inline(__always)
 public func floor(_ n: Int, _ d: Int) -> Int {
@@ -9,7 +9,7 @@ public func floor(_ n: Int, _ d: Int) -> Int {
 
 /// 天井関数
 ///
-/// evimaさんを参考にした記憶です
+/// evimaさんの解説を参考にした記憶です
 @inlinable
 @inline(__always)
 public func ceil(_ n: Int, _ d: Int) -> Int {
@@ -18,7 +18,7 @@ public func ceil(_ n: Int, _ d: Int) -> Int {
 
 /// ユークリッド剰余関数
 ///
-/// evimaさんを参考にした記憶です
+/// evimaさんの解説を参考にした記憶です
 @inlinable
 @inline(__always)
 public func mod(_ n: Int, _ d: Int) -> Int {
