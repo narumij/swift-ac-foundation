@@ -8,7 +8,9 @@
 SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用するには、Package.swift ファイルの dependencies に次の行を追加します。
 
 ```swift
-.package(url: "https://github.com/narumij/swift-ac-foundation", branch: "main"),
+.package(
+  url: "https://github.com/narumij/swift-ac-foundation",
+   branch: "release/AtCoder/2025"),
 ```
 
 タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、必要な場合は直接revision指定してください。
