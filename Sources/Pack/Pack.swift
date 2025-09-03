@@ -105,3 +105,5 @@ extension Pack: SingleReadable where repeat each T: SingleReadable {
     .init(repeat try (each T).read())
   }
 }
+
+extension Pack: Sendable where repeat each T: Sendable { }
