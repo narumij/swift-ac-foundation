@@ -37,3 +37,5 @@ public struct mt19937_64: RandomNumberGenerator {
     rng.discard(z)
   }
 }
+
+extension mt19937_64: @unchecked Sendable { }
