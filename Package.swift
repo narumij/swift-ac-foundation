@@ -85,6 +85,7 @@ let package = Package(
     ),
     .target(
       name: "UInt8Util",
+      dependencies: ["_cxx"],
     ),
     .target(
       name: "Miscellaneous",
