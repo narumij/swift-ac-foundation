@@ -176,4 +176,45 @@ final class StringAsciiExtensionsTests: XCTestCase {
       DUMMY
       """)
   }
+  
+  func test_readLine2() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [UInt8] = __readLine()!
+        print(String(bytes: SS, encoding: .ascii)!)
+        print("DUMMY")
+      })
+      .run(
+        input:
+          """
+          aaaaaaaaaaaaabb
+          cc
+          """),
+
+      """
+      aaaaaaaaaaaaabb
+      DUMMY
+      """)
+  }
+
+  func test_readLine3() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let SS: [UInt8] = __readLine(strippingNewline: false)!
+        print(String(bytes: SS, encoding: .ascii)!)
+        print("DUMMY")
+      })
+      .run(
+        input:
+          """
+          aaaaaaaaaaaaabb
+          cc
+          """),
+
+      """
+      aaaaaaaaaaaaabb
+
+      DUMMY
+      """)
+  }
 }
