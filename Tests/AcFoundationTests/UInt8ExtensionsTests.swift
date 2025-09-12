@@ -177,44 +177,74 @@ final class StringAsciiExtensionsTests: XCTestCase {
       """)
   }
   
-  func test_readLine2() throws {
+  func test_readLine5() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [UInt8] = __readLine()!
-        print(String(bytes: SS, encoding: .ascii)!)
-        print("DUMMY")
+        let A: [Int] = __readLine()
+        print(A)
       })
       .run(
         input:
           """
-          aaaaaaaaaaaaabb
-          cc
+          1 2 3
           """),
 
       """
-      aaaaaaaaaaaaabb
-      DUMMY
+      [1, 2, 3]
       """)
   }
 
-  func test_readLine3() throws {
+  func test_readLine6() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let SS: [UInt8] = __readLine(strippingNewline: false)!
-        print(String(bytes: SS, encoding: .ascii)!)
-        print("DUMMY")
+        let A: [UInt] = __readLine()
+        print(A)
       })
       .run(
         input:
           """
-          aaaaaaaaaaaaabb
-          cc
+          1 2 3
           """),
 
       """
-      aaaaaaaaaaaaabb
-
-      DUMMY
+      [1, 2, 3]
       """)
   }
 }
+
+#if false
+func __readLine_stdin(_ p: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>) -> Int {
+  var capacity = 0
+  var result = 0
+  repeat {
+    result = getline(p, &capacity, stdin)
+  } while result < 0 && errno == EINTR
+  return result
+}
+
+public func __readLine<T>(_ f: (UnsafePointer<CChar>, Int) throws -> T) throws -> T {
+  var utf8Start: UnsafeMutablePointer<CChar>?
+  let utf8Count = __readLine_stdin(&utf8Start)
+  defer {
+    _free(utf8Start)
+  }
+  guard utf8Count > 0, let utf8Start else {
+    throw UInt8UtilError.unexpectedEOF
+  }
+  return try f(utf8Start, utf8Count)
+}
+
+public func __readLine(strippingNewline: Bool = true) -> [UInt8]? {
+  try? __readLine { start, count in
+    [UInt8].init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+      for i in 0..<count {
+        (buffer.baseAddress! + i).initialize(to: UInt8(start[i]))
+      }
+      initializedCount = count
+      if strippingNewline, start[count - 1] == 0x0A {
+        initializedCount -= 1
+      }
+    }
+  }
+}
+#endif

@@ -79,6 +79,7 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
+      dependencies: ["UInt8Util"],
     ),
     .target(
       name: "StringUtil",
