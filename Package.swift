@@ -50,9 +50,9 @@ let package = Package(
       name: "_cxx",
       publicHeadersPath: "include",
       cxxSettings: [
-          .headerSearchPath("include"),
-          .define("NDEBUG", .when(configuration: .release)),
-          .unsafeFlags(["-std=c++17"])
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+        .unsafeFlags(["-std=c++17"]),
       ]
     ),
     .target(
@@ -61,18 +61,12 @@ let package = Package(
       cxxSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
-        .unsafeFlags(["-std=c++17"])
-      ],
-      swiftSettings: [
-//        .interoperabilityMode(.Cxx)
+        .unsafeFlags(["-std=c++17"]),
       ]),
     .target(
       name: "MT19937",
       dependencies: ["_MT19937"],
-//      swiftSettings: [
-//        .interoperabilityMode(.Cxx)
-//      ]
-    ),
+      swiftSettings: _settings),
     .target(
       name: "CxxWrapped",
       dependencies: ["_cxx"],
@@ -80,14 +74,14 @@ let package = Package(
     .target(
       name: "CharacterUtil",
       dependencies: ["IOUtil"],
-    ),
+      swiftSettings: _settings),
     .target(
       name: "StringUtil",
-    ),
+      swiftSettings: _settings),
     .target(
       name: "UInt8Util",
       dependencies: ["IOUtil"],
-    ),
+      swiftSettings: _settings),
     .target(
       name: "Miscellaneous",
       dependencies: ["IOReader"],
@@ -131,7 +125,7 @@ let package = Package(
         .product(name: "BigInt", package: "BigInt"),
       ],
       resources: [
-          .copy("Resources")
+        .copy("Resources")
       ],
       swiftSettings: _settings
     ),
