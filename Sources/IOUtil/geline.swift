@@ -19,6 +19,34 @@ public func getline<T>(_ transform: (UnsafePointer<UInt8>, Int) throws -> T) thr
   return try transform(utf8Start, utf8Count)
 }
 
+// MARK: -
+
+@inlinable
+public func readIntLine<I>() -> [I]
+where I: FixedWidthInteger & SignedInteger {
+  try! getline { start, count in
+    var pos = 0
+    var nums: [I] = []
+    while pos < count, start[pos] != 0x0A {
+      nums.append(_parseSigned(start, count, &pos))
+    }
+    return nums
+  }
+}
+
+@inlinable
+public func readUIntLine<U>() -> [U]
+where U: FixedWidthInteger & UnsignedInteger {
+  try! getline { start, count in
+    var pos = 0
+    var nums: [U] = []
+    while pos < count, start[pos] != 0x0A {
+      nums.append(_parseUnsigned(start, count, &pos))
+    }
+    return nums
+  }
+}
+
 @inlinable
 func _parseSigned<I>(_ start: UnsafePointer<UInt8>,_ count: Int,_ pos: inout Int) -> I where I: FixedWidthInteger & SignedInteger {
   while pos < count, start[pos] == 0x20 {
@@ -61,30 +89,4 @@ where U: FixedWidthInteger & UnsignedInteger {
     num = num * 10 + (c &- 0x30)
   }
   return num
-}
-
-@inlinable
-public func readIntLine<I>() -> [I]
-where I: FixedWidthInteger & SignedInteger {
-  try! getline { start, count in
-    var pos = 0
-    var nums: [I] = []
-    while pos < count, start[pos] != 0x0A {
-      nums.append(_parseSigned(start, count, &pos))
-    }
-    return nums
-  }
-}
-
-@inlinable
-public func readUIntLine<U>() -> [U]
-where U: FixedWidthInteger & UnsignedInteger {
-  try! getline { start, count in
-    var pos = 0
-    var nums: [U] = []
-    while pos < count, start[pos] != 0x0A {
-      nums.append(_parseUnsigned(start, count, &pos))
-    }
-    return nums
-  }
 }
