@@ -323,9 +323,8 @@ import AcFoundation
 print(Array("abc") < Array("abd")) // true
 ```
 
-#### 部分利用
-
-CharacterUtil 機能のみを利用したい場合は以下をインポートしてください。
+本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+(readLine関数の追加で型の記述に不便が生じる懸念があり、一括importから外しました)
 
 ```swift
 import CharacterUtil

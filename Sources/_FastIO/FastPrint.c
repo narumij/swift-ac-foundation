@@ -1,4 +1,4 @@
-#include "FastPrint.h"
+#include "FastIO.h"
 
 int buffer[39] = {0};
 

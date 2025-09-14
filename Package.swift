@@ -29,7 +29,7 @@ let package = Package(
       name: "IOReader",
       swiftSettings: _settings),
     .target(
-      name: "_FastPrint",
+      name: "_FastIO",
       publicHeadersPath: "include",
       cSettings: [
         .headerSearchPath("include"),
@@ -37,7 +37,7 @@ let package = Package(
       ]),
     .target(
       name: "IOUtil",
-      dependencies: ["_FastPrint"],
+      dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
       name: "Bisect",
@@ -50,9 +50,9 @@ let package = Package(
       name: "_cxx",
       publicHeadersPath: "include",
       cxxSettings: [
-          .headerSearchPath("include"),
-          .define("NDEBUG", .when(configuration: .release)),
-          .unsafeFlags(["-std=c++17"])
+        .headerSearchPath("include"),
+        .define("NDEBUG", .when(configuration: .release)),
+        .unsafeFlags(["-std=c++17"]),
       ]
     ),
     .target(
@@ -61,31 +61,27 @@ let package = Package(
       cxxSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
-        .unsafeFlags(["-std=c++17"])
-      ],
-      swiftSettings: [
-//        .interoperabilityMode(.Cxx)
+        .unsafeFlags(["-std=c++17"]),
       ]),
     .target(
       name: "MT19937",
       dependencies: ["_MT19937"],
-//      swiftSettings: [
-//        .interoperabilityMode(.Cxx)
-//      ]
-    ),
+      swiftSettings: _settings),
     .target(
       name: "CxxWrapped",
       dependencies: ["_cxx"],
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
-    ),
+      dependencies: ["IOUtil"],
+      swiftSettings: _settings),
     .target(
       name: "StringUtil",
-    ),
+      swiftSettings: _settings),
     .target(
       name: "UInt8Util",
-    ),
+      dependencies: ["IOUtil"],
+      swiftSettings: _settings),
     .target(
       name: "Miscellaneous",
       dependencies: ["IOReader"],
@@ -129,7 +125,7 @@ let package = Package(
         .product(name: "BigInt", package: "BigInt"),
       ],
       resources: [
-          .copy("Resources")
+        .copy("Resources")
       ],
       swiftSettings: _settings
     ),
