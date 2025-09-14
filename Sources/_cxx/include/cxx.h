@@ -13,9 +13,6 @@ uint64_t gcd_u64(uint64_t a, uint64_t b);
 int64_t lcm_i64(int64_t a, int64_t b);
 uint64_t lcm_u64(uint64_t a, uint64_t b);
 
-size_t _readLine_stdin(unsigned char **LinePtr);
-void _free(void * ptr);
-
 #ifdef __cplusplus
 }
 #endif

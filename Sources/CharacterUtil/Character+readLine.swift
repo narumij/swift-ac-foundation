@@ -1,10 +1,9 @@
-import Foundation
-import UInt8Util
+import IOUtil
 
 @inlinable
 public func readLine(strippingNewline: Bool = true) -> [Character]? {
-  try? _readLine { start, count in
-    [Character].init(unsafeUninitializedCapacity: count) { buffer, initializedCount in
+  try? getline { start, count in
+    [Character](unsafeUninitializedCapacity: count) { buffer, initializedCount in
       for i in 0..<count {
         (buffer.baseAddress! + i).initialize(to: Character(UnicodeScalar(start[i])))
       }

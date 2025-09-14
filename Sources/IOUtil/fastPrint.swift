@@ -1,5 +1,5 @@
 import Foundation
-import _FastPrint
+import _FastIO
 
 @inlinable
 @inline(__always)

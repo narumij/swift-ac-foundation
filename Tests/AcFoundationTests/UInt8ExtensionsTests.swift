@@ -1,4 +1,5 @@
 import UInt8Util
+import IOUtil
 import XCTest
 
 final class UInt8ExtensionsTests: XCTestCase {
@@ -180,7 +181,7 @@ final class StringAsciiExtensionsTests: XCTestCase {
   func test_readLine5() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [Int] = __readLine()
+        let A: [Int] = readIntLine()
         print(A)
       })
       .run(
@@ -197,7 +198,7 @@ final class StringAsciiExtensionsTests: XCTestCase {
   func test_readLine6() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [UInt] = __readLine()
+        let A: [UInt] = readUIntLine()
         print(A)
       })
       .run(

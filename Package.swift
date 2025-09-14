@@ -29,7 +29,7 @@ let package = Package(
       name: "IOReader",
       swiftSettings: _settings),
     .target(
-      name: "_FastPrint",
+      name: "_FastIO",
       publicHeadersPath: "include",
       cSettings: [
         .headerSearchPath("include"),
@@ -37,7 +37,7 @@ let package = Package(
       ]),
     .target(
       name: "IOUtil",
-      dependencies: ["_FastPrint"],
+      dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
       name: "Bisect",
@@ -79,14 +79,14 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
-      dependencies: ["UInt8Util"],
+      dependencies: ["IOUtil"],
     ),
     .target(
       name: "StringUtil",
     ),
     .target(
       name: "UInt8Util",
-      dependencies: ["_cxx"],
+      dependencies: ["IOUtil"],
     ),
     .target(
       name: "Miscellaneous",

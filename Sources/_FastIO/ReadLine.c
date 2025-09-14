@@ -1,6 +1,7 @@
-#include "cxx.h"
-#include <iostream>
-#include <cstdio>
+#include "FastIO.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
 size_t _readLine_stdin(unsigned char **LinePtr) {
   size_t Capacity = 0;
