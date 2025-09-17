@@ -1,6 +1,8 @@
 import Foundation
 import IOReader
 
+// どうぞご自由にお使いください。
+
 @frozen
 public struct Pack3<T,U,V> {
   
