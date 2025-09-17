@@ -1,6 +1,7 @@
 import Foundation
 import IOReader
 
+@frozen
 public struct Pack3<T,U,V> {
   
   public typealias RawValue = (T,U,V)
