@@ -65,18 +65,21 @@ extension Pack3: Sendable where T: Sendable, U: Sendable, V: Sendable { }
 
 extension Pack3 {
   
-  var first: T {
-    get { rawValue.0 }
-    set { rawValue.0 = newValue }
+  @inlinable
+  public var first: T {
+    @inline(__always) _read { yield rawValue.0 }
+    @inline(__always) _modify { yield &rawValue.0 }
   }
   
-  var second: U {
-    get { rawValue.1 }
-    set { rawValue.1 = newValue }
+  @inlinable
+  public var second: U {
+    @inline(__always) _read { yield rawValue.1 }
+    @inline(__always) _modify { yield &rawValue.1 }
   }
   
-  var third: V {
-    get { rawValue.2 }
-    set { rawValue.2 = newValue }
+  @inlinable
+  public var third: V {
+    @inline(__always) _read { yield rawValue.2 }
+    @inline(__always) _modify { yield &rawValue.2 }
   }
 }

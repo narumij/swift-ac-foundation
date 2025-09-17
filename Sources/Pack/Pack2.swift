@@ -64,13 +64,15 @@ extension Pack2: Sendable where T: Sendable, U: Sendable { }
 
 extension Pack2 {
   
-  var first: T {
-    get { rawValue.0 }
-    set { rawValue.0 = newValue }
+  @inlinable
+  public var first: T {
+    @inline(__always) _read { yield rawValue.0 }
+    @inline(__always) _modify { yield &rawValue.0 }
   }
   
-  var second: U {
-    get { rawValue.1 }
-    set { rawValue.1 = newValue }
+  @inlinable
+  public var second: U {
+    @inline(__always) _read { yield rawValue.1 }
+    @inline(__always) _modify { yield &rawValue.1 }
   }
 }
