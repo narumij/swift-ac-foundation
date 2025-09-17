@@ -41,7 +41,7 @@ extension Pack3: Comparable where T: Comparable, U: Comparable, V: Comparable {
   }
 }
 
-extension Pack3: Hashable where repeat T: Hashable, U: Hashable, V: Hashable {
+extension Pack3: Hashable where T: Hashable, U: Hashable, V: Hashable {
   
   @inlinable
   @inline(__always)
