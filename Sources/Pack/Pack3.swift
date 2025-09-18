@@ -1,8 +1,18 @@
 import Foundation
 import IOReader
 
-// どうぞご自由にお使いください。
-
+/// 三つの値を、辞書のキーやHeapの要素にする際に用いる、ラッパーオブジェクトです
+///
+///
+/// ```swift
+/// var m: [Pack3<Int,Int,Int>: Int] = [:]
+/// m[.init(10, 100, 1000), default: 0] += 1
+/// ```
+///
+/// ```swift
+/// var heap: Heap<Pack3<Int,Int,Int>> = []
+/// heap.insert(.init(1,2,3))
+/// ```
 @frozen
 public struct Pack3<T,U,V> {
   
