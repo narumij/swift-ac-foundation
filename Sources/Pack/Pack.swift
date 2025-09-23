@@ -15,6 +15,8 @@ import IOReader
 /// ```
 ///
 /// コンパイラが許す限りの要素数が使えます。
+///
+/// 他にPack2やPack3があります。コンパイルに問題が生じた場合はそちらをお試しください。
 public struct Pack<each T> {
   
   public typealias RawValue = (repeat each T)
