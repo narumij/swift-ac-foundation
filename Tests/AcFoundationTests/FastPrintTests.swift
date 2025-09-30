@@ -116,10 +116,10 @@ final class FastPrintTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner(solver: {
         fastPrint(4, terminater: 0x20)
-        fastPrint([0,1], terminater: 0x20)
+        fastPrint([0,1], terminator: 0x20)
         fastPrint([2,3])
         fastPrint(UInt(3), terminater: 0x20)
-        fastPrint([100,200] as [UInt], terminater: 0x20)
+        fastPrint([100,200] as [UInt], terminator: 0x20)
         fastPrint([300] as [UInt])
       }).run(input:""),
       """
