@@ -27,3 +27,13 @@ public func Takahashi(_ b: Bool = true) -> String { b ? .Takahashi : .Aoki }
 @inlinable
 @inline(__always)
 public func Aoki(_ b: Bool = true) -> String { Takahashi(!b) }
+
+/// 真ならcorrectを返す、偽ならincorrectを返す
+@inlinable
+@inline(__always)
+public func correct(_ b: Bool = true) -> String { b ? .correct : .incorrect }
+
+/// 真ならincorrectを返す、偽ならcorrectを返す
+@inlinable
+@inline(__always)
+public func incorrect(_ b: Bool = true) -> String { correct(!b) }

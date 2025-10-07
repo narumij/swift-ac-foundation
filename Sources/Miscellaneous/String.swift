@@ -6,4 +6,6 @@ extension String {
   nonisolated(unsafe) public static var Takahashi = "Takahashi"
   nonisolated(unsafe) public static var Aoki = "Aoki"
   nonisolated(unsafe) public static var snuke = "snuke"
+  nonisolated(unsafe) public static var correct = "correct"
+  nonisolated(unsafe) public static var incorrect = "incorrect"
 }
