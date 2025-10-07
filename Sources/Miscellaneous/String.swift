@@ -8,4 +8,5 @@ extension String {
   nonisolated(unsafe) public static var snuke = "snuke"
   nonisolated(unsafe) public static var correct = "correct"
   nonisolated(unsafe) public static var incorrect = "incorrect"
+  nonisolated(unsafe) public static var Draw = "Draw"
 }

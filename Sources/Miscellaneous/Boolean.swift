@@ -28,6 +28,11 @@ public func Takahashi(_ b: Bool = true) -> String { b ? .Takahashi : .Aoki }
 @inline(__always)
 public func Aoki(_ b: Bool = true) -> String { Takahashi(!b) }
 
+/// 真ならTakahashiを返す、偽ならAokiを返す、nilならDrawを返す
+@inlinable
+@inline(__always)
+public func TakahashiAokiDraw(_ b: Bool?) -> String { b.map { $0 ? .Takahashi : .Aoki } ?? .Draw }
+
 /// 真ならcorrectを返す、偽ならincorrectを返す
 @inlinable
 @inline(__always)
