@@ -1,4 +1,5 @@
 import Foundation
+import BigInt
 
 precedencegroup PowerPrecedence {
   lowerThan: BitwiseShiftPrecedence
@@ -33,3 +34,17 @@ public func ** <INT>(lhs: INT, rhs: Int) -> INT where INT: FixedWidthInteger {
 @inlinable
 @inline(__always)
 public func ** (lhs: Double, rhs: Double) -> Double { pow(lhs, rhs) }
+
+/// lhsのrhs乗
+///
+/// ```
+/// 2 ** 3 // 8
+/// ```
+///
+///
+/// pythonでよく見かけて便利そうだったので追加
+@inlinable
+@inline(__always)
+public func ** (lhs: BigInt, rhs: Int) -> BigInt {
+  lhs.power(rhs)
+}

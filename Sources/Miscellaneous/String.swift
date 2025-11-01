@@ -9,4 +9,6 @@ extension String {
   nonisolated(unsafe) public static var correct = "correct"
   nonisolated(unsafe) public static var incorrect = "incorrect"
   nonisolated(unsafe) public static var Draw = "Draw"
+  nonisolated(unsafe) public static var Success = "Success"
+  nonisolated(unsafe) public static var Failure = "Failure"
 }

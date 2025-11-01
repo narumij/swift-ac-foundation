@@ -42,3 +42,13 @@ public func correct(_ b: Bool = true) -> String { b ? .correct : .incorrect }
 @inlinable
 @inline(__always)
 public func incorrect(_ b: Bool = true) -> String { correct(!b) }
+
+/// 真ならSuccessを返す、偽ならFailureを返す
+@inlinable
+@inline(__always)
+public func Success(_ b: Bool = true) -> String { b ? .Success : .Failure }
+
+/// 真ならFailureを返す、偽ならSuccessを返す
+@inlinable
+@inline(__always)
+public func Failure(_ b: Bool = true) -> String { correct(!b) }
