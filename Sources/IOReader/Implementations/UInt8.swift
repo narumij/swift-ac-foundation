@@ -8,7 +8,7 @@ extension UInt8 {
   @inlinable
   @inline(__always)
   public static func read() throws -> UInt8 {
-    try _atob.read(count: 1).first.unwrap(or: Error.unexpectedNil)
+    try _atob.read(count: 1).first.unwrap(or: IOReaderError.unexpectedNil)
   }
 }
 

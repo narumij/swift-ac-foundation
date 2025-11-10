@@ -3,7 +3,7 @@ import Foundation
 // MARK: - IOReader
 
 public
-  enum Error: Swift.Error
+  enum IOReaderError: Swift.Error
 {
   case unexpectedNil
   case unexpectedSpace
@@ -46,7 +46,7 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
 
 extension Optional {
   @inlinable @inline(__always)
-  func unwrap(or error: @autoclosure () -> Error) throws -> Wrapped {
+  func unwrap(or error: @autoclosure () -> IOReaderError) throws -> Wrapped {
     guard let value = self else { throw error() }
     return value
   }
@@ -61,7 +61,7 @@ extension FixedWidthInteger {
     repeat {
       let c = getchar_unlocked()
       if c == -1 {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       head = numericCast(c)
     } while (1 << head) & spaces != 0
@@ -135,7 +135,7 @@ extension VariableBufferIOReader {
       buffer.append(current)
       current = nullIfEOF(getchar_unlocked())
     }
-    return try f(buffer, current).unwrap(or: Error.unexpectedNil)
+    return try f(buffer, current).unwrap(or: IOReaderError.unexpectedNil)
   }
 
   @inlinable
@@ -146,10 +146,10 @@ extension VariableBufferIOReader {
     for i in 0..<count {
       lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
       if lastByte == .NULL {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {
-        throw Error.unexpectedSpace
+        throw IOReaderError.unexpectedSpace
       }
       buffer.append(lastByte)
     }
@@ -260,7 +260,7 @@ struct _atof: InstanceIOReader {
       buffer.append(nullIfEOF(getchar_unlocked()))
     }
     return try buffer.withUnsafeBufferPointer {
-      try f($0, current).unwrap(or: Error.unexpectedNil)
+      try f($0, current).unwrap(or: IOReaderError.unexpectedNil)
     }
   }
 
@@ -365,10 +365,10 @@ struct _atoc: InstanceIOReader {
     for i in 0..<count {
       lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
       if lastByte == .NULL {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {
-        throw Error.unexpectedSpace
+        throw IOReaderError.unexpectedSpace
       }
       buffer.append(Character(UnicodeScalar(lastByte)))
     }
@@ -425,7 +425,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   static func read(count: Int) throws -> Element {
     defer { getchar_unlocked() }
     return try String(bytes: instance.readBytes(count: count), encoding: .ascii)
-      .unwrap(or: Error.unexpectedNil)
+      .unwrap(or: IOReaderError.unexpectedNil)
   }
 
   nonisolated(unsafe)
