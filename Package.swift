@@ -88,7 +88,10 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "Convenience",
-      dependencies: ["Pack"],
+      dependencies: [
+        "Pack",
+        .product(name: "BigInt", package: "BigInt"),
+      ],
       swiftSettings: _settings),
     .target(
       name: "AcFoundation",
