@@ -1,3 +1,6 @@
+import Convenience
+import Miscellaneous
+import StringUtil
 import XCTest
 
 #if DEBUG
@@ -6,9 +9,6 @@ import XCTest
   //import AcFoundation
   import Bisect
 #endif
-
-import Miscellaneous
-import StringUtil
 
 final class AcFoundationTests: XCTestCase {
   func testExample() throws {
@@ -43,18 +43,18 @@ final class AcFoundationTests: XCTestCase {
     XCTAssertEqual(3, array.bisectLeft(6))
     XCTAssertEqual(3, array.bisectRight(6))
   }
-  
+
   func testInteger() throws {
-    
+
     XCTAssertEqual(floor(10, 3), 3)
     XCTAssertEqual(ceil(10, 3), 4)
     XCTAssertEqual(mod(10, 3), 1)
-    
+
     XCTAssertEqual(floor(-10, 3), -4)
     XCTAssertEqual(ceil(-10, 3), -3)
     XCTAssertEqual(mod(-10, 3), 2)
   }
-  
+
   func testSubstring() throws {
     let s = "abcdef"
     XCTAssertEqual(s, s[0..<s.count])
@@ -65,13 +65,16 @@ final class AcFoundationTests: XCTestCase {
     XCTAssertEqual("cdef", s[2...])
     XCTAssertEqual("abcd", s[..<4])
     XCTAssertEqual("abcde", s[...4])
-    
+
     XCTAssertEqual("a", s[0])
     XCTAssertEqual(Array(s), (0..<s.count).map { s[$0] })
-    
+
     XCTAssertEqual("ABCDEF", s.uppercased())
-    
+
     print(s[0...])
   }
-}
 
+  func testPrefixSum() throws {
+    XCTAssertEqual(prefixSum((1...5) + []), (1...5).reductions(0, +))
+  }
+}

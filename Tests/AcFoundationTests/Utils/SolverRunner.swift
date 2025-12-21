@@ -8,8 +8,6 @@ public struct SolverRunner {
     self.solver = solver
   }
 
-  public typealias Print = (String) -> Void
-
   public typealias Solver = () throws -> Void
 
   let solver: Solver
