@@ -116,14 +116,47 @@ extension ZeroBufferIOReader {
   }
 }
 
+public struct IOBufferPolicy {
+  public var minCapacity: Int
+  public var maxCapacity: Int
+  nonisolated(unsafe)
+  public static let `default` = IOBufferPolicy(
+    minCapacity: 16,
+    maxCapacity: 1 << 20
+  )
+}
+
+public enum IOConfig {
+  nonisolated(unsafe)
+  public static var bufferPolicy = IOBufferPolicy.default
+}
+
 @usableFromInline
-protocol VariableBufferIOReader: IOReader {
-  associatedtype BufferElement: FixedWidthInteger
+protocol VariableBuffer {
+  associatedtype BufferElement
+  var buffer: [BufferElement] { get set }
+}
+
+extension VariableBuffer {
+  
+  @inlinable
+  @inline(__always)
+  mutating func resetBufferIfNeeded() {
+    let policy = IOConfig.bufferPolicy
+    if buffer.capacity > policy.maxCapacity {
+      buffer = []
+      buffer.reserveCapacity(policy.minCapacity)
+    }
+  }
+}
+
+@usableFromInline
+protocol VariableBufferIOReader: IOReader, VariableBuffer where BufferElement: FixedWidthInteger {
   var buffer: [BufferElement] { get set }
 }
 
 extension VariableBufferIOReader {
-
+  
   @inlinable
   @inline(__always)
   mutating func read<T>(
@@ -135,6 +168,7 @@ extension VariableBufferIOReader {
       buffer.append(current)
       current = nullIfEOF(getchar_unlocked())
     }
+    defer { resetBufferIfNeeded() }
     return try f(buffer, current).unwrap(or: IOReaderError.unexpectedNil)
   }
 
@@ -153,6 +187,7 @@ extension VariableBufferIOReader {
       }
       buffer.append(lastByte)
     }
+    defer { resetBufferIfNeeded() }
     return buffer
   }
 }
@@ -282,8 +317,6 @@ struct _atof: InstanceIOReader {
     public static var instance = Self()
 }
 
-let bufferCapcity = 16
-
 @usableFromInline
 struct _atob: VariableBufferIOReader, InstanceIOReader {
 
@@ -292,14 +325,14 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { b, c in b }
+    return try read { b, c in b }
   }
 
   @inlinable
@@ -322,14 +355,14 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 }
 
 @usableFromInline
-struct _atoc: InstanceIOReader {
+struct _atoc: InstanceIOReader, VariableBuffer {
 
   @usableFromInline
   typealias Element = [Character]
 
   public var buffer: [Character] = {
     var b = [Character]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
@@ -342,6 +375,7 @@ struct _atoc: InstanceIOReader {
       buffer.append(Character(UnicodeScalar(current)))
       current = nullIfEOF(getchar_unlocked())
     }
+    defer { resetBufferIfNeeded() }
     return (buffer, current)
   }
 
@@ -372,6 +406,7 @@ struct _atoc: InstanceIOReader {
       }
       buffer.append(Character(UnicodeScalar(lastByte)))
     }
+    defer { resetBufferIfNeeded() }
     return buffer
   }
 
@@ -394,7 +429,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
