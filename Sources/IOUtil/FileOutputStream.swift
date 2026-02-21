@@ -1,4 +1,4 @@
-@preconcurrency import Foundation
+import Foundation
 
 /// これが特別速い訳では無く、printと同程度の速度
 public typealias FileOutputStream = FileOutputStream_putchar_unlockd
