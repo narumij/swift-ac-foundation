@@ -116,19 +116,23 @@ extension ZeroBufferIOReader {
   }
 }
 
-public struct IOBufferPolicy {
-  public var minCapacity: Int
-  public var maxCapacity: Int
-  nonisolated(unsafe)
-  public static let `default` = IOBufferPolicy(
-    minCapacity: 16,
-    maxCapacity: 1 << 20
-  )
-}
-
 public enum IOConfig {
   nonisolated(unsafe)
-  public static var bufferPolicy = IOBufferPolicy.default
+    public static var bufferPolicy = BufferPolicy.default
+}
+
+extension IOConfig {
+
+  public struct BufferPolicy {
+    public var minCapacity: Int
+    public var maxCapacity: Int
+    public static var `default`: BufferPolicy {
+      BufferPolicy(
+        minCapacity: 16,
+        maxCapacity: 1 << 20
+      )
+    }
+  }
 }
 
 @usableFromInline
@@ -138,14 +142,14 @@ protocol VariableBuffer {
 }
 
 extension VariableBuffer {
-  
+
   @inlinable
   @inline(__always)
   mutating func resetBufferIfNeeded() {
     let policy = IOConfig.bufferPolicy
     if buffer.capacity > policy.maxCapacity {
       buffer = []
-      buffer.reserveCapacity(policy.minCapacity)
+      buffer.reserveCapacity(policy.maxCapacity)
     }
   }
 }
@@ -156,7 +160,7 @@ protocol VariableBufferIOReader: IOReader, VariableBuffer where BufferElement: F
 }
 
 extension VariableBufferIOReader {
-  
+
   @inlinable
   @inline(__always)
   mutating func read<T>(
