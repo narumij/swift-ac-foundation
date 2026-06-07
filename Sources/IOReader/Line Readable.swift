@@ -14,6 +14,12 @@ extension Collection where Element: LineReadable {
   public static func readLine() throws -> [Element] {
     try readLine(Element._readWithSeparator)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func stdin() -> [Element] {
+    try! readLine()
+  }
 }
 
 extension Collection where Element == [Character] {
@@ -23,6 +29,12 @@ extension Collection where Element == [Character] {
   public static func readLine() throws -> [Element] {
     try readLine(Element._readWithSeparator)
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func stdin() -> [Element] {
+    try! readLine()
+  }
 }
 
 extension Collection where Element == [UInt8] {
@@ -31,6 +43,12 @@ extension Collection where Element == [UInt8] {
   @inline(__always)
   public static func readLine() throws -> [Element] {
     try readLine(Element._readWithSeparator)
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func stdin() -> [Element] {
+    try! readLine()
   }
 }
 
@@ -43,6 +61,12 @@ extension Collection where Element == Character {
   public static func readLine(strippingNewline: Bool = true) -> [Element]? {
     Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
   }
+  
+  @inlinable
+  @inline(__always)
+  public static func stdin() -> [Element] {
+    readLine()!
+  }
 }
 
 extension Collection where Element == UInt8 {
@@ -51,6 +75,12 @@ extension Collection where Element == UInt8 {
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Element]? {
     Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
+  }
+  
+  @inlinable
+  @inline(__always)
+  public static func stdin() -> [Element] {
+    readLine()!
   }
 }
 
