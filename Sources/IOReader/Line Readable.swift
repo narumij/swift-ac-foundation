@@ -24,30 +24,32 @@ extension Collection where Element: LineReadable {
 
 extension Collection where Element == [Character] {
 
+  // 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func readLine() throws -> [Element] {
+  public static func readLine() throws -> [[Character]] {
     try readLine(Element._readWithSeparator)
   }
   
   @inlinable
   @inline(__always)
-  public static func stdin() -> [Element] {
+  public static func stdin() -> [[Character]] {
     try! readLine()
   }
 }
 
 extension Collection where Element == [UInt8] {
 
+  // 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func readLine() throws -> [Element] {
+  public static func readLine() throws -> [[UInt8]] {
     try readLine(Element._readWithSeparator)
   }
   
   @inlinable
   @inline(__always)
-  public static func stdin() -> [Element] {
+  public static func stdin() -> [[UInt8]] {
     try! readLine()
   }
 }

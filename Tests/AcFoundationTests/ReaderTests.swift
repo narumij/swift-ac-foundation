@@ -1626,7 +1626,7 @@ final class ReaderTests: XCTestCase {
         print(A)
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .stdin()
+        let C: [String] = .stdin() // 部分を読んでも後続が行末まで読めること
         XCTAssertEqual(C, ["Foo", "Bar"])
       })
       .run(
