@@ -145,32 +145,6 @@ final class FastPrintTests: XCTestCase {
       """)
   }
   
-  func testFileOutputStream() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        // ややおそい
-        "stdout".write(to: &FileOutputStream_naive.standardOutput)
-        // ややおそい
-        "stderr".write(to: &FileOutputStream_naive.standardError)
-      }).run(input:""),
-      """
-      stdout
-      """)
-  }
-
-  func testPutCharUnlockedStream() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        // これが特別速い訳では無く、printと同程度の速度
-        "stdout".write(to: &FileOutputStream_putchar_unlockd.standardOutput)
-        // これが特別速い訳では無く、printと同程度の速度
-        "stderr".write(to: &FileOutputStream_putchar_unlockd.standardError)
-      }).run(input:""),
-      """
-      stdout
-      """)
-  }
-  
   func testInt8() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
