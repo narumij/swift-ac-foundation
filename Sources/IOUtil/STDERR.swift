@@ -1,7 +1,11 @@
 import Foundation
 
+/*
+ @preconcurrency で迷走して一時削除していたが、一番シンプルなので復活することにした
+ */
+
 #if os(macOS) || os(iOS)
-  @preconcurrency import Darwin
+  @preconcurrency import Darwin.C
 #elseif canImport(Glibc)
   @preconcurrency import Glibc
 #elseif canImport(Musl)
