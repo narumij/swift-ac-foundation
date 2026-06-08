@@ -634,9 +634,9 @@ final class ReaderTests: XCTestCase {
         XCTAssertEqual(UInt.stdin, i)
       })
       .inputOnly(
-          """
-          \(i)
-          """)
+        """
+        \(i)
+        """)
     }
   }
 
@@ -1576,8 +1576,26 @@ final class ReaderTests: XCTestCase {
       Takahashi Aoki
       Tanaka Aoi Foo Bar
       """)
+
+    _ = try SolverRunner(solver: {
+      let A = Swift.readLine()
+      XCTAssertEqual(A, "Takahashi Aoki")
+    })
+    .run(input: "Takahashi Aoki")
+
+    _ = try SolverRunner(solver: {
+      let A = [Character].readLine()!
+      XCTAssertEqual(A, "Takahashi Aoki".map { $0 })
+    })
+    .run(input: "Takahashi Aoki")
+    
+    _ = try SolverRunner(solver: {
+      let A = [UInt8].readLine()!
+      XCTAssertEqual(A, "Takahashi Aoki".asciiValues)
+    })
+    .run(input: "Takahashi Aoki")
   }
-  
+
   func testReadLine2() throws {
 
     XCTAssertEqual(
@@ -1626,7 +1644,7 @@ final class ReaderTests: XCTestCase {
         print(A)
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .stdin() // 部分を読んでも後続が行末まで読めること
+        let C: [String] = .stdin()  // 部分を読んでも後続が行末まで読めること
         XCTAssertEqual(C, ["Foo", "Bar"])
       })
       .run(
@@ -1680,47 +1698,49 @@ final class ReaderTests: XCTestCase {
       ["Takahashi", "Aoki"]
       """)
 
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A = String(bytes: [UInt8].stdin(), encoding: .ascii)!
-        let B = String([Character].stdin())
-        print(A)
-        print(B)
-        XCTAssertEqual(A, "Takahashi Aoki")
-        XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
-      })
-      .run(
-        input:
-          """
-          Takahashi Aoki
-          Tanaka Aoi Foo Bar
-          """),
+    #if false
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          let A = String(bytes: [UInt8].stdin(), encoding: .ascii)!
+          let B = String([Character].stdin())
+          print(A)
+          print(B)
+          XCTAssertEqual(A, "Takahashi Aoki")
+          XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
+        })
+        .run(
+          input:
+            """
+            Takahashi Aoki
+            Tanaka Aoi Foo Bar
+            """),
 
-      """
-      Takahashi Aoki
-      Tanaka Aoi Foo Bar
-      """)
+        """
+        Takahashi Aoki
+        Tanaka Aoi Foo Bar
+        """)
 
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A = String([Character].stdin())
-        let B = String(bytes: [UInt8].stdin(), encoding: .ascii)!
-        print(A)
-        print(B)
-        XCTAssertEqual(A, "Takahashi Aoki")
-        XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
-      })
-      .run(
-        input:
-          """
-          Takahashi Aoki
-          Tanaka Aoi Foo Bar
-          """),
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          let A = String([Character].stdin())
+          let B = String(bytes: [UInt8].stdin(), encoding: .ascii)!
+          print(A)
+          print(B)
+          XCTAssertEqual(A, "Takahashi Aoki")
+          XCTAssertEqual(B, "Tanaka Aoi Foo Bar")
+        })
+        .run(
+          input:
+            """
+            Takahashi Aoki
+            Tanaka Aoi Foo Bar
+            """),
 
-      """
-      Takahashi Aoki
-      Tanaka Aoi Foo Bar
-      """)
+        """
+        Takahashi Aoki
+        Tanaka Aoi Foo Bar
+        """)
+    #endif
   }
 
   func testTuple1() throws {

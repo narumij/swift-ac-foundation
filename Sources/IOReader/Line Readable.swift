@@ -1,4 +1,5 @@
 import Foundation
+import _FastIO
 
 public protocol LineReadable: SingleReadable {
 
@@ -8,13 +9,13 @@ public protocol LineReadable: SingleReadable {
 // MARK: - LineReadable.readLine()
 
 extension Collection where Element: LineReadable {
-  
+
   @inlinable
   @inline(__always)
   public static func readLine() throws -> [Element] {
     try readLine(Element._readWithSeparator)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func stdin() -> [Element] {
@@ -30,7 +31,7 @@ extension Collection where Element == [Character] {
   public static func readLine() throws -> [[Character]] {
     try readLine(Element._readWithSeparator)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func stdin() -> [[Character]] {
@@ -46,7 +47,7 @@ extension Collection where Element == [UInt8] {
   public static func readLine() throws -> [[UInt8]] {
     try readLine(Element._readWithSeparator)
   }
-  
+
   @inlinable
   @inline(__always)
   public static func stdin() -> [[UInt8]] {
@@ -60,14 +61,33 @@ extension Collection where Element == Character {
 
   @inlinable
   @inline(__always)
-  public static func readLine(strippingNewline: Bool = true) -> [Element]? {
-    Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func stdin() -> [Element] {
-    readLine()!
+  public static func readLine(strippingNewline: Bool = true) -> [Character]? {
+    #if true
+      var utf8Start: UnsafeMutablePointer<UInt8>?
+      let utf8Count = _readLine_stdin(&utf8Start)
+      defer {
+        _free(utf8Start)
+      }
+      guard utf8Count > 0, let utf8Start else {
+        return nil
+      }
+      var count = utf8Count
+      if strippingNewline,
+        utf8Start[count - 1] == .LF
+      {
+        count -= 1
+      }
+      let result = [Character].init(unsafeUninitializedCapacity: count) {
+        buffer, initializedCount in
+        initializedCount = count
+        for i in 0..<count {
+          buffer.initializeElement(at: i, to: Character(UnicodeScalar(utf8Start[i])))
+        }
+      }
+      return result
+    #else
+      Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
+    #endif
   }
 }
 
@@ -75,14 +95,31 @@ extension Collection where Element == UInt8 {
 
   @inlinable
   @inline(__always)
-  public static func readLine(strippingNewline: Bool = true) -> [Element]? {
-    Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
-  }
-  
-  @inlinable
-  @inline(__always)
-  public static func stdin() -> [Element] {
-    readLine()!
+  public static func readLine(strippingNewline: Bool = true) -> [UInt8]? {
+    #if true
+      var utf8Start: UnsafeMutablePointer<UInt8>?
+      let utf8Count = _readLine_stdin(&utf8Start)
+      defer {
+        _free(utf8Start)
+      }
+      guard utf8Count > 0, let utf8Start else {
+        return nil
+      }
+      var count = utf8Count
+      if strippingNewline,
+        utf8Start[count - 1] == .LF
+      {
+        count -= 1
+      }
+      let result = [UInt8].init(unsafeUninitializedCapacity: count) {
+        buffer, initializedCount in
+        initializedCount = count
+        buffer.baseAddress?.initialize(from: utf8Start, count: count)
+      }
+      return result
+    #else
+      Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
+    #endif
   }
 }
 

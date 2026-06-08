@@ -26,15 +26,16 @@ let package = Package(
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
     .target(
-      name: "IOReader",
-      swiftSettings: _settings),
-    .target(
       name: "_FastIO",
       publicHeadersPath: "include",
       cSettings: [
         .headerSearchPath("include"),
         .define("NDEBUG", .when(configuration: .release)),
       ]),
+    .target(
+      name: "IOReader",
+      dependencies: ["_FastIO"],
+      swiftSettings: _settings),
     .target(
       name: "IOUtil",
       dependencies: ["_FastIO"],
