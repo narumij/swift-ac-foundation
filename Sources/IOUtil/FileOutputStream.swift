@@ -1,9 +1,15 @@
 import Foundation
 
+/*
+ @preconcurrencyまわりで迷走して間に合わせで用意したが、使いにくいので非推奨とする
+ */
+
 /// これが特別速い訳では無く、printと同程度の速度
+@available(*, deprecated)
 public typealias FileOutputStream = FileOutputStream_putchar_unlockd
 
 /// writeで定数倍の負担がかかる
+@available(*, deprecated)
 public struct FileOutputStream_naive: TextOutputStream {
 
   @usableFromInline let fileHandle: FileHandle
@@ -26,6 +32,7 @@ public struct FileOutputStream_naive: TextOutputStream {
 }
 
 /// これが特別速い訳では無く、printと同程度の速度
+@available(*, deprecated)
 public struct FileOutputStream_putchar_unlockd {
   
   public struct StandardOutput: TextOutputStream {
