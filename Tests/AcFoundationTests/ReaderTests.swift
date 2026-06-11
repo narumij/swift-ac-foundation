@@ -1588,7 +1588,7 @@ final class ReaderTests: XCTestCase {
       XCTAssertEqual(A, "Takahashi Aoki".map { $0 })
     })
     .run(input: "Takahashi Aoki")
-    
+
     _ = try SolverRunner(solver: {
       let A = [UInt8].readLine()!
       XCTAssertEqual(A, "Takahashi Aoki".asciiValues)
@@ -1765,24 +1765,27 @@ final class ReaderTests: XCTestCase {
   }
 
   func testPack() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A: Pack<Character, [Character], Double> = try .read()
-        print(String([A.rawValue.0]))
-        print(String(A.rawValue.1))
-        print(A.rawValue.2)
-      })
-      .run(
-        input:
-          """
-          A BB 111
-          """),
+    if #available(macOS 14.0, *) {
 
-      """
-      A
-      BB
-      111.0
-      """)
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          let A: Pack<Character, [Character], Double> = try .read()
+          print(String([A.rawValue.0]))
+          print(String(A.rawValue.1))
+          print(A.rawValue.2)
+        })
+        .run(
+          input:
+            """
+            A BB 111
+            """),
+
+        """
+        A
+        BB
+        111.0
+        """)
+    }
   }
 
   #if DEBUG

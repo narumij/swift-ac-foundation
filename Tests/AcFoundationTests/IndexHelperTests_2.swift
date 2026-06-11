@@ -6,8 +6,8 @@
 //
 
 import Miscellaneous
-import XCTest
 import Pack
+import XCTest
 
 final class IndexHelperTests_2: XCTestCase {
 
@@ -56,14 +56,17 @@ final class IndexHelperTests_2: XCTestCase {
     XCTAssertEqual(5, transposed[1, 1])
     XCTAssertEqual(6, transposed[1, 2])
     XCTAssertEqual(7, transposed[1, 3])
-    XCTAssertEqual(Pack(0, 0), Pack(rawValue: transposed.position(at: 0)))
-    XCTAssertEqual(Pack(0, 1), Pack(rawValue: transposed.position(at: 1)))
-    XCTAssertEqual(Pack(0, 2), Pack(rawValue: transposed.position(at: 2)))
-    XCTAssertEqual(Pack(0, 3), Pack(rawValue: transposed.position(at: 3)))
-    XCTAssertEqual(Pack(1, 0), Pack(rawValue: transposed.position(at: 4)))
-    XCTAssertEqual(Pack(1, 1), Pack(rawValue: transposed.position(at: 5)))
-    XCTAssertEqual(Pack(1, 2), Pack(rawValue: transposed.position(at: 6)))
-    XCTAssertEqual(Pack(1, 3), Pack(rawValue: transposed.position(at: 7)))
+
+    if #available(macOS 14.0, *) {
+      XCTAssertEqual(Pack(0, 0), Pack(rawValue: transposed.position(at: 0)))
+      XCTAssertEqual(Pack(0, 1), Pack(rawValue: transposed.position(at: 1)))
+      XCTAssertEqual(Pack(0, 2), Pack(rawValue: transposed.position(at: 2)))
+      XCTAssertEqual(Pack(0, 3), Pack(rawValue: transposed.position(at: 3)))
+      XCTAssertEqual(Pack(1, 0), Pack(rawValue: transposed.position(at: 4)))
+      XCTAssertEqual(Pack(1, 1), Pack(rawValue: transposed.position(at: 5)))
+      XCTAssertEqual(Pack(1, 2), Pack(rawValue: transposed.position(at: 6)))
+      XCTAssertEqual(Pack(1, 3), Pack(rawValue: transposed.position(at: 7)))
+    }
   }
 
   func testPerformanceExample() throws {

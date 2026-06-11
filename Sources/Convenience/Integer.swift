@@ -5,10 +5,10 @@ import Pack
 public func factorial<Number>(_ n: Number) -> Number
 where Number: Numeric & Hashable & ExpressibleByIntegerLiteral & Comparable {
 
-  var memo: [Pack<Number>: Number] = .init()
+  var memo: [Number: Number] = .init()
 
   func factorial(_ n: Number) -> Number {
-    let args = Pack(n)
+    let args = n
     if let result = memo[args] {
       return result
     }
