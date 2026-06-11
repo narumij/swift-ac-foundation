@@ -23,17 +23,20 @@ final class ExtraReaderTests: XCTestCase {
 
   func testRead1() throws {
     _ = try SolverRunner(solver: {
-      let A = modint998244353.stdin
-      XCTAssertEqual(A, 3)
-      let B = modint998244353.stdin
-      XCTAssertEqual(B, -1)
-      XCTAssertEqual(B.val, modint998244353.mod - 1)
+      XCTAssertEqual(modint998244353.stdin, 0)
+      XCTAssertEqual(modint998244353.stdin, 3)
+      XCTAssertEqual(modint998244353.stdin.val, modint998244353.mod - 1)
+      XCTAssertEqual(modint998244353.stdin.val, modint998244353.mod - 1)
+      XCTAssertEqual(modint998244353.stdin.val, 0)
     })
     .run(
       input:
         """
+        0
         3
         -1
+        \(modint998244353.mod - 1)
+        \(modint998244353.mod)
         """)
   }
 
@@ -50,5 +53,81 @@ final class ExtraReaderTests: XCTestCase {
         3
         -1
         """)
+  }
+  
+  @available(macOS 15.0, *)
+  func testRead3() throws {
+    _ = try SolverRunner(solver: {
+      let A = UInt128.stdin
+      XCTAssertEqual(A, 3)
+      let B = Int128.stdin
+      XCTAssertEqual(B, -1)
+    })
+    .run(
+      input:
+        """
+        3
+        -1
+        """)
+  }
+  
+  @available(macOS 15.0, *)
+  func testInt128() throws {
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(Int128.stdin)
+        print(Int128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(Int128.max)
+          \(Int128.min)
+          """),
+      """
+      \(Int128.max)
+      \(Int128.min)
+      """)
+  }
+
+  @available(macOS 15.0, *)
+  func testUInt128() throws {
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(UInt128.stdin)
+      })
+      .run(
+        input:
+          """
+          \(UInt128.max)
+          """),
+      """
+      \(UInt128.max)
+      """)
+  }
+
+  @available(macOS 15.0, *)
+  func testBigInt() throws {
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        print(BigInt.stdin)
+        print(BigInt.stdin)
+        print(BigInt.stdin)
+      })
+      .run(
+        input:
+          """
+          \(Int128.max)
+          \(Int128.min)
+          \(UInt128.max)
+          """),
+      """
+      \(Int128.max)
+      \(Int128.min)
+      \(UInt128.max)
+      """)
   }
 }

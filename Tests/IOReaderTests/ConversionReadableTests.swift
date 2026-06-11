@@ -1,6 +1,5 @@
-import BigInt
-import XCTest
 import TestingUtil
+import XCTest
 
 #if DEBUG
   @testable import IOReader
@@ -15,22 +14,22 @@ extension UInt: IOStringConversionReadable {
   static public func convert(from: String) -> UInt { .init(from)! }
 }
 
-#if false
-extension Int128: IOStringConversionReadable {
-  @inlinable @inline(__always)
-  public static func convert(from: String) -> Self { .init(from)! }
-}
+//@available(macOS 15.0, *)
+//extension Int128: IOStringConversionReadable {
+//  @inlinable @inline(__always)
+//  public static func convert(from: String) -> Self { .init(from)! }
+//}
+//
+//@available(macOS 15.0, *)
+//extension UInt128: IOStringConversionReadable {
+//  @inlinable @inline(__always)
+//  public static func convert(from: String) -> Self { .init(from)! }
+//}
 
-extension UInt128: IOStringConversionReadable {
-  @inlinable @inline(__always)
-  public static func convert(from: String) -> Self { .init(from)! }
-}
-#endif
-
-extension BigInt: IOStringConversionReadable {
-  @inlinable @inline(__always)
-  public static func convert(from: String) -> Self { .init(from)! }
-}
+//extension BigInt: IOStringConversionReadable {
+//  @inlinable @inline(__always)
+//  public static func convert(from: String) -> Self { .init(from)! }
+//}
 
 //extension BigInt: IOIntegerConversionReadable {
 //  @inlinable @inline(__always)
@@ -82,7 +81,7 @@ final class ConversionReadableTests: XCTestCase {
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
-  
+
   func testIntegerStub() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -96,7 +95,7 @@ final class ConversionReadableTests: XCTestCase {
       """
       \(Int.max)
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         try [IntegerStub].readLine().forEach { print($0.value) }
@@ -140,7 +139,7 @@ final class ConversionReadableTests: XCTestCase {
       """
       \(Int.max)
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         try [StringStub].readLine().forEach { print($0.value) }
@@ -169,7 +168,7 @@ final class ConversionReadableTests: XCTestCase {
       """
       \(Int.max)
       """)
-    
+
     XCTAssertEqual(
       try SolverRunner(solver: {
         try [BytesStub].readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
@@ -201,64 +200,64 @@ final class ConversionReadableTests: XCTestCase {
       """)
   }
 
-#if false
-  func testInt128() throws {
+  #if false
+    func testInt128() throws {
 
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(Int128.stdin)
-        print(Int128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(Int128.max)
-          \(Int128.min)
-          """),
-      """
-      \(Int128.max)
-      \(Int128.min)
-      """)
-  }
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          print(Int128.stdin)
+          print(Int128.stdin)
+        })
+        .run(
+          input:
+            """
+            \(Int128.max)
+            \(Int128.min)
+            """),
+        """
+        \(Int128.max)
+        \(Int128.min)
+        """)
+    }
 
-  func testUInt128() throws {
+    func testUInt128() throws {
 
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(UInt128.stdin)
-      })
-      .run(
-        input:
-          """
-          \(UInt128.max)
-          """),
-      """
-      \(UInt128.max)
-      """)
-  }
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          print(UInt128.stdin)
+        })
+        .run(
+          input:
+            """
+            \(UInt128.max)
+            """),
+        """
+        \(UInt128.max)
+        """)
+    }
 
-  func testBigInt() throws {
+    func testBigInt() throws {
 
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        print(BigInt.stdin)
-        print(BigInt.stdin)
-        print(BigInt.stdin)
-      })
-      .run(
-        input:
-          """
-          \(Int128.max)
-          \(Int128.min)
-          \(UInt128.max)
-          """),
-      """
-      \(Int128.max)
-      \(Int128.min)
-      \(UInt128.max)
-      """)
-  }
-#endif
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          print(BigInt.stdin)
+          print(BigInt.stdin)
+          print(BigInt.stdin)
+        })
+        .run(
+          input:
+            """
+            \(Int128.max)
+            \(Int128.min)
+            \(UInt128.max)
+            """),
+        """
+        \(Int128.max)
+        \(Int128.min)
+        \(UInt128.max)
+        """)
+    }
+  #endif
 
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
