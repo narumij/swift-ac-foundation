@@ -1,9 +1,9 @@
 @preconcurrency import Foundation
 
 #if os(Linux)
-  import Glibc  // dup, dup2, open, close
+  @preconcurrency import Glibc  // dup, dup2, open, close
 #else
-  import Darwin
+  @preconcurrency import Darwin
 #endif
 
 /// 与えられたファイルを標準入力として一時的にバインドし、
@@ -14,7 +14,7 @@
 ///   - body: 差し替えた状態で実行したいクロージャ
 /// - Throws: ファイルが開けない/dup に失敗した場合の POSIX エラー
 @inline(__always)
-func withStdinRedirected<T>(
+public func withStdinRedirected<T>(
   to url: URL,
   _ body: () throws -> T
 ) throws -> T {
@@ -55,7 +55,7 @@ func withStdinRedirected<T>(
 
 private let fdLock = NSLock()
 
-func withStdinRedirectedThreadSafe<T>(to url: URL, _ body: () throws -> T) throws -> T {
+public func withStdinRedirectedThreadSafe<T>(to url: URL, _ body: () throws -> T) throws -> T {
   fdLock.lock()
   defer { fdLock.unlock() }
   return try withStdinRedirected(to: url, body)

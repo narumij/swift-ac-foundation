@@ -1,6 +1,7 @@
 import UInt8Util
 import IOUtil
 import XCTest
+import TestingUtil
 
 final class UInt8ExtensionsTests: XCTestCase {
 

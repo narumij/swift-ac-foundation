@@ -1,6 +1,7 @@
 import XCTest
 import CharacterUtil
 import UInt8Util
+import TestingUtil
 
 final class CharacterSequenceComparisonTests: XCTestCase {
 

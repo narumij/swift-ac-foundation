@@ -33,6 +33,9 @@ let package = Package(
     .package(
       url: "https://github.com/attaswift/BigInt",
       from: "5.7.0"),
+    .package(
+      url: "https://github.com/narumij/swift-ac-library",
+      branch: "develop/after2025/0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -48,6 +51,15 @@ let package = Package(
       name: "IOReader",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
+    .target(
+      name: "IOReaderExtra",
+      dependencies: [
+        "IOReader",
+        .product(name: "BigInt", package: "BigInt"),
+        .product(name: "AtCoder", package: "swift-ac-library"),
+      ],
+      swiftSettings: _settings
+    ),
     .target(
       name: "IOUtil",
       dependencies: ["_FastIO"],
@@ -107,6 +119,12 @@ let package = Package(
       ],
       swiftSettings: _settings),
     .target(
+      name: "TestingUtil",
+      dependencies: [
+        .product(name: "Algorithms", package: "swift-algorithms")
+      ],
+      swiftSettings: _settings),
+    .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
@@ -120,12 +138,14 @@ let package = Package(
         "Miscellaneous",
         "Convenience",
         "MT19937",
+        "TestingUtil",
       ],
       swiftSettings: _settings
     ),
     .testTarget(
       name: "AcFoundationTests",
       dependencies: [
+        "TestingUtil",
         "IOReader",
         "IOUtil",
         "Bisect",
@@ -140,8 +160,26 @@ let package = Package(
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "IOReaderTests",
+      dependencies: [
+        "TestingUtil",
+        "IOReader",
+        "UInt8Util",
+        "Pack",
+      ],
       resources: [
         .copy("Resources")
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "IOReaderExtraTests",
+      dependencies: [
+        "TestingUtil",
+        "IOReaderExtra",
       ],
       swiftSettings: _settings
     ),
