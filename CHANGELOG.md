@@ -5,6 +5,109 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Added
+- `IOConfig.BufferPolicy`を追加し、IOReaderの可変長バッファ容量を制御可能に変更
+- `Int128`と`UInt128`のIOReader対応を追加（macOS 15.0以降）
+- `Collection.readLine()`系に`stdin()`ショートカットを追加
+- `Array.resize(_:_:)`、`Array.resized`、`BigInt`向けの`**`を追加
+- `TakahashiAokiDraw`、`correct`/`incorrect`、`Success`/`Failure`などの出力補助を追加
+
+### Changed
+- Swift tools versionを6.2へ更新し、Packageのplatform指定を外す方向へ調整
+- `fastPrint`の引数名を`terminater`から`terminator`へ修正し、旧APIを非推奨化
+- `String.init(ascii:)`を`String.init(asciiValues:)`へリネームし、旧APIを非推奨化
+- 1次元`prefixSum`を`reductions`推奨として非推奨化
+- `Pack`にmacOS 14.0以降のavailabilityを付与
+- IOReader内部の`Error`を`IOReaderError`へリネーム
+- `[Character]`/`[UInt8]`の`readLine(strippingNewline:)`を`_FastIO`ベースの実装へ変更
+- CI対象ブランチに`compatible/AtCoder/2025`を追加
+
+### Removed
+- `FileOutputStream`を削除
+
+### Fixed
+- `geline.swift`を`getline.swift`へリネーム
+- IOReaderの可変長バッファが大きくなり続ける問題を修正
+- `stderr`/`stdout`向け`FILE`ポインタの`TextOutputStream`対応を復帰
+
+## [0.1.34] - 2025-9-23
+### Added
+- `Pack2`と`Pack3`を追加
+
+## [0.1.33] - 2025-9-14
+### Added
+- `getline`、`readIntLine`、`readUIntLine`を追加
+- `Character`と`UInt8`の`readLine(strippingNewline:)`を追加
+### Changed
+- `_FastPrint`を`_FastIO`へ統合し、行読み込み用のC実装を追加
+
+## [0.1.32] - 2025-9-4
+### Added
+- `mt19937_64`に`Sendable`適合を追加
+
+## [0.1.31] - 2025-9-3
+### Added
+- `Pack`に`Sendable`適合を追加
+
+## [0.1.30] - 2025-8-30
+### Added
+- `FileOutputStream`を追加
+- `fastPrint`にASCII配列と`Character`配列の出力を追加
+### Changed
+- `Foundation`の`@preconcurrency` importを通常のimportへ変更
+
+## [0.1.29] - 2025-8-15
+### Added
+- `StringUtil`ターゲットと`String`の整数添字アクセスを追加
+- `mt19937_64`乱数生成器を追加
+- `IndexHelper2D`の座標変換と転置用ヘルパーを追加
+### Changed
+- C/C++系ターゲットの公開ヘッダ設定とリリースビルド設定を調整
+
+## [0.1.28] - 2025-8-3
+#### Changed
+- READMEを更新
+
+## [0.1.27] - 2025-8-3
+#### Changed
+- Package設定とREADMEを更新
+
+## [0.1.25] - 2025-7-30
+### Changed
+- IOReaderの整数読み取り実装を整理
+- `_FastPrint`関連のヘッダ構成を調整
+
+## [0.1.24] - 2025-7-30
+### Added
+- `_FastPrint`ターゲットを追加し、`fastPrint`の整数出力をC実装へ移行
+### Changed
+- C++ラップ用ターゲット名を`_cxx`へ変更
+- BigIntの依存バージョンを5.7.0へ更新
+
+## [0.1.23] - 2025-7-28
+### Added
+- `Array`と`ArraySlice`の`resize`を追加
+- `UInt8`の文字種判定、ASCII変換、`putchars_unlocked`を追加
+- `IndexHelper2D`と`IndexHelper3D`を追加
+### Changed
+- IOReaderのバッファ処理を可変長バッファ方式へ変更
+- `Convenience`ターゲット名のスペルを修正
+- `bisect`系APIなどに`@inline(__always)`を追加
+
+## [0.1.22] - 2025-6-27
+### Added
+- `CharacterUtil`、`UInt8Util`、`Miscellaneous`、`Convenience`ターゲットを追加
+- `Character`と`UInt8`列の比較演算を追加
+- 競技プログラミング向けの補助関数、定数、配列生成、累積和、範囲演算、SIMD補助を追加
+
+## [0.1.21] - 2025-6-22
+### Added
+- `Pack`の`SingleReadable`適合を追加
+- タプル読み取り用の`read`と`stdin`を公開
+### Changed
+- `LineReadable.readLine()`を`throws`に変更
+
 ## [0.1.20] - 2025-6-21
 #### Changed
 - PackにCustomStringConvertible等を追加
