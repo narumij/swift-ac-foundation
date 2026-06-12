@@ -48,21 +48,32 @@ final class BinarySearchTests: XCTestCase {
   }
 
   func testBinarySearch() throws {
+    let range = 0..<10
 
-    XCTAssertEqual((0..<10).bisectLeft(-1), (0..<10).bisectLeft(-1) { $0 })
-    XCTAssertEqual((0..<10).bisectRight(-1), (0..<10).bisectRight(-1) { $0 })
+    XCTAssertEqual(range.bisectLeft(-1), 0)
+    XCTAssertEqual(range.bisectRight(-1), 0)
+    XCTAssertEqual(range.bisectLeft(-1) { $0 }, 0)
+    XCTAssertEqual(range.bisectRight(-1) { $0 }, 0)
 
-    XCTAssertEqual((0..<10).bisectLeft(0), (0..<10).bisectLeft(0) { $0 })
-    XCTAssertEqual((0..<10).bisectRight(0), (0..<10).bisectRight(0) { $0 })
+    XCTAssertEqual(range.bisectLeft(0), 0)
+    XCTAssertEqual(range.bisectRight(0), 1)
+    XCTAssertEqual(range.bisectLeft(0) { $0 }, 0)
+    XCTAssertEqual(range.bisectRight(0) { $0 }, 1)
 
-    XCTAssertEqual((0..<10).bisectLeft(5), (0..<10).bisectLeft(5) { $0 })
-    XCTAssertEqual((0..<10).bisectRight(5), (0..<10).bisectRight(5) { $0 })
+    XCTAssertEqual(range.bisectLeft(5), 5)
+    XCTAssertEqual(range.bisectRight(5), 6)
+    XCTAssertEqual(range.bisectLeft(5) { $0 }, 5)
+    XCTAssertEqual(range.bisectRight(5) { $0 }, 6)
 
-    XCTAssertEqual((0..<10).bisectLeft(9), (0..<10).bisectLeft(9) { $0 })
-    XCTAssertEqual((0..<10).bisectRight(9), (0..<10).bisectRight(9) { $0 })
+    XCTAssertEqual(range.bisectLeft(9), 9)
+    XCTAssertEqual(range.bisectRight(9), 10)
+    XCTAssertEqual(range.bisectLeft(9) { $0 }, 9)
+    XCTAssertEqual(range.bisectRight(9) { $0 }, 10)
 
-    XCTAssertEqual((0..<10).bisectLeft(10), (0..<10).bisectLeft(10) { $0 })
-    XCTAssertEqual((0..<10).bisectRight(10), (0..<10).bisectRight(10) { $0 })
+    XCTAssertEqual(range.bisectLeft(10), 10)
+    XCTAssertEqual(range.bisectRight(10), 10)
+    XCTAssertEqual(range.bisectLeft(10) { $0 }, 10)
+    XCTAssertEqual(range.bisectRight(10) { $0 }, 10)
   }
 
   func testMid() throws {
