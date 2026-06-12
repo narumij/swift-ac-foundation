@@ -7,6 +7,7 @@
 
 import XCTest
 import IOUtil
+import TestingUtil
 
 final class FastPrintTests: XCTestCase {
 

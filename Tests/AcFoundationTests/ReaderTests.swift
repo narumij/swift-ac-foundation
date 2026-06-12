@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import TestingUtil
 
 #if DEBUG
   @testable import IOReader
