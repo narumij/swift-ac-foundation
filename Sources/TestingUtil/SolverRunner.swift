@@ -49,10 +49,16 @@ public struct SolverRunner {
 
     fflush(stdout)
 
-    // パイプと標準出力のファイルディスクリプタを作成
-    var pipefd = [Int32](repeating: 0, count: 2)
-    pipe(&pipefd)
+    guard let outputFile = tmpfile() else {
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+    }
+    defer { fclose(outputFile) }
+
+    let outputFD = fileno(outputFile)
     var oldStdOut = dup(STDOUT_FILENO)
+    guard oldStdOut >= 0 else {
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+    }
 
     func restoreStdout() {
       guard oldStdOut >= 0 else { return }
@@ -62,30 +68,34 @@ public struct SolverRunner {
       oldStdOut = -1
     }
 
-    defer {
-      restoreStdout()
-      close(pipefd[0])
+    guard dup2(outputFD, STDOUT_FILENO) >= 0 else {
+      let error = errno
+      close(oldStdOut)
+      oldStdOut = -1
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(error))
     }
 
-    // 標準出力をパイプの書き込み端にリダイレクト
-    dup2(pipefd[1], STDOUT_FILENO)
-    close(pipefd[1])
+    defer {
+      restoreStdout()
+    }
 
     try body()
     restoreStdout()
 
-    // パイプから読み取る
+    fflush(outputFile)
+    fseek(outputFile, 0, SEEK_SET)
+
     var readBuffer = [UInt8](repeating: 0, count: 1024)
     var completeOutput = ""
 
     while true {
-      let bytesRead = read(pipefd[0], &readBuffer, readBuffer.count)
+      let bytesRead = read(outputFD, &readBuffer, readBuffer.count)
       if bytesRead > 0 {
-        // 読み取ったデータを文字列に変換して追加
         completeOutput += String(decoding: readBuffer.prefix(Int(bytesRead)), as: UTF8.self)
-      } else {
-        // もう読み取るデータがない場合
+      } else if bytesRead == 0 {
         break
+      } else if errno != EINTR {
+        throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
       }
     }
 

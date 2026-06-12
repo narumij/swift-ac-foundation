@@ -82,6 +82,64 @@ final class SolverRunnerTests: XCTestCase {
     XCTAssertEqual(try runner.outputOnly(), "after-throw")
   }
 
+  // pipe は読み手がいないまま容量を超えて書くと writer がブロックする。
+  // 修正前の `outputOnly` は solver 完了後に pipe を読んでいたため、大量出力でテストがハングし得た。
+  // capture 先を一時ファイルにしていれば、pipe 容量に依存せず最後まで出力を回収できる。
+  func testOutputOnlyCapturesOutputLargerThanPipeCapacity() throws {
+    let payload = String(repeating: "x", count: 256 * 1024)
+    let runner = SolverRunner {
+      print(payload)
+    }
+
+    XCTAssertEqual(try runner.outputOnly(), payload)
+  }
+
+  // `outputOnly` をネストしても、内側の実行後には stdout が外側の capture 先へ戻る必要がある。
+  // ここが壊れると `outer-after` が外側の出力に戻らず、内側の capture 先や実 stdout に流れる。
+  func testOutputOnlyCanBeNested() throws {
+    var innerOutput = ""
+    let outerRunner = SolverRunner {
+      print("outer-before")
+      let innerRunner = SolverRunner {
+        print("inner")
+      }
+      innerOutput = try innerRunner.outputOnly()
+      print("outer-after")
+    }
+
+    XCTAssertEqual(
+      try outerRunner.outputOnly(),
+      """
+      outer-before
+      outer-after
+      """)
+    XCTAssertEqual(innerOutput, "inner")
+  }
+
+  // `StdoutSilencer` の body が throw しても stdout は元の capture 先へ戻る必要がある。
+  // defer 復元が壊れると `after` が消えたり、以降の stdout が `/dev/null` に流れ続ける。
+  func testStdoutSilencerRestoresStdoutWhenBodyThrows() throws {
+    let runner = SolverRunner {
+      print("before")
+      XCTAssertThrowsError(
+        try StdoutSilencer.run {
+          print("hidden")
+          throw SampleError.expected
+        }
+      ) { error in
+        XCTAssertEqual(error as? SampleError, .expected)
+      }
+      print("after")
+    }
+
+    XCTAssertEqual(
+      try runner.outputOnly(),
+      """
+      before
+      after
+      """)
+  }
+
   // `inputOnly` の実行中に solver が throw しても、stdin は外側の入力へ戻る必要がある。
   // 修正前は `try solver()` の後にしか `stdin = backup` がなく、throw 経路で復元されなかった。
   // その結果、内側の `inputOnly("inner")` 後に外側の `outer` が読めず nil になっていた。
