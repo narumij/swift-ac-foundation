@@ -35,6 +35,16 @@ final class ReaderTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
+  func testRawReadLineStripsCRLF() throws {
+    try SolverRunner(solver: {
+      let bytes = [UInt8].readLine()!
+      let characters = [Character].readLine()!
+      XCTAssertEqual(bytes, Array("Takahashi Aoki".utf8))
+      XCTAssertEqual(String(characters), "Tanaka Aoi")
+    })
+    .inputOnly("Takahashi Aoki\r\nTanaka Aoi")
+  }
+
   func testOneLineFixtureInt() throws {
 
     let here = URL(fileURLWithPath: #filePath)

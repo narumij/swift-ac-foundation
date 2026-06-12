@@ -177,6 +177,19 @@ final class StringAsciiExtensionsTests: XCTestCase {
       DUMMY
       """)
   }
+
+  func test_readLineStripsCRLF() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let line: [UInt8] = readLine()!
+        print(String(bytes: line, encoding: .ascii)!)
+      })
+      .run(input: "Takahashi Aoki\r\nTanaka Aoi"),
+
+      """
+      Takahashi Aoki
+      """)
+  }
   
   func test_readLine5() throws {
     XCTAssertEqual(
@@ -195,6 +208,38 @@ final class StringAsciiExtensionsTests: XCTestCase {
       """)
   }
 
+  func test_readIntLineTreatsCRLFAsLineEnding() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let first: [Int] = readIntLine()
+        let second: [Int] = readIntLine()
+        print(first)
+        print(second)
+      })
+      .run(input: "-1 0 2\r\n3 4"),
+
+      """
+      [-1, 0, 2]
+      [3, 4]
+      """)
+  }
+
+  func test_readIntLineIgnoresTrailingSpaces() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let first: [Int] = readIntLine()
+        let second: [Int] = readIntLine()
+        print(first)
+        print(second)
+      })
+      .run(input: "-1 0 2  \n3 4"),
+
+      """
+      [-1, 0, 2]
+      [3, 4]
+      """)
+  }
+
   func test_readLine6() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
@@ -209,6 +254,38 @@ final class StringAsciiExtensionsTests: XCTestCase {
 
       """
       [1, 2, 3]
+      """)
+  }
+
+  func test_readUIntLineTreatsCRLFAsLineEnding() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let first: [UInt] = readUIntLine()
+        let second: [UInt] = readUIntLine()
+        print(first)
+        print(second)
+      })
+      .run(input: "1 0 2\r\n3 4"),
+
+      """
+      [1, 0, 2]
+      [3, 4]
+      """)
+  }
+
+  func test_readUIntLineIgnoresTrailingSpaces() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let first: [UInt] = readUIntLine()
+        let second: [UInt] = readUIntLine()
+        print(first)
+        print(second)
+      })
+      .run(input: "1 0 2  \n3 4"),
+
+      """
+      [1, 0, 2]
+      [3, 4]
       """)
   }
 }

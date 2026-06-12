@@ -41,7 +41,13 @@ extension Collection where Element == Character {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Element]? {
-    Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
+    guard var line = Swift.readLine(strippingNewline: strippingNewline) else {
+      return nil
+    }
+    if strippingNewline, line.last == "\r" {
+      line.removeLast()
+    }
+    return line.map { $0 }
   }
 }
 
@@ -50,7 +56,13 @@ extension Collection where Element == UInt8 {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Element]? {
-    Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
+    guard var line = Swift.readLine(strippingNewline: strippingNewline) else {
+      return nil
+    }
+    if strippingNewline, line.last == "\r" {
+      line.removeLast()
+    }
+    return line.compactMap { $0.asciiValue }
   }
 }
 
