@@ -140,6 +140,25 @@ final class SolverRunnerTests: XCTestCase {
       """)
   }
 
+  // stdin/stdout はプロセス全体で共有されるため、複数スレッドの `run(input:)` が同時に
+  // FD を差し替えると入力と出力が混ざる。TestingUtil 側の再帰ロックで直列化できていれば、
+  // 各 runner は自分の入力だけを読み、自分の出力だけを返す。
+  // `run(input:)` は内部で `outputOnly` から `inputOnly` を呼ぶため、通常のロックだと自己デッドロックする。
+  func testRunInputCanBeCalledConcurrently() throws {
+    let count = 32
+    let outputs = ConcurrentOutputs(count: count)
+
+    DispatchQueue.concurrentPerform(iterations: count) { index in
+      let runner = SolverRunner {
+        print(readLine() ?? "nil")
+      }
+      let output = try? runner.run(input: "value-\(index)")
+      outputs.set(output, at: index)
+    }
+
+    XCTAssertEqual(outputs.values, (0..<count).map { "value-\($0)" })
+  }
+
   // `inputOnly` の実行中に solver が throw しても、stdin は外側の入力へ戻る必要がある。
   // 修正前は `try solver()` の後にしか `stdin = backup` がなく、throw 経路で復元されなかった。
   // その結果、内側の `inputOnly("inner")` 後に外側の `outer` が読めず nil になっていた。
@@ -159,6 +178,27 @@ final class SolverRunnerTests: XCTestCase {
     }
 
     try outer.inputOnly("outer")
+  }
+
+  private final class ConcurrentOutputs: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: [String?]
+
+    init(count: Int) {
+      storage = Array(repeating: nil, count: count)
+    }
+
+    var values: [String?] {
+      lock.lock()
+      defer { lock.unlock() }
+      return storage
+    }
+
+    func set(_ value: String?, at index: Int) {
+      lock.lock()
+      storage[index] = value
+      lock.unlock()
+    }
   }
 
   private enum SampleError: Error, Equatable {

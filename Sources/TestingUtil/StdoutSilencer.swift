@@ -5,6 +5,9 @@ public struct StdoutSilencer {
 
   @inlinable
   public static func run(_ body: () throws -> Void) rethrows {
+    testingUtilFDLock.lock()
+    defer { testingUtilFDLock.unlock() }
+
     fflush(stdout)
 
     let saved = dup(STDOUT_FILENO)

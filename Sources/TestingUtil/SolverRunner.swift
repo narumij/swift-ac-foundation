@@ -1,6 +1,9 @@
 import Algorithms
 @preconcurrency import Foundation
 
+@usableFromInline
+let testingUtilFDLock = NSRecursiveLock()
+
 /// 競技プログラミング用の solver を、指定した標準入力で実行するための補助型。
 ///
 /// `run(input:)` は標準入力を差し替えて solver を実行し、標準出力に書き込まれた内容を文字列として返す。
@@ -46,6 +49,8 @@ public struct SolverRunner {
   }
 
   private func outputOnly(_ body: () throws -> Void) throws -> String {
+    testingUtilFDLock.lock()
+    defer { testingUtilFDLock.unlock() }
 
     fflush(stdout)
 
@@ -110,6 +115,9 @@ public struct SolverRunner {
   /// - Parameter input: solver に渡す標準入力の内容
   /// - Throws: solver が投げたエラー
   public func inputOnly(_ input: String) throws {
+    testingUtilFDLock.lock()
+    defer { testingUtilFDLock.unlock() }
+
     var input = input
     if input.last != "\n" {
       input.append("\n")

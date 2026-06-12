@@ -18,6 +18,8 @@ public func withStdinRedirected<T>(
   to url: URL,
   _ body: () throws -> T
 ) throws -> T {
+  testingUtilFDLock.lock()
+  defer { testingUtilFDLock.unlock() }
 
   // ① テスト用ファイルを開く
   let fd = open(url.path, O_RDONLY)
@@ -53,10 +55,6 @@ public func withStdinRedirected<T>(
   return try body()
 }
 
-private let fdLock = NSLock()
-
 public func withStdinRedirectedThreadSafe<T>(to url: URL, _ body: () throws -> T) throws -> T {
-  fdLock.lock()
-  defer { fdLock.unlock() }
-  return try withStdinRedirected(to: url, body)
+  try withStdinRedirected(to: url, body)
 }
