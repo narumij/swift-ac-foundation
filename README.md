@@ -7,18 +7,17 @@ English | [日本語](README.ja.md)
 
 ## Usage
 
-To use the `swift-ac-foundation` library in a SwiftPM project, add the following line to the `dependencies` section of your `Package.swift`:
+To use the swift-ac-foundation library in a SwiftPM project, add the following entry to `dependencies` in your `Package.swift` file.
 
 ```swift
 .package(
   url: "https://github.com/narumij/swift-ac-foundation",
-  branch: "compatible/AtCoder/2025"),
+   branch: "compatible/AtCoder/2025"),
 ```
 
-Specifying by tag may cause the build to be rejected due to the use of `unsafeFlags` (as in C++).  
-If necessary, please specify a revision directly.
+Specifying a tag can cause the build to be rejected because this package uses C++ `unsafeFlags`. If necessary, specify a revision directly.
 
-Add `AcFoundation` to your executable target dependencies:
+Add `AcFoundation` to the dependencies of your executable target.
 
 ```swift
 .target(name: "<target>", dependencies: [
@@ -26,7 +25,7 @@ Add `AcFoundation` to your executable target dependencies:
 ]),
 ```
 
-Import it in your source code:
+Import it in your source code.
 
 ```swift
 import AcFoundation
@@ -38,7 +37,7 @@ import AcFoundation
 
 ### IOReader
 
-#### Basic Usage
+#### Quick Start
 
 ```swift
 let N: Int = try read()
@@ -54,26 +53,26 @@ let G = try [String].readLine()
 let H = try [[Character]].readLine()
 ```
 
-The `readLine()` methods are roughly equivalent to the following, but they do not create intermediate Swift strings:
+The `readLine()` methods are roughly equivalent to the following code, but they do not create intermediate Swift strings.
 
 ```swift
 let A = readLine()!.components(separatedBy: " ").map { Int($0)! }
 let G = readLine()!.components(separatedBy: " ").map { $0 }
-let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map { $0 } }
+let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map{ $0 } }
 ```
 
 #### Details
 
-Adds a `stdin` property and `read()` function to the following types, which read from standard input up to whitespace or newline:
+For the following types, this package adds a `stdin` property and `read()` member functions that read from standard input up to a space or newline.
 
 - Fixed-width integers
 - Floating-point numbers
 - Strings
-- `[Character]`
-- `[UInt8]` (C-style character arrays)
+- Character arrays (`Character`)
+- C-style character arrays (`UInt8`)
 
-**Input delimiters**  
-Whitespace, tabs, and newlines are used as separators.
+**Input Separators**  
+Spaces, tabs, and newlines are used as separators.
 
 ```swift
 let N: Int = Int.stdin
@@ -83,7 +82,8 @@ let T: [Character] = [Character].stdin
 let U: [UInt8] = [UInt8].stdin
 ```
 
-**Example 1: Pair input**
+**Example 1: Pair Input**  
+For example, if the input is arranged as `H W`, you can write it as follows.
 
 ```swift
 let (H, W): (Int, Int) = try read()
@@ -101,18 +101,16 @@ let (H, W): (Int, Int) = (try .read(), try .read())
 let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
-**Example 2: Array input**
-
-When reading a count `N` and a sequence `A`, you can write:
+**Example 2: Array Input**  
+When reading a count `N` and a sequence `A`, write the following. This can also handle data arranged vertically or horizontally.
 
 ```swift
 let N: Int = Int.stdin
 let A: [Int] = (0..<N).map { .stdin }
 ```
 
-This also supports both row-wise and column-wise data.
-
-**Example 3: Query processing**
+**Example 3: Processing Queries**  
+This example reads `Q` queries and processes input depending on each query type.
 
 ```swift
 let Q: Int = Int.stdin
@@ -130,9 +128,9 @@ for _ in 0..<Q {
 }
 ```
 
-#### Additional helper methods
+#### Other Convenient Member Functions
 
-Reading with specified sizes:
+When reading a specified number of values:
 
 ```swift
 let A = [Int].stdin(columns: N)
@@ -141,9 +139,9 @@ let H = [[Character]].stdin(rows: H, columns: W)
 let I = [[UInt8]].stdin(rows: H, columns: W)
 ```
 
-#### Partial usage
+#### Partial Import
 
-If you only want to use IOReader, import:
+If you only want to use IOReader features, import the following module.
 
 ```swift
 import IOReader
@@ -151,39 +149,34 @@ import IOReader
 
 #### `read` and `stdin`
 
-The fundamental methods follow naming conventions using the verb `read`.
+The underlying methods and functions follow naming conventions and include the verb `read` in their identifiers.
 
-In contrast, convenience properties and methods that omit `try` use the identifier `stdin`.
+In contrast, convenience properties and methods that can omit `try` use the identifier `stdin`.
 
-One reason is that it is inspired by C++’s `cin`.
+One reason is that this is inspired by C++ `cin`.
 
-Another reason is that `stdin` is an unusual identifier, making name collisions unlikely.
+Another reason is the calculation that very few people would use the identifier `stdin` in such an unusual way.
 
-Resolving `ambiguous` errors during a contest is quite difficult, so this choice helps avoid them.
+Resolving `ambiguous` errors during a contest is quite difficult, so this library tries to avoid them as much as possible.
 
-Unusual identifiers are also easier to remember distinctly in this context.
+Unusual identifiers are also easy to forget, and in that sense `stdin` seemed like the best available choice.
 
 #### Notes
 
-This IOReader is designed to minimize:
+This IOReader is designed to minimize wasted string splitting, string copying, and numeric conversion.  
+When many numbers are provided, it may run faster than using the standard `readLine()`.
 
-- string splitting
-- string copying
-- numeric conversions
-
-When handling large amounts of numeric input, it can be faster than standard `readLine()`.
-
-On the other hand, when reading a very long string in a single line, `readLine()` is faster.
-
-**Swift string operations are prone to TLE in AtCoder problems, so choose appropriately depending on the problem.**
+On the other hand, when reading a very long string as a whole line, `readLine()` is faster.  
+**Swift string operations can easily cause TLE depending on the AtCoder problem, so choose the appropriate approach for each problem.**
 
 ---
 
 ### IOUtil
 
-**Direct stdout/stderr output methods have been deprecated.**
+**The stdout/stderr-based approach has been discontinued.**
 
-Provides `TextOutputStream` implementations for standard output and standard error, usable via the `to:` parameter of `print`.
+This module provides `TextOutputStream` values for standard output and standard error that can be used with the `to:` parameter of the `print` function.
+This allows output to standard error as shown below.
 
 ```swift
 import Foundation
@@ -192,11 +185,13 @@ import IOUtil
 print("Hello, world!", to: &FileOutputStream.standardError)
 ```
 
-Also includes `fastPrint`, a specialized integer-only output method to reduce I/O overhead when benchmarking performance.
+It also adds `fastPrint`, an integer-only output helper intended to reduce I/O overhead when comparing performance.
 
-#### Partial usage
+#### Partial Import
 
-This module is only available via individual import:
+This module is provided only through an individual import.
+
+If you want to use IOUtil features, import the following module.
 
 ```swift
 import IOUtil
@@ -206,22 +201,24 @@ import IOUtil
 
 ### Bisect
 
-A port of Python’s `bisect`, enabling binary search in Swift.
+This is a port of Python's `bisect`, enabling binary search in Swift.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
 print(sortedList.bisectLeft(99)) // 3
 ```
 
-**Limiting the search range**  
-You can limit the search range using `ArraySlice`:
+**Limiting the Search Range**  
+You can limit the search range by using `ArraySlice`.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
 print(sortedList[0..<3].bisectLeft(99)) // 3
 ```
 
-#### Partial usage
+#### Partial Import
+
+If you only want to use Bisect features, import the following module.
 
 ```swift
 import Bisect
@@ -231,15 +228,11 @@ import Bisect
 
 ### Pack
 
-Since SE-0283 is frozen, tuples cannot be used as dictionary keys.
+Because SE-283 is frozen, tuples still cannot be used as dictionary keys.
+For example, when trying to solve graph problems such as ABC393C in Swift without boilerplate, there is no equivalent of C++ `Pair`, so you have to write a struct and apply `Hashable` to it each time.
+This library provides `Pack` because requiring that much protocol knowledge from people who casually enjoy competitive programming felt excessive.
 
-As a result, when solving problems such as ABC393C in Swift without excessive boilerplate, there is no direct equivalent to C++’s `pair`.
-
-Therefore, you would normally need to define a struct and make it conform to `Hashable` each time.
-
-To avoid requiring that level of protocol knowledge for casual competitive programming, this module is provided.
-
-Using this, ABC393C can be solved in a compact way:
+With this, ABC393C can be accepted with a compact submission like the following, in principle.
 
 ```swift
 import AcFoundation
@@ -264,34 +257,41 @@ m.forEach {
 print(ans)
 ```
 
-It also conforms to `Comparable`, so it can be used in algorithms such as Dijkstra.
+It also conforms to `Comparable`, so it can be used when writing Dijkstra's algorithm.
 
-If compilation issues occur, try `Pack2` or `Pack3` as alternatives.
+If compilation becomes a problem, try the fallback types `Pack2` or `Pack3`.
 
-#### Partial usage
+#### Partial Import
+
+If you only want to use Pack features, import the following module.
 
 ```swift
 import Pack
 ```
-
 ---
 
 ### CxxWrapped
 
-Provides access to `std::gcd` and `std::lcm`.
+This module provides `std::gcd` and `std::lcm`.
 
-These are not reimplemented — they actually call the real C++ implementations.
+They are not merely things that behave like `std::gcd`; they actually call `std::gcd`.
 
-Originally intended to use C++ interop, but switched to calling via `extern "C"` using C interop.
+They are also not custom implementations that behave like `std::lcm`; they actually call `std::lcm`.
+
+The original plan was to call them through C++ Interop, but that was abandoned after some difficulty, so they are exposed with `extern "C"` and called through C Interop.
 
 ```swift
 import AcFoundation
 
 print(gcd(12,16)) // 4
+
 print(lcm(12,16)) // 48
+
 ```
 
-#### Partial usage
+#### Partial Import
+
+If you only want to use CxxWrapped features, import the following module.
 
 ```swift
 import CxxWrapped
@@ -301,51 +301,49 @@ import CxxWrapped
 
 ### CharacterUtil
 
-In string problems, you must choose between Swift `String`, `[Character]`, or `[UInt8]`.
+For string problems, you need to choose between Swift strings, arrays of `Character`, and arrays of `UInt8`. Each has advantages and disadvantages, but this library recommends arrays of `Character` during contests.
 
-Each has trade-offs, but `[Character]` is recommended for contests.
+When using arrays of characters, writing character loops is a little cumbersome, and lexicographical comparison is not obvious.
 
-However, working with character arrays can be inconvenient, especially for loops and lexicographical comparisons.
+This module first adds `Stridable` conformance to `Character`, limited to ASCII characters.
 
-This module:
-
-- Adds `Strideable` conformance to `Character` (ASCII only)
+This is useful because it lets you write character loops as follows.
 
 ```swift
+import AcFoundation
+
 for c: Character in "a"..."z" {
-  print(c)
+  print(c) // prints a through z in order
 }
 ```
 
-- Adds lexicographical comparison operators for `[Character]`
+This module also adds lexicographical comparison operators to arrays of `Character`.
 
 ```swift
+import AcFoundation
+
 print(Array("abc") < Array("abd")) // true
 ```
 
-#### Partial usage
+To use this module, import it individually near the beginning of your source file.
+(It is excluded from the umbrella import because adding `readLine` functions may make type annotations inconvenient.)
 
 ```swift
 import CharacterUtil
 ```
-
 ---
 
 ### UInt8Util
 
-Similar considerations apply when choosing between `String`, `[Character]`, and `[UInt8]`.
+For string problems, you need to choose between Swift strings, arrays of `Character`, and arrays of `UInt8`. Each has advantages and disadvantages, and this library recommends arrays of `Character` during contests. That said, arrays of `UInt8` can be easier to handle for people used to C or C++. Since null-terminated `cString`-related methods have started to become deprecated, this library recommends `UInt8` rather than `CChar`.
 
-While `[Character]` is recommended, `[UInt8]` may be more convenient for those familiar with C/C++.
-
-Since null-terminated C string APIs are being deprecated, `[UInt8]` is preferred over `CChar`.
-
-This module allows:
+One inconvenience when using `UInt8` is that character literals cannot be used directly. This module adds extensions to cover that, allowing code like this.
 
 ```swift
 let c: UInt8 = "A"
 ```
 
-Also provides lexicographical comparison:
+This module also adds lexicographical comparison operators to arrays of `UInt8`.
 
 ```swift
 let abc: [UInt8] = "abc".compactMap(\.asciiValue)
@@ -353,9 +351,9 @@ let abd: [UInt8] = "abd".compactMap(\.asciiValue)
 print(abc < abd) // true
 ```
 
-It also includes some equivalents of `Character` properties.
+It also adds several properties equivalent to `Character` properties.
 
-#### Partial usage
+To use this module, import it individually near the beginning of your source file.
 
 ```swift
 import UInt8Util
@@ -365,24 +363,27 @@ import UInt8Util
 
 ### StringUtil
 
-For string problems, Swift’s `String` can be difficult for beginners because it does not support integer indexing.
+For string problems, you need to choose between Swift strings, arrays of `Character`, and arrays of `UInt8`. Each has advantages and disadvantages, and this library recommends arrays of `Character` during contests. That said, forcing this on people who are not used to it is harsh, while Swift strings cannot be indexed by integers, which is painful for beginners. For that reason, this module provides convenient methods for strings. Please use them with the understanding that they are intended for beginners. Swift strings are very rich, and in competitive programming they can easily cause TLE. Please keep that in mind as well.
 
-This module provides convenient methods for easier usage.
-
-**Note:** This is intended for beginners.
-
-Swift strings are feature-rich and may cause TLE in competitive programming.
-
-Use at your own discretion.
+Use this when you want to write ABC A and B problems comfortably.
 
 ```swift
 let s = "abcdef"
+// Get one character
+print(s[0]) // "a"
 
-print(s[0])        // "a"
-print(s[2..<4])    // "cd"
+// Get substrings
+print(s[0..<s.count]) // "abcdef"
+print(s[0..<s.count]) // "abcdef"
+print(s[0...]) // "abcdef"
+print(s[..<s.count]) // "abcdef"
+print(s[2..<4]) // "cd"
+print(s[2...]) // "cdef"
+print(s[..<4]) // "abcd"
+print(s[...4]) // "abcde"
 ```
 
-#### Partial usage
+To use this module, import it individually near the beginning of your source file.
 
 ```swift
 import StringUtil
@@ -392,7 +393,9 @@ import StringUtil
 
 ### Miscellaneous
 
-Uncategorized utilities.
+These are utilities that do not fit cleanly into the other categories.
+
+#### Partial Import
 
 ```swift
 import Miscellaneous
@@ -402,7 +405,7 @@ import Miscellaneous
 
 ### Convinience
 
-Shortcuts for convenience.
+This module is for shortcuts. It is provided only through an individual import.
 
 ```swift
 import Convinience
@@ -412,9 +415,8 @@ import Convinience
 
 ### MT19937
 
-Mersenne Twister pseudo-random number generator.
-
-Useful when reproducible randomness is required (e.g., AHC).
+This is a Mersenne Twister, a pseudorandom number generator.
+Use it when you need reproducible randomness, such as in AHC.
 
 ```swift
 var mt = mt19937_64(seed: 0)
@@ -422,7 +424,7 @@ let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)
 let randomDouble = Double.random(in: 0...1, using: &mt)
 ```
 
-#### Partial usage
+It is provided only through an individual import.
 
 ```swift
 import MT19937
@@ -430,9 +432,9 @@ import MT19937
 
 ---
 
-## Other
+## Other Notes
 
-To enable IOReader support for `modint` or `BigInt`, use:
+To make `modint` or `BigInt` usable with IOReader, the following code is required.
 
 ```swift
 extension static_modint: IOIntegerConversionReadable {
@@ -446,15 +448,17 @@ extension BigInt: IOStringConversionReadable {
 }
 ```
 
-Depending on constraints, you can gain some performance:
+Depending on the constraints, the following can provide a little more speed.
 
 ```swift
+// Available when the input constraints range from Int.min to Int.max
 extension BigInt: IOIntegerConversionReadable {
   public static func convert(from: Int) -> Self { .init(from) }
 }
 ```
 
 ```swift
+// Available when the input constraints range from 0 to less than mod
 extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: UInt) -> Self { .init(rawValue: from) }
@@ -465,4 +469,4 @@ extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
 
 ## License
 
-This library is provided under CC0-1.0, but includes some Apache 2.0 licensed code.
+This library is provided under the CC0-1.0 license, but includes some code under the Apache 2.0 License.
