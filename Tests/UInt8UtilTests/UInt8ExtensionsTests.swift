@@ -208,6 +208,13 @@ final class StringAsciiExtensionsTests: XCTestCase {
       DUMMY
       """)
   }
+
+  func test_readLineStripsCRLF() throws {
+    try SolverRunner(solver: {
+      let line: [UInt8] = readLine()!
+      XCTAssertEqual(line, Array("abc".utf8))
+    }).inputOnly("abc\r\nnext")
+  }
   
   func test_readLine5() throws {
     XCTAssertEqual(
