@@ -47,6 +47,8 @@ public struct SolverRunner {
 
   private func outputOnly(_ body: () throws -> Void) throws -> String {
 
+    fflush(stdout)
+
     // パイプと標準出力のファイルディスクリプタを作成
     var pipefd = [Int32](repeating: 0, count: 2)
     pipe(&pipefd)
@@ -109,8 +111,13 @@ public struct SolverRunner {
       assert(file != nil)
       let backup = stdin
       stdin = file!
+      clearerr(stdin)
+      defer {
+        stdin = backup
+        fclose(file)
+        clearerr(stdin)
+      }
       try solver()
-      stdin = backup
     }
   }
 }

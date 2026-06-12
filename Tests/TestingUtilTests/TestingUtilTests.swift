@@ -49,6 +49,10 @@ final class SolverRunnerTests: XCTestCase {
       """)
   }
 
+  // `outputOnly` は呼び出し前に stdout に残っているバッファを捕まえてはいけない。
+  // Linux CI では `print("outside")` が未 flush のまま pipe 差し替え後に流れ、
+  // 修正前は capture 結果が `outside\ninside` になっていた。
+  // stdout を pipe に向ける前に `fflush(stdout)` できていれば、このテストは `inside` だけを読む。
   func testOutputOnlyDoesNotCapturePreviouslyBufferedStdout() throws {
     print("outside")
 
@@ -59,6 +63,8 @@ final class SolverRunnerTests: XCTestCase {
     XCTAssertEqual(try runner.outputOnly(), "inside")
   }
 
+  // solver が throw しても stdout は必ず元に戻す必要がある。
+  // ここが壊れると、次の `outputOnly` が前回の pipe や閉じた FD に影響される。
   func testOutputOnlyRestoresStdoutWhenSolverThrows() throws {
     let throwingRunner = SolverRunner {
       print("before-throw")
@@ -76,6 +82,10 @@ final class SolverRunnerTests: XCTestCase {
     XCTAssertEqual(try runner.outputOnly(), "after-throw")
   }
 
+  // `inputOnly` の実行中に solver が throw しても、stdin は外側の入力へ戻る必要がある。
+  // 修正前は `try solver()` の後にしか `stdin = backup` がなく、throw 経路で復元されなかった。
+  // その結果、内側の `inputOnly("inner")` 後に外側の `outer` が読めず nil になっていた。
+  // `defer` で stdin 復元と `fmemopen` の FILE* close を行えば、throw 後も外側の入力を継続できる。
   func testInputOnlyRestoresStdinWhenSolverThrows() throws {
     let outer = SolverRunner {
       let throwingRunner = SolverRunner {
@@ -158,6 +168,9 @@ final class StdinRedirectTests: XCTestCase {
     }
   }
 
+  // 空入力で EOF を踏んだあとでも、次の stdin 差し替えでは新しい入力を読める必要がある。
+  // FD を差し替えても C の `stdin` 側に EOF/error 状態が残ると `readLine()` が即 nil になるため、
+  // `withStdinRedirected` は復元時に `clearerr(stdin)` してその状態を持ち越さない。
   func testWithStdinRedirectedClearsEOFStateBeforeReading() throws {
     let empty = try makeInputFile(contents: "")
     let nonEmpty = try makeInputFile(contents: "recovered\n")
