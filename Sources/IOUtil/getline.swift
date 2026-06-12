@@ -31,7 +31,7 @@ where I: FixedWidthInteger & SignedInteger {
       while pos < count, start[pos] == 0x20 {
         pos += 1
       }
-      if pos >= count || start[pos] == 0x0A {
+      if pos >= count || start[pos] == 0x0A || start[pos] == 0x0D {
         break
       }
       nums.append(_parseSigned(start, count, &pos))
@@ -50,7 +50,7 @@ where U: FixedWidthInteger & UnsignedInteger {
       while pos < count, start[pos] == 0x20 {
         pos += 1
       }
-      if pos >= count || start[pos] == 0x0A {
+      if pos >= count || start[pos] == 0x0A || start[pos] == 0x0D {
         break
       }
       nums.append(_parseUnsigned(start, count, &pos))
@@ -76,7 +76,7 @@ func _parseSigned<I>(_ start: UnsafePointer<UInt8>,_ count: Int,_ pos: inout Int
   while true {
     c = I(start[pos])
     pos += 1
-    if c == 0x0A || c == 0x20 {
+    if c == 0x0A || c == 0x0D || c == 0x20 {
       break
     }
     num = num * 10 + (negative ? -(c &- 0x30) : (c &- 0x30))
@@ -95,7 +95,7 @@ where U: FixedWidthInteger & UnsignedInteger {
   while true {
     c = U(start[pos])
     pos += 1
-    if c == 0x0A || c == 0x20 {
+    if c == 0x0A || c == 0x0D || c == 0x20 {
       break
     }
     num = num * 10 + (c &- 0x30)

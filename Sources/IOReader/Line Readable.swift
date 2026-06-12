@@ -72,10 +72,13 @@ extension Collection where Element == Character {
         return nil
       }
       var count = utf8Count
-      if strippingNewline,
-        utf8Start[count - 1] == .LF
-      {
-        count -= 1
+      if strippingNewline {
+        if count > 0, utf8Start[count - 1] == .LF {
+          count -= 1
+        }
+        if count > 0, utf8Start[count - 1] == .CR {
+          count -= 1
+        }
       }
       let result = [Character].init(unsafeUninitializedCapacity: count) {
         buffer, initializedCount in
@@ -106,10 +109,13 @@ extension Collection where Element == UInt8 {
         return nil
       }
       var count = utf8Count
-      if strippingNewline,
-        utf8Start[count - 1] == .LF
-      {
-        count -= 1
+      if strippingNewline {
+        if count > 0, utf8Start[count - 1] == .LF {
+          count -= 1
+        }
+        if count > 0, utf8Start[count - 1] == .CR {
+          count -= 1
+        }
       }
       let result = [UInt8].init(unsafeUninitializedCapacity: count) {
         buffer, initializedCount in
