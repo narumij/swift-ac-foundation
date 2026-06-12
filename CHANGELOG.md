@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Maintenance]
 
+### Added
+
+- `TestingUtil`ターゲットを追加し、`SolverRunner`、`StdoutSilencer`、標準入力リダイレクト補助をパッケージ公開側へ移動
+- `TestingUtilTests`を追加し、標準入出力の復元、Linux CIでのstdoutバッファ、pipe容量超過、並列実行の回帰テストを追加
+
 ### Changed
 
 - `FileOutputStream`、`FileOutputStream_naive`、`FileOutputStream_putchar_unlockd`を非推奨化

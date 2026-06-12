@@ -112,6 +112,13 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
+      name: "TestingUtilTests",
+      dependencies: [
+        "TestingUtil"
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
       name: "AcFoundationTests",
       dependencies: [
         "IOReader",
