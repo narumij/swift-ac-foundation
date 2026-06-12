@@ -185,6 +185,47 @@ final class FastPrintTests: XCTestCase {
       """)
   }
 
+  func testNilTerminator() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint(Int(12), terminator: nil)
+        fastPrint(UInt(34), terminator: nil)
+        fastPrint(asciiValues: Array("ab".utf8), terminator: nil)
+        fastPrint(Array("cd"), terminator: nil)
+      }).run(input: ""),
+      "1234abcd")
+  }
+
+  func testEmptyCollectionsProduceNoOutput() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint([] as [Int])
+        fastPrint([] as [UInt])
+      }).run(input: ""),
+      "")
+  }
+
+  func testCollectionTransform() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint([1, 2, 3], { Int32($0 * -2) })
+        fastPrint([1, 2, 3], { UInt32($0 * 2) })
+      }).run(input: ""),
+      """
+      -2 -4 -6
+      2 4 6
+      """)
+  }
+
+  func testCustomSeparatorsAndTerminatorsForTransform() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        fastPrint([1, 2, 3], { Int64($0) }, separator: 0x2C, terminator: 0x3B)
+        fastPrint([1, 2, 3], { UInt64($0) }, separator: 0x2D, terminator: 0x21)
+      }).run(input: ""),
+      "1,2,3;1-2-3!")
+  }
+
   func testPerformanceExample() throws {
 
     let a: [Int] = .init((Int.max - 30_000)..<Int.max)

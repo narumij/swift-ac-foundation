@@ -28,7 +28,7 @@ final class PackTests: XCTestCase {
       XCTAssertEqual(b[.init(1, 1)], 1)
       XCTAssertEqual(c[.init(1, 1, 1)], 1)
       XCTAssertEqual(d[.init(1, 1, 1, 1)], 1)
-      let e: [Pack<Int, UInt, String, Int>: Int] = [.init(1, 1, "", 1): 1]
+      _ = [Pack<Int, UInt, String, Int>: Int](dictionaryLiteral: (.init(1, 1, "", 1), 1))
     }
   }
 
@@ -83,6 +83,39 @@ final class PackTests: XCTestCase {
     XCTAssertEqual(p.third, 3)
     let b: [Pack3<Int, String, UInt>: Int] = [.init(1, "1", 3): 1]
     XCTAssertEqual(b[.init(1, "1", 3)], 1)
+  }
+
+  func testPackRawValueInitializerAndDescription() throws {
+    if #available(macOS 14.0, *) {
+      let p = Pack<Int, String, UInt>(rawValue: (7, "x", 9))
+      XCTAssertEqual(p.rawValue.0, 7)
+      XCTAssertEqual(p.rawValue.1, "x")
+      XCTAssertEqual(p.rawValue.2, 9)
+      XCTAssertEqual(String(describing: p), "Pack<Int, String, UInt>(7, x, 9)")
+      XCTAssertEqual(String(reflecting: p), String(describing: p))
+    }
+  }
+
+  func testPack2MutableAccessors() throws {
+    var p = Pack2(1, "one")
+
+    p.first = 2
+    p.second = "two"
+
+    XCTAssertEqual(p.rawValue.0, 2)
+    XCTAssertEqual(p.rawValue.1, "two")
+  }
+
+  func testPack3MutableAccessors() throws {
+    var p = Pack3(1, "one", UInt(1))
+
+    p.first = 2
+    p.second = "two"
+    p.third = 3
+
+    XCTAssertEqual(p.rawValue.0, 2)
+    XCTAssertEqual(p.rawValue.1, "two")
+    XCTAssertEqual(p.rawValue.2, 3)
   }
 
   func testCompare3() throws {
