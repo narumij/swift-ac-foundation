@@ -14,18 +14,18 @@ import IOReader
 /// heap.insert(.init(1,2))
 /// ```
 @frozen
-public struct Pack2<T,U> {
-  
-  public typealias RawValue = (T,U)
+public struct Pack2<T, U> {
+
+  public typealias RawValue = (T, U)
 
   public var rawValue: RawValue
-  
+
   @inlinable
   @inline(__always)
-  public init(_ t: T,_ u: U) {
-    self.rawValue = (t,u)
+  public init(_ t: T, _ u: U) {
+    self.rawValue = (t, u)
   }
-  
+
   @inlinable
   @inline(__always)
   public init(rawValue: RawValue) {
@@ -34,7 +34,7 @@ public struct Pack2<T,U> {
 }
 
 extension Pack2: Equatable where T: Equatable, U: Equatable {
-  
+
   @inlinable
   @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
@@ -43,7 +43,7 @@ extension Pack2: Equatable where T: Equatable, U: Equatable {
 }
 
 extension Pack2: Comparable where T: Comparable, U: Comparable {
-  
+
   @inlinable
   @inline(__always)
   public static func < (lhs: Self, rhs: Self) -> Bool {
@@ -52,7 +52,7 @@ extension Pack2: Comparable where T: Comparable, U: Comparable {
 }
 
 extension Pack2: Hashable where T: Hashable, U: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -61,25 +61,16 @@ extension Pack2: Hashable where T: Hashable, U: Hashable {
   }
 }
 
-extension Pack2: SingleReadable where T: SingleReadable, U: SingleReadable {
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Self {
-    .init(try .read(), try .read())
-  }
-}
-
-extension Pack2: Sendable where T: Sendable, U: Sendable { }
+extension Pack2: Sendable where T: Sendable, U: Sendable {}
 
 extension Pack2 {
-  
+
   @inlinable
   public var first: T {
     @inline(__always) _read { yield rawValue.0 }
     @inline(__always) _modify { yield &rawValue.0 }
   }
-  
+
   @inlinable
   public var second: U {
     @inline(__always) _read { yield rawValue.1 }

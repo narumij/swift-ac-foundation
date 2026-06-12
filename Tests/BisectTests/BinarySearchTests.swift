@@ -22,6 +22,31 @@ final class BinarySearchTests: XCTestCase {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
   }
 
+  func testBinarySearch_old() throws {
+    let array = [1, 3, 5, 7, 9]
+
+    XCTAssertEqual(0, array.bisectLeft(0))
+    XCTAssertEqual(0, array.bisectRight(0))
+
+    XCTAssertEqual(0, array.bisectLeft(1))
+    XCTAssertEqual(1, array.bisectRight(1))
+
+    XCTAssertEqual(1, array.bisectLeft(2))
+    XCTAssertEqual(1, array.bisectRight(2))
+
+    XCTAssertEqual(1, array.bisectLeft(3))
+    XCTAssertEqual(2, array.bisectRight(3))
+
+    XCTAssertEqual(2, array.bisectLeft(4))
+    XCTAssertEqual(2, array.bisectRight(4))
+
+    XCTAssertEqual(2, array.bisectLeft(5))
+    XCTAssertEqual(3, array.bisectRight(5))
+
+    XCTAssertEqual(3, array.bisectLeft(6))
+    XCTAssertEqual(3, array.bisectRight(6))
+  }
+
   func testBinarySearch() throws {
 
     XCTAssertEqual((0..<10).bisectLeft(-1), (0..<10).bisectLeft(-1) { $0 })
@@ -39,41 +64,41 @@ final class BinarySearchTests: XCTestCase {
     XCTAssertEqual((0..<10).bisectLeft(10), (0..<10).bisectLeft(10) { $0 })
     XCTAssertEqual((0..<10).bisectRight(10), (0..<10).bisectRight(10) { $0 })
   }
-  
+
   func testMid() throws {
-    func mid1(_ lo: Int,_ hi: Int) -> Int {
+    func mid1(_ lo: Int, _ hi: Int) -> Int {
       (lo &+ hi) / 2
     }
-    func mid2(_ lo: Int,_ hi: Int) -> Int {
+    func mid2(_ lo: Int, _ hi: Int) -> Int {
       lo &+ (hi &- lo) / 2
     }
-    XCTAssertNotEqual(mid1(Int.max, Int.max), Int.max) // オーバーフローまたはクラッシュとなる
+    XCTAssertNotEqual(mid1(Int.max, Int.max), Int.max)  // オーバーフローまたはクラッシュとなる
     XCTAssertEqual(mid1(Int.max / 2, Int.max / 2), Int.max / 2)
     XCTAssertEqual(mid2(Int.max, Int.max), Int.max)
   }
-  
+
   func testInsort1() throws {
-    var list = [0,1,2,2,2,3,4].map{ C(value: $0, serial: 0) }
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: $0, serial: 0) }
     list.insortLeft(C(value: 2, serial: 1))
-    XCTAssertEqual(list.map{ $0.serial }, [0,0,1,0,0,0,0,0])
+    XCTAssertEqual(list.map { $0.serial }, [0, 0, 1, 0, 0, 0, 0, 0])
   }
-  
+
   func testInsort2() throws {
-    var list = [0,1,2,2,2,3,4].map{ C(value: $0, serial: 0) }
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: $0, serial: 0) }
     list.insortRight(C(value: 2, serial: 1))
-    XCTAssertEqual(list.map{ $0.serial }, [0,0,0,0,0,1,0,0])
+    XCTAssertEqual(list.map { $0.serial }, [0, 0, 0, 0, 0, 1, 0, 0])
   }
 
   func testInsort3() throws {
-    var list = [0,1,2,2,2,3,4].map{ C(value: 0, serial: $0) }
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: 0, serial: $0) }
     list.insortLeft(C(value: 1, serial: 2), key: { $0.serial })
-    XCTAssertEqual(list.map{ $0.value }, [0,0,1,0,0,0,0,0])
+    XCTAssertEqual(list.map { $0.value }, [0, 0, 1, 0, 0, 0, 0, 0])
   }
-  
+
   func testInsort4() throws {
-    var list = [0,1,2,2,2,3,4].map{ C(value: 0, serial: $0) }
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: 0, serial: $0) }
     list.insortRight(C(value: 1, serial: 2), key: { $0.serial })
-    XCTAssertEqual(list.map{ $0.value }, [0,0,0,0,0,1,0,0])
+    XCTAssertEqual(list.map { $0.value }, [0, 0, 0, 0, 0, 1, 0, 0])
   }
 
   func testPerformanceExample() throws {

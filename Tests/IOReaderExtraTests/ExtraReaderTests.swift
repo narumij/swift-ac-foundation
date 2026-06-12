@@ -5,11 +5,12 @@
 //  Created by narumij on 2023/12/18.
 //
 
-import XCTest
-import TestingUtil
 import AtCoder
 import BigInt
 import IOReaderExtra
+import Pack
+import TestingUtil
+import XCTest
 
 final class ExtraReaderTests: XCTestCase {
 
@@ -54,7 +55,7 @@ final class ExtraReaderTests: XCTestCase {
         -1
         """)
   }
-  
+
   @available(macOS 15.0, *)
   func testRead3() throws {
     _ = try SolverRunner(solver: {
@@ -70,7 +71,7 @@ final class ExtraReaderTests: XCTestCase {
         -1
         """)
   }
-  
+
   @available(macOS 15.0, *)
   func testInt128() throws {
 
@@ -128,6 +129,71 @@ final class ExtraReaderTests: XCTestCase {
       \(Int128.max)
       \(Int128.min)
       \(UInt128.max)
+      """)
+  }
+
+  func testPack() throws {
+    if #available(macOS 14.0, *) {
+
+      XCTAssertEqual(
+        try SolverRunner(solver: {
+          let A: Pack<Character, [Character], Double> = try .read()
+          print(String([A.rawValue.0]))
+          print(String(A.rawValue.1))
+          print(A.rawValue.2)
+        })
+        .run(
+          input:
+            """
+            A BB 111
+            """),
+
+        """
+        A
+        BB
+        111.0
+        """)
+    }
+  }
+
+  func testPack2() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A: Pack2<Character, [Character]> = try .read()
+        print(String([A.rawValue.0]))
+        print(String(A.rawValue.1))
+      })
+      .run(
+        input:
+          """
+          A BB
+          """),
+
+      """
+      A
+      BB
+      """)
+  }
+
+  func testPack3() throws {
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A: Pack3<Character, [Character], Double> = try .read()
+        print(String([A.rawValue.0]))
+        print(String(A.rawValue.1))
+        print(A.rawValue.2)
+      })
+      .run(
+        input:
+          """
+          A BB 111
+          """),
+
+      """
+      A
+      BB
+      111.0
       """)
   }
 }

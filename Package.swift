@@ -55,6 +55,7 @@ let package = Package(
       name: "IOReaderExtra",
       dependencies: [
         "IOReader",
+        "Pack",
         .product(name: "BigInt", package: "BigInt"),
         .product(name: "AtCoder", package: "swift-ac-library"),
       ],
@@ -143,22 +144,9 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "AcFoundationTests",
+      name: "BisectTests",
       dependencies: [
-        "TestingUtil",
-        "IOReader",
-        "IOUtil",
-        "Bisect",
-        "Pack",
-        "CxxWrapped",
-        "StringUtil",
-        "CharacterUtil",
-        "UInt8Util",
-        "Miscellaneous",
-        "Convenience",
-        "MT19937",
-        .product(name: "Algorithms", package: "swift-algorithms"),
-        .product(name: "BigInt", package: "BigInt"),
+        "Bisect"
       ],
       swiftSettings: _settings
     ),
@@ -180,6 +168,79 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "IOReaderExtra",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "IOUtilTests",
+      dependencies: [
+        "TestingUtil",
+        "IOUtil",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "CxxWrappedTests",
+      dependencies: [
+        "TestingUtil",
+        "CxxWrapped",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "PackTests",
+      dependencies: [
+        "TestingUtil",
+        "Pack",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "StringUtilTests",
+      dependencies: [
+        "TestingUtil",
+        "StringUtil",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "CharacterUtilTests",
+      dependencies: [
+        "TestingUtil",
+        "CharacterUtil",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "UInt8UtilTests",
+      dependencies: [
+        "TestingUtil",
+        "UInt8Util",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "MT19937Tests",
+      dependencies: [
+        "TestingUtil",
+        "MT19937",
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "MiscellaneousTests",
+      dependencies: [
+        "TestingUtil",
+        "Miscellaneous",
+        "Pack"
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "ConvenienceTests",
+      dependencies: [
+        "TestingUtil",
+        "Convenience",
       ],
       swiftSettings: _settings
     ),

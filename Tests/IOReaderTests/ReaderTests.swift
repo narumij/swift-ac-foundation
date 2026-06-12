@@ -1766,30 +1766,6 @@ final class ReaderTests: XCTestCase {
       """)
   }
 
-  func testPack() throws {
-    if #available(macOS 14.0, *) {
-
-      XCTAssertEqual(
-        try SolverRunner(solver: {
-          let A: Pack<Character, [Character], Double> = try .read()
-          print(String([A.rawValue.0]))
-          print(String(A.rawValue.1))
-          print(A.rawValue.2)
-        })
-        .run(
-          input:
-            """
-            A BB 111
-            """),
-
-        """
-        A
-        BB
-        111.0
-        """)
-    }
-  }
-
   #if DEBUG
     func testUnwrap() throws {
       let a: Int? = 0
