@@ -1,4 +1,4 @@
-extension Collection where Element: FixedWidthInteger & SignedInteger, Index == Int {
+extension Collection where Element: FastPrintableInteger & SignedInteger, Index == Int {
 
   /// 空白区切りで標準出力へ出力する
   @inlinable
@@ -7,7 +7,7 @@ extension Collection where Element: FixedWidthInteger & SignedInteger, Index == 
   }
 }
 
-extension Collection where Element: FixedWidthInteger & UnsignedInteger, Index == Int {
+extension Collection where Element: FastPrintableInteger & UnsignedInteger, Index == Int {
 
   /// 空白区切りで標準出力へ出力する
   @inlinable

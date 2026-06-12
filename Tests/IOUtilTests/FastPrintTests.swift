@@ -61,36 +61,39 @@ final class FastPrintTests: XCTestCase {
       """)
   }
 
-  #if false
-  // クラッシュする
-  @available(macOS 15.0, *)
-  func testInt128() throws {
+  func testFastPrintableIntegerTypes() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        fastPrint(Int128.max)
-        fastPrint(Int128(0))
-        fastPrint(Int128.min)
+        fastPrint(Int16.min)
+        fastPrint(Int16.max)
+        fastPrint(Int32.min)
+        fastPrint(Int32.max)
+        fastPrint(Int64.min)
+        fastPrint(Int64.max)
+        fastPrint(UInt16.min)
+        fastPrint(UInt16.max)
+        fastPrint(UInt32.min)
+        fastPrint(UInt32.max)
+        fastPrint(UInt64.min)
+        fastPrint(UInt64.max)
       }).run(input: ""),
       """
-      \(Int128.max)
-      0
-      \(Int128.min)
+      \(Int16.min)
+      \(Int16.max)
+      \(Int32.min)
+      \(Int32.max)
+      \(Int64.min)
+      \(Int64.max)
+      \(UInt16.min)
+      \(UInt16.max)
+      \(UInt32.min)
+      \(UInt32.max)
+      \(UInt64.min)
+      \(UInt64.max)
       """)
   }
 
-  @available(macOS 15.0, *)
-  func testUInt128() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        fastPrint(UInt128.max)
-        fastPrint(UInt128.min)
-      }).run(input: ""),
-      """
-      \(UInt128.max)
-      \(UInt128.min)
-      """)
-  }
-  #endif
+  // Int128/UInt128 are intentionally not FastPrintableInteger.
   
   func testScalar() throws {
     XCTAssertEqual(
@@ -119,10 +122,10 @@ final class FastPrintTests: XCTestCase {
   func testCombination() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        fastPrint(4, terminater: 0x20)
+        fastPrint(4, terminator: 0x20)
         fastPrint([0, 1], terminator: 0x20)
         fastPrint([2, 3])
-        fastPrint(UInt(3), terminater: 0x20)
+        fastPrint(UInt(3), terminator: 0x20)
         fastPrint([100, 200] as [UInt], terminator: 0x20)
         fastPrint([300] as [UInt])
       }).run(input: ""),
@@ -135,8 +138,8 @@ final class FastPrintTests: XCTestCase {
   func testRows() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
-        fastPrint([0, 1, 2, 3], separator: 0x0A, terminater: 0x0A)
-        fastPrint([100, 200, 300] as [UInt], separator: 0x0A, terminater: 0x0A)
+        fastPrint([0, 1, 2, 3], separator: 0x0A, terminator: 0x0A)
+        fastPrint([100, 200, 300] as [UInt], separator: 0x0A, terminator: 0x0A)
       }).run(input: ""),
       """
       0

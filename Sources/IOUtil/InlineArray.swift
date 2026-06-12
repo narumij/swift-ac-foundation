@@ -19,7 +19,7 @@ extension InlineArray {
 }
 
 @available(macOS 26.0, *)
-extension InlineArray where Element: FixedWidthInteger & SignedInteger {
+extension InlineArray where Element: FastPrintableInteger & SignedInteger {
 
   @inlinable
   public func fastPrint(separator: Int32 = 0x20, terminator: Int32 = 0x0A) {
@@ -31,12 +31,12 @@ extension InlineArray where Element: FixedWidthInteger & SignedInteger {
 }
 
 @available(macOS 26.0, *)
-extension InlineArray where Element: FixedWidthInteger & UnsignedInteger {
+extension InlineArray where Element: FastPrintableInteger & UnsignedInteger {
 
   @inlinable
   public func fastPrint(separator: Int32 = 0x20, terminator: Int32 = 0x0A) {
     for i in 0..<count {
-      ___print_int(Int64(self[i]))
+      ___print_uint(UInt64(self[i]))
       putchar_unlocked(i == count - 1 ? terminator : separator)
     }
   }

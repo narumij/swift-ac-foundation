@@ -1,10 +1,23 @@
 import Foundation
 import _FastIO
 
+public protocol FastPrintable { }
+
+public protocol FastPrintableInteger: FixedWidthInteger & FastPrintable { }
+
+extension Int: FastPrintableInteger { }
+extension Int16: FastPrintableInteger { }
+extension Int32: FastPrintableInteger { }
+extension Int64: FastPrintableInteger { }
+extension UInt: FastPrintableInteger { }
+extension UInt16: FastPrintableInteger { }
+extension UInt32: FastPrintableInteger { }
+extension UInt64: FastPrintableInteger { }
+
 @inlinable
 @inline(__always)
 public func fastPrint<I>(_ x: I, terminator: Int32? = 0x0A)
-where I: FixedWidthInteger & SignedInteger {
+where I: FastPrintableInteger & SignedInteger {
   ___print_int(Int64(x))
   if let terminator {
     putchar_unlocked(terminator)
@@ -15,14 +28,14 @@ where I: FixedWidthInteger & SignedInteger {
 @inlinable
 @inline(__always)
 public func fastPrint<I>(_ x: I, terminater: Int32?)
-where I: FixedWidthInteger & SignedInteger {
+where I: FastPrintableInteger & SignedInteger {
   fastPrint(x, terminator: terminater)
 }
 
 @inlinable
 @inline(__always)
 public func fastPrint<I>(_ x: I, terminator: Int32? = 0x0A)
-where I: FixedWidthInteger & UnsignedInteger {
+where I: FastPrintableInteger & UnsignedInteger {
   ___print_uint(UInt64(x))
   if let terminator {
     putchar_unlocked(terminator)
@@ -33,7 +46,7 @@ where I: FixedWidthInteger & UnsignedInteger {
 @inlinable
 @inline(__always)
 public func fastPrint<I>(_ x: I, terminater: Int32?)
-where I: FixedWidthInteger & UnsignedInteger {
+where I: FastPrintableInteger & UnsignedInteger {
   fastPrint(x, terminator: terminater)
 }
 
@@ -43,7 +56,7 @@ where I: FixedWidthInteger & UnsignedInteger {
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminator: Int32 = 0x0A)
 where
   C: Collection, C.Element == I, C.Index == Int,
-  I: FixedWidthInteger & SignedInteger
+  I: FastPrintableInteger & SignedInteger
 {
   for i in 0..<a.count {
     ___print_int(Int64(a[i]))
@@ -58,7 +71,7 @@ where
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32)
 where
   C: Collection, C.Element == I, C.Index == Int,
-  I: FixedWidthInteger & SignedInteger
+  I: FastPrintableInteger & SignedInteger
 {
   fastPrint(a, separator: separator, terminator: terminater)
 }
@@ -69,7 +82,7 @@ where
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminator: Int32 = 0x0A)
 where
   C: Collection, C.Element == I, C.Index == Int,
-  I: FixedWidthInteger & UnsignedInteger
+  I: FastPrintableInteger & UnsignedInteger
 {
   for i in 0..<a.count {
     ___print_uint(UInt64(a[i]))
@@ -84,7 +97,7 @@ where
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32)
 where
   C: Collection, C.Element == I, C.Index == Int,
-  I: FixedWidthInteger & UnsignedInteger
+  I: FastPrintableInteger & UnsignedInteger
 {
   fastPrint(a, separator: separator, terminator: terminater)
 }
@@ -95,7 +108,7 @@ where
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminator: Int32 = 0x0A)
 where
   C: Collection, C.Index == Int,
-  I: FixedWidthInteger & SignedInteger
+  I: FastPrintableInteger & SignedInteger
 {
   for i in 0..<a.count {
     ___print_int(Int64(transform(a[i])))
@@ -110,7 +123,7 @@ where
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminater: Int32)
 where
   C: Collection, C.Index == Int,
-  I: FixedWidthInteger & SignedInteger
+  I: FastPrintableInteger & SignedInteger
 {
   fastPrint(a, transform, terminator: terminater)
 }
@@ -121,7 +134,7 @@ where
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I,  separator: Int32 = 0x20, terminator: Int32 = 0x0A)
 where
   C: Collection, C.Index == Int,
-  I: FixedWidthInteger & UnsignedInteger
+  I: FastPrintableInteger & UnsignedInteger
 {
   for i in 0..<a.count {
     ___print_uint(UInt64(transform(a[i])))
@@ -136,7 +149,7 @@ where
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminater: Int32)
 where
   C: Collection, C.Index == Int,
-  I: FixedWidthInteger & UnsignedInteger
+  I: FastPrintableInteger & UnsignedInteger
 {
   fastPrint(a, transform, terminator: terminater)
 }
