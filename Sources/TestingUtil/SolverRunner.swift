@@ -87,19 +87,23 @@ public struct SolverRunner {
     try body()
     restoreStdout()
 
-    fflush(outputFile)
-    fseek(outputFile, 0, SEEK_SET)
+    guard fflush(outputFile) == 0 else {
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+    }
+    guard fseek(outputFile, 0, SEEK_SET) == 0 else {
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+    }
 
     var readBuffer = [UInt8](repeating: 0, count: 1024)
     var completeOutput = ""
 
     while true {
-      let bytesRead = read(outputFD, &readBuffer, readBuffer.count)
+      let bytesRead = fread(&readBuffer, 1, readBuffer.count, outputFile)
       if bytesRead > 0 {
-        completeOutput += String(decoding: readBuffer.prefix(Int(bytesRead)), as: UTF8.self)
-      } else if bytesRead == 0 {
+        completeOutput += String(decoding: readBuffer.prefix(bytesRead), as: UTF8.self)
+      } else if feof(outputFile) != 0 {
         break
-      } else if errno != EINTR {
+      } else if ferror(outputFile) != 0 {
         throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
       }
     }
@@ -125,10 +129,11 @@ public struct SolverRunner {
     var inputBuffer: [Int8] = input.utf8CString.dropLast()
     let count = inputBuffer.count
     try inputBuffer.withUnsafeMutableBytes {
-      let file = fmemopen($0.baseAddress, count, "r")
-      assert(file != nil)
+      guard let file = fmemopen($0.baseAddress, count, "r") else {
+        throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+      }
       let backup = stdin
-      stdin = file!
+      stdin = file
       clearerr(stdin)
       defer {
         stdin = backup
