@@ -27,7 +27,13 @@ where I: FixedWidthInteger & SignedInteger {
   try! getline { start, count in
     var pos = 0
     var nums: [I] = []
-    while pos < count, start[pos] != 0x0A {
+    while pos < count {
+      while pos < count, start[pos] == 0x20 {
+        pos += 1
+      }
+      if pos >= count || start[pos] == 0x0A {
+        break
+      }
       nums.append(_parseSigned(start, count, &pos))
     }
     return nums
@@ -40,7 +46,13 @@ where U: FixedWidthInteger & UnsignedInteger {
   try! getline { start, count in
     var pos = 0
     var nums: [U] = []
-    while pos < count, start[pos] != 0x0A {
+    while pos < count {
+      while pos < count, start[pos] == 0x20 {
+        pos += 1
+      }
+      if pos >= count || start[pos] == 0x0A {
+        break
+      }
       nums.append(_parseUnsigned(start, count, &pos))
     }
     return nums
