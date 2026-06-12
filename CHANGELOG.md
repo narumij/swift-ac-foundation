@@ -8,13 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `IOConfig.BufferPolicy`を追加し、IOReaderの可変長バッファ容量を制御可能に変更
+- `IOReaderExtra`ターゲットを追加し、`BigInt`、AtCoderの`static_modint`/`dynamic_modint`、`Pack`/`Pack2`/`Pack3`、`SIMD`、`InlineArray`のIOReader対応を追加
 - `Int128`と`UInt128`のIOReader対応を追加（macOS 15.0以降）
 - `Collection.readLine()`系に`stdin()`ショートカットを追加
+- `IOUtil`に`Sequence`/`Collection`/`InlineArray`向けの`print`/`fastPrint`補助を追加
+- `TestingUtil`ターゲットを追加し、テスト用ヘルパーをライブラリ側へ移動
 - `Array.resize(_:_:)`、`Array.resized`、`BigInt`向けの`**`を追加
 - `TakahashiAokiDraw`、`correct`/`incorrect`、`Success`/`Failure`などの出力補助を追加
 
 ### Changed
 - Swift tools versionを6.2へ更新し、Packageのplatform指定を外す方向へ調整
+- テストターゲットを機能別に分割し、旧`AcFoundationTests`配下のテストを各モジュール用ターゲットへ移動
+- `Pack`系の`SingleReadable`適合を`IOReaderExtra`へ移動
 - `fastPrint`の引数名を`terminater`から`terminator`へ修正し、旧APIを非推奨化
 - `String.init(ascii:)`を`String.init(asciiValues:)`へリネームし、旧APIを非推奨化
 - 1次元`prefixSum`を`reductions`推奨として非推奨化
