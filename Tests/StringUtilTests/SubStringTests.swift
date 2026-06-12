@@ -21,4 +21,21 @@ final class SubStringTests: XCTestCase {
 
     print(s[0...])
   }
+
+  func testEmptyRanges() throws {
+    let s = "abcdef"
+    XCTAssertEqual("", s[2..<2])
+    XCTAssertEqual("", s[..<0])
+    XCTAssertEqual("", s[s.count...])
+  }
+
+  func testUnicodeCharacterIndexingAndSlicing() throws {
+    let s = "aé👍b"
+    XCTAssertEqual(s.count, 4)
+    XCTAssertEqual("a", s[0])
+    XCTAssertEqual("é", s[1])
+    XCTAssertEqual("👍", s[2])
+    XCTAssertEqual("b", s[3])
+    XCTAssertEqual("é👍", s[1..<3])
+  }
 }

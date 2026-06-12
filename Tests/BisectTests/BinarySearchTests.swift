@@ -101,6 +101,39 @@ final class BinarySearchTests: XCTestCase {
     XCTAssertEqual(list.map { $0.value }, [0, 0, 0, 0, 0, 1, 0, 0])
   }
 
+  func testEmptyCollectionBisect() throws {
+    let array: [Int] = []
+    XCTAssertEqual(array.bisectLeft(0), 0)
+    XCTAssertEqual(array.bisectRight(0), 0)
+    XCTAssertEqual(array.bisectLeft(0) { $0 }, 0)
+    XCTAssertEqual(array.bisectRight(0) { $0 }, 0)
+  }
+
+  func testSingleElementBisect() throws {
+    let array = [10]
+    XCTAssertEqual(array.bisectLeft(9), 0)
+    XCTAssertEqual(array.bisectRight(9), 0)
+    XCTAssertEqual(array.bisectLeft(10), 0)
+    XCTAssertEqual(array.bisectRight(10), 1)
+    XCTAssertEqual(array.bisectLeft(11), 1)
+    XCTAssertEqual(array.bisectRight(11), 1)
+  }
+
+  func testInsortAtBounds() throws {
+    var list = [10, 20]
+    list.insortLeft(5)
+    list.insortRight(30)
+    XCTAssertEqual(list, [5, 10, 20, 30])
+  }
+
+  func testKeyedInsortAtBounds() throws {
+    var list = [1, 3].map { C(value: 0, serial: $0) }
+    list.insortLeft(C(value: 10, serial: 0), key: { $0.serial })
+    list.insortRight(C(value: 20, serial: 4), key: { $0.serial })
+    XCTAssertEqual(list.map { $0.value }, [10, 0, 0, 20])
+    XCTAssertEqual(list.map { $0.serial }, [0, 1, 3, 4])
+  }
+
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

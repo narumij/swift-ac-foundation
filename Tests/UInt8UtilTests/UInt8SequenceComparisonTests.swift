@@ -48,4 +48,17 @@ final class UInt8SequenceComparisonTests: XCTestCase {
     XCTAssertTrue(lhs <= rhs)
     XCTAssertTrue(lhs >= rhs)
   }
+
+  func testEmptySequenceComparisons() {
+    let empty: [UInt8] = []
+    let nonEmpty = uint8seq("a")
+
+    XCTAssertTrue(empty == empty)
+    XCTAssertTrue(empty < nonEmpty)
+    XCTAssertFalse(nonEmpty < empty)
+    XCTAssertTrue(empty <= empty)
+    XCTAssertTrue(empty <= nonEmpty)
+    XCTAssertTrue(nonEmpty >= empty)
+    XCTAssertFalse(empty > nonEmpty)
+  }
 }
