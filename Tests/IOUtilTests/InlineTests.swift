@@ -15,8 +15,7 @@ final class InlineTests: XCTestCase {
         A.print(terminator: " - ")
         B.print()
       })
-      .run(
-        input: ""),
+      .outputOnly(),
 
       """
       3 3 3
