@@ -241,6 +241,7 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "Convenience",
+        .product(name: "Algorithms", package: "swift-algorithms")
       ],
       swiftSettings: _settings
     ),

@@ -5,28 +5,13 @@
 //  Created by narumij on 2023/12/18.
 //
 
-import Foundation
-import XCTest
+import IOReaderExtra
 import TestingUtil
-
-#if DEBUG
-  @testable import IOReader
-  import Pack
-#else
-  import IOReader
-  import Pack
-#endif
+import XCTest
 
 @available(macOS 26.0, *)
-extension InlineArray: SingleReadable where Element: SingleReadable {
-  public static func read() throws -> Self {
-    try .init { _ in try Element.read() }
-  }
-}
-
-@available(macOS 26.0, *)
-extension InlineArray where Element: SingleReadable {
-  func output() {
+extension InlineArray {
+  public func output() {
     for i in 0..<endIndex {
       if i != 0 {
         print(terminator: " ")

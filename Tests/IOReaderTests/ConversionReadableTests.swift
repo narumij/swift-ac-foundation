@@ -200,65 +200,6 @@ final class ConversionReadableTests: XCTestCase {
       """)
   }
 
-  #if false
-    func testInt128() throws {
-
-      XCTAssertEqual(
-        try SolverRunner(solver: {
-          print(Int128.stdin)
-          print(Int128.stdin)
-        })
-        .run(
-          input:
-            """
-            \(Int128.max)
-            \(Int128.min)
-            """),
-        """
-        \(Int128.max)
-        \(Int128.min)
-        """)
-    }
-
-    func testUInt128() throws {
-
-      XCTAssertEqual(
-        try SolverRunner(solver: {
-          print(UInt128.stdin)
-        })
-        .run(
-          input:
-            """
-            \(UInt128.max)
-            """),
-        """
-        \(UInt128.max)
-        """)
-    }
-
-    func testBigInt() throws {
-
-      XCTAssertEqual(
-        try SolverRunner(solver: {
-          print(BigInt.stdin)
-          print(BigInt.stdin)
-          print(BigInt.stdin)
-        })
-        .run(
-          input:
-            """
-            \(Int128.max)
-            \(Int128.min)
-            \(UInt128.max)
-            """),
-        """
-        \(Int128.max)
-        \(Int128.min)
-        \(UInt128.max)
-        """)
-    }
-  #endif
-
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {
