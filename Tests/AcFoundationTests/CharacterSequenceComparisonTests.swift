@@ -1,4 +1,5 @@
 import XCTest
+import TestingUtil
 import CharacterUtil
 import UInt8Util
 

@@ -12,7 +12,8 @@ let package = Package(
   platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(name: "AcFoundation", targets: ["AcFoundation"])
+    .library(name: "AcFoundation", targets: ["AcFoundation"]),
+    .library(name: "TestingUtil", targets: ["TestingUtil"]),
   ],
   dependencies: [
     .package(
@@ -91,6 +92,9 @@ let package = Package(
       dependencies: ["Pack"],
       swiftSettings: _settings),
     .target(
+      name: "TestingUtil",
+      swiftSettings: _settings),
+    .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
@@ -121,6 +125,7 @@ let package = Package(
         "Miscellaneous",
         "Convenience",
         "MT19937",
+        "TestingUtil",
         .product(name: "Algorithms", package: "swift-algorithms"),
         .product(name: "BigInt", package: "BigInt"),
       ],
