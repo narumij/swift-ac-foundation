@@ -13,4 +13,10 @@ final class IntegerTests: XCTestCase {
     XCTAssertEqual(ceil(-10, 3), -3)
     XCTAssertEqual(mod(-10, 3), 2)
   }
+
+  func testIntegerDivisionHelpersWithExactNegativeDividend() throws {
+    XCTAssertEqual(floor(-9, 3), -3)
+    XCTAssertEqual(ceil(-9, 3), -3)
+    XCTAssertEqual(mod(-9, 3), 0)
+  }
 }
