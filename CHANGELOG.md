@@ -21,9 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Swift tools versionを6.2へ更新し、Packageのplatform指定を外す方向へ調整
 - テストターゲットを機能別に分割し、旧`AcFoundationTests`配下のテストを各モジュール用ターゲットへ移動
 - `Pack`系の`SingleReadable`適合を`IOReaderExtra`へ移動
-- `fastPrint`の引数名を`terminater`から`terminator`へ修正し、旧APIを非推奨化
+- `fastPrint`の引数名を`terminater`から`terminator`へ修正し、旧APIを削除
 - `fastPrint`の整数型制約を`FastPrintableInteger`へ変更し、対応型を`Int`/`UInt`と16/32/64bit整数に限定
-- `String.init(ascii:)`を`String.init(asciiValues:)`へリネームし、旧APIを非推奨化
+- `String.init(ascii:)`を削除し、`String.init(asciiValues:)`へ一本化
 - 1次元`prefixSum`を`reductions`推奨として非推奨化
 - `Pack`にmacOS 14.0以降のavailabilityを付与
 - IOReader内部の`Error`を`IOReaderError`へリネーム

@@ -24,14 +24,6 @@ where I: FastPrintableInteger & SignedInteger {
   }
 }
 
-@available(*, deprecated, renamed: "fastPrint(_:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<I>(_ x: I, terminater: Int32?)
-where I: FastPrintableInteger & SignedInteger {
-  fastPrint(x, terminator: terminater)
-}
-
 @inlinable
 @inline(__always)
 public func fastPrint<I>(_ x: I, terminator: Int32? = 0x0A)
@@ -40,14 +32,6 @@ where I: FastPrintableInteger & UnsignedInteger {
   if let terminator {
     putchar_unlocked(terminator)
   }
-}
-
-@available(*, deprecated, renamed: "fastPrint(_:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<I>(_ x: I, terminater: Int32?)
-where I: FastPrintableInteger & UnsignedInteger {
-  fastPrint(x, terminator: terminater)
 }
 
 /// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
@@ -65,18 +49,6 @@ where
 }
 
 /// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
-@available(*, deprecated, renamed: "fastPrint(_:separator:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32)
-where
-  C: Collection, C.Element == I, C.Index == Int,
-  I: FastPrintableInteger & SignedInteger
-{
-  fastPrint(a, separator: separator, terminator: terminater)
-}
-
-/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminator: Int32 = 0x0A)
@@ -88,18 +60,6 @@ where
     ___print_uint(UInt64(a[i]))
     putchar_unlocked(i == a.count - 1 ? terminator : separator)
   }
-}
-
-/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
-@available(*, deprecated, renamed: "fastPrint(_:separator:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<C, I>(_ a: C, separator: Int32 = 0x20, terminater: Int32)
-where
-  C: Collection, C.Element == I, C.Index == Int,
-  I: FastPrintableInteger & UnsignedInteger
-{
-  fastPrint(a, separator: separator, terminator: terminater)
 }
 
 /// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
@@ -117,18 +77,6 @@ where
 }
 
 /// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
-@available(*, deprecated, renamed: "fastPrint(_:_:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminater: Int32)
-where
-  C: Collection, C.Index == Int,
-  I: FastPrintableInteger & SignedInteger
-{
-  fastPrint(a, transform, terminator: terminater)
-}
-
-/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
 @inlinable
 @inline(__always)
 public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I,  separator: Int32 = 0x20, terminator: Int32 = 0x0A)
@@ -140,18 +88,6 @@ where
     ___print_uint(UInt64(transform(a[i])))
     putchar_unlocked(i == a.count - 1 ? terminator : separator)
   }
-}
-
-/// 数字出力用です。文字列にはfastPrint(asciiValues:)をお使いください
-@available(*, deprecated, renamed: "fastPrint(_:_:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint<C, I>(_ a: C,_ transform: (C.Element) -> I, separator: Int32 = 0x20, terminater: Int32)
-where
-  C: Collection, C.Index == Int,
-  I: FastPrintableInteger & UnsignedInteger
-{
-  fastPrint(a, transform, terminator: terminater)
 }
 
 // MARK: -
@@ -167,13 +103,6 @@ public func fastPrint(asciiValues s: [Int8], terminator: Int32? = 0x0A) {
   }
 }
 
-@available(*, deprecated, renamed: "fastPrint(asciiValues:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint(asciiValues s: [Int8], terminater: Int32?) {
-  fastPrint(asciiValues: s, terminator: terminater)
-}
-
 @inlinable
 @inline(__always)
 public func fastPrint(asciiValues s: [UInt8], terminator: Int32? = 0x0A) {
@@ -185,13 +114,6 @@ public func fastPrint(asciiValues s: [UInt8], terminator: Int32? = 0x0A) {
   }
 }
 
-@available(*, deprecated, renamed: "fastPrint(asciiValues:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint(asciiValues s: [UInt8], terminater: Int32?) {
-  fastPrint(asciiValues: s, terminator: terminater)
-}
-
 @inlinable
 @inline(__always)
 public func fastPrint(_ s: [Character], terminator: Int32? = 0x0A) {
@@ -201,13 +123,6 @@ public func fastPrint(_ s: [Character], terminator: Int32? = 0x0A) {
   if let terminator {
     putchar_unlocked(terminator)
   }
-}
-
-@available(*, deprecated, renamed: "fastPrint(_:terminator:)")
-@inlinable
-@inline(__always)
-public func fastPrint(_ s: [Character], terminater: Int32?) {
-  fastPrint(s, terminator: terminater)
 }
 
 @inlinable

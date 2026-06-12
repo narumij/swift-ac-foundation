@@ -90,21 +90,21 @@ final class UInt8ExtensionsTests: XCTestCase {
 
 final class StringAsciiExtensionsTests: XCTestCase {
 
-  func testInitAsciiWithArray() {
+  func testInitAsciiValuesWithArray() {
     let bytes: [UInt8] = [0x41, 0x42, 0x43]  // "A", "B", "C"
-    let s = String(ascii: bytes)
+    let s = String(asciiValues: bytes)
     XCTAssertEqual(s, "ABC")
   }
 
-  func testInitAsciiWithDataSequence() {
+  func testInitAsciiValuesWithDataSequence() {
     let data = Data([0x68, 0x69, 0x21])  // "h", "i", "!"
-    let s = String(ascii: data)
+    let s = String(asciiValues: data)
     XCTAssertEqual(s, "hi!")
   }
 
-  func testInitAsciiEmptySequence() {
+  func testInitAsciiValuesEmptySequence() {
     let empty: [UInt8] = []
-    let s = String(ascii: empty)
+    let s = String(asciiValues: empty)
     XCTAssertEqual(s, "")
   }
 
