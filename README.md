@@ -3,9 +3,11 @@
 [![Swift](https://github.com/narumij/swift-ac-foundation/actions/workflows/swift.yml/badge.svg?branch=main)](https://github.com/narumij/swift-ac-foundation/actions/workflows/swift.yml)  
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 
-## 利用方法
+English | [日本語](README.ja.md)
 
-SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用するには、Package.swift ファイルの dependencies に次の行を追加します。
+## Usage
+
+To use swift-ac-foundation in a SwiftPM project, add the following entry to `dependencies` in `Package.swift`.
 
 ```swift
 .package(
@@ -13,9 +15,9 @@ SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用する
    branch: "release/AtCoder/2025"),
 ```
 
-タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、必要な場合は直接revision指定してください。
+Specifying a tag can be rejected by the build because this package uses C++ `unsafeFlags`. If you need a fixed version, specify a revision directly.
 
-実行可能ターゲットの依存関係に「AcFoundation」を追加してください。
+Add `AcFoundation` to the dependencies of your executable target.
 
 ```swift
 .target(name: "<target>", dependencies: [
@@ -23,7 +25,7 @@ SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用する
 ]),
 ```
 
-ソースコードに以下を記述してインポートします。
+Then import it from your source code.
 
 ```swift
 import AcFoundation
@@ -31,11 +33,11 @@ import AcFoundation
 
 ---
 
-## 内容
+## Contents
 
 ### IOReader
 
-#### とりあえず使う場合
+#### Quick Start
 
 ```swift
 let N: Int = try read()
@@ -51,7 +53,7 @@ let G = try [String].readLine()
 let H = try [[Character]].readLine()
 ```
 
-readLine()メソッドは、それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
+The `readLine()` methods are roughly equivalent to the following code, but they avoid creating intermediate Swift strings.
 
 ```swift
 let A = readLine()!.components(separatedBy: " ").map { Int($0)! }
@@ -59,18 +61,18 @@ let G = readLine()!.components(separatedBy: " ").map { $0 }
 let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map{ $0 } }
 ```
 
-#### 細かい話
+#### Details
 
-以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティや`read()`メンバー関数を追加します。
+For the following types, this package adds a `stdin` property and `read()` member functions that read from standard input up to a space or newline.
 
-- 固定長整数
-- 浮動小数点数
-- 文字列
-- 文字配列 (Character)
-- C 文字配列 (UInt8)
+- Fixed-width integers
+- Floating-point numbers
+- Strings
+- Character arrays (`Character`)
+- C-style character arrays (`UInt8`)
 
-**入力の区切り**  
-空白、タブ、改行を区切り文字として使用します。
+**Separators**  
+Spaces, tabs, and newlines are treated as separators.
 
 ```swift
 let N: Int = Int.stdin
@@ -80,8 +82,8 @@ let T: [Character] = [Character].stdin
 let U: [UInt8] = [UInt8].stdin
 ```
 
-**応用例 1: ペアの入力**  
-例えば、問題の入力が `H W` のように並んでいる場合は、次のように記述できます。
+**Example 1: Reading a Pair**  
+For input such as `H W`, you can write any of the following.
 
 ```swift
 let (H, W): (Int, Int) = try read()
@@ -99,16 +101,16 @@ let (H, W): (Int, Int) = (try .read(), try .read())
 let (H, W): (Int, Int) = (.stdin, .stdin)
 ```
 
-**応用例 2: 配列の入力**  
-個数 `N` と数列 `A` を入力する場合は以下のように記述します。縦横に並ぶデータにも対応可能です。
+**Example 2: Reading an Array**  
+For an item count `N` followed by a sequence `A`, write the following. This also works for vertically or horizontally arranged data.
 
 ```swift
 let N: Int = Int.stdin
 let A: [Int] = (0..<N).map { .stdin }
 ```
 
-**応用例 3: クエリの処理**  
-クエリ `Q` とそれに応じた入力を処理する例です。
+**Example 3: Processing Queries**  
+This is an example that reads `Q` queries and dispatches by query type.
 
 ```swift
 let Q: Int = Int.stdin
@@ -116,19 +118,19 @@ for _ in 0..<Q {
   switch Int.stdin {
     case 1:
       let (A, B) = (Int.stdin, Int.stdin)
-      // 処理
+      // process
     case 2:
       let C = Int.stdin
-      // 処理
+      // process
     default:
       break
   }
 }
 ```
 
-#### 他の便利なメンバー関数
+#### Other Convenient Member Functions
 
-数を指定して読む場合
+When you want to specify the number of elements to read:
 
 ```swift
 let A = [Int].stdin(columns: N)
@@ -137,44 +139,44 @@ let H = [[Character]].stdin(rows: H, columns: W)
 let I = [[UInt8]].stdin(rows: H, columns: W)
 ```
 
-#### 部分利用
+#### Partial Import
 
-IOReader 機能のみを利用したい場合は以下をインポートしてください。
+If you only want IOReader features, import the module below.
 
 ```swift
 import IOReader
 ```
 
-#### `read`と`stdin`
+#### `read` and `stdin`
 
-基礎となるメソッドや関数は命名のセオリーに従い、動詞の`read`が識別子に絡んでいます。
+The underlying methods and functions follow the usual naming convention and use the verb `read` in their identifiers.
 
-それに対して`try`を省ける便利プロパティ、便利メソッドの識別子は`stdin`になっています。
+Convenience properties and methods that omit `try` use the identifier `stdin`.
 
-これはC++の`cin`を意識したことが一つあります。
+One reason is that it is inspired by C++ `cin`.
 
-もう一つは、`stdin`識別子をこんな風変わりに使う人は滅多にいないだろうという打算によりこの識別子にしています。
+Another reason is that very few people are likely to use `stdin` in this unusual way, so the name is unlikely to collide.
 
-コンテスト中に`ambiguous`を解決するのはかなり困難なので、極力これを避けたいからです。
+Resolving `ambiguous` errors during a contest is difficult, so this package tries to avoid them where possible.
 
-風変わりな識別子というのは割と忘れやすいものなので、その点でも`stdin`が一番ましという判断をしています。
+Unusual identifiers are also easy to forget, and `stdin` seemed like the least bad option.
 
-#### その他
+#### Notes
 
-この IOReader は、文字列分割、文字列コピー、数値化の無駄を最小限に抑えるよう設計されています。  
-数値が多数並んでいる場合、標準の`readLine()` を使用するよりも実行時間を短縮できる場合があります。
+This IOReader is designed to minimize unnecessary string splitting, string copying, and numeric conversion overhead.  
+When many numbers are provided, it can be faster than the standard `readLine()` approach.
 
-一方で、非常に長い文字列を1行丸ごと読み取る場合は、`readLine()` の方が高速です。  
-**Swift の文字列操作は AtCoder の問題によって TLE となりやすいため、問題に応じた使い分けを推奨します。**
+On the other hand, if you need to read a very long entire line as a string, `readLine()` is faster.  
+**Swift string processing can easily lead to TLE on some AtCoder problems, so choose the right tool for each problem.**
 
 ---
 
 ### IOUtil
 
-**stdoutやstderrによる方法は廃止しました**
+**The stdout/stderr-based approach has been deprecated.**
 
-`print` 関数の `to:` パラメータで利用できる標準出力と標準エラーのTextOutputStremを提供します。
-これにより、以下のような記述で標準エラーへの出力が可能になります。
+This module provides `TextOutputStream` values for standard output and standard error that can be used with the `to:` parameter of `print`.
+This makes it possible to write to standard error as follows.
 
 ```swift
 import Foundation
@@ -183,13 +185,13 @@ import IOUtil
 print("Hello, world!", to: &FileOutputStream.standardError)
 ```
 
-他に、性能を比較したい場合にI/O負荷を軽減する目的で整数専用のfastPrintというものを追加してあります。
+It also provides `fastPrint`, an integer-focused output helper intended to reduce I/O overhead when comparing performance.
 
-#### 部分利用
+#### Partial Import
 
-個別importでしか提供していません。
+This module is available only through an individual import.
 
-IOUtil 機能を利用したい場合は以下をインポートしてください。
+If you want to use IOUtil features, import the module below.
 
 ```swift
 import IOUtil
@@ -199,24 +201,24 @@ import IOUtil
 
 ### Bisect
 
-Python の `bisect` を移植したもので、Swift で二分探索を利用可能にします。
+This is a Swift port of Python's `bisect`, enabling binary search in Swift.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
 print(sortedList.bisectLeft(99)) // 3
 ```
 
-**探索範囲の限定**  
-`ArraySlice` を使用することで探索範囲を限定できます。
+**Limiting the Search Range**  
+You can limit the search range by using `ArraySlice`.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
 print(sortedList[0..<3].bisectLeft(99)) // 3
 ```
 
-#### 部分利用
+#### Partial Import
 
-Bisect 機能のみを利用したい場合は以下をインポートしてください。
+If you only want Bisect features, import the module below.
 
 ```swift
 import Bisect
@@ -226,12 +228,11 @@ import Bisect
 
 ### Pack
 
-SE-283が凍結になっているため、辞書のキーにタプルを使うことは不可能なままのようです。
-このため、例えばABC393Cなど、グラフ問題を盆栽なしにSwiftで解こうと思った際、C++のPairに相当するものもないため、
-辞書のキーに、都度構造体とそれにHashable適用をするコードを書く必要が生じます。
-カジュアルに競技プログラミングを楽しもうとしている人にそこまでプロトコル知識を要求するのはどうかと思い、用意しました。
+Because SE-283 is frozen, tuples still cannot be used as dictionary keys.
+For graph problems such as ABC393C, Swift also does not have a built-in equivalent of C++ `pair`, so you would otherwise need to write a custom struct and make it `Hashable` each time.
+This package provides `Pack` so casual competitive programmers do not need that much protocol boilerplate.
 
-これを使うことでABC393Cは以下のようにコンパクトな提出でACできる、予定です。
+With `Pack`, ABC393C can be written compactly as follows and should be accepted.
 
 ```swift
 import AcFoundation
@@ -256,29 +257,27 @@ m.forEach {
 print(ans)
 ```
 
-Comparableにも対応しているため、dijkstraを書く際にも利用できます。
+`Pack` also conforms to `Comparable`, so it can be used when writing Dijkstra and similar algorithms.
 
-コンパイルで問題が生じた場合、迂回用のPack2またはPack3もお試しください。
+If compilation becomes problematic, try `Pack2` or `Pack3` as fallback types.
 
-#### 部分利用
+#### Partial Import
 
-Pack 機能のみを利用したい場合は以下をインポートしてください。
+If you only want Pack features, import the module below.
 
 ```swift
 import Pack
 ```
+
 ---
 
 ### CxxWrapped
 
-std::gcdとstd::lcmが利用できます。
+This module provides `std::gcd` and `std::lcm`.
 
-std::gcdっぽいものではなく、実際にstd::gcdを呼んでいます。
+They are not approximations of `std::gcd` or custom `std::lcm` implementations; they actually call `std::gcd` and `std::lcm`.
 
-std::lcmっぽいオレオレ実装ではなく、実際にstd::lcmを呼んでいます。
-
-CxxInteropで呼ぶつもりでしたが軽く挫折したため、extern "C"して、C Interopで呼んでいます。
-
+The original plan was to call them through C++ Interop, but that did not work out easily, so they are exposed with `extern "C"` and called through C Interop.
 
 ```swift
 import AcFoundation
@@ -289,9 +288,9 @@ print(lcm(12,16)) // 48
 
 ```
 
-#### 部分利用
+#### Partial Import
 
-CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
+If you only want CxxWrapped features, import the module below.
 
 ```swift
 import CxxWrapped
@@ -301,23 +300,23 @@ import CxxWrapped
 
 ### CharacterUtil
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。
+For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, but this package recommends `[Character]` during contests.
 
-文字の配列を利用する際に困るのが、文字のループを書くのがやや面倒くさいことと、辞書順比較がわかりにくいところです。
+When using character arrays, writing character loops can be somewhat tedious, and lexicographical comparison is not obvious.
 
-このモジュールではまず、ascii文字限定ですが、CharacterにStridableを付与します。
+This module first adds `Stridable` conformance to `Character` for ASCII characters.
 
-これがどう嬉しいかというと、文字のループが以下のように書けるようになります。
+That lets you write loops over characters like this.
 
 ```swift
 import AcFoundation
 
 for c: Character in "a"..."z" {
-  print(c) // aからzまで順に出力する
+  print(c) // prints a through z in order
 }
 ```
 
-このモジュールでは他に、Characterの配列に辞書順比較を行う比較演算子を追加します。
+This module also adds lexicographical comparison operators to `[Character]`.
 
 ```swift
 import AcFoundation
@@ -325,25 +324,26 @@ import AcFoundation
 print(Array("abc") < Array("abd")) // true
 ```
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
-(readLine関数の追加で型の記述に不便が生じる懸念があり、一括importから外しました)
+To use this module, import it individually near the top of your source file.
+(It is excluded from the umbrella import because adding `readLine` functions can make type annotations inconvenient.)
 
 ```swift
 import CharacterUtil
 ```
+
 ---
 
 ### UInt8Util
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、CやC++に慣れてる人にはUInt8の配列のほうが取り扱いが楽だったりもします。0x0端のcString関連メソッドがdeprecatedになりはじめたので、CCharではなく、UInt8を推しています。
+For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, and this package recommends `[Character]` during contests. That said, `[UInt8]` can be easier for people used to C or C++. Since null-terminated `cString`-related methods have started to become deprecated, this package prefers `UInt8` over `CChar`.
 
-UInt8を利用する場合に困るのが、文字定数が使えないことです。本モジュールではこれをカバーする拡張を追加してあり、以下のように書けます。
+One inconvenience with `UInt8` is that character literals cannot be used directly. This module adds extensions to cover that, so you can write the following.
 
 ```swift
 let c: UInt8 = "A"
 ```
 
-本モジュールでは他に、UInt8の配列に辞書順比較を行う比較演算子を追加します。
+This module also adds lexicographical comparison operators to `[UInt8]`.
 
 ```swift
 let abc: [UInt8] = "abc".compactMap(\.asciiValue)
@@ -351,9 +351,9 @@ let abd: [UInt8] = "abd".compactMap(\.asciiValue)
 print(abc < abd) // true
 ```
 
-Characterのプロパティ相当のものもいくつか追加してあります。
+It also provides several properties equivalent to `Character` properties.
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+To use this module, import it individually near the top of your source file.
 
 ```swift
 import UInt8Util
@@ -363,16 +363,16 @@ import UInt8Util
 
 ### StringUtil
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、不慣れな人にこれを強いるのは酷だろうし、かといってSwiftの文字列は整数の添え字が使えず、ここが初心者泣かせなので、文字列に便利メソッドを用意しました。あくまで初心者用であることをご承知の上お使いください。Swiftの文字列はリッチが過ぎるため、競技プログラミングではTLEになりやすいです。この点も併せてご承知ください。
+For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, and this package recommends `[Character]` during contests. However, forcing that on beginners is harsh, while Swift strings do not support integer subscripts, which is also painful for beginners. This module adds convenience methods for strings. Use them with the understanding that they are intended for beginners. Swift strings are very rich, and in competitive programming they can easily cause TLE.
 
-ABCのA問題B問題ぐらいは楽に書きたい、といった場合にどうぞ。
+Use this when you want to solve ABC A or B problems comfortably.
 
 ```swift
 let s = "abcdef"
-// 1文字取得
+// Get one character
 print(s[0]) // "a"
 
-// 文字列取得
+// Get substrings
 print(s[0..<s.count]) // "abcdef"
 print(s[0..<s.count]) // "abcdef"
 print(s[0...]) // "abcdef"
@@ -383,7 +383,7 @@ print(s[..<4]) // "abcd"
 print(s[...4]) // "abcde"
 ```
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+To use this module, import it individually near the top of your source file.
 
 ```swift
 import StringUtil
@@ -393,9 +393,9 @@ import StringUtil
 
 ### Miscellaneous
 
-これ以外の分類で浮いてしまっているものたちです。
+This module contains utilities that do not fit cleanly into the other categories.
 
-#### 部分利用
+#### Partial Import
 
 ```swift
 import Miscellaneous
@@ -405,7 +405,7 @@ import Miscellaneous
 
 ### Convinience
 
-横着用です。個別importでしか提供していません。
+This module is for shortcuts. It is available only through an individual import.
 
 ```swift
 import Convinience
@@ -415,8 +415,8 @@ import Convinience
 
 ### MT19937
 
-メルセンヌツイスターです。疑似乱数です。
-AHC等で、再現性のある乱数が使いたい場合にご利用ください。
+This is a Mersenne Twister pseudorandom number generator.
+Use it when you need reproducible random numbers, such as in AHC.
 
 ```swift
 var mt = mt19937_64(seed: 0)
@@ -424,7 +424,7 @@ let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)
 let randomDouble = Double.random(in: 0...1, using: &mt)
 ```
 
-個別importでしか提供していません。
+It is available only through an individual import.
 
 ```swift
 import MT19937
@@ -432,9 +432,9 @@ import MT19937
 
 ---
 
-## その他
+## Notes
 
-modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
+To make `modint` or `BigInt` work with IOReader, you need code like the following.
 
 ```swift
 extension static_modint: IOIntegerConversionReadable {
@@ -448,17 +448,17 @@ extension BigInt: IOStringConversionReadable {
 }
 ```
 
-制約によっては、以下で速度が多少稼げます。
+Depending on the constraints, the following can be slightly faster.
 
 ```swift
-// 入力の制約がInt.minからInt.maxまでの場合利用可
+// Available when the input constraints are Int.min through Int.max
 extension BigInt: IOIntegerConversionReadable {
   public static func convert(from: Int) -> Self { .init(from) }
 }
 ```
 
 ```swift
-// 入力の制約が0からmod未満までの場合利用可
+// Available when the input constraints are 0 through less than mod
 extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
   @inlinable @inline(__always)
   public static func convert(from: UInt) -> Self { .init(rawValue: from) }
@@ -467,6 +467,6 @@ extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
 
 ---
 
-## ライセンス
+## License
 
-このライブラリは CC0-1.0 ライセンスで提供されていますが、一部Apache 2.0 Licenceのコードを含みます。
+This library is provided under the CC0-1.0 license, but it includes some code licensed under the Apache 2.0 License.
