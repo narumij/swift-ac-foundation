@@ -129,9 +129,11 @@ public struct SolverRunner {
     var inputBuffer: [Int8] = input.utf8CString.dropLast()
     let count = inputBuffer.count
     try inputBuffer.withUnsafeMutableBytes {
-      guard let file = fmemopen($0.baseAddress, count, "r") else {
+      let optionalFile = fmemopen($0.baseAddress, count, "r")
+      guard optionalFile != nil else {
         throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
       }
+      let file = optionalFile!
       let backup = stdin
       stdin = file
       clearerr(stdin)
