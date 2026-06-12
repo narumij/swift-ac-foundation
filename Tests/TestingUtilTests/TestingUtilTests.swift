@@ -48,6 +48,54 @@ final class SolverRunnerTests: XCTestCase {
       after
       """)
   }
+
+  func testOutputOnlyDoesNotCapturePreviouslyBufferedStdout() throws {
+    print("outside")
+
+    let runner = SolverRunner {
+      print("inside")
+    }
+
+    XCTAssertEqual(try runner.outputOnly(), "inside")
+  }
+
+  func testOutputOnlyRestoresStdoutWhenSolverThrows() throws {
+    let throwingRunner = SolverRunner {
+      print("before-throw")
+      throw SampleError.expected
+    }
+
+    XCTAssertThrowsError(try throwingRunner.outputOnly()) { error in
+      XCTAssertEqual(error as? SampleError, .expected)
+    }
+
+    let runner = SolverRunner {
+      print("after-throw")
+    }
+
+    XCTAssertEqual(try runner.outputOnly(), "after-throw")
+  }
+
+  func testInputOnlyRestoresStdinWhenSolverThrows() throws {
+    let outer = SolverRunner {
+      let throwingRunner = SolverRunner {
+        XCTAssertEqual(readLine(), "inner")
+        throw SampleError.expected
+      }
+
+      XCTAssertThrowsError(try throwingRunner.inputOnly("inner")) { error in
+        XCTAssertEqual(error as? SampleError, .expected)
+      }
+
+      XCTAssertEqual(readLine(), "outer")
+    }
+
+    try outer.inputOnly("outer")
+  }
+
+  private enum SampleError: Error, Equatable {
+    case expected
+  }
 }
 
 final class StdinRedirectTests: XCTestCase {
@@ -107,6 +155,23 @@ final class StdinRedirectTests: XCTestCase {
       }
 
       XCTAssertEqual(readLineFromStandardInputFD(), "outer-after")
+    }
+  }
+
+  func testWithStdinRedirectedClearsEOFStateBeforeReading() throws {
+    let empty = try makeInputFile(contents: "")
+    let nonEmpty = try makeInputFile(contents: "recovered\n")
+    defer {
+      empty.cleanUp()
+      nonEmpty.cleanUp()
+    }
+
+    try withStdinRedirected(to: empty.url) {
+      XCTAssertNil(readLine())
+    }
+
+    try withStdinRedirected(to: nonEmpty.url) {
+      XCTAssertEqual(readLine(), "recovered")
     }
   }
 
