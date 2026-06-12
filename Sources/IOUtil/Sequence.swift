@@ -1,8 +1,7 @@
-
 extension Sequence where Element: CustomStringConvertible {
-  
+
   // IOUtilへの配置が妥当かもしれない
-  
+
   /// 空白区切りで標準出力へ出力する
   @inlinable
   public func print(separator: String = " ", terminator: String = "\n") {
