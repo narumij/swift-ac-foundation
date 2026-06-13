@@ -40,7 +40,7 @@ import AcFoundation
 IOReader は入力値を単語単位で取得する入力ライブラリです。
 入力コードを非常に簡潔に記述できるため、問題本体に集中しやすくなります。
 `readLine()` ベースの入力と比べて、中間文字列や分割処理のコストを抑えられます。
-手元の入力ライブラリと組み合わせることで、コード量を減らすこともできます。
+お手元の入力ライブラリと組み合わせることで、コード量を減らすこともできます。
 
 ```swift
 let N = Int.stdin
@@ -90,11 +90,50 @@ let v = SIMD3<Int>.stdin
 
 ### IOUtil
 
-IOUtil は、性能のベンチマークが入力に埋もれるのを防ぐための高速IOや、自力で入力・出力ライブラリを作るための補助機能です。
-通常の競技中に使う主力の入力 API ではなく、個別 import でのみ利用できます。
+IOUtil は、出力の便利メソッドと、入出力に関する補助的な内容となっています。
+個別 import でのみ利用できます。
 
 ```swift
 import IOUtil
+```
+
+まず、Sequenceプロトコルのextensionでprintメソッドが用意されていてます。
+これは配列等を空白区切りで出力するものです。
+
+```swift
+let A = [1, 2, 3, 4]
+A.print() // -> 1 2 3 4
+```
+
+InlineArrayにも同様のextentionが用意されており、以下のように出力することができます。
+
+```swift
+let A: [4 of Int] = [1, 2, 3, 4]
+A.print() // -> 1 2 3 4
+```
+
+任意の区切り文字や終端文字を使うことも可能です。
+```swift
+[1, 2, 3].print(terminator: " ") // 行の前半を出力
+[4, 5, 6].print() // 行の後半を出力
+// -> 1 2 3 4 5 6
+```
+
+```swift
+[1, 2, 3].print(separator: "-")
+```
+
+FILEポインタが`TextOutputStream` 適合となります。
+これにより、`stderr` や `stdout` をprint関数の出力先引数として用いる事ができます。
+
+```swift
+#if os(Linux)
+@preconcurrency import Glibc
+#else
+@preconcurrency import Darwin
+#endif
+
+print("debug", to: &stderr)
 ```
 
 `fastPrint` は低レベルの出力関数を使って、整数や ASCII 文字列相当の値を出力します。
@@ -107,13 +146,6 @@ fastPrint([1, 2, 3], separator: 0x0A)
 fastPrint(asciiValues: Array("OK".utf8))
 ```
 
-`CustomStringConvertible` な要素の列は、区切り文字付きで出力できます。
-
-```swift
-[1, 2, 3].print()
-[1, 2, 3].print(separator: ",")
-```
-
 `getline` は 1 行を UTF-8 バイト列として扱うための API です。
 `readIntLine()` と `readUIntLine()` は、1 行を整数配列として読み取ります。
 行バッファの挙動を確認したい場合や、自作 reader の土台がほしい場合に使えます。
@@ -123,11 +155,6 @@ let values: [Int] = readIntLine()
 let unsigned: [UInt] = readUIntLine()
 ```
 
-`stderr` や `stdout` は `TextOutputStream` としても利用できます。
-
-```swift
-print("debug", to: &stderr)
-```
 
 ---
 

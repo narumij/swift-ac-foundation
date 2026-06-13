@@ -46,3 +46,9 @@ func extgcd(_ a: Int,_ b: Int) -> (Int,Int) {
   y -= a / b * x;
   return (x, y)
 }
+
+extension FixedWidthInteger {
+  init(_ flag: Bool) {
+    self = flag ? 1 : 0
+  }
+}

@@ -196,4 +196,114 @@ final class ExtraReaderTests: XCTestCase {
       111.0
       """)
   }
+  
+  func testSIMD2() throws {
+    _ = try SolverRunner(solver: {
+      let value: SIMD2<Int> = try .read()
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+    })
+    .run(
+      input:
+        """
+        1 2
+        """)
+    
+    _ = try SolverRunner(solver: {
+      let value: SIMD2<Int> = .stdin
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+    })
+    .run(
+      input:
+        """
+        1 2
+        """)
+  }
+
+  func testSIMD3() throws {
+    _ = try SolverRunner(solver: {
+      let value: SIMD3<Int> = try .read()
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+      XCTAssertEqual(value.z, 3)
+    })
+    .run(
+      input:
+        """
+        1 2 3
+        """)
+    
+    _ = try SolverRunner(solver: {
+      let value: SIMD3<Int> = .stdin
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+      XCTAssertEqual(value.z, 3)
+    })
+    .run(
+      input:
+        """
+        1 2 3
+        """)
+  }
+
+  func testSIMD4() throws {
+    _ = try SolverRunner(solver: {
+      let value: SIMD4<Int> = try .read()
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+      XCTAssertEqual(value.z, 3)
+      XCTAssertEqual(value.w, 4)
+    })
+    .run(
+      input:
+        """
+        1 2 3 4
+        """)
+    
+    _ = try SolverRunner(solver: {
+      let value: SIMD4<Int> = .stdin
+
+      XCTAssertEqual(value.x, 1)
+      XCTAssertEqual(value.y, 2)
+      XCTAssertEqual(value.z, 3)
+      XCTAssertEqual(value.w, 4)
+    })
+    .run(
+      input:
+        """
+        1 2 3 4
+        """)
+  }
+  
+  func testSIMD2Double() throws {
+    _ = try SolverRunner(solver: {
+      let value: SIMD2<Double> = try .read()
+
+      XCTAssertEqual(value.x, 1.5)
+      XCTAssertEqual(value.y, 2.5)
+    })
+    .run(
+      input:
+        """
+        1.5 2.5
+        """)
+    
+    _ = try SolverRunner(solver: {
+      let value: SIMD2<Double> = .stdin
+
+      XCTAssertEqual(value.x, 1.5)
+      XCTAssertEqual(value.y, 2.5)
+    })
+    .run(
+      input:
+        """
+        1.5 2.5
+        """)
+  }
 }
