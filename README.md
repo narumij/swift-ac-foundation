@@ -398,6 +398,35 @@ extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
 
 ---
 
+## `TestingUtil` for Local Tests
+
+`TestingUtil` is a helper target for local test code, not for submitted solutions.
+
+It is intended for running your submitted-style `solve()` function from tests, feeding standard input, and checking captured standard output as a string.
+
+```swift
+.testTarget(name: "<test-target>", dependencies: [
+  .product(name: "TestingUtil", package: "swift-ac-foundation")
+])
+```
+
+```swift
+import TestingUtil
+import XCTest
+
+final class SolverTests: XCTestCase {
+  func testSample() throws {
+    let runner = SolverRunner {
+      solve()
+    }
+
+    XCTAssertEqual(try runner.run(input: "3\n1 2 3\n"), "6")
+  }
+}
+```
+
+---
+
 ## License
 
 This library is provided under the CC0-1.0 license, but it includes some code licensed under the Apache 2.0 License.
