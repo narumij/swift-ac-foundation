@@ -46,7 +46,7 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
 
 extension Optional {
   @inlinable @inline(__always)
-  func unwrap(or error: @autoclosure () -> IOReaderError) throws -> Wrapped {
+  package func unwrap(or error: @autoclosure () -> IOReaderError) throws -> Wrapped {
     guard let value = self else { throw error() }
     return value
   }
