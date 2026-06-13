@@ -366,41 +366,6 @@ import MT19937
 
 ---
 
-## その他
-
-modintやBigIntをIOReader対応にして利用するには以下のコードが必要です。
-
-```swift
-extension static_modint: IOIntegerConversionReadable {
-  public static func convert(from: Int) -> Self { .init(from) }
-}
-```
-
-```swift
-extension BigInt: IOStringConversionReadable {
-  public static func convert(from: String) -> Self { .init(from)! }
-}
-```
-
-制約によっては、以下で速度が多少稼げます。
-
-```swift
-// 入力の制約がInt.minからInt.maxまでの場合利用可
-extension BigInt: IOIntegerConversionReadable {
-  public static func convert(from: Int) -> Self { .init(from) }
-}
-```
-
-```swift
-// 入力の制約が0からmod未満までの場合利用可
-extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
-  @inlinable @inline(__always)
-  public static func convert(from: UInt) -> Self { .init(rawValue: from) }
-}
-```
-
----
-
 ## ローカルテスト用の `TestingUtil`
 
 `TestingUtil` は提出コード向けではなく、ローカルのテストコードで使うための補助ターゲットです。

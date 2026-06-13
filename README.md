@@ -363,41 +363,6 @@ import MT19937
 
 ---
 
-## Notes
-
-To make `modint` or `BigInt` work with IOReader, you need code like the following.
-
-```swift
-extension static_modint: IOIntegerConversionReadable {
-  public static func convert(from: Int) -> Self { .init(from) }
-}
-```
-
-```swift
-extension BigInt: IOStringConversionReadable {
-  public static func convert(from: String) -> Self { .init(from)! }
-}
-```
-
-Depending on the constraints, the following can be slightly faster.
-
-```swift
-// Available when the input constraints are Int.min through Int.max
-extension BigInt: IOIntegerConversionReadable {
-  public static func convert(from: Int) -> Self { .init(from) }
-}
-```
-
-```swift
-// Available when the input constraints are 0 through less than mod
-extension static_modint: @retroactive IOUnsignedIntegerConversionReadable {
-  @inlinable @inline(__always)
-  public static func convert(from: UInt) -> Self { .init(rawValue: from) }
-}
-```
-
----
-
 ## `TestingUtil` for Local Tests
 
 `TestingUtil` is a helper target for local test code, not for submitted solutions.
