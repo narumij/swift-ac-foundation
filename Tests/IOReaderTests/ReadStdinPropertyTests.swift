@@ -6,7 +6,8 @@ private func string(from bytes: [UInt8]) -> String {
   String(bytes.map { Character(UnicodeScalar($0)) })
 }
 
-final class ReaderStdinPropertyTests: XCTestCase {
+final class ReadStdinPropertyTests: XCTestCase {
+  
   func testMixedScalarAndAsciiProperties() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
