@@ -1,6 +1,6 @@
-# Swift Input For Competitor
+# IOReader の入力例
 
-(初心者向けは[こちら](SwiftInputForBeginner.md)をどうぞ。)
+(IOReader の考え方は[こちら](IOReaderConcepts.md)をどうぞ。)
 
 ここでは、IOReaderを用いた実践的な入力方法について説明します。
 
@@ -101,3 +101,5 @@ let (N, M): (Int, Int) = stdin()
 
 型に生えた `stdin` メソッドや `stdin()` 関数を用いることで、
 配列、二次元配列、タプルを簡潔に取得できます。
+
+次のページ: [IOReader リファレンス](IOReaderReference.md)

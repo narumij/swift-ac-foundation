@@ -1,6 +1,6 @@
-# Swift Input For Serious Competitor
+# IOReader リファレンス
 
-(実践向けは[こちら](SwiftInputForCompetitor.md)をどうぞ。)
+(IOReader の入力例は[こちら](IOReaderRecipes.md)をどうぞ。)
 
 ここでは、IOReader が提供している入力 API を、実際に使う具体型ベースで整理します。
 

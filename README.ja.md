@@ -37,137 +37,28 @@ import AcFoundation
 
 ### IOReader
 
-#### とりあえず使う場合
+IOReader は入力値を単語単位で取得する入力ライブラリです。
+入力コードを非常に簡潔に記述できるため、問題本体に集中しやすくなります。
+`readLine()` ベースの入力と比べて、中間文字列や分割処理のコストを抑えられます。
+手元の入力ライブラリと組み合わせることで、コード量を減らすこともできます。
 
 ```swift
-let N: Int = try read()
-let (H, W): (Int, Int) = try read()
-let (X, Y, Z): (Int, Int, Int) = try read()
-let (A, B): (Int, String) = try read()
-let (C, D): (Int, [Character]) = try read()
-```
-
-```swift
-let A = try [Int].readLine()
-let G = try [String].readLine()
-let H = try [[Character]].readLine()
-```
-
-readLine()メソッドは、それぞれ以下とおおよそ等価で、かつ中間のSwift文字列を作成しません
-
-```swift
-let A = readLine()!.components(separatedBy: " ").map { Int($0)! }
-let G = readLine()!.components(separatedBy: " ").map { $0 }
-let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map{ $0 } }
-```
-
-#### 細かい話
-
-以下の型に対して、標準入力から空白または改行までを取得する `stdin` プロパティや`read()`メンバー関数を追加します。
-
-- 固定長整数
-- 浮動小数点数
-- 文字列
-- 文字配列 (Character)
-- C 文字配列 (UInt8)
-
-**入力の区切り**  
-空白、タブ、改行を区切り文字として使用します。
-
-```swift
-let N: Int = Int.stdin
-let D: Double = Double.stdin
-let S: String = String.stdin
-let T: [Character] = [Character].stdin
-let U: [UInt8] = [UInt8].stdin
-```
-
-**応用例 1: ペアの入力**  
-例えば、問題の入力が `H W` のように並んでいる場合は、次のように記述できます。
-
-```swift
-let (H, W): (Int, Int) = try read()
-```
-
-```swift
-let (H, W): (Int, Int) = stdin()
-```
-
-```swift
-let (H, W): (Int, Int) = (try .read(), try .read())
-```
-
-```swift
-let (H, W): (Int, Int) = (.stdin, .stdin)
-```
-
-**応用例 2: 配列の入力**  
-個数 `N` と数列 `A` を入力する場合は以下のように記述します。縦横に並ぶデータにも対応可能です。
-
-```swift
-let N: Int = Int.stdin
-let A: [Int] = (0..<N).map { .stdin }
-```
-
-**応用例 3: クエリの処理**  
-クエリ `Q` とそれに応じた入力を処理する例です。
-
-```swift
-let Q: Int = Int.stdin
-for _ in 0..<Q {
-  switch Int.stdin {
-    case 1:
-      let (A, B) = (Int.stdin, Int.stdin)
-      // 処理
-    case 2:
-      let C = Int.stdin
-      // 処理
-    default:
-      break
-  }
-}
-```
-
-#### 他の便利なメンバー関数
-
-数を指定して読む場合
-
-```swift
+let N = Int.stdin
 let A = [Int].stdin(columns: N)
-let G = [String].stdin(rows: H, columns: W)
-let H = [[Character]].stdin(rows: H, columns: W)
-let I = [[UInt8]].stdin(rows: H, columns: W)
+let (H, W): (Int, Int) = stdin()
+let S = [String].stdin(rows: H, columns: W)
 ```
 
-#### 部分利用
+単語は半角スペース、タブ、改行などで区切られます。
+文字列や文字は ASCII 入力を想定しています。
 
-IOReader 機能のみを利用したい場合は以下をインポートしてください。
+詳しい使い方は以下のドキュメントに分けています。
 
-```swift
-import IOReader
-```
+- [IOReader の考え方](Documents/IOReaderConcepts.md): `readLine()` との違いから知りたい場合
+- [IOReader の入力例](Documents/IOReaderRecipes.md): 実践的な入力例を見たい場合
+- [IOReader リファレンス](Documents/IOReaderReference.md): 対応型や細かい API を確認したい場合
 
-#### `read`と`stdin`
-
-基礎となるメソッドや関数は命名のセオリーに従い、動詞の`read`が識別子に絡んでいます。
-
-それに対して`try`を省ける便利プロパティ、便利メソッドの識別子は`stdin`になっています。
-
-これはC++の`cin`を意識したことが一つあります。
-
-もう一つは、`stdin`識別子をこんな風変わりに使う人は滅多にいないだろうという打算によりこの識別子にしています。
-
-コンテスト中に`ambiguous`を解決するのはかなり困難なので、極力これを避けたいからです。
-
-風変わりな識別子というのは割と忘れやすいものなので、その点でも`stdin`が一番ましという判断をしています。
-
-#### その他
-
-この IOReader は、文字列分割、文字列コピー、数値化の無駄を最小限に抑えるよう設計されています。  
-数値が多数並んでいる場合、標準の`readLine()` を使用するよりも実行時間を短縮できる場合があります。
-
-一方で、非常に長い文字列を1行丸ごと読み取る場合は、`readLine()` の方が高速です。  
-**Swift の文字列操作は AtCoder の問題によって TLE となりやすいため、問題に応じた使い分けを推奨します。**
+IOReader 機能のみを利用したい場合は、個別に `import IOReader` できます。
 
 ---
 

@@ -1,4 +1,4 @@
-# Swift Input For Beginner
+# IOReader の考え方
 
 AcFoundationに含まれているIOReaderは入力値を単語単位で取得する手段を提供します。
 
@@ -106,3 +106,5 @@ _ = readLine() // -> "2 3"が得られる
 C++のcinと似た動作をしています。
 
 型に生えた `stdin` プロパティによって、指定した型の値を直接取得できます。
+
+次のページ: [IOReader の入力例](IOReaderRecipes.md)
