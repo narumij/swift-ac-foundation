@@ -1,16 +1,11 @@
-import XCTest
+import IOReader
+import Pack
 import TestingUtil
 import UInt8Util
-
-#if DEBUG
-  @testable import IOReader
-  import Pack
-#else
-  import IOReader
-  import Pack
-#endif
+import XCTest
 
 final class ReaderUnexpectedEOFTests: XCTestCase {
+
   func testUnexpectedEOF1() throws {
 
     XCTAssertEqual(
