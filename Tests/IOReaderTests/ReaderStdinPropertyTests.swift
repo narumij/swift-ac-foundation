@@ -1,15 +1,13 @@
 import IOReader
-import Pack
 import TestingUtil
-import UInt8Util
 import XCTest
 
-extension Array where Element == UInt8 {
-  fileprivate var characters: [Character] { map { Character(UnicodeScalar($0)) } }
+private func string(from bytes: [UInt8]) -> String {
+  String(bytes.map { Character(UnicodeScalar($0)) })
 }
 
-final class ReaderStdinTests: XCTestCase {
-  func testRead1() throws {
+final class ReaderStdinPropertyTests: XCTestCase {
+  func testMixedScalarAndAsciiProperties() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let N = Int.stdin
@@ -19,10 +17,10 @@ final class ReaderStdinTests: XCTestCase {
         let CC = [UInt8].stdin
         let C0 = UInt8.stdin
         let C1 = UInt8.stdin
-        print((N + 1))
-        print((F * 2))
+        print(N + 1)
+        print(F * 2)
         print(S.uppercased())
-        print(String(CC.characters + "1"))
+        print(string(from: CC) + "1")
         print(String(bytes: [C1], encoding: .ascii)!)
         print(String(bytes: [C0], encoding: .ascii)!)
       })
@@ -46,13 +44,13 @@ final class ReaderStdinTests: XCTestCase {
       """)
   }
 
-  func testRead2() throws {
+  func testLongStringAndByteArrayProperties() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let S: String = .stdin
         let CC: [UInt8] = .stdin
         print(S.uppercased())
-        print(String(CC.characters + "1"))
+        print(string(from: CC) + "1")
       })
       .run(
         input:
@@ -67,100 +65,7 @@ final class ReaderStdinTests: XCTestCase {
       """)
   }
 
-  func testRead3() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let CC: [[UInt8]] = .stdin(rows: 3, columns: 3)
-        CC.forEach {
-          print(String($0.characters).uppercased())
-        }
-      })
-      .run(
-        input:
-          """
-          aaa
-          bbb
-          ccc
-          """),
-
-      """
-      AAA
-      BBB
-      CCC
-      """)
-  }
-
-  func testRead4() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [String] = .stdin(rows: 3, columns: 3)
-        SS.forEach {
-          print($0.uppercased())
-        }
-      })
-      .run(
-        input:
-          """
-          aaa
-          bbb
-          ccc
-          """),
-
-      """
-      AAA
-      BBB
-      CCC
-      """)
-  }
-
-  func testRead5() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let ABC: [[Int]] = .stdin(rows: 3, columns: 3)
-        ABC.forEach {
-          print($0.map { $0 * 3 }.map(\.description).joined(separator: " "))
-        }
-      })
-      .run(
-        input:
-          """
-          1 1 1
-          2 2 2
-          3 3 3
-          """),
-
-      """
-      3 3 3
-      6 6 6
-      9 9 9
-      """)
-  }
-
-  func testRead6() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A: [Int] = .stdin(rows: 3)
-        A.forEach {
-          print($0 * 3)
-        }
-      })
-      .run(
-        input:
-          """
-          1
-          2
-          3
-          """),
-
-      """
-      3
-      6
-      9
-      """)
-  }
-
-  func testInt() throws {
-
+  func testIntBoundaries() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         print(Int.stdin)
@@ -176,7 +81,9 @@ final class ReaderStdinTests: XCTestCase {
       \(Int.max)
       \(Int.min)
       """)
+  }
 
+  func testIntPropertiesInNestedLiterals() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Int]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
@@ -191,37 +98,9 @@ final class ReaderStdinTests: XCTestCase {
 
       """
       """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[Int]] = [.stdin(columns: 3), .stdin(columns: 3)]
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
-      """
-      """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[Int]] = .stdin(rows: 2, columns: 3)
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
-
-      """
-      """)
   }
 
-  func testIntRandom() throws {
-
+  func testRandomIntProperties() throws {
     for _ in 0..<1000 {
       let i = Int.random(in: Int.min...Int.max)
       _ = try SolverRunner(solver: {
@@ -235,8 +114,7 @@ final class ReaderStdinTests: XCTestCase {
     }
   }
 
-  func testUInt() throws {
-
+  func testUIntBoundaries() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         print(UInt.stdin)
@@ -252,7 +130,9 @@ final class ReaderStdinTests: XCTestCase {
       \(UInt.max)
       \(UInt.min)
       """)
+  }
 
+  func testUIntPropertiesInNestedLiterals() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[UInt]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
@@ -267,37 +147,9 @@ final class ReaderStdinTests: XCTestCase {
 
       """
       """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[UInt]] = [.stdin(columns: 3), .stdin(columns: 3)]
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
-      """
-      """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[UInt]] = .stdin(rows: 2, columns: 3)
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
-
-      """
-      """)
   }
 
-  func testUIntRandom() throws {
-
+  func testRandomUIntProperties() throws {
     for _ in 0..<1000 {
       let i = UInt.random(in: UInt.min...UInt.max)
       _ = try SolverRunner(solver: {
@@ -310,7 +162,7 @@ final class ReaderStdinTests: XCTestCase {
     }
   }
 
-  func testDouble() throws {
+  func testDoublePropertiesInNestedLiterals() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [[Double]] = [[.stdin, .stdin, .stdin], [.stdin, .stdin, .stdin]]
@@ -324,33 +176,9 @@ final class ReaderStdinTests: XCTestCase {
           """),
       """
       """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[Double]] = [.stdin(columns: 3), .stdin(columns: 3)]
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
-      """
-      """)
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [[Double]] = .stdin(rows: 2, columns: 3)
-        XCTAssertEqual(SS, [[1, 2, 3], [4, 5, 6]])
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          4 5 6
-          """),
+  }
 
-      """
-      """)
+  func testDoubleBoundaries() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {
         let SS: [Double] = [.stdin, .stdin, .stdin, .stdin]
@@ -370,8 +198,7 @@ final class ReaderStdinTests: XCTestCase {
       """)
   }
 
-  func testDoubleRandom() throws {
-
+  func testRandomDoubleProperties() throws {
     for _ in 0..<1000 {
       let i = Double.random(in: Double(Int.min)...Double(Int.max))
       _ = try SolverRunner(solver: {
