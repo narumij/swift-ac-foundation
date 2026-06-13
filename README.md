@@ -62,30 +62,70 @@ If you only want IOReader features, you can import `IOReader` directly.
 
 ---
 
-### IOUtil
+### IOReaderExtra
 
-**The stdout/stderr-based approach has been deprecated.**
-
-This module provides `TextOutputStream` values for standard output and standard error that can be used with the `to:` parameter of `print`.
-This makes it possible to write to standard error as follows.
+IOReaderExtra adds `stdin` support for types that depend on external libraries, newer platform features, or optional helper modules.
+It is not re-exported by `AcFoundation`; import it directly when you want to read these types from standard input.
 
 ```swift
-import Foundation
-import IOUtil
+import BigInt
+import IOReaderExtra
+import Pack
 
-print("Hello, world!", to: &FileOutputStream.standardError)
+let x = BigInt.stdin
+let a: Pack2<Int, String> = .stdin
+let v = SIMD3<Int>.stdin
 ```
 
-It also provides `fastPrint`, an integer-focused output helper intended to reduce I/O overhead when comparing performance.
+| Type | Notes |
+|---|---|
+| `BigInt` | Reads from a decimal string |
+| `Int128`, `UInt128` | Available on macOS 15.0 or later |
+| `static_modint`, `dynamic_modint` | AtCoder modint types |
+| `Pack`, `Pack2`, `Pack3` | Available when the contained types support `stdin` |
+| `SIMD2`, `SIMD3`, `SIMD4` | Available when `Scalar` supports `stdin` |
+| `InlineArray` | Available on macOS 26.0 or later when `Element` supports `stdin` |
 
-#### Partial Import
+---
 
-This module is available only through an individual import.
+### IOUtil
 
-If you want to use IOUtil features, import the module below.
+IOUtil provides fast I/O helpers for keeping benchmark results from being dominated by input/output cost, and low-level pieces for building your own input/output routines.
+It is available only through an individual import and is not the main input API for ordinary contest use.
 
 ```swift
 import IOUtil
+```
+
+`fastPrint` writes integers and ASCII-like values through low-level output routines.
+It supports signed and unsigned fixed-width integers, integer collections, `[UInt8]`, `[Int8]`, and `[Character]`.
+
+```swift
+fastPrint(123)
+fastPrint([1, 2, 3])
+fastPrint([1, 2, 3], separator: 0x0A)
+fastPrint(asciiValues: Array("OK".utf8))
+```
+
+Sequences whose elements conform to `CustomStringConvertible` can be printed with separators.
+
+```swift
+[1, 2, 3].print()
+[1, 2, 3].print(separator: ",")
+```
+
+`getline` exposes one input line as UTF-8 bytes, and `readIntLine()` / `readUIntLine()` read one line as integer arrays.
+These APIs are useful when you want to inspect line-buffer behavior or build a custom reader.
+
+```swift
+let values: [Int] = readIntLine()
+let unsigned: [UInt] = readUIntLine()
+```
+
+`stderr` and `stdout` can also be used as `TextOutputStream` targets.
+
+```swift
+print("debug", to: &stderr)
 ```
 
 ---
