@@ -1,25 +1,27 @@
-# IOReader リファレンス
+# IOReader Reference
 
-(IOReader の入力例は[こちら](IOReaderRecipes.md)をどうぞ。)
+English | [日本語](IOReaderReference.ja.md)
 
-ここでは、IOReader が提供している入力 API を、実際に使う具体型ベースで整理します。
+(For input examples, see [IOReader Recipes](IOReaderRecipes.md).)
 
-## 入力の区切り
+This page organizes the input APIs provided by IOReader around the concrete types you use in practice.
 
-IOReader は標準入力を空白区切りの token として読みます。
-半角スペース、改行、タブなどで区切られた値を順に取得できます。
+## Input Separators
 
-文字列や文字は ASCII 入力を想定しています。
+IOReader reads standard input as whitespace-separated tokens.
+Values separated by spaces, newlines, tabs, and similar whitespace are read in order.
 
-競技中は、型に生えた `stdin` プロパティや `stdin(...)` メソッドで入力を読みます。
+Strings and characters assume ASCII input.
 
-## 1 token を読む
+During a contest, read input through the `stdin` property or `stdin(...)` methods on supported types.
+
+## Reading One Token
 
 ```swift
 static var stdin: Self { get }
 ```
 
-入力から次の token を 1 つ読み、指定した型として返します。
+Reads the next token from input and returns it as the specified type.
 
 ```swift
 let n = Int.stdin
@@ -29,67 +31,67 @@ let c = Character.stdin
 let b = UInt8.stdin
 ```
 
-### 対応型
+### Supported Types
 
-| 分類 | 型 |
+| Category | Types |
 |---|---|
-| 符号付き整数 | `Int`, `CInt`, `CLongLong` |
-| 符号なし整数 | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
-| 浮動小数 | `Double` |
-| 文字列 | `String`, `[Character]`, `[UInt8]` |
-| 1 文字 | `Character`, `UInt8` |
+| Signed integers | `Int`, `CInt`, `CLongLong` |
+| Unsigned integers | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
+| Floating-point | `Double` |
+| Strings | `String`, `[Character]`, `[UInt8]` |
+| One character | `Character`, `UInt8` |
 
-`UInt8.stdin` は数値ではなく ASCII 文字 1 文字として読みます。
-数値の `8` を整数として読みたい場合は、`Int.stdin` などを使ってください。
+`UInt8.stdin` reads one ASCII character, not a number.
+Use `Int.stdin` or another integer type when you want to read numeric `8` as an integer.
 
-## 数値配列を固定個数読む
+## Reading a Fixed Number of Numeric Values
 
 ```swift
 static func stdin(columns: Int) -> [Element]
 static func stdin(rows: Int) -> [Element]
 ```
 
-数値系の配列では、`columns` と `rows` はどちらも「読む個数」です。
-入力上の改行位置は見ません。
+For numeric arrays, both `columns` and `rows` mean the number of values to read.
+They do not inspect line breaks in the input.
 
 ```swift
 let a: [Int] = .stdin(columns: 3)
 let b: [Double] = .stdin(rows: 3)
 ```
 
-対応する要素型は以下です。
+Supported element types are:
 
-| 分類 | 要素型 |
+| Category | Element types |
 |---|---|
-| 符号付き整数 | `Int`, `CInt`, `CLongLong` |
-| 符号なし整数 | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
-| 浮動小数 | `Double` |
+| Signed integers | `Int`, `CInt`, `CLongLong` |
+| Unsigned integers | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
+| Floating-point | `Double` |
 
-## 固定サイズの 2 次元配列を読む
+## Reading a Fixed-Size 2D Array
 
 ```swift
 static func stdin(rows: Int, columns: Int) -> [[Element]]
 ```
 
-`rows * columns` 個の token を読み、`[[Element]]` で返します。
+Reads `rows * columns` tokens and returns them as `[[Element]]`.
 
 ```swift
 let grid: [[Int]] = .stdin(rows: 2, columns: 3)
 ```
 
-対応する要素型は、固定個数の数値配列と同じです。
+The supported element types are the same as fixed-count numeric arrays.
 
-## 固定長 ASCII 列を読む
+## Reading a Fixed-Length ASCII Sequence
 
-`String`, `[Character]`, `[UInt8]` は、固定長の ASCII 文字列を読む API を持ちます。
+`String`, `[Character]`, and `[UInt8]` provide APIs for reading fixed-length ASCII strings.
 
 ```swift
 static func stdin(columns: Int) -> Self
 ```
 
-`columns` で指定した ASCII 文字数を読みます。
-途中に空白や改行があると失敗します。
-読み終わった直後の 1 文字は区切りとして消費されます。
+Reads the specified number of ASCII characters.
+It fails if whitespace or a newline appears before that length is reached.
+The character immediately after the fixed-length value is consumed as a separator.
 
 ```swift
 let s = String.stdin(columns: 5)
@@ -97,12 +99,12 @@ let chars: [Character] = .stdin(columns: 5)
 let bytes: [UInt8] = .stdin(columns: 5)
 ```
 
-`String.stdin` や `[UInt8].stdin` は空白までを読む token 入力です。
-一方、`stdin(columns:)` は空白を含まない固定長入力です。
+`String.stdin` and `[UInt8].stdin` are token inputs that read up to whitespace.
+`stdin(columns:)` is fixed-length input without whitespace inside the value.
 
-## ASCII 文字列の配列を読む
+## Reading Arrays of ASCII Strings
 
-`String` の配列では、戻り値は `[String]` です。
+For arrays of `String`, the return type is `[String]`.
 
 ```swift
 static func stdin(rows: Int) -> [String]
@@ -114,7 +116,7 @@ let s: [String] = .stdin(rows: h)
 let fixed: [String] = .stdin(rows: h, columns: w)
 ```
 
-`[Character]` と `[UInt8]` の配列では、戻り値は 2 次元配列です。
+For arrays of `[Character]` and `[UInt8]`, the return type is a 2D array.
 
 ```swift
 static func stdin(rows: Int) -> [[Character]]
@@ -129,7 +131,7 @@ let chars: [[Character]] = .stdin(rows: h)
 let bytes: [[UInt8]] = .stdin(rows: h, columns: w)
 ```
 
-| 呼び出し | 戻り値 |
+| Call | Return type |
 |---|---|
 | `[String].stdin(rows:)` | `[String]` |
 | `[String].stdin(rows:columns:)` | `[String]` |
@@ -138,33 +140,33 @@ let bytes: [[UInt8]] = .stdin(rows: h, columns: w)
 | `[[UInt8]].stdin(rows:)` | `[[UInt8]]` |
 | `[[UInt8]].stdin(rows:columns:)` | `[[UInt8]]` |
 
-## 行末まで token を読む
+## Reading Tokens Until the End of a Line
 
 ```swift
 static func stdin() -> [Element]
 ```
 
-行末または EOF まで、空白区切りの token を読みます。
-区切りが改行に到達したところで停止します。
+Reads whitespace-separated tokens until the end of the line or EOF.
+It stops when the separator reaches a newline.
 
 ```swift
 let a: [Int] = .stdin()
 let words: [String] = .stdin()
 ```
 
-対応する要素型は以下です。
+Supported element types are:
 
-| 分類 | 要素型 |
+| Category | Element types |
 |---|---|
-| 符号付き整数 | `Int`, `CInt`, `CLongLong` |
-| 符号なし整数 | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
-| 浮動小数 | `Double` |
-| 文字列 | `String`, `[Character]`, `[UInt8]` |
+| Signed integers | `Int`, `CInt`, `CLongLong` |
+| Unsigned integers | `UInt`, `CUnsignedInt`, `CUnsignedLongLong` |
+| Floating-point | `Double` |
+| Strings | `String`, `[Character]`, `[UInt8]` |
 
-## 空白を含む 1 行を読む
+## Reading a Whole Line Including Spaces
 
-`[Character].readLine()` と `[UInt8].readLine()` は Swift 標準の `readLine()` に近い、行全体を読む API です。
-空白を含む行をそのまま読み、`strippingNewline` が `true` のときは末尾の改行を取り除きます。
+`[Character].readLine()` and `[UInt8].readLine()` are APIs similar to Swift's standard `readLine()` and read a whole line.
+They preserve spaces, and remove the trailing newline when `strippingNewline` is `true`.
 
 ```swift
 let lineChars = [Character].readLine()
@@ -174,32 +176,32 @@ let rawChars = [Character].readLine(strippingNewline: false)
 let rawBytes = [UInt8].readLine(strippingNewline: false)
 ```
 
-## タプルを読む
+## Reading Tuples
 
 ```swift
 func stdin<each T>() -> (repeat each T)
 ```
 
-`stdin` 対応型のタプルを一括で読みます。
+Reads a tuple whose element types support `stdin`.
 
 ```swift
 let (n, m): (Int, Int) = stdin()
 let (s, x): (String, Double) = stdin()
 ```
 
-## IOReaderExtra で増える型
+## Types Added by IOReaderExtra
 
-`IOReaderExtra` を import すると、以下の型でも `stdin` が使えます。
+Importing `IOReaderExtra` enables `stdin` for the following types.
 
-| 型 | 条件 |
+| Type | Condition |
 |---|---|
-| `BigInt` | `IOReaderExtra` と `BigInt` を利用する |
-| `Int128`, `UInt128` | macOS 15.0 以降 |
-| `static_modint`, `dynamic_modint` | AtCoder の modint |
-| `Pack`, `Pack2`, `Pack3` | 中身の型が `stdin` 対応型 |
-| `InlineArray` | macOS 26.0 以降、要素型が `stdin` 対応型 |
+| `BigInt` | Use `IOReaderExtra` and `BigInt` |
+| `Int128`, `UInt128` | macOS 15.0 or later |
+| `static_modint`, `dynamic_modint` | AtCoder modint |
+| `Pack`, `Pack2`, `Pack3` | The contained types support `stdin` |
+| `InlineArray` | macOS 26.0 or later, and the element type supports `stdin` |
 
-例:
+Example:
 
 ```swift
 import IOReaderExtra
@@ -208,13 +210,13 @@ let x = BigInt.stdin
 let a: Pack2<Int, String> = .stdin
 ```
 
-## 発展: 独自型対応
+## Advanced: Supporting Custom Types
 
-独自型を入力対応にしたい場合は、`SingleReadable` に準拠して読み方を実装します。
-通常の利用では、上で挙げた具体型を使えば十分です。
+To make your own type readable from input, conform it to `SingleReadable` and implement how it should be read.
+For ordinary use, the concrete types listed above are enough.
 
-ここでの `read()` は直接呼ぶためではなく、`stdin` を使えるようにするための実装です。
-たとえば、鞄の番号や荷物の重さを、そのまま `Int` として扱わず別の型にできます。
+The `read()` here is not meant to be called directly. It is the implementation that enables `stdin`.
+For example, you can represent a bag number or luggage weight as its own type instead of using plain `Int` everywhere.
 
 ```swift
 import AcFoundation
@@ -243,8 +245,8 @@ let bag = Bag.stdin
 let luggage = Luggage.stdin
 ```
 
-複数の入力対応型を組み合わせる型も作れます。
-先ほどの `Bag` と `Luggage` の定義に続けて、次のように書けます。
+You can also build a type by combining multiple input-readable types.
+Continuing from the `Bag` and `Luggage` definitions above:
 
 ```swift
 struct BagAndLuggage {
@@ -267,9 +269,10 @@ let bag = pair.bag
 let luggage = pair.luggage
 ```
 
-`IOIntegerConversionReadable` などは、複数の型から作れる独自型に対して、どの入力型を経由して読むかを決めるための補助プロトコルです。
-initializer の候補が曖昧になる場合でも、`convert(from:)` の引数型で入力経路を明示できます。
-| プロトコル | 変換元 |
+`IOIntegerConversionReadable` and related protocols are helper protocols for custom types that can be created from multiple source types. They decide which input type should be used.
+Even when initializer candidates are ambiguous, the argument type of `convert(from:)` makes the input path explicit.
+
+| Protocol | Source type |
 |---|---|
 | `IOIntegerConversionReadable` | `Int` |
 | `IOUnsignedIntegerConversionReadable` | `UInt` |
@@ -277,7 +280,8 @@ initializer の候補が曖昧になる場合でも、`convert(from:)` の引数
 | `IOStringConversionReadable` | `String` |
 | `IOBytesConversionReadable` | `[UInt8]` |
 
-たとえば、数字と文字列の両方から作れる型では、入力を整数として読むことを明示できます。
+For example, when a type can be created from both a number and a string, you can explicitly read input as an integer.
+
 ```swift
 import AcFoundation
 
@@ -302,7 +306,7 @@ extension Label: IOIntegerConversionReadable {
 let label = Label.stdin
 ```
 
-## 失敗時の扱い
+## Failure Behavior
 
-`stdin` 系は、競技プログラミングの制約どおりに入力が与えられる前提で使う API です。
-入力が足りない場合や、固定長文字列の途中に空白が入る場合などは実行時エラーになります。
+The `stdin` APIs assume that input follows the constraints of a competitive programming problem.
+They trap at runtime when input is missing or when whitespace appears inside a fixed-length string.

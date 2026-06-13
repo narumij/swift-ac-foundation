@@ -37,137 +37,28 @@ import AcFoundation
 
 ### IOReader
 
-#### Quick Start
+IOReader is a token-based input library for standard input.
+It keeps input code very concise, making it easier to focus on the problem itself.
+Compared with `readLine()`-based input, it avoids the cost of intermediate strings and manual splitting.
+It can also be combined with your own input helpers to reduce boilerplate.
 
 ```swift
-let N: Int = try read()
-let (H, W): (Int, Int) = try read()
-let (X, Y, Z): (Int, Int, Int) = try read()
-let (A, B): (Int, String) = try read()
-let (C, D): (Int, [Character]) = try read()
-```
-
-```swift
-let A = try [Int].readLine()
-let G = try [String].readLine()
-let H = try [[Character]].readLine()
-```
-
-The `readLine()` methods are roughly equivalent to the following code, but they avoid creating intermediate Swift strings.
-
-```swift
-let A = readLine()!.components(separatedBy: " ").map { Int($0)! }
-let G = readLine()!.components(separatedBy: " ").map { $0 }
-let H: [[Character]] = readLine()!.components(separatedBy: " ").map { $0.map{ $0 } }
-```
-
-#### Details
-
-For the following types, this package adds a `stdin` property and `read()` member functions that read from standard input up to a space or newline.
-
-- Fixed-width integers
-- Floating-point numbers
-- Strings
-- Character arrays (`Character`)
-- C-style character arrays (`UInt8`)
-
-**Separators**  
-Spaces, tabs, and newlines are treated as separators.
-
-```swift
-let N: Int = Int.stdin
-let D: Double = Double.stdin
-let S: String = String.stdin
-let T: [Character] = [Character].stdin
-let U: [UInt8] = [UInt8].stdin
-```
-
-**Example 1: Reading a Pair**  
-For input such as `H W`, you can write any of the following.
-
-```swift
-let (H, W): (Int, Int) = try read()
-```
-
-```swift
-let (H, W): (Int, Int) = stdin()
-```
-
-```swift
-let (H, W): (Int, Int) = (try .read(), try .read())
-```
-
-```swift
-let (H, W): (Int, Int) = (.stdin, .stdin)
-```
-
-**Example 2: Reading an Array**  
-For an item count `N` followed by a sequence `A`, write the following. This also works for vertically or horizontally arranged data.
-
-```swift
-let N: Int = Int.stdin
-let A: [Int] = (0..<N).map { .stdin }
-```
-
-**Example 3: Processing Queries**  
-This is an example that reads `Q` queries and dispatches by query type.
-
-```swift
-let Q: Int = Int.stdin
-for _ in 0..<Q {
-  switch Int.stdin {
-    case 1:
-      let (A, B) = (Int.stdin, Int.stdin)
-      // process
-    case 2:
-      let C = Int.stdin
-      // process
-    default:
-      break
-  }
-}
-```
-
-#### Other Convenient Member Functions
-
-When you want to specify the number of elements to read:
-
-```swift
+let N = Int.stdin
 let A = [Int].stdin(columns: N)
-let G = [String].stdin(rows: H, columns: W)
-let H = [[Character]].stdin(rows: H, columns: W)
-let I = [[UInt8]].stdin(rows: H, columns: W)
+let (H, W): (Int, Int) = stdin()
+let S = [String].stdin(rows: H, columns: W)
 ```
 
-#### Partial Import
+Tokens are separated by spaces, tabs, newlines, and similar whitespace.
+Strings and characters assume ASCII input.
 
-If you only want IOReader features, import the module below.
+Detailed usage is split across the following documents.
 
-```swift
-import IOReader
-```
+- [IOReader Concepts](Documents/IOReaderConcepts.md): start here if you want to understand how it differs from `readLine()`
+- [IOReader Recipes](Documents/IOReaderRecipes.md): practical input examples
+- [IOReader Reference](Documents/IOReaderReference.md): supported types and detailed APIs
 
-#### `read` and `stdin`
-
-The underlying methods and functions follow the usual naming convention and use the verb `read` in their identifiers.
-
-Convenience properties and methods that omit `try` use the identifier `stdin`.
-
-One reason is that it is inspired by C++ `cin`.
-
-Another reason is that very few people are likely to use `stdin` in this unusual way, so the name is unlikely to collide.
-
-Resolving `ambiguous` errors during a contest is difficult, so this package tries to avoid them where possible.
-
-Unusual identifiers are also easy to forget, and `stdin` seemed like the least bad option.
-
-#### Notes
-
-This IOReader is designed to minimize unnecessary string splitting, string copying, and numeric conversion overhead.  
-When many numbers are provided, it can be faster than the standard `readLine()` approach.
-
-On the other hand, if you need to read a very long entire line as a string, `readLine()` is faster.  
-**Swift string processing can easily lead to TLE on some AtCoder problems, so choose the right tool for each problem.**
+If you only want IOReader features, you can import `IOReader` directly.
 
 ---
 

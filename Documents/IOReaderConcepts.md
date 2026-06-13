@@ -1,110 +1,141 @@
-# IOReader の考え方
+# IOReader Concepts
 
-AcFoundationに含まれているIOReaderは入力値を単語単位で取得する手段を提供します。
+English | [日本語](IOReaderConcepts.ja.md)
 
-## 動作イメージ
+The IOReader included in AcFoundation provides a way to read input values token by token.
 
-入力として以下が提供されている場合
+## How It Works
+
+Given the following input:
+
 ```
 3
 1 2 3
 ```
 
-### 標準の場合
+### Standard Input
 
-これを `readLine()` で取得すると
+If you read it with `readLine()`:
+
 ```
-_ = readLine() // -> "3"が得られる
+_ = readLine() // -> "3"
 ```
-入力の残りは以下になります。
+
+The remaining input is:
+
 ```
 1 2 3
 ```
 
-もう一度取得すると
+Reading once more gives:
+
 ```
-_ = readLine() // -> "1 2 3"が得られる
+_ = readLine() // -> "1 2 3"
 ```
 
-入力の残りは空になります。
+The remaining input is empty:
+
 ```
 (EOF)
 ```
 
-行単位で取得した文字列は、それぞれ分割や加工が必要になります。
+Strings read line by line usually need to be split or converted before use.
 
-### IOReaderの場合
+### IOReader
 
-これをIOReaderのInt.stdinで取得すると
+If you read the same input with `Int.stdin`:
+
 ```
 _ = Int.stdin // -> 3
 ```
-入力の残りは以下になります。
+
+The remaining input is:
+
 ```
 1 2 3
 ```
-再度取得すると、
+
+Reading again gives:
+
 ```
 _ = Int.stdin // -> 1
 ```
-入力の残りは以下になります。
+
+The remaining input is:
+
 ```
 2 3
 ```
-再度取得すると、
+
+Reading again gives:
+
 ```
 _ = Int.stdin // -> 2
 ```
-入力の残りは以下になります。
+
+The remaining input is:
+
 ```
 3
 ```
-再度取得すると、
+
+Reading again gives:
+
 ```
 _ = Int.stdin // -> 3
 ```
-入力の残りは空になります。
+
+The remaining input is empty:
+
 ```
 (EOF)
 ```
-指定または推論された型で値が得られるため、加工が不要になります。
 
-### IOReaderとreadLine()の組み合わせ
+The value is returned as the specified or inferred type, so no extra conversion is needed.
 
-IOReader は必要な分だけ入力を消費し、勝手な先読みを行いません。
+### Combining IOReader with readLine()
 
-IOReaderの利用により、入力の残りが以下となる想定の場面で `readLine()` を用いた場合、
+IOReader consumes only the input it needs and does not read ahead.
+
+If IOReader leaves the following input:
+
 ```
 2 3
 ```
-以下になります。
+
+then using `readLine()` reads that rest of the line:
+
 ```
-_ = readLine() // -> "2 3"が得られる
+_ = readLine() // -> "2 3"
 ```
-入力の残りは空になります。
+
+The remaining input is empty:
+
 ```
 (EOF)
 ```
 
-このため、自作の入力ライブラリと組み合わせて利用することも可能です。
+This makes it possible to combine IOReader with your own input helpers.
 
-## 単語の取り扱い
+## Tokens
 
-基本的な分類として、数値、文字列、文字を扱えます。
-|分類|型|
+IOReader handles numbers, strings, and characters.
+
+| Category | Types |
 |---|---|
-|数値|`Int`, `UInt`, `Double`, `Float`|
-|文字列|`String`, `[Character]`, `[UInt8]`|
-|文字|`Character`, `UInt8`|
-`[Character]` や `[UInt8]` を文字列の入力に利用でき、`UInt8` を文字の入力に利用できます。
+| Numbers | `Int`, `UInt`, `Double`, `Float` |
+| Strings | `String`, `[Character]`, `[UInt8]` |
+| Characters | `Character`, `UInt8` |
 
-`UInt8` は数値型ですが、IOReader では文字データとして扱います。
-そのため、数値の入力には利用できません。
+`[Character]` and `[UInt8]` can be used for string input, and `UInt8` can be used for character input.
 
-### まとめ
+Although `UInt8` is a numeric type, IOReader treats it as character data.
+Use another integer type when you want to read a number.
 
-C++のcinと似た動作をしています。
+### Summary
 
-型に生えた `stdin` プロパティによって、指定した型の値を直接取得できます。
+IOReader behaves similarly to C++ `cin`.
 
-次のページ: [IOReader の入力例](IOReaderRecipes.md)
+The `stdin` property on each supported type reads a value directly as that type.
+
+Next page: [IOReader Recipes](IOReaderRecipes.md)

@@ -54,9 +54,9 @@ let S = [String].stdin(rows: H, columns: W)
 
 詳しい使い方は以下のドキュメントに分けています。
 
-- [IOReader の考え方](Documents/IOReaderConcepts.md): `readLine()` との違いから知りたい場合
-- [IOReader の入力例](Documents/IOReaderRecipes.md): 実践的な入力例を見たい場合
-- [IOReader リファレンス](Documents/IOReaderReference.md): 対応型や細かい API を確認したい場合
+- [IOReader の考え方](Documents/IOReaderConcepts.ja.md): `readLine()` との違いから知りたい場合
+- [IOReader の入力例](Documents/IOReaderRecipes.ja.md): 実践的な入力例を見たい場合
+- [IOReader リファレンス](Documents/IOReaderReference.ja.md): 対応型や細かい API を確認したい場合
 
 IOReader 機能のみを利用したい場合は、個別に `import IOReader` できます。
 
