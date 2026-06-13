@@ -1,6 +1,6 @@
-import XCTest
-import TestingUtil
 import IOUtil
+import TestingUtil
+import XCTest
 
 final class SequenceTests: XCTestCase {
 
@@ -91,7 +91,7 @@ final class SequenceTests: XCTestCase {
         [
           "Apple".utf8.map { $0 },
           "Pen".utf8.map { $0 },
-          "Pineapple".utf8.map { $0 }
+          "Pineapple".utf8.map { $0 },
         ].print()
       })
       .outputOnly(),
@@ -127,6 +127,61 @@ final class SequenceTests: XCTestCase {
 
       """
       END
+      """)
+  }
+
+  func testPrintFloatingPoint() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let A = [1.5, 2.5, 3.5]
+        A.print()
+
+        let B = [1.25, 2.5, 3.75]
+        B.print(separator: ",")
+
+        A.print(terminator: " - ")
+        B.print()
+      })
+      .outputOnly(),
+
+      """
+      1.5 2.5 3.5
+      1.25,2.5,3.75
+      1.5 2.5 3.5 - 1.25 2.5 3.75
+      """)
+  }
+
+  func testPrintNestedFloatingPoint() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        [
+          [1.5, 2.5],
+          [3.5, 4.5],
+          [5.5],
+        ].print()
+      })
+      .outputOnly(),
+
+      """
+      1.5 2.5
+      3.5 4.5
+      5.5
+      """)
+  }
+
+  func testPrintNestedFloatingPointSeparator() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        [
+          [1.5, 2.5],
+          [3.5, 4.5],
+        ].print(separator: ",")
+      })
+      .outputOnly(),
+
+      """
+      1.5,2.5
+      3.5,4.5
       """)
   }
 }
