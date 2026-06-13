@@ -2,12 +2,14 @@
 
 (実践向けは[こちら](SwiftInputForCompetitor.md)をどうぞ。)
 
-ここでは、IOReader が提供している入力 API を、実装上のプロトコルではなく実際に使う具体型ベースで整理します。
+ここでは、IOReader が提供している入力 API を、実際に使う具体型ベースで整理します。
 
 ## 入力の区切り
 
 IOReader は標準入力を空白区切りの token として読みます。
 半角スペース、改行、タブなどで区切られた値を順に取得できます。
+
+文字列や文字は ASCII 入力を想定しています。
 
 競技中は、型に生えた `stdin` プロパティや `stdin(...)` メソッドで入力を読みます。
 
@@ -40,9 +42,7 @@ let b = UInt8.stdin
 `UInt8.stdin` は数値ではなく ASCII 文字 1 文字として読みます。
 数値の `8` を整数として読みたい場合は、`Int.stdin` などを使ってください。
 
-`Character` と `[Character]` は ASCII 入力を想定しています。
-
-## 固定個数の配列を読む
+## 数値配列を固定個数読む
 
 ```swift
 static func stdin(columns: Int) -> [Element]
@@ -79,15 +79,15 @@ let grid: [[Int]] = .stdin(rows: 2, columns: 3)
 
 対応する要素型は、固定個数の数値配列と同じです。
 
-## ASCII 文字列を読む
+## 固定長 ASCII 列を読む
 
-`String`, `[Character]`, `[UInt8]` は ASCII 文字列向けの追加 API を持ちます。
+`String`, `[Character]`, `[UInt8]` は、固定長の ASCII 文字列を読む API を持ちます。
 
 ```swift
 static func stdin(columns: Int) -> Self
 ```
 
-`columns` で指定した文字数を読みます。
+`columns` で指定した ASCII 文字数を読みます。
 途中に空白や改行があると失敗します。
 読み終わった直後の 1 文字は区切りとして消費されます。
 
@@ -102,19 +102,27 @@ let bytes: [UInt8] = .stdin(columns: 5)
 
 ## ASCII 文字列の配列を読む
 
+`String` の配列では、戻り値は `[String]` です。
+
 ```swift
 static func stdin(rows: Int) -> [String]
 static func stdin(rows: Int, columns: Int) -> [String]
 ```
-
-`String` では、`rows` 個の token または固定長文字列を読み、`[String]` で返します。
 
 ```swift
 let s: [String] = .stdin(rows: h)
 let fixed: [String] = .stdin(rows: h, columns: w)
 ```
 
-`[Character]` と `[UInt8]` の配列では、結果は 2 次元配列になります。
+`[Character]` と `[UInt8]` の配列では、戻り値は 2 次元配列です。
+
+```swift
+static func stdin(rows: Int) -> [[Character]]
+static func stdin(rows: Int, columns: Int) -> [[Character]]
+
+static func stdin(rows: Int) -> [[UInt8]]
+static func stdin(rows: Int, columns: Int) -> [[UInt8]]
+```
 
 ```swift
 let chars: [[Character]] = .stdin(rows: h)
@@ -155,17 +163,15 @@ let words: [String] = .stdin()
 
 ## 空白を含む 1 行を読む
 
-```swift
-static func readLine(strippingNewline: Bool = true) -> [Character]?
-static func readLine(strippingNewline: Bool = true) -> [UInt8]?
-```
-
 `[Character].readLine()` と `[UInt8].readLine()` は Swift 標準の `readLine()` に近い、行全体を読む API です。
-空白を含む行をそのまま読み、`strippingNewline` が `true` のときは末尾の `LF` と、その直前の `CR` を取り除きます。
+空白を含む行をそのまま読み、`strippingNewline` が `true` のときは末尾の改行を取り除きます。
 
 ```swift
 let lineChars = [Character].readLine()
 let lineBytes = [UInt8].readLine()
+
+let rawChars = [Character].readLine(strippingNewline: false)
+let rawBytes = [UInt8].readLine(strippingNewline: false)
 ```
 
 ## タプルを読む
@@ -202,42 +208,101 @@ let x = BigInt.stdin
 let a: Pack2<Int, String> = .stdin
 ```
 
-## 変換プロトコル
+## 発展: 独自型対応
 
-独自型を入力対応にしたい場合は、変換元に応じて以下のプロトコルを使えます。
+独自型を入力対応にしたい場合は、`SingleReadable` に準拠して読み方を実装します。
+通常の利用では、上で挙げた具体型を使えば十分です。
 
-| プロトコル | 変換元 | 付与される主な API |
-|---|---|---|
-| `IOIntegerConversionReadable` | `Int` | `stdin`, 配列入力, 行 token 入力 |
-| `IOUnsignedIntegerConversionReadable` | `UInt` | `stdin`, 配列入力, 行 token 入力 |
-| `IODoubleConversionReadable` | `Double` | `stdin`, 配列入力, 行 token 入力 |
-| `IOStringConversionReadable` | `String` | `stdin`, 配列入力, 行 token 入力 |
-| `IOBytesConversionReadable` | `[UInt8]` | `stdin`, 配列入力, 行 token 入力 |
+ここでの `read()` は直接呼ぶためではなく、`stdin` を使えるようにするための実装です。
+たとえば、鞄の番号や荷物の重さを、そのまま `Int` として扱わず別の型にできます。
 
 ```swift
-struct Point {
-  let rawValue: Int
+import AcFoundation
+
+struct Bag {
+  let number: Int
 }
 
-extension Point: IOIntegerConversionReadable {
-  static func convert(from value: Int) -> Point {
-    Point(rawValue: value)
+extension Bag: SingleReadable {
+  static func read() throws -> Bag {
+    Bag(number: try Int.read())
   }
 }
 
-let p = Point.stdin
+struct Luggage {
+  let weight: Int
+}
+
+extension Luggage: SingleReadable {
+  static func read() throws -> Luggage {
+    Luggage(weight: try Int.read())
+  }
+}
+
+let bag = Bag.stdin
+let luggage = Luggage.stdin
+```
+
+複数の入力対応型を組み合わせる型も作れます。
+先ほどの `Bag` と `Luggage` の定義に続けて、次のように書けます。
+
+```swift
+struct BagAndLuggage {
+  let bag: Bag
+  let luggage: Luggage
+}
+
+extension BagAndLuggage: SingleReadable {
+  static func read() throws -> BagAndLuggage {
+    BagAndLuggage(
+      bag: try Bag.read(),
+      luggage: try Luggage.read()
+    )
+  }
+}
+
+let pair = BagAndLuggage.stdin
+
+let bag = pair.bag
+let luggage = pair.luggage
+```
+
+`IOIntegerConversionReadable` などは、複数の型から作れる独自型に対して、どの入力型を経由して読むかを決めるための補助プロトコルです。
+initializer の候補が曖昧になる場合でも、`convert(from:)` の引数型で入力経路を明示できます。
+| プロトコル | 変換元 |
+|---|---|
+| `IOIntegerConversionReadable` | `Int` |
+| `IOUnsignedIntegerConversionReadable` | `UInt` |
+| `IODoubleConversionReadable` | `Double` |
+| `IOStringConversionReadable` | `String` |
+| `IOBytesConversionReadable` | `[UInt8]` |
+
+たとえば、数字と文字列の両方から作れる型では、入力を整数として読むことを明示できます。
+```swift
+import AcFoundation
+
+struct Label {
+  let value: String
+
+  init(_ value: Int) {
+    self.value = String(value)
+  }
+
+  init(_ value: String) {
+    self.value = value
+  }
+}
+
+extension Label: IOIntegerConversionReadable {
+  static func convert(from value: Int) -> Label {
+    Label(value)
+  }
+}
+
+let label = Label.stdin
 ```
 
 ## 失敗時の扱い
 
-`stdin` 系は内部で入力失敗を強制 unwrap します。
-競技プログラミングの制約どおりに入力が与えられる前提で使う API です。
-
-主な失敗要因は以下です。
-
-| 状況 | 例 |
-|---|---|
-| 値を読み始める前に EOF に到達した | 入力が足りない |
-| 固定長文字列の途中に EOF に到達した | `String.stdin(columns: 5)` に 4 文字しかない |
-| 固定長文字列の途中に空白や改行があった | `String.stdin(columns: 5)` に `ab cd` が来た |
-| 文字列や変換処理に失敗した | ASCII 文字列化や独自型変換に失敗した |
+`stdin` 系は、競技プログラミングの制約どおりに入力が与えられる前提で使う API です。
+入力が足りない場合や、固定長文字列の途中に空白が入る場合などは実行時エラーになります。
