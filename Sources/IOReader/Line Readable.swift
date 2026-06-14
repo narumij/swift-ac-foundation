@@ -55,6 +55,21 @@ extension Collection where Element == [UInt8] {
   }
 }
 
+extension Collection where Element: Collection, Element.Element: LineReadable {
+
+  @inlinable
+  @inline(__always)
+  public static func readLine(rows: Int) throws -> [[Element.Element]] {
+    try (0..<rows).map { _ in try [Element.Element].readLine() }
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func stdin(rows: Int) -> [[Element.Element]] {
+    try! readLine(rows: rows)
+  }
+}
+
 // MARK: - Swift.readLine(...)
 
 extension Collection where Element == Character {
