@@ -6,14 +6,14 @@ final class SequenceTests: XCTestCase {
 
   func testPrint1() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         let A = [Int](repeating: 3, count: 3)
         A.print()
         let B = [1, 2, 3]
         B.print(separator: ",")
         A.print(terminator: " - ")
         B.print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -25,12 +25,12 @@ final class SequenceTests: XCTestCase {
 
   func testPrint2() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         Array("Hello, world!").print()
         Array("Apple").print(separator: "-")
         Array("PenPinaple").print(terminator: "-")
         print("ApplePen")
-      })
+      }
       .outputOnly(),
 
       """
@@ -42,12 +42,12 @@ final class SequenceTests: XCTestCase {
 
   func testPrint3() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         "Hello, world!".unicodeScalars.map { UInt8($0.value) }.print()
         "Apple".unicodeScalars.map { UInt8($0.value) }.print(separator: "-")
         "PenPinaple".unicodeScalars.map { UInt8($0.value) }.print(terminator: "-")
         print("ApplePen")
-      })
+      }
       .outputOnly(),
 
       """
@@ -59,9 +59,9 @@ final class SequenceTests: XCTestCase {
 
   func testPrintNestedIntSequence() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [[1, 2], [3, 4], [5]].print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -73,9 +73,9 @@ final class SequenceTests: XCTestCase {
 
   func testPrintNestedCharacterSequence() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [Array("Apple"), Array("Pen"), Array("Pineapple")].print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -87,13 +87,13 @@ final class SequenceTests: XCTestCase {
 
   func testPrintNestedUInt8Sequence() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [
           "Apple".utf8.map { $0 },
           "Pen".utf8.map { $0 },
           "Pineapple".utf8.map { $0 },
         ].print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -105,10 +105,10 @@ final class SequenceTests: XCTestCase {
 
   func testPrintEmptySequence() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [Int]().print()
         print("END")
-      })
+      }
       .outputOnly(),
 
       """
@@ -119,10 +119,10 @@ final class SequenceTests: XCTestCase {
 
   func testPrintEmptyNestedSequence() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [[Int]]().print()
         print("END")
-      })
+      }
       .outputOnly(),
 
       """
@@ -132,7 +132,7 @@ final class SequenceTests: XCTestCase {
 
   func testPrintFloatingPoint() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         let A = [1.5, 2.5, 3.5]
         A.print()
 
@@ -141,7 +141,7 @@ final class SequenceTests: XCTestCase {
 
         A.print(terminator: " - ")
         B.print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -153,13 +153,13 @@ final class SequenceTests: XCTestCase {
 
   func testPrintNestedFloatingPoint() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [
           [1.5, 2.5],
           [3.5, 4.5],
           [5.5],
         ].print()
-      })
+      }
       .outputOnly(),
 
       """
@@ -171,12 +171,12 @@ final class SequenceTests: XCTestCase {
 
   func testPrintNestedFloatingPointSeparator() throws {
     XCTAssertEqual(
-      try SolverRunner(solver: {
+      try SolverRunner {
         [
           [1.5, 2.5],
           [3.5, 4.5],
         ].print(separator: ",")
-      })
+      }
       .outputOnly(),
 
       """
