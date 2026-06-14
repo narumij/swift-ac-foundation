@@ -12,7 +12,7 @@ To use swift-ac-foundation in a SwiftPM project, add the following entry to `dep
 ```swift
 .package(
   url: "https://github.com/narumij/swift-ac-foundation",
-   branch: "release/AtCoder/2025"),
+   branch: "compatible/AtCoder/2025"),
 ```
 
 Specifying a tag can be rejected by the build because this package uses C++ `unsafeFlags`. If you need a fixed version, specify a revision directly.
@@ -30,6 +30,24 @@ Then import it from your source code.
 ```swift
 import AcFoundation
 ```
+
+## Branch Strategy
+
+| Branch | Recommended | Status | Description |
+|----------|----------|----------|----------|
+| `compatible/AtCoder/2025` | ⭐ | Maintained | Recommended branch compatible with AtCoder 2025 |
+| `release/AtCoder/2025` | | Frozen | Snapshot deployed on AtCoder 2025 |
+| `main` | | Active Development | Development branch for the next release |
+
+### Which branch should I use?
+
+Normally, use `compatible/AtCoder/2025`.
+
+`release/AtCoder/2025` preserves the state deployed on AtCoder. As a rule, it does not change.
+
+`compatible/AtCoder/2025` is maintained while preserving compatibility with AtCoder 2025, including documentation improvements, deprecation annotations, and additional cautions.
+
+`main` is the development branch for the next release.
 
 ---
 
