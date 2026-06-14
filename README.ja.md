@@ -159,19 +159,57 @@ let unsigned: [UInt] = readUIntLine()
 
 ### Bisect
 
-Python の `bisect` を移植したもので、Swift で二分探索を利用可能にします。
+Python の bisect を Swift 向けに移植したものです。ソート済みの Collection に対して、順序を保ったまま値を挿入できる位置を高速に検索します。
+
+具体的には、指定した値以上の要素が最初に現れる位置 (bisectLeft) と、指定した値より大きい要素が最初に現れる位置 (bisectRight) を返します。
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
-print(sortedList.bisectLeft(99)) // 3
+
+print(sortedList.bisectLeft(99))  // 3: 99 未満の要素数
+print(sortedList.bisectRight(99)) // 3: 99 以下の要素数
+```
+
+`bisectLeft(x)` は `x` を同じ値の左側に挿入する位置、`bisectRight(x)` は右側に挿入する位置を返します。重複値を含む配列では、この差が `x` の出現回数になります。
+
+```swift
+let values = [1, 2, 2, 2, 5]
+
+let left = values.bisectLeft(2)
+let right = values.bisectRight(2)
+
+print(left)          // 1
+print(right)         // 4
+print(right - left)  // 3
+```
+
+要素そのものではなく、要素から取り出した値で比較したい場合は `key` を渡せます。
+
+```swift
+let pairs = [(score: 10, name: "a"), (score: 20, name: "b"), (score: 20, name: "c")]
+
+print(pairs.bisectLeft(20) { $0.score })  // 1
+print(pairs.bisectRight(20) { $0.score }) // 3
 ```
 
 **探索範囲の限定**  
-`ArraySlice` を使用することで探索範囲を限定できます。
+`ArraySlice` や `Range` に対しても利用できます。返り値は元のコレクション上のインデックスなので、スライスの `startIndex` が 0 とは限らない点に注意してください。
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
-print(sortedList[0..<3].bisectLeft(99)) // 3
+let slice = sortedList[1..<4]
+
+print(slice.bisectLeft(99)) // 3
+```
+
+**ソート順を保った挿入**  
+`RangeReplaceableCollection` では `insortLeft` / `insortRight` で、探索した位置にそのまま挿入できます。挿入自体は配列の要素移動を伴うため `O(n)` です。
+
+```swift
+var values = [1, 2, 2, 5]
+values.insortRight(2)
+
+print(values) // [1, 2, 2, 2, 5]
 ```
 
 #### 部分利用
@@ -186,39 +224,54 @@ import Bisect
 
 ### Pack
 
-SE-283が凍結になっているため、辞書のキーにタプルを使うことは不可能なままのようです。
-このため、例えばABC393Cなど、グラフ問題を盆栽なしにSwiftで解こうと思った際、C++のPairに相当するものもないため、
-辞書のキーに、都度構造体とそれにHashable適用をするコードを書く必要が生じます。
-カジュアルに競技プログラミングを楽しもうとしている人にそこまでプロトコル知識を要求するのはどうかと思い、用意しました。
+Swift ではタプルをそのまま辞書のキーとして利用できません。
 
-これを使うことでABC393Cは以下のようにコンパクトな提出でACできる、予定です。
+そのため、グラフの辺 `(u, v)` や座標 `(x, y)` などを辞書や集合で扱いたい場合、本来は専用の構造体を定義して `Hashable` を実装する必要があります。
+
+`Pack` はその手間を省くための型です。
+
+```swift
+var edges: [Pack<Int, Int>: Int] = [:]
+
+edges[.init(1, 2), default: 0] += 1
+edges[.init(2, 3), default: 0] += 1
+```
+
+例えば ABC393C では、辺の重複を数えるために以下のように利用できます。
 
 ```swift
 import AcFoundation
 
 let (_, M): (Int, Int) = stdin()
+
 nonisolated(unsafe) var m: [Pack<Int, Int>: Int] = [:]
 nonisolated(unsafe) var ans = 0
+
 for _ in 0 ..< M {
-  var (u,v): (Int, Int) = stdin()
+  var (u, v): (Int, Int) = stdin()
+
   if u == v {
     ans += 1
     continue
   }
+
   if u > v {
     swap(&u, &v)
   }
+
   m[.init(u, v), default: 0] += 1
 }
+
 m.forEach {
   ans += $0.value - 1
 }
+
 print(ans)
 ```
 
-Comparableにも対応しているため、dijkstraを書く際にも利用できます。
+`Pack` は `Comparable` にも対応しているため、優先度付きキューやダイクストラ法など、順序付きの比較が必要な場面でも利用できます。
 
-コンパイルで問題が生じた場合、迂回用のPack2またはPack3もお試しください。
+コンパイル環境によって問題が発生する場合は、代わりに `Pack2` や `Pack3` を利用してください。
 
 #### 部分利用
 
@@ -227,27 +280,23 @@ Pack 機能のみを利用したい場合は以下をインポートしてくだ
 ```swift
 import Pack
 ```
+
 ---
 
 ### CxxWrapped
 
-std::gcdとstd::lcmが利用できます。
+C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
 
-std::gcdっぽいものではなく、実際にstd::gcdを呼んでいます。
-
-std::lcmっぽいオレオレ実装ではなく、実際にstd::lcmを呼んでいます。
-
-CxxInteropで呼ぶつもりでしたが軽く挫折したため、extern "C"して、C Interopで呼んでいます。
-
+独自実装ではなく、実際に C++ 標準ライブラリの `std::gcd` および `std::lcm` を呼び出します。
 
 ```swift
 import AcFoundation
 
-print(gcd(12,16)) // 4
-
-print(lcm(12,16)) // 48
-
+print(gcd(12, 16)) // 4
+print(lcm(12, 16)) // 48
 ```
+
+現在は C++ 側で `extern "C"` を経由し、Swift から C Interop を利用して呼び出しています。
 
 #### 部分利用
 
@@ -261,36 +310,48 @@ import CxxWrapped
 
 ### CharacterUtil
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。
+文字列問題では、`String`、`[Character]`、`[UInt8]` のいずれを利用するか選ぶ必要があります。
 
-文字の配列を利用する際に困るのが、文字のループを書くのがやや面倒くさいことと、辞書順比較がわかりにくいところです。
+それぞれに長所と短所がありますが、本ライブラリでは扱いやすさを重視して `Character` の配列を利用することを想定しています。
 
-このモジュールではまず、ascii文字限定ですが、CharacterにStridableを付与します。
+`CharacterUtil` は、`Character` や `[Character]` を使った実装を少し書きやすくするための補助機能を提供します。
 
-これがどう嬉しいかというと、文字のループが以下のように書けるようになります。
+まず、ASCII 文字に対して `Character` を範囲で扱えるようにします。
 
 ```swift
-import AcFoundation
+import CharacterUtil
 
 for c: Character in "a"..."z" {
-  print(c) // aからzまで順に出力する
+  print(c)
 }
 ```
 
-このモジュールでは他に、Characterの配列に辞書順比較を行う比較演算子を追加します。
+これにより、アルファベットや数字の列挙を簡潔に記述できます。
+
+また、`[Character]` に対して辞書順比較を行う比較演算子を提供します。
 
 ```swift
-import AcFoundation
+import CharacterUtil
 
 print(Array("abc") < Array("abd")) // true
 ```
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
-(readLine関数の追加で型の記述に不便が生じる懸念があり、一括importから外しました)
+文字列を配列へ変換して扱う実装でも、文字列と同じ感覚で辞書順比較を利用できます。
+
+#### 利用方法
+
+このモジュールは個別に import する必要があります。
 
 ```swift
 import CharacterUtil
 ```
+
+`AcFoundation` には含まれていません。
+
+文字列問題では `String` を使う人もいれば、`[Character]` や `[UInt8]` を使う人もいます。
+
+本ライブラリでは利用者が自由に選択できるよう、`Character` 向けの機能は個別 import としています。
+
 ---
 
 ### UInt8Util
