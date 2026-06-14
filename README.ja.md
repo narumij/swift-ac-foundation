@@ -283,28 +283,52 @@ import Pack
 
 ---
 
-### CxxWrapped
+### StringUtil
 
-C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
+文字列問題では `String`、`[Character]`、`[UInt8]` など様々な表現方法があります。
 
-独自実装ではなく、実際に C++ 標準ライブラリの `std::gcd` および `std::lcm` を呼び出します。
+`StringUtil` は、その中でも Swift の `String` をそのまま利用したい場合のための補助モジュールです。
 
-```swift
-import AcFoundation
+Swift の文字列は Unicode を考慮した高機能な型であるため、整数の添え字によるアクセスができません。
 
-print(gcd(12, 16)) // 4
-print(lcm(12, 16)) // 48
-```
+そのため、競技プログラミングを始めたばかりの人にとっては扱いづらく感じることがあります。
 
-現在は C++ 側で `extern "C"` を経由し、Swift から C Interop を利用して呼び出しています。
-
-#### 部分利用
-
-CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
+このモジュールを利用すると、整数の添え字や範囲を使って文字列へアクセスできます。
 
 ```swift
-import CxxWrapped
+let s = "abcdef"
+
+// 1文字取得
+print(s[0]) // "a"
+
+// 部分文字列取得
+print(s[0..<s.count]) // "abcdef"
+print(s[0...])        // "abcdef"
+print(s[..<s.count])  // "abcdef"
+
+print(s[2..<4]) // "cd"
+print(s[2...])  // "cdef"
+print(s[..<4])  // "abcd"
+print(s[...4])  // "abcde"
 ```
+
+ABC の A 問題や B 問題など、まずは素直に実装したい場面での利用を想定しています。
+
+一方で、Swift の `String` は高機能である分、`[Character]` や `[UInt8]` と比較すると処理コストが高くなる場合があります。
+
+大きな入力や文字列を頻繁に操作する問題では、別の表現を検討してください。
+
+#### 利用方法
+
+このモジュールは個別に import する必要があります。
+
+```swift
+import StringUtil
+```
+
+文字列問題でどの表現を利用するかは、問題や好みによって異なります。
+
+そのため、`String` 向けの機能は `AcFoundation` に含めず、必要な場合のみ利用できるようにしています。
 
 ---
 
@@ -356,58 +380,64 @@ import CharacterUtil
 
 ### UInt8Util
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、CやC++に慣れてる人にはUInt8の配列のほうが取り扱いが楽だったりもします。0x0端のcString関連メソッドがdeprecatedになりはじめたので、CCharではなく、UInt8を推しています。
+文字列問題では `String`、`[Character]`、`[UInt8]` など様々な表現方法があります。
 
-UInt8を利用する場合に困るのが、文字定数が使えないことです。本モジュールではこれをカバーする拡張を追加してあり、以下のように書けます。
+`UInt8Util` は、その中でも `[UInt8]` を利用する場合に便利な機能を提供します。
+
+Swift では `UInt8` の文字リテラルが存在しないため、ASCII 文字を扱う際に少し不便です。
+
+このモジュールを利用すると、以下のように文字リテラルから `UInt8` を生成できます。
 
 ```swift
 let c: UInt8 = "A"
 ```
 
-本モジュールでは他に、UInt8の配列に辞書順比較を行う比較演算子を追加します。
+また、`[UInt8]` に対して辞書順比較を行う比較演算子を提供します。
 
 ```swift
 let abc: [UInt8] = "abc".compactMap(\.asciiValue)
 let abd: [UInt8] = "abd".compactMap(\.asciiValue)
+
 print(abc < abd) // true
 ```
 
-Characterのプロパティ相当のものもいくつか追加してあります。
+そのほかにも、ASCII 文字列を扱う際に便利な `Character` 相当の補助機能をいくつか追加しています。
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+#### 利用方法
+
+このモジュールは個別に import する必要があります。
 
 ```swift
 import UInt8Util
 ```
 
+文字列問題でどの表現を利用するかは、問題や好みによって異なります。
+
+そのため、`UInt8` 向けの機能は `AcFoundation` に含めず、必要な場合のみ利用できるようにしています。
+
 ---
 
-### StringUtil
+### CxxWrapped
 
-文字列問題では、Swiftの文字列、Characterの配列、UInt8の配列のどれを使うのか選択する必要があります。それぞれに一長一短ありますが、コンテストではCharacterの配列をおすすめしています。おすすめしてはいますが、不慣れな人にこれを強いるのは酷だろうし、かといってSwiftの文字列は整数の添え字が使えず、ここが初心者泣かせなので、文字列に便利メソッドを用意しました。あくまで初心者用であることをご承知の上お使いください。Swiftの文字列はリッチが過ぎるため、競技プログラミングではTLEになりやすいです。この点も併せてご承知ください。
+C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
 
-ABCのA問題B問題ぐらいは楽に書きたい、といった場合にどうぞ。
+独自実装ではなく、実際に C++ 標準ライブラリの `std::gcd` および `std::lcm` を呼び出します。
 
 ```swift
-let s = "abcdef"
-// 1文字取得
-print(s[0]) // "a"
+import AcFoundation
 
-// 文字列取得
-print(s[0..<s.count]) // "abcdef"
-print(s[0..<s.count]) // "abcdef"
-print(s[0...]) // "abcdef"
-print(s[..<s.count]) // "abcdef"
-print(s[2..<4]) // "cd"
-print(s[2...]) // "cdef"
-print(s[..<4]) // "abcd"
-print(s[...4]) // "abcde"
+print(gcd(12, 16)) // 4
+print(lcm(12, 16)) // 48
 ```
 
-本モジュールを利用するには個別importが必要です。以下をソースの割と先頭に記述してください。
+現在は C++ 側で `extern "C"` を経由し、Swift から C Interop を利用して呼び出しています。
+
+#### 部分利用
+
+CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
-import StringUtil
+import CxxWrapped
 ```
 
 ---
