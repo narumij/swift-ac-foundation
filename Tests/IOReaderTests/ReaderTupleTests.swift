@@ -5,6 +5,7 @@ import UInt8Util
 import XCTest
 
 final class ReaderTupleTests: XCTestCase {
+  
   func testTuple1() throws {
     XCTAssertEqual(
       try SolverRunner(solver: {

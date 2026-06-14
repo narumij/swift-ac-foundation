@@ -5,6 +5,7 @@ import UInt8Util
 import XCTest
 
 final class ReaderLineTests: XCTestCase {
+  
   func testReadLine() throws {
 
     XCTAssertEqual(

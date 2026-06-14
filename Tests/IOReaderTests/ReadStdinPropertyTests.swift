@@ -3,6 +3,7 @@ import TestingUtil
 import XCTest
 
 final class ReadStdinPropertyTests: XCTestCase {
+  
   func testStringProperties() throws {
     try SolverRunner(solver: {
       let SS: [String] = [.stdin, .stdin, .stdin]

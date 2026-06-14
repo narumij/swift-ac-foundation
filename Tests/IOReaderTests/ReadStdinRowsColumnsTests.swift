@@ -3,6 +3,7 @@ import TestingUtil
 import XCTest
 
 final class ReadStdinRowsColumnsTests: XCTestCase {
+  
   func testUInt8RowsColumns() throws {
     try SolverRunner(solver: {
       let CC: [[UInt8]] = .stdin(rows: 3, columns: 3)

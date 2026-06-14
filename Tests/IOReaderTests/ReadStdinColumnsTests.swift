@@ -3,6 +3,7 @@ import TestingUtil
 import XCTest
 
 final class ReadStdinColumnsTests: XCTestCase {
+  
   func testSingleStringColumn() throws {
     try SolverRunner(solver: {
       let SS: [String] = [.stdin(columns: 1)]

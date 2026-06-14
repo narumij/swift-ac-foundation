@@ -3,6 +3,7 @@ import TestingUtil
 import XCTest
 
 final class ReadStdinRowsTests: XCTestCase {
+  
   func testIntRows() throws {
     try SolverRunner(solver: {
       let A: [Int] = .stdin(rows: 3)
