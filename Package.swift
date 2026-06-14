@@ -35,7 +35,7 @@ let package = Package(
       from: "5.7.0"),
     .package(
       url: "https://github.com/narumij/swift-ac-library",
-      branch: "develop/after2025/0"),
+      branch: "main"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
