@@ -31,8 +31,6 @@ SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用する
 import AcFoundation
 ```
 
----
-
 ## Branch Strategy
 
 | Branch | Recommended | Description |
@@ -50,6 +48,8 @@ import AcFoundation
 `release/AtCoder/2025` は AtCoder に搭載されている状態をそのまま保持するためのブランチです。
 
 `main` は開発中のブランチです。API や実装が変更される可能性があります。
+
+---
 
 ## 内容
 
