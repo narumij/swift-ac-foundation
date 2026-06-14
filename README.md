@@ -106,6 +106,56 @@ let v = SIMD3<Int>.stdin
 
 ---
 
+### IOWriter
+
+IOWriter provides `print` methods that format arrays as one line and arrays of arrays as multiple lines.
+
+Numeric arrays are printed with spaces between elements, while character arrays are printed by joining the characters.
+
+```swift
+[1, 2, 3].print()        // 1 2 3
+[1.5, 2.5].print()       // 1.5 2.5
+(["A", "B", "C"] as [Character]).print() // ABC
+```
+
+Arrays of arrays are printed one element per line.
+
+```swift
+[[1, 2], [3, 4]].print()
+// -> 1 2
+//    3 4
+```
+
+```swift
+([["#", "#"], ["#", "#"]] as [[Character]]).print()
+// -> ##
+//    ##
+```
+
+As with the standard `print` function, you can specify separators and terminators.
+
+```swift
+[1.5, 2.5].print(separator: ", ") // 1.5, 2.5
+```
+
+For arrays of arrays, the separator and terminator are applied to each row.
+
+```swift
+[[1, 2], [3, 4]].print(separator: ", ")
+// -> 1, 2
+//    3, 4
+```
+
+On macOS 26.0 or later, `print(separator:terminator:)` is also available for `InlineArray`.
+
+#### Partial Import
+
+```swift
+import IOWriter
+```
+
+---
+
 ### IOUtil
 
 IOUtil provides fast I/O helpers for keeping benchmark results from being dominated by input/output cost, and low-level pieces for building your own input/output routines.
@@ -132,7 +182,8 @@ Sequences whose elements conform to `CustomStringConvertible` can be printed wit
 [1, 2, 3].print(separator: ",")
 ```
 
-`getline` exposes one input line as UTF-8 bytes, and `readIntLine()` / `readUIntLine()` read one line as integer arrays.
+`getline` exposes one input line as UTF-8 bytes.
+`readIntLine()` and `readUIntLine()` read one line as an integer array.
 These APIs are useful when you want to inspect line-buffer behavior or build a custom reader.
 
 ```swift
@@ -150,19 +201,57 @@ print("debug", to: &stderr)
 
 ### Bisect
 
-This is a Swift port of Python's `bisect`, enabling binary search in Swift.
+This is a Swift port of Python's `bisect`. It performs fast binary searches on sorted collections and returns positions where values can be inserted while preserving order.
+
+Specifically, `bisectLeft` returns the first position whose element is greater than or equal to the specified value, and `bisectRight` returns the first position whose element is greater than the specified value.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
-print(sortedList.bisectLeft(99)) // 3
+
+print(sortedList.bisectLeft(99))  // 3: number of elements less than 99
+print(sortedList.bisectRight(99)) // 3: number of elements less than or equal to 99
+```
+
+`bisectLeft(x)` returns the position to insert `x` on the left side of equal values, while `bisectRight(x)` returns the position on the right side. For arrays with duplicate values, the difference is the number of occurrences of `x`.
+
+```swift
+let values = [1, 2, 2, 2, 5]
+
+let left = values.bisectLeft(2)
+let right = values.bisectRight(2)
+
+print(left)          // 1
+print(right)         // 4
+print(right - left)  // 3
+```
+
+You can pass `key` when you want to compare by a value extracted from each element instead of the element itself.
+
+```swift
+let pairs = [(score: 10, name: "a"), (score: 20, name: "b"), (score: 20, name: "c")]
+
+print(pairs.bisectLeft(20) { $0.score })  // 1
+print(pairs.bisectRight(20) { $0.score }) // 3
 ```
 
 **Limiting the Search Range**  
-You can limit the search range by using `ArraySlice`.
+You can also use it with `ArraySlice` and `Range`. The returned value is an index in the original collection, so note that a slice's `startIndex` is not necessarily 0.
 
 ```swift
 let sortedList = [1, 4, 8, 100, 1000]
-print(sortedList[0..<3].bisectLeft(99)) // 3
+let slice = sortedList[1..<4]
+
+print(slice.bisectLeft(99)) // 3
+```
+
+**Insertion While Preserving Sort Order**  
+For `RangeReplaceableCollection`, `insortLeft` and `insortRight` insert directly at the searched position. The insertion itself moves array elements, so it is `O(n)`.
+
+```swift
+var values = [1, 2, 2, 5]
+values.insortRight(2)
+
+print(values) // [1, 2, 2, 2, 5]
 ```
 
 #### Partial Import
@@ -177,38 +266,54 @@ import Bisect
 
 ### Pack
 
-Because SE-283 is frozen, tuples still cannot be used as dictionary keys.
-For graph problems such as ABC393C, Swift also does not have a built-in equivalent of C++ `pair`, so you would otherwise need to write a custom struct and make it `Hashable` each time.
-This package provides `Pack` so casual competitive programmers do not need that much protocol boilerplate.
+Swift tuples cannot be used directly as dictionary keys.
 
-With `Pack`, ABC393C can be written compactly as follows and should be accepted.
+Therefore, when you want to use graph edges such as `(u, v)` or coordinates such as `(x, y)` in dictionaries or sets, you would normally need to define a dedicated struct and make it conform to `Hashable`.
+
+`Pack` is a type for avoiding that boilerplate.
+
+```swift
+var edges: [Pack<Int, Int>: Int] = [:]
+
+edges[.init(1, 2), default: 0] += 1
+edges[.init(2, 3), default: 0] += 1
+```
+
+For example, in ABC393C, you can use it as follows to count duplicate edges.
 
 ```swift
 import AcFoundation
 
 let (_, M): (Int, Int) = stdin()
+
 nonisolated(unsafe) var m: [Pack<Int, Int>: Int] = [:]
 nonisolated(unsafe) var ans = 0
+
 for _ in 0 ..< M {
-  var (u,v): (Int, Int) = stdin()
+  var (u, v): (Int, Int) = stdin()
+
   if u == v {
     ans += 1
     continue
   }
+
   if u > v {
     swap(&u, &v)
   }
+
   m[.init(u, v), default: 0] += 1
 }
+
 m.forEach {
   ans += $0.value - 1
 }
+
 print(ans)
 ```
 
-`Pack` also conforms to `Comparable`, so it can be used when writing Dijkstra and similar algorithms.
+`Pack` also supports `Comparable`, so it can be used in priority queues, Dijkstra's algorithm, and other situations that require ordered comparisons.
 
-If compilation becomes problematic, try `Pack2` or `Pack3` as fallback types.
+If compilation becomes problematic in your environment, use `Pack2` or `Pack3` instead.
 
 #### Partial Import
 
@@ -220,129 +325,170 @@ import Pack
 
 ---
 
-### CxxWrapped
-
-This module provides `std::gcd` and `std::lcm`.
-
-They are not approximations of `std::gcd` or custom `std::lcm` implementations; they actually call `std::gcd` and `std::lcm`.
-
-The original plan was to call them through C++ Interop, but that did not work out easily, so they are exposed with `extern "C"` and called through C Interop.
-
-```swift
-import AcFoundation
-
-print(gcd(12,16)) // 4
-
-print(lcm(12,16)) // 48
-
-```
-
-#### Partial Import
-
-If you only want CxxWrapped features, import the module below.
-
-```swift
-import CxxWrapped
-```
-
----
-
-### CharacterUtil
-
-For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, but this package recommends `[Character]` during contests.
-
-When using character arrays, writing character loops can be somewhat tedious, and lexicographical comparison is not obvious.
-
-This module first adds `Stridable` conformance to `Character` for ASCII characters.
-
-That lets you write loops over characters like this.
-
-```swift
-import AcFoundation
-
-for c: Character in "a"..."z" {
-  print(c) // prints a through z in order
-}
-```
-
-This module also adds lexicographical comparison operators to `[Character]`.
-
-```swift
-import AcFoundation
-
-print(Array("abc") < Array("abd")) // true
-```
-
-To use this module, import it individually near the top of your source file.
-(It is excluded from the umbrella import because adding `readLine` functions can make type annotations inconvenient.)
-
-```swift
-import CharacterUtil
-```
-
----
-
-### UInt8Util
-
-For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, and this package recommends `[Character]` during contests. That said, `[UInt8]` can be easier for people used to C or C++. Since null-terminated `cString`-related methods have started to become deprecated, this package prefers `UInt8` over `CChar`.
-
-One inconvenience with `UInt8` is that character literals cannot be used directly. This module adds extensions to cover that, so you can write the following.
-
-```swift
-let c: UInt8 = "A"
-```
-
-This module also adds lexicographical comparison operators to `[UInt8]`.
-
-```swift
-let abc: [UInt8] = "abc".compactMap(\.asciiValue)
-let abd: [UInt8] = "abd".compactMap(\.asciiValue)
-print(abc < abd) // true
-```
-
-It also provides several properties equivalent to `Character` properties.
-
-To use this module, import it individually near the top of your source file.
-
-```swift
-import UInt8Util
-```
-
----
-
 ### StringUtil
 
-For string problems, you need to choose between Swift `String`, `[Character]`, and `[UInt8]`. Each has pros and cons, and this package recommends `[Character]` during contests. However, forcing that on beginners is harsh, while Swift strings do not support integer subscripts, which is also painful for beginners. This module adds convenience methods for strings. Use them with the understanding that they are intended for beginners. Swift strings are very rich, and in competitive programming they can easily cause TLE.
+For string problems, there are several possible representations, including `String`, `[Character]`, and `[UInt8]`.
 
-Use this when you want to solve ABC A or B problems comfortably.
+`StringUtil` is a helper module for cases where you want to use Swift's `String` directly.
+
+Swift strings are powerful Unicode-aware values, so they do not support integer subscripts.
+
+This can feel inconvenient for people who have just started competitive programming.
+
+With this module, you can access strings using integer indices and ranges.
 
 ```swift
 let s = "abcdef"
+
 // Get one character
 print(s[0]) // "a"
 
 // Get substrings
 print(s[0..<s.count]) // "abcdef"
-print(s[0..<s.count]) // "abcdef"
-print(s[0...]) // "abcdef"
-print(s[..<s.count]) // "abcdef"
+print(s[0...])        // "abcdef"
+print(s[..<s.count])  // "abcdef"
+
 print(s[2..<4]) // "cd"
-print(s[2...]) // "cdef"
-print(s[..<4]) // "abcd"
-print(s[...4]) // "abcde"
+print(s[2...])  // "cdef"
+print(s[..<4])  // "abcd"
+print(s[...4])  // "abcde"
 ```
 
-To use this module, import it individually near the top of your source file.
+It is intended for cases where you first want to write a straightforward solution, such as ABC A and B problems.
+
+On the other hand, because Swift's `String` is feature-rich, it can be more expensive than `[Character]` or `[UInt8]`.
+
+For large inputs or problems that operate heavily on strings, consider another representation.
+
+#### Usage
+
+This module must be imported individually.
 
 ```swift
 import StringUtil
 ```
 
+The right representation for string problems depends on the problem and your preferences.
+
+For that reason, `String`-oriented features are not included in `AcFoundation`; use them only when needed.
+
+---
+
+### CharacterUtil
+
+For string problems, you need to choose between `String`, `[Character]`, and `[UInt8]`.
+
+Each has pros and cons, but this library assumes `[Character]` as the easy-to-handle default during contests.
+
+`CharacterUtil` provides helpers that make implementations using `Character` and `[Character]` a little easier to write.
+
+First, it makes ASCII `Character` values usable in ranges.
+
+```swift
+import CharacterUtil
+
+for c: Character in "a"..."z" {
+  print(c)
+}
+```
+
+This lets you enumerate alphabets and digits concisely.
+
+It also provides lexicographical comparison operators for `[Character]`.
+
+```swift
+import CharacterUtil
+
+print(Array("abc") < Array("abd")) // true
+```
+
+Even when you convert strings to arrays, you can compare them lexicographically in a string-like way.
+
+#### Usage
+
+This module must be imported individually.
+
+```swift
+import CharacterUtil
+```
+
+It is not included in `AcFoundation`.
+
+Some people use `String` for string problems, while others use `[Character]` or `[UInt8]`.
+
+This library keeps `Character`-oriented features as an individual import so users can choose freely.
+
+---
+
+### UInt8Util
+
+For string problems, there are several possible representations, including `String`, `[Character]`, and `[UInt8]`.
+
+`UInt8Util` provides useful features for cases where you use `[UInt8]`.
+
+Swift does not have character literals for `UInt8`, which can be inconvenient when handling ASCII characters.
+
+With this module, you can create `UInt8` values from character literals as follows.
+
+```swift
+let c: UInt8 = "A"
+```
+
+It also provides lexicographical comparison operators for `[UInt8]`.
+
+```swift
+let abc: [UInt8] = "abc".compactMap(\.asciiValue)
+let abd: [UInt8] = "abd".compactMap(\.asciiValue)
+
+print(abc < abd) // true
+```
+
+It also adds several `Character`-like helpers that are useful when handling ASCII strings.
+
+#### Usage
+
+This module must be imported individually.
+
+```swift
+import UInt8Util
+```
+
+The right representation for string problems depends on the problem and your preferences.
+
+For that reason, `UInt8`-oriented features are not included in `AcFoundation`; use them only when needed.
+
 ---
 
 ### Miscellaneous
 
-This module contains utilities that do not fit cleanly into the other categories.
+Miscellaneous collects short, common routines often seen on AtCoder.
+It is also available through `AcFoundation`, but you can import it individually when you only need these features.
+
+It mainly provides functions that convert boolean results directly into output strings, along with small integer helpers.
+
+```swift
+print(Yes(a == b))       // Yes if true, No if false
+print(NO(x < y))         // NO if true, YES if false
+print(Takahashi(win))    // Takahashi if true, Aoki if false
+print(correct(ok))       // correct if true, incorrect if false
+```
+
+For three states such as win, lose, and draw, you can use `Bool?`.
+
+```swift
+let result: Bool? = nil
+print(TakahashiAokiDraw(result)) // Draw
+```
+
+For integers, it provides `floor`, `ceil`, and `mod` functions that are convenient for division involving negative values, plus commonly used modulus constants.
+
+```swift
+print(floor(-3, 2)) // -2
+print(ceil(-3, 2))  // -1
+print(mod(-3, 2))   // 1
+
+let mod = MOD_998_244_353 // common modulus in AtCoder Library
+```
 
 #### Partial Import
 
@@ -352,12 +498,108 @@ import Miscellaneous
 
 ---
 
-### Convinience
+### Convenience
 
-This module is for shortcuts. It is available only through an individual import.
+Convenience is a helper module for writing shorter submitted code.
+It is also available through `AcFoundation`, but you can import it individually when you want to limit the enabled features.
+
+It collects APIs that make standard-library operations shorter, such as array and string repetition, prefix sums, aggregation, range loops, and bit operations.
 
 ```swift
-import Convinience
+let zeros = [0] * 5              // [0, 0, 0, 0, 0]
+let grid = [0] * (3, 4)          // 3 x 4 two-dimensional array
+let text = "ab" * 3              // "ababab"
+
+var a = [1, 2]
+a.resize(5, 0)                   // [1, 2, 0, 0, 0]
+```
+
+`Sequence` gains helpers for sums, products, counting, transposition, and similar operations.
+
+```swift
+print([1, 2, 3].sum())           // 6
+print([2, 3, 4].product())       // 24
+print([true, true].all)          // true
+print([false, true].any)         // true
+print([1, 2, 1, 3].count(1))     // 2
+
+let matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix.transposed())       // [[1, 4], [2, 5], [3, 6]]
+```
+
+Prefix sums are available for one to three dimensions.
+
+For one-dimensional prefix sums, also consider `reductions(0, +)` from `swift-algorithms` when it is available.
+
+```swift
+let s = prefixSum([1, 2, 3])
+print(s)                         // [0, 1, 3, 6]
+
+// swift-algorithms
+let t = [1, 2, 3].reductions(0, +)
+print(Array(t))                  // [0, 1, 3, 6]
+
+let gridSum = prefixSum([[1, 2], [3, 4]])
+```
+
+Integers gain `range` and `rep`, a power operator, bit subscripts, and other helpers.
+
+```swift
+for i in 5.range {
+  print(i)                       // 0 through 4
+}
+
+let squares = 5.rep { i in i * i }
+print(2 ** 10)                   // 1024
+
+var bit = 0
+bit[3] = true
+print(bit)                       // 8
+```
+
+There are also operators for descending loops and loops that include the end value.
+
+```swift
+for i in 0 ..<= 3 {
+  print(i)                       // 0, 1, 2, 3
+}
+
+for i in 3 ..>= 0 {
+  print(i)                       // 3, 2, 1, 0
+}
+```
+
+Empty ranges are handled safely, so you can write loops without worrying about that condition.
+
+#### Partial Import
+
+```swift
+import Convenience
+```
+
+---
+
+### CxxWrapped
+
+This module is a wrapper for using C++ standard library `std::gcd` and `std::lcm` from Swift.
+
+They are not custom implementations; they actually call `std::gcd` and `std::lcm` from the C++ standard library.
+
+```swift
+import AcFoundation
+
+print(gcd(12, 16)) // 4
+print(lcm(12, 16)) // 48
+```
+
+Currently, the C++ side exposes them through `extern "C"`, and Swift calls them through C Interop.
+
+#### Partial Import
+
+If you only want CxxWrapped features, import the module below.
+
+```swift
+import CxxWrapped
 ```
 
 ---

@@ -67,7 +67,8 @@ let (H, W): (Int, Int) = stdin()
 let S = [String].stdin(rows: H, columns: W)
 ```
 
-単語とは半角スペース、タブ、改行などで区切られた単独または連続したASCII文字を想定しています。
+token は半角スペース、タブ、改行などの空白文字で区切られます。
+文字列や文字は ASCII 入力を想定しています。
 
 詳しい使い方は以下のドキュメントに分けています。
 
@@ -105,62 +106,80 @@ let v = SIMD3<Int>.stdin
 
 ---
 
+### IOWriter
+
+IOWriter は、配列を 1 行に、配列の配列を複数行に整形して出力する `print` メソッドを提供するモジュールです。
+
+数値配列は空白区切りで、文字配列は連結して出力します。
+
+```swift
+[1, 2, 3].print()        // 1 2 3
+[1.5, 2.5].print()       // 1.5 2.5
+(["A", "B", "C"] as [Character]).print() // ABC
+```
+
+配列の配列は、各要素を 1 行ずつ出力します。
+
+```swift
+[[1, 2], [3, 4]].print()
+// -> 1 2
+//    3 4
+```
+
+```swift
+([["#", "#"], ["#", "#"]] as [[Character]]).print()
+// -> ##
+//    ##
+```
+
+標準の `print` 関数と同様に、区切り文字や終端文字も指定できます。
+
+```swift
+[1.5, 2.5].print(separator: ", ") // 1.5, 2.5
+```
+
+配列の配列では、区切り文字や終端文字は各行に適用されます。
+
+```swift
+[[1, 2], [3, 4]].print(separator: ", ")
+// -> 1, 2
+//    3, 4
+```
+
+macOS 26.0 以降では、`InlineArray` に対しても `print(separator:terminator:)` が利用できます。
+
+#### 部分利用
+
+```swift
+import IOWriter
+```
+
+---
+
 ### IOUtil
 
-IOUtil は、出力の便利メソッドと、入出力に関する補助的な内容となっています。
-個別 import でのみ利用できます。
+IOUtil は、ベンチマーク結果が入出力コストに支配されにくいようにするための高速 I/O 補助と、自作の入出力処理を組み立てるための低レベル部品を提供します。
+通常の競技用途で使う主な入力 API ではなく、個別 import でのみ利用できます。
 
 ```swift
 import IOUtil
 ```
 
-まず、Sequenceプロトコルのextensionでprintメソッドが用意されていてます。
-これは配列等を空白区切りで出力するものです。
-
-```swift
-let A = [1, 2, 3, 4]
-A.print() // -> 1 2 3 4
-```
-
-InlineArrayにも同様のextentionが用意されており、以下のように出力することができます。
-
-```swift
-let A: [4 of Int] = [1, 2, 3, 4]
-A.print() // -> 1 2 3 4
-```
-
-任意の区切り文字や終端文字を使うことも可能です。
-```swift
-[1, 2, 3].print(terminator: " ") // 行の前半を出力
-[4, 5, 6].print() // 行の後半を出力
-// -> 1 2 3 4 5 6
-```
-
-```swift
-[1, 2, 3].print(separator: "-")
-```
-
-FILEポインタが`TextOutputStream` 適合となります。
-これにより、`stderr` や `stdout` をprint関数の出力先引数として用いる事ができます。
-
-```swift
-#if os(Linux)
-@preconcurrency import Glibc
-#else
-@preconcurrency import Darwin
-#endif
-
-print("debug", to: &stderr)
-```
-
 `fastPrint` は低レベルの出力関数を使って、整数や ASCII 文字列相当の値を出力します。
-符号付き整数、符号なし整数、整数の配列、`[UInt8]`, `[Int8]`, `[Character]` に対応しています。
+符号付き整数、符号なし整数、整数の collection、`[UInt8]`、`[Int8]`、`[Character]` に対応しています。
 
 ```swift
 fastPrint(123)
 fastPrint([1, 2, 3])
 fastPrint([1, 2, 3], separator: 0x0A)
 fastPrint(asciiValues: Array("OK".utf8))
+```
+
+`CustomStringConvertible` に準拠した要素の sequence は、区切り文字付きで出力できます。
+
+```swift
+[1, 2, 3].print()
+[1, 2, 3].print(separator: ",")
 ```
 
 `getline` は 1 行を UTF-8 バイト列として扱うための API です。
@@ -172,6 +191,11 @@ let values: [Int] = readIntLine()
 let unsigned: [UInt] = readUIntLine()
 ```
 
+`stderr` と `stdout` は `TextOutputStream` の出力先としても利用できます。
+
+```swift
+print("debug", to: &stderr)
+```
 
 ---
 
