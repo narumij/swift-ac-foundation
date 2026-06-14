@@ -1,4 +1,4 @@
-import IOUtil
+import IOWriter
 import TestingUtil
 import XCTest
 

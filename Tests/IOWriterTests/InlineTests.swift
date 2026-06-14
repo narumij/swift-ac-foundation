@@ -1,9 +1,7 @@
 import XCTest
 import TestingUtil
 import IOWriter
-import UInt8Util
 
-#if false
 final class InlineTests: XCTestCase {
 
   @available(macOS 26.0, *)
@@ -13,17 +11,16 @@ final class InlineTests: XCTestCase {
         let A = InlineArray<3,Int>(repeating: 3)
         A.print()
         let B: InlineArray<3,Int> = [1,2,3]
-        B.fastPrint(separator: Int32(" " as UInt8))
-        A.fastPrint(terminator: Int32("-" as UInt8))
-        B.fastPrint()
+        B.print(separator: ",")
+        A.print(terminator: " - ")
+        B.print()
       })
       .outputOnly(),
 
       """
       3 3 3
       1,2,3
-      3 3 3-1 2 3
+      3 3 3 - 1 2 3
       """)
   }
 }
-#endif

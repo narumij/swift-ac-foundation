@@ -9,7 +9,7 @@ final class FastSequenceTests: XCTestCase {
       try SolverRunner {
         [8, 9].fastPrint()
         AnySequence([-2, -1, 0, 1, 2]).fastPrint()
-        stride(from: 3, through: 7, by: 2).fastPrint(separator: 0x2C, terminator: 0x21)
+        stride(from: 3, through: 7, by: 2).fastPrint(separator: ",", terminator: "!")
       }
       .outputOnly(),
 
@@ -24,7 +24,7 @@ final class FastSequenceTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner {
         AnySequence([1, 2, 3] as [UInt]).fastPrint()
-        AnySequence([4, 5, 6] as [UInt32]).fastPrint(separator: 0x2D, terminator: 0x3B)
+        AnySequence([4, 5, 6] as [UInt32]).fastPrint(separator: "-", terminator: ";")
       }
       .outputOnly(),
 

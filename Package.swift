@@ -52,6 +52,10 @@ let package = Package(
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
+      name: "IOWriter",
+      dependencies: ["_FastIO"],
+      swiftSettings: _settings),
+    .target(
       name: "IOReaderExtra",
       dependencies: [
         "IOReader",
@@ -129,9 +133,10 @@ let package = Package(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
+        "IOWriter",
+        "IOUtil",
         "Bisect",
         "Pack",
-        "IOUtil",
         "CxxWrapped",
         "StringUtil",
         "CharacterUtil",
@@ -160,6 +165,15 @@ let package = Package(
       ],
       resources: [
         .copy("Resources")
+      ],
+      swiftSettings: _settings
+    ),
+    .testTarget(
+      name: "IOWriterTests",
+      dependencies: [
+        "TestingUtil",
+        "IOWriter",
+        "UInt8Util",
       ],
       swiftSettings: _settings
     ),
