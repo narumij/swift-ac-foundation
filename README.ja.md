@@ -43,7 +43,7 @@ import AcFoundation
 
 通常は `compatible/AtCoder/2025` の利用をおすすめします。
 
-このブランチでは AtCoder 2025 との互換性を維持したまま、ドキュメント補強、deprecated 指定、注意喚起の追加などの保守を行っています。
+ `compatible/AtCoder/2025` ブランチでは AtCoder 2025 との互換性を維持したまま、ドキュメント補強、deprecated 指定、注意喚起の追加などの保守を行っています。
 
 `release/AtCoder/2025` は AtCoder に搭載されている状態をそのまま保持するためのブランチです。
 
