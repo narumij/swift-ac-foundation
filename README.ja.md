@@ -12,7 +12,7 @@ SwiftPM プロジェクトで swift-ac-foundation ライブラリを使用する
 ```swift
 .package(
   url: "https://github.com/narumij/swift-ac-foundation",
-   branch: "release/AtCoder/2025"),
+   branch: "compatible/AtCoder/2025"),
 ```
 
 タグでの指定はC++でのunsafeFlagsの使用がありビルド拒否となるため、必要な場合は直接revision指定してください。
@@ -32,6 +32,24 @@ import AcFoundation
 ```
 
 ---
+
+## Branch Strategy
+
+| Branch | Recommended | Description |
+|----------|----------|----------|
+| `compatible/AtCoder/2025` | ⭐ | AtCoder 2025 互換の推奨版 |
+| `release/AtCoder/2025` | | AtCoder 2025 搭載版 |
+| `main` | | 開発版 |
+
+### Which branch should I use?
+
+通常は `compatible/AtCoder/2025` の利用をおすすめします。
+
+このブランチでは AtCoder 2025 との互換性を維持したまま、ドキュメント補強、deprecated 指定、注意喚起の追加などの保守を行っています。
+
+`release/AtCoder/2025` は AtCoder に搭載されている状態をそのまま保持するためのブランチです。
+
+`main` は開発中のブランチです。API や実装が変更される可能性があります。
 
 ## 内容
 
@@ -417,6 +435,126 @@ import UInt8Util
 
 ---
 
+### Miscellaneous
+
+Miscellaneous は、AtCoderでよくみかける短い定型処理をまとめたモジュールです。
+`AcFoundation` からも利用できますが、この機能だけが必要な場合は個別 import できます。
+
+主に、判定結果をそのまま出力文字列へ変換する関数と、整数まわりの小さな補助関数を提供します。
+
+```swift
+print(Yes(a == b))       // true なら Yes、false なら No
+print(NO(x < y))         // true なら NO、false なら YES
+print(Takahashi(win))    // true なら Takahashi、false なら Aoki
+print(correct(ok))       // true なら correct、false なら incorrect
+```
+
+勝ち・負け・引き分けの 3 状態を扱いたい場合は `Bool?` を利用できます。
+
+```swift
+let result: Bool? = nil
+print(TakahashiAokiDraw(result)) // Draw
+```
+
+整数用には、負数を含む割り算で使いやすい `floor` / `ceil` / `mod` と、よく使う法の定数を用意しています。
+
+```swift
+print(floor(-3, 2)) // -2
+print(ceil(-3, 2))  // -1
+print(mod(-3, 2))   // 1
+
+let mod = MOD_998_244_353 // AtCoder Library でよく使われる法
+```
+
+#### 部分利用
+
+```swift
+import Miscellaneous
+```
+
+---
+
+### Convenience
+
+Convenience は、提出コードを短く書くための補助モジュールです。
+`AcFoundation` からも利用できますが、機能を絞りたい場合は個別 import できます。
+
+配列や文字列の繰り返し、累積和、集約処理、範囲ループ、ビット操作など、標準ライブラリだけでも書けるものを短く書くための API を集めています。
+
+```swift
+let zeros = [0] * 5              // [0, 0, 0, 0, 0]
+let grid = [0] * (3, 4)          // 3 x 4 の 2 次元配列
+let text = "ab" * 3              // "ababab"
+
+var a = [1, 2]
+a.resize(5, 0)                   // [1, 2, 0, 0, 0]
+```
+
+`Sequence` には、合計・積・個数カウント・転置などの補助が追加されます。
+
+```swift
+print([1, 2, 3].sum())           // 6
+print([2, 3, 4].product())       // 24
+print([true, true].all)          // true
+print([false, true].any)         // true
+print([1, 2, 1, 3].count(1))     // 2
+
+let matrix = [[1, 2, 3], [4, 5, 6]]
+print(matrix.transposed())       // [[1, 4], [2, 5], [3, 6]]
+```
+
+累積和は 1 次元から 3 次元まで用意しています。
+
+1 次元の累積和は `swift-algorithms` の `reductions(0, +)` が利用できる場合は、そちらも検討してください。
+
+```swift
+let s = prefixSum([1, 2, 3])
+print(s)                         // [0, 1, 3, 6]
+
+// swift-algorithms
+let t = [1, 2, 3].reductions(0, +)
+print(Array(t))                  // [0, 1, 3, 6]
+
+let gridSum = prefixSum([[1, 2], [3, 4]])
+```
+
+整数には `range` と `rep`、べき乗演算子、ビット添字などが追加されます。
+
+```swift
+for i in 5.range {
+  print(i)                       // 0 から 4
+}
+
+let squares = 5.rep { i in i * i }
+print(2 ** 10)                   // 1024
+
+var bit = 0
+bit[3] = true
+print(bit)                       // 8
+```
+
+降順ループや、終端を含むループ用の演算子もあります。
+
+```swift
+for i in 0 ..<= 3 {
+  print(i)                       // 0, 1, 2, 3
+}
+
+for i in 3 ..>= 0 {
+  print(i)                       // 3, 2, 1, 0
+}
+```
+
+空の範囲も安全に扱えるため、ループ条件を気にせず記述できます。
+
+#### 部分利用
+
+```swift
+import Convenience
+```
+
+---
+
 ### CxxWrapped
 
 C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
@@ -438,28 +576,6 @@ CxxWrapped 機能のみを利用したい場合は以下をインポートして
 
 ```swift
 import CxxWrapped
-```
-
----
-
-### Miscellaneous
-
-これ以外の分類で浮いてしまっているものたちです。
-
-#### 部分利用
-
-```swift
-import Miscellaneous
-```
-
----
-
-### Convinience
-
-横着用です。個別importでしか提供していません。
-
-```swift
-import Convinience
 ```
 
 ---
