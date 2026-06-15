@@ -110,12 +110,6 @@ extension Sequence where Element: Sequence, Element.Element == UInt8 {
   }
 }
 
-//@inlinable
-//@inline(__always)
-//func putchar_unlocked(_ c: Int8) {
-//  putchar_unlocked(Int32(c))
-//}
-
 @inlinable
 @inline(__always)
 func putchar_unlocked(_ c: UInt8) {

@@ -31,7 +31,7 @@ extension InlineArray where Element: StandardPrintable {
   }
 }
 
-extension Collection where Element: StandardPrintable {
+extension Sequence where Element: StandardPrintable {
 
   @inlinable
   public func print(separator: String = " ", terminator: String = "\n") {
