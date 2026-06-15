@@ -23,4 +23,89 @@ final class InlineTests: XCTestCase {
       3 3 3 - 1 2 3
       """)
   }
+
+  @available(macOS 26.0, *)
+  func testPrintNestedInlineArray() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let values: InlineArray<3, InlineArray<2, Int>> = [[1, 2], [3, 4], [5, 6]]
+        values.print()
+      })
+      .outputOnly(),
+
+      """
+      1 2
+      3 4
+      5 6
+      """)
+  }
+
+  @available(macOS 26.0, *)
+  func testPrintNestedInlineArraySeparatorAndTerminator() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let values: InlineArray<2, InlineArray<3, Int>> = [[1, 2, 3], [4, 5, 6]]
+        values.print(separator: ",", terminator: " | ")
+        print("END")
+      })
+      .outputOnly(),
+
+      """
+      1,2,3 | 4,5,6 | END
+      """)
+  }
+
+  @available(macOS 26.0, *)
+  func testPrintTripleNestedInlineArray() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let values: InlineArray<2, InlineArray<2, InlineArray<2, Int>>> = [
+          [[1, 2], [3, 4]],
+          [[5, 6], [7, 8]],
+        ]
+        values.print()
+      })
+      .outputOnly(),
+
+      """
+      InlineArray<2, Int>(_storage: (Unknown)) InlineArray<2, Int>(_storage: (Unknown))
+      InlineArray<2, Int>(_storage: (Unknown)) InlineArray<2, Int>(_storage: (Unknown))
+      """)
+  }
+
+  @available(macOS 26.0, *)
+  func testPrintCollectionOfInlineArray() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let values: [InlineArray<3, Int>] = [[1, 2, 3], [4, 5, 6]]
+        values.print()
+        values.print(separator: ",", terminator: " | ")
+        print("END")
+      })
+      .outputOnly(),
+
+      """
+      1 2 3
+      4 5 6
+      1,2,3 | 4,5,6 | END
+      """)
+  }
+
+  @available(macOS 26.0, *)
+  func testPrintCollectionOfNestedInlineArray() throws {
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        let values: [InlineArray<2, InlineArray<2, Int>>] = [
+          [[1, 2], [3, 4]],
+          [[5, 6], [7, 8]],
+        ]
+        values.print()
+      })
+      .outputOnly(),
+
+      """
+      InlineArray<2, Int>(_storage: (Unknown)) InlineArray<2, Int>(_storage: (Unknown))
+      InlineArray<2, Int>(_storage: (Unknown)) InlineArray<2, Int>(_storage: (Unknown))
+      """)
+  }
 }
