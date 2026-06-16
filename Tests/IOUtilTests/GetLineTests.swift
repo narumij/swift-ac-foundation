@@ -4,22 +4,22 @@ import XCTest
 
 final class GetLineTests: XCTestCase {
 
-  func testGetlineProvidesLineBytesAndCount() throws {
+  func testWithUnsafeReadLineBytesProvidesLineBytes() throws {
     var captured: String = ""
 
     try SolverRunner {
-      captured = try getline { start, count in
-        String(decoding: UnsafeBufferPointer(start: start, count: count), as: UTF8.self)
+      captured = try withUnsafeReadLineBytes { line in
+        String(decoding: line, as: UTF8.self)
       }
     }.inputOnly("abc def")
 
     XCTAssertEqual(captured, "abc def\n")
   }
 
-  func testGetlinePropagatesTransformError() throws {
+  func testWithUnsafeReadLineBytesPropagatesBodyError() throws {
     let runner = SolverRunner {
       XCTAssertThrowsError(
-        try getline { _, _ in
+        try withUnsafeReadLineBytes { _ in
           throw SampleError.expected
         }
       ) { error in

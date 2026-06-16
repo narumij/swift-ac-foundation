@@ -1,4 +1,9 @@
 import Foundation
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
 import _FastIO
 
 public protocol FastPrintable { }

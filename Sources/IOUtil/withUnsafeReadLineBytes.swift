@@ -6,8 +6,10 @@ public
   case unexpectedEmpty
 }
 
+/// 入力ライブラリを自作するときに、行単位の読み取りで詰まった場合の補助関数です。
+/// `body` に渡されるバイト列は、この関数の呼び出し中だけ有効です。
 @inlinable
-public func getline<T>(_ transform: (UnsafePointer<UInt8>, Int) throws -> T) throws -> T {
+public func withUnsafeReadLineBytes<T>(_ body: (UnsafeBufferPointer<UInt8>) throws -> T) throws -> T {
   var utf8Start: UnsafeMutablePointer<UInt8>?
   let utf8Count = _readLine_stdin(&utf8Start)
   defer {
@@ -16,7 +18,7 @@ public func getline<T>(_ transform: (UnsafePointer<UInt8>, Int) throws -> T) thr
   guard utf8Count > 0, let utf8Start else {
     throw IOUtilError.unexpectedEmpty
   }
-  return try transform(utf8Start, utf8Count)
+  return try body(UnsafeBufferPointer(start: utf8Start, count: utf8Count))
 }
 
 // MARK: -
@@ -24,7 +26,9 @@ public func getline<T>(_ transform: (UnsafePointer<UInt8>, Int) throws -> T) thr
 @inlinable
 public func readIntLine<I>() -> [I]
 where I: FixedWidthInteger & SignedInteger {
-  try! getline { start, count in
+  try! withUnsafeReadLineBytes { buffer in
+    let start = buffer.baseAddress!
+    let count = buffer.count
     var pos = 0
     var nums: [I] = []
     while pos < count {
@@ -43,7 +47,9 @@ where I: FixedWidthInteger & SignedInteger {
 @inlinable
 public func readUIntLine<U>() -> [U]
 where U: FixedWidthInteger & UnsignedInteger {
-  try! getline { start, count in
+  try! withUnsafeReadLineBytes { buffer in
+    let start = buffer.baseAddress!
+    let count = buffer.count
     var pos = 0
     var nums: [U] = []
     while pos < count {
