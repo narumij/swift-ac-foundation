@@ -22,38 +22,56 @@ static inline unsigned ___skip_zeros_4(unsigned x) {
   return x < 10 ? 3 : x < 100 ? 2 : x < 1000 ? 1 : 0;
 }
 
-static inline int ___write_8_digits(unsigned x, int i) {
+static inline int ___write_8_digits(unsigned r, int i) {
+  unsigned q = r / 10000;
+  unsigned lo = r - q * 10000;
 
-  unsigned hi = x / 10000;
-  unsigned lo = x - hi * 10000;
-
-  const char* p1 = digit4 + hi * 4;
-  const char* p2 = digit4 + lo * 4;
+  unsigned a = q / 100;
+  unsigned b = q - a * 100;
+  unsigned c = lo / 100;
+  unsigned d = lo - c * 100;
 
   i -= 8;
 
-  buffer[i + 0] = p1[0];
-  buffer[i + 1] = p1[1];
-  buffer[i + 2] = p1[2];
-  buffer[i + 3] = p1[3];
+  const char* p;
 
-  buffer[i + 4] = p2[0];
-  buffer[i + 5] = p2[1];
-  buffer[i + 6] = p2[2];
-  buffer[i + 7] = p2[3];
+  p = digit_pairs + a * 2;
+  buffer[i + 0] = p[0];
+  buffer[i + 1] = p[1];
+
+  p = digit_pairs + b * 2;
+  buffer[i + 2] = p[0];
+  buffer[i + 3] = p[1];
+
+  p = digit_pairs + c * 2;
+  buffer[i + 4] = p[0];
+  buffer[i + 5] = p[1];
+
+  p = digit_pairs + d * 2;
+  buffer[i + 6] = p[0];
+  buffer[i + 7] = p[1];
 
   return i;
 }
 
 static inline unsigned ___skip_zeros_8(unsigned x) {
-  if (x < 10) return 7;
-  if (x < 100) return 6;
-  if (x < 1000) return 5;
-  if (x < 10000) return 4;
-  if (x < 100000) return 3;
-  if (x < 1000000) return 2;
-  if (x < 10000000) return 1;
-  return 0;
+  if (x >= 10000) {
+    if (x >= 1000000) {
+      if (x >= 10000000) return 0;
+      return 1;
+    } else {
+      if (x >= 100000) return 2;
+      return 3;
+    }
+  } else {
+    if (x >= 100) {
+      if (x >= 1000) return 4;
+      return 5;
+    } else {
+      if (x >= 10) return 6;
+      return 7;
+    }
+  }
 }
 
 static inline void ___print_positive_eight(uint64_t x) {
