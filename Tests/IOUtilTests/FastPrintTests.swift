@@ -8,8 +8,22 @@
 import IOUtil
 import TestingUtil
 import XCTest
+import _FastIO
 
 final class FastPrintTests: XCTestCase {
+
+  private static let fastPrintPerformanceValues: [Int64] = {
+    let count = 30_000
+    let max = UInt64(Int.max)
+    let step = max / UInt64(count - 1)
+
+    return (0..<count).map { index in
+      if index == count - 1 {
+        return Int64.max
+      }
+      return Int64(1 + UInt64(index) * step)
+    }
+  }()
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -59,6 +73,80 @@ final class FastPrintTests: XCTestCase {
       \(UInt.max)
       \(UInt.min)
       """)
+  }
+
+  func testFastPrintFourDigitBoundaries() throws {
+    let values = [-10_001, -10_000, -9_999, -1_001, -1_000, -999, 999, 1_000, 1_001, 9_999, 10_000, 10_001]
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        values.forEach { fastPrint($0) }
+      }).run(input: ""),
+      values.map(String.init).joined(separator: "\n")
+    )
+  }
+
+  func testFastPrintDigitWidthImplementations() throws {
+    let signedValues: [Int64] = [
+      Int64.min, -10_001, -10_000, -9_999, -101, -100, -99, -10, -9, 0,
+      9, 10, 99, 100, 101, 9_999, 10_000, 10_001, Int64.max
+    ]
+    let unsignedValues: [UInt64] = [
+      UInt64.min, 9, 10, 99, 100, 101, 9_999, 10_000, 10_001, UInt64.max
+    ]
+    let expected = (signedValues.map(String.init) + unsignedValues.map(String.init)).joined(separator: "\n")
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        signedValues.forEach { ___print_int_one($0); print() }
+        unsignedValues.forEach { ___print_uint_one($0); print() }
+      }).run(input: ""),
+      expected
+    )
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        signedValues.forEach { ___print_int_two($0); print() }
+        unsignedValues.forEach { ___print_uint_two($0); print() }
+      }).run(input: ""),
+      expected
+    )
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        signedValues.forEach { ___print_int_four($0); print() }
+        unsignedValues.forEach { ___print_uint_four($0); print() }
+      }).run(input: ""),
+      expected
+    )
+  }
+
+  func testFastPrintTwoDigitTableRange() throws {
+    let signedValues = Array(Int64(-99)...Int64(-1)) + Array(Int64(1)...Int64(99))
+    let unsignedValues = Array(UInt64(1)...UInt64(99))
+    let expected = (signedValues.map(String.init) + unsignedValues.map(String.init)).joined(separator: "\n")
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        signedValues.forEach { ___print_int_two($0); print() }
+        unsignedValues.forEach { ___print_uint_two($0); print() }
+      }).run(input: ""),
+      expected
+    )
+  }
+
+  func testFastPrintFourDigitTableRange() throws {
+    let signedValues = Array(Int64(-9_999)...Int64(-1)) + Array(Int64(1)...Int64(9_999))
+    let unsignedValues = Array(UInt64(1)...UInt64(9_999))
+    let expected = (signedValues.map(String.init) + unsignedValues.map(String.init)).joined(separator: "\n")
+
+    XCTAssertEqual(
+      try SolverRunner(solver: {
+        signedValues.forEach { ___print_int_four($0); print() }
+        unsignedValues.forEach { ___print_uint_four($0); print() }
+      }).run(input: ""),
+      expected
+    )
   }
 
   func testFastPrintableIntegerTypes() throws {
@@ -233,6 +321,45 @@ final class FastPrintTests: XCTestCase {
     self.measure {
       StdoutSilencer.run {
         fastPrint(a)
+      }
+    }
+  }
+
+  func testPerformanceFastPrintOneDigitImplementation() throws {
+    let values = Self.fastPrintPerformanceValues
+
+    self.measure {
+      StdoutSilencer.run {
+        for value in values {
+          ___print_int_one(value)
+          putchar_unlocked(0x0A)
+        }
+      }
+    }
+  }
+
+  func testPerformanceFastPrintTwoDigitImplementation() throws {
+    let values = Self.fastPrintPerformanceValues
+
+    self.measure {
+      StdoutSilencer.run {
+        for value in values {
+          ___print_int_two(value)
+          putchar_unlocked(0x0A)
+        }
+      }
+    }
+  }
+
+  func testPerformanceFastPrintFourDigitImplementation() throws {
+    let values = Self.fastPrintPerformanceValues
+
+    self.measure {
+      StdoutSilencer.run {
+        for value in values {
+          ___print_int_four(value)
+          putchar_unlocked(0x0A)
+        }
       }
     }
   }

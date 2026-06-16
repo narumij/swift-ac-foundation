@@ -19,6 +19,20 @@ extension Sequence where Element: FastPrintableInteger & SignedInteger {
   }
 }
 
+extension Sequence
+where
+  Element: Sequence,
+  Element.Element: FastPrintableInteger & SignedInteger
+{
+
+  @inlinable
+  public func fastPrint(separator: String = " ", terminator: String = "\n") {
+    forEach {
+      $0.fastPrint(separator: separator, terminator: terminator)
+    }
+  }
+}
+
 extension Sequence where Element: FastPrintableInteger & UnsignedInteger {
 
   @inlinable
@@ -34,6 +48,20 @@ extension Sequence where Element: FastPrintableInteger & UnsignedInteger {
     }
     if !first {
       print(terminator: terminator)
+    }
+  }
+}
+
+extension Sequence
+where
+  Element: Sequence,
+  Element.Element: FastPrintableInteger & UnsignedInteger
+{
+
+  @inlinable
+  public func fastPrint(separator: String = " ", terminator: String = "\n") {
+    forEach {
+      $0.fastPrint(separator: separator, terminator: terminator)
     }
   }
 }

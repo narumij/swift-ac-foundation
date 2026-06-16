@@ -1,11 +1,11 @@
 import _FastIO
 
-public protocol StandardPrintable {
+public protocol PrintableInlineArray {
   func print(separator: String, terminator: String)
 }
 
 @available(macOS 26.0, *)
-extension InlineArray: StandardPrintable {
+extension InlineArray: PrintableInlineArray {
 
   /// 空白区切りで標準出力へ出力する
   @inlinable
@@ -21,7 +21,7 @@ extension InlineArray: StandardPrintable {
 }
 
 @available(macOS 26.0, *)
-extension InlineArray where Element: StandardPrintable {
+extension InlineArray where Element: PrintableInlineArray {
 
   @inlinable
   public func print(separator: String = " ", terminator: String = "\n") {
@@ -31,7 +31,7 @@ extension InlineArray where Element: StandardPrintable {
   }
 }
 
-extension Sequence where Element: StandardPrintable {
+extension Sequence where Element: PrintableInlineArray {
 
   @inlinable
   public func print(separator: String = " ", terminator: String = "\n") {
