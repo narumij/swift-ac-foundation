@@ -3,7 +3,7 @@
 extern const char digit_pairs[200];
 extern const char digit4[40000];
 
-char buffer[40] = {0};
+static char buffer[40] = {0};
 
 static inline int ___write_1_to_4_digits(unsigned x, int i) {
   const char* p = digit4 + x * 4;
@@ -52,9 +52,7 @@ static inline void ___print_positive_four(uint64_t x) {
 
   i = ___write_1_to_4_digits((unsigned)x, i);
 
-  while (i < (int)sizeof(buffer)) {
-    putchar_unlocked(buffer[i++]);
-  }
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 static inline void ___print_negative_four(int64_t x) {
@@ -82,9 +80,7 @@ static inline void ___print_negative_four(int64_t x) {
 
   i = ___write_1_to_4_digits((unsigned)(-x), i);
 
-  while (i < (int)sizeof(buffer)) {
-    putchar_unlocked(buffer[i++]);
-  }
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 static inline void ___print_positive_two(uint64_t x) {
@@ -112,9 +108,7 @@ static inline void ___print_positive_two(uint64_t x) {
     buffer[i + 1] = digit_pairs[r * 2 + 1];
   }
 
-  while (i < (int)sizeof(buffer)) {
-    putchar_unlocked(buffer[i++]);
-  }
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 static inline void ___print_negative_two(int64_t x) {
@@ -144,38 +138,30 @@ static inline void ___print_negative_two(int64_t x) {
     buffer[i + 1] = digit_pairs[r * 2 + 1];
   }
 
-  while (i < (int)sizeof(buffer)) {
-    putchar_unlocked(buffer[i++]);
-  }
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 static inline void ___print_positive_one(uint64_t x) {
-  int i = 0;
+  int i = sizeof(buffer);
   do {
     int r = x % 10;
     x = x / 10;
-    buffer[i] = 0x30 | r;
-    i += 1;
+    buffer[--i] = 0x30 | r;
   } while (x > 0);
-  while (i > 0) {
-    i -= 1;
-    putchar_unlocked(buffer[i]);
-  }
+
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 static inline void ___print_negative_one(int64_t x) {
   putchar_unlocked(0x2D);
-  int i = 0;
+  int i = sizeof(buffer);
   do {
     int r = x % 10;
     x = x / 10;
-    buffer[i] = 0x30 | -r;
-    ++i;
+    buffer[--i] = 0x30 | -r;
   } while (x < 0);
-  while (i > 0) {
-    --i;
-    putchar_unlocked(buffer[i]);
-  }
+
+  fwrite(buffer + i, 1, sizeof(buffer) - i, stdout);
 }
 
 void ___print_int_one(int64_t x) {
