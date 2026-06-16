@@ -344,7 +344,7 @@ final class FastPrintTests: XCTestCase {
     self.measure {
       StdoutSilencer.run {
         for value in values {
-          ___print_int_two(value)
+          ___printIntTwo(value)
           putchar_unlocked(0x0A)
         }
       }

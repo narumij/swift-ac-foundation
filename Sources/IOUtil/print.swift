@@ -1,5 +1,6 @@
 @preconcurrency import Foundation
 
+#if false
 @usableFromInline
 nonisolated(unsafe)
   let raw =
@@ -17,6 +18,7 @@ nonisolated(unsafe)
     count: 40
   )
 }
+#endif
 
 @usableFromInline
 nonisolated(unsafe)
