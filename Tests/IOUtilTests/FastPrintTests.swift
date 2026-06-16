@@ -364,6 +364,32 @@ final class FastPrintTests: XCTestCase {
     }
   }
   
+  func testPerformanceFastPrintEightDigitImplementation() throws {
+    let values = Self.fastPrintPerformanceValues
+
+    self.measure {
+      StdoutSilencer.run {
+        for value in values {
+          ___print_int_eight(value)
+          putchar_unlocked(0x0A)
+        }
+      }
+    }
+  }
+  
+  func testPerformanceFastPrintDigitImplementation() throws {
+    let values = Self.fastPrintPerformanceValues
+
+    self.measure {
+      StdoutSilencer.run {
+        for value in values {
+          ___print_int(value)
+          putchar_unlocked(0x0A)
+        }
+      }
+    }
+  }
+
   func testPerformanceNewFastPrintFourDigitImplementation() throws {
     let values = Self.fastPrintPerformanceValues
 
