@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 @preconcurrency import _FastIO
 
 public protocol FastPrintable { }
