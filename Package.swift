@@ -190,6 +190,7 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "IOUtil",
+        "IOReader",
       ],
       swiftSettings: _settings
     ),

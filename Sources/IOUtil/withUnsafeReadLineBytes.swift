@@ -108,3 +108,203 @@ where U: FixedWidthInteger & UnsignedInteger {
   }
   return num
 }
+
+import _FastIO
+
+@inlinable
+public func readIntLine_V1() -> [Int] {
+  try! withUnsafeReadLineBytes { buffer in
+    let start = buffer.baseAddress!
+    let count = buffer.count
+
+    var pos = 0
+    var result: [Int] = []
+    result.reserveCapacity(count >> 1)
+
+    while pos < count {
+      // ASCII whitespace skip
+      while pos < count, start[pos] <= 0x20 {
+        pos += 1
+      }
+
+      if pos >= count {
+        break
+      }
+
+      var negative = false
+
+      if start[pos] == 0x2D { // "-"
+        negative = true
+        pos += 1
+      }
+
+      let digitStart = pos
+
+      while pos < count, start[pos] > 0x20 {
+        pos += 1
+      }
+
+      let digitCount = pos - digitStart
+      let magnitude = _parseUInt64Digits(start + digitStart, digitCount)
+
+      let value: Int
+      if negative {
+        value = 0 &- Int(truncatingIfNeeded: magnitude)
+      } else {
+        value = Int(truncatingIfNeeded: magnitude)
+      }
+
+      result.append(value)
+    }
+
+    return result
+  }
+}
+
+@inlinable
+public func readIntLine_new() -> [Int] {
+  try! withUnsafeReadLineBytes { buffer in
+    let start = buffer.baseAddress!
+    let end = start + buffer.count
+
+    var p = start
+
+    var result: [Int] = []
+    result.reserveCapacity(buffer.count >> 1)
+
+    while p < end {
+
+      while p < end, p.pointee <= 0x20 {
+        p += 1
+      }
+
+      if p >= end {
+        break
+      }
+
+      let negative = p.pointee == 0x2D
+      if negative {
+        p += 1
+      }
+
+      var value: UInt64 = 0
+
+      while p < end {
+        let c = p.pointee
+
+        if c <= 0x20 {
+          break
+        }
+
+        value = value &* 10 &+ UInt64(c &- 48)
+
+        p += 1
+      }
+
+      result.append(
+        negative
+          ? 0 &- Int(truncatingIfNeeded: value)
+          : Int(truncatingIfNeeded: value)
+      )
+    }
+
+    return result
+  }
+}
+
+@inlinable
+@inline(__always)
+func _digit(_ p: UnsafePointer<UInt8>, _ i: Int) -> UInt64 {
+  UInt64(p[i] &- 0x30)
+}
+
+@inlinable
+@inline(__always)
+func _parseUInt64Digits(_ p: UnsafePointer<UInt8>, _ count: Int) -> UInt64 {
+  switch count {
+  case 0:
+    return 0
+
+  case 1:
+    return _digit(p, 0)
+
+  case 2:
+    return _digit(p, 0) * 10
+      + _digit(p, 1)
+
+  case 3:
+    return _digit(p, 0) * 100
+      + _digit(p, 1) * 10
+      + _digit(p, 2)
+
+  case 4:
+    return _digit(p, 0) * 1_000
+      + _digit(p, 1) * 100
+      + _digit(p, 2) * 10
+      + _digit(p, 3)
+
+  case 5:
+    return _digit(p, 0) * 10_000
+      + _digit(p, 1) * 1_000
+      + _digit(p, 2) * 100
+      + _digit(p, 3) * 10
+      + _digit(p, 4)
+
+  case 6:
+    return _digit(p, 0) * 100_000
+      + _digit(p, 1) * 10_000
+      + _digit(p, 2) * 1_000
+      + _digit(p, 3) * 100
+      + _digit(p, 4) * 10
+      + _digit(p, 5)
+
+  case 7:
+    return _digit(p, 0) * 1_000_000
+      + _digit(p, 1) * 100_000
+      + _digit(p, 2) * 10_000
+      + _digit(p, 3) * 1_000
+      + _digit(p, 4) * 100
+      + _digit(p, 5) * 10
+      + _digit(p, 6)
+
+  case 8:
+    return _digit(p, 0) * 10_000_000
+      + _digit(p, 1) * 1_000_000
+      + _digit(p, 2) * 100_000
+      + _digit(p, 3) * 10_000
+      + _digit(p, 4) * 1_000
+      + _digit(p, 5) * 100
+      + _digit(p, 6) * 10
+      + _digit(p, 7)
+
+  case 9:
+    return _digit(p, 0) * 100_000_000
+      + _digit(p, 1) * 10_000_000
+      + _digit(p, 2) * 1_000_000
+      + _digit(p, 3) * 100_000
+      + _digit(p, 4) * 10_000
+      + _digit(p, 5) * 1_000
+      + _digit(p, 6) * 100
+      + _digit(p, 7) * 10
+      + _digit(p, 8)
+
+  case 10:
+    return _digit(p, 0) * 1_000_000_000
+      + _digit(p, 1) * 100_000_000
+      + _digit(p, 2) * 10_000_000
+      + _digit(p, 3) * 1_000_000
+      + _digit(p, 4) * 100_000
+      + _digit(p, 5) * 10_000
+      + _digit(p, 6) * 1_000
+      + _digit(p, 7) * 100
+      + _digit(p, 8) * 10
+      + _digit(p, 9)
+
+  default:
+    var value: UInt64 = 0
+    for i in 0..<count {
+      value = value &* 10 &+ _digit(p, i)
+    }
+    return value
+  }
+}
