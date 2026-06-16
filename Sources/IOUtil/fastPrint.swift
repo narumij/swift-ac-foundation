@@ -144,3 +144,12 @@ public func putchar_unlocked(_ c: Character) {
     putchar_unlocked(Int32(bitPattern: b.value))
   }
 }
+
+@usableFromInline
+@inline(__always)
+func _fastPrintUTF8(_ s: String) {
+  let count = s.utf8.count
+  _ = s.withCString { pointer in
+    fwrite(pointer, 1, count, stdout)
+  }
+}

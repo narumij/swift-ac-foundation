@@ -9,12 +9,12 @@ extension Sequence where Element: FastPrintableInteger & SignedInteger {
       if first {
         first = false
       } else {
-        print(separator, terminator: "")
+        _fastPrintUTF8(separator)
       }
       IOUtil.fastPrint(element, terminator: nil)
     }
     if !first {
-      print(terminator: terminator)
+      _fastPrintUTF8(terminator)
     }
   }
 }
@@ -42,12 +42,12 @@ extension Sequence where Element: FastPrintableInteger & UnsignedInteger {
       if first {
         first = false
       } else {
-        print(separator, terminator: "")
+        _fastPrintUTF8(separator)
       }
       IOUtil.fastPrint(element, terminator: nil)
     }
     if !first {
-      print(terminator: terminator)
+      _fastPrintUTF8(terminator)
     }
   }
 }
