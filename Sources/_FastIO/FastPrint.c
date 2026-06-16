@@ -250,7 +250,7 @@ void ___print_uint_four(uint64_t x) {
 void ___print_int(int64_t x) {
   // 散々やり尽くしたが、最初のものが一番速かった
   // のこりについて、もっとしっかりベンチマークしても負けてるようなら削除する
-  ___print_uint_one(x);
+  ___print_int_one(x);
 }
 
 void ___print_uint(uint64_t x) {
