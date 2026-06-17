@@ -12,7 +12,7 @@ import _FastIO
 
 final class FastPrintTests: XCTestCase {
 
-  private static let fastPrintPerformanceValues: [Int64] = {
+  private static let fastPrintPerformanceValues64: [Int64] = {
     let count = 30_000
     let max = UInt64(Int.max)
     let step = max / UInt64(count - 1)
@@ -24,7 +24,20 @@ final class FastPrintTests: XCTestCase {
       return Int64(1 + UInt64(index) * step)
     }
   }()
+  
+  private static let fastPrintPerformanceValues: [Int] = {
+    let count = 30_000
+    let max = UInt(Int.max)
+    let step = max / UInt(count - 1)
 
+    return (0..<count).map { index in
+      if index == count - 1 {
+        return Int.max
+      }
+      return Int(1 + UInt(index) * step)
+    }
+  }()
+  
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
   }
@@ -326,7 +339,7 @@ final class FastPrintTests: XCTestCase {
   }
 
   func testPerformanceFastPrintOneDigitImplementation() throws {
-    let values = Self.fastPrintPerformanceValues
+    let values = Self.fastPrintPerformanceValues64
 
     self.measure {
       StdoutSilencer.run {
@@ -351,8 +364,9 @@ final class FastPrintTests: XCTestCase {
     }
   }
 
+  @available(macOS 26.0, *)
   func testPerformanceFastPrintFourDigitImplementation() throws {
-    let values = Self.fastPrintPerformanceValues
+    let values = Self.fastPrintPerformanceValues64
 
     self.measure {
       StdoutSilencer.run {
@@ -370,7 +384,7 @@ final class FastPrintTests: XCTestCase {
     self.measure {
       StdoutSilencer.run {
         for value in values {
-          ___print_int_eight(value)
+          ___printIntEight(value)
           putchar_unlocked(0x0A)
         }
       }
@@ -378,25 +392,12 @@ final class FastPrintTests: XCTestCase {
   }
   
   func testPerformanceFastPrintDigitImplementation() throws {
-    let values = Self.fastPrintPerformanceValues
+    let values = Self.fastPrintPerformanceValues64
 
     self.measure {
       StdoutSilencer.run {
         for value in values {
           ___print_int(value)
-          putchar_unlocked(0x0A)
-        }
-      }
-    }
-  }
-
-  func testPerformanceNewFastPrintFourDigitImplementation() throws {
-    let values = Self.fastPrintPerformanceValues
-
-    self.measure {
-      StdoutSilencer.run {
-        for value in values {
-          _fastPrint(value)
           putchar_unlocked(0x0A)
         }
       }
