@@ -110,8 +110,6 @@ where U: FixedWidthInteger & UnsignedInteger {
   return num
 }
 
-import _FastIO
-
 @inlinable
 public func readIntLine_V1() -> [Int] {
   try! withUnsafeReadLineBytes { buffer in

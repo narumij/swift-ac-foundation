@@ -1,3 +1,5 @@
+// library-checker用
+
 @preconcurrency import Foundation
 
 @inlinable

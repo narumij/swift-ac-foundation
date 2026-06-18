@@ -83,11 +83,10 @@ public func __withUnsafeReadBytes<T>(
 @inlinable
 @inline(__always)
 func ___readInt(
-  _ start: UnsafePointer<UInt8>,
-  _ count: Int,
+  _ start: UnsafeBufferPointer<UInt8>,
   _ pos: inout Int
 ) -> Int {
-  while pos < count, start[pos] == 0x20 {
+  while pos < start.count, start[pos] == 0x20 {
     pos &+= 1
   }
 
@@ -115,8 +114,8 @@ func ___readPair() -> (Int, Int) {
     var pos = 0
 
     return (
-      ___readInt(buffer.baseAddress!, buffer.count, &pos),
-      ___readInt(buffer.baseAddress!, buffer.count, &pos)
+      ___readInt(buffer, &pos),
+      ___readInt(buffer, &pos)
     )
   }
 }
