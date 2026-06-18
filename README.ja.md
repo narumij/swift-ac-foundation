@@ -182,13 +182,13 @@ fastPrint(asciiValues: Array("OK".utf8))
 [1, 2, 3].print(separator: ",")
 ```
 
-`getline` は 1 行を UTF-8 バイト列として扱うための API です。
-`readIntLine()` と `readUIntLine()` は、1 行を整数配列として読み取ります。
+`withUnsafeReadLineBytes` は 1 行を UTF-8 バイト列として扱うための API です。
 行バッファの挙動を確認したい場合や、自作 reader の土台がほしい場合に使えます。
 
 ```swift
-let values: [Int] = readIntLine()
-let unsigned: [UInt] = readUIntLine()
+try withUnsafeReadLineBytes { line in
+  String(decoding: line, as: UTF8.self)
+}
 ```
 
 `stderr` と `stdout` は `TextOutputStream` の出力先としても利用できます。

@@ -182,13 +182,13 @@ Sequences whose elements conform to `CustomStringConvertible` can be printed wit
 [1, 2, 3].print(separator: ",")
 ```
 
-`getline` exposes one input line as UTF-8 bytes.
-`readIntLine()` and `readUIntLine()` read one line as an integer array.
-These APIs are useful when you want to inspect line-buffer behavior or build a custom reader.
+`withUnsafeReadLineBytes` exposes one input line as UTF-8 bytes.
+This API is useful when you want to inspect line-buffer behavior or build a custom reader.
 
 ```swift
-let values: [Int] = readIntLine()
-let unsigned: [UInt] = readUIntLine()
+try withUnsafeReadLineBytes { line in
+  String(decoding: line, as: UTF8.self)
+}
 ```
 
 `stderr` and `stdout` can also be used as `TextOutputStream` targets.

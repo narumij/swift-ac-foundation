@@ -215,40 +215,6 @@ final class StringAsciiExtensionsTests: XCTestCase {
       XCTAssertEqual(line, Array("abc".utf8))
     }).inputOnly("abc\r\nnext")
   }
-
-  func test_readLine5() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A: [Int] = readIntLine()
-        print(A)
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          """),
-
-      """
-      [1, 2, 3]
-      """)
-  }
-
-  func test_readLine6() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let A: [UInt] = readUIntLine()
-        print(A)
-      })
-      .run(
-        input:
-          """
-          1 2 3
-          """),
-
-      """
-      [1, 2, 3]
-      """)
-  }
 }
 
 #if false
