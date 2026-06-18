@@ -37,12 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `IndexHelper2D`、`TransposedIndexHelper2D`、`IndexHelper3D`を削除
 - `FileOutputStream`を削除
+- `IOUtil`の実験的な`readIntLine`/`readUIntLine`系APIを削除
 
 ### Fixed
 
 - `geline.swift`を`getline.swift`へリネーム
 - IOReaderの可変長バッファが大きくなり続ける問題を修正
-- `readIntLine`/`readUIntLine`が行末スペースを余分な値として処理する問題を修正
 - `stderr`/`stdout`向け`FILE`ポインタの`TextOutputStream`対応を復帰
 - `InlineArray.fastPrint`の符号なし整数出力で符号付き出力関数を使っていた問題を修正
 

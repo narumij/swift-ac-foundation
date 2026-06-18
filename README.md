@@ -83,7 +83,7 @@ If you only want IOReader features, you can import `IOReader` directly.
 ### IOReaderExtra
 
 IOReaderExtra adds `stdin` support for types that depend on external libraries, newer platform features, or optional helper modules.
-It is not re-exported by `AcFoundation`; import it directly when you want to read these types from standard input.
+It requires an individual import.
 
 ```swift
 import BigInt
@@ -159,7 +159,7 @@ import IOWriter
 ### IOUtil
 
 IOUtil provides fast I/O helpers for keeping benchmark results from being dominated by input/output cost, and low-level pieces for building your own input/output routines.
-It is available only through an individual import and is not the main input API for ordinary contest use.
+It requires an individual import and is not the main input API for ordinary contest use.
 
 ```swift
 import IOUtil
@@ -330,6 +330,11 @@ import Pack
 For string problems, there are several possible representations, including `String`, `[Character]`, and `[UInt8]`.
 
 `StringUtil` is a helper module for cases where you want to use Swift's `String` directly.
+It requires an individual import.
+
+```swift
+import StringUtil
+```
 
 Swift strings are powerful Unicode-aware values, so they do not support integer subscripts.
 
@@ -360,17 +365,9 @@ On the other hand, because Swift's `String` is feature-rich, it can be more expe
 
 For large inputs or problems that operate heavily on strings, consider another representation.
 
-#### Usage
-
-This module must be imported individually.
-
-```swift
-import StringUtil
-```
-
 The right representation for string problems depends on the problem and your preferences.
 
-For that reason, `String`-oriented features are not included in `AcFoundation`; use them only when needed.
+For that reason, `String`-oriented features are kept as an individual import.
 
 ---
 
@@ -381,6 +378,7 @@ For string problems, you need to choose between `String`, `[Character]`, and `[U
 Each has pros and cons, but this library assumes `[Character]` as the easy-to-handle default during contests.
 
 `CharacterUtil` provides helpers that make implementations using `Character` and `[Character]` a little easier to write.
+It requires an individual import.
 
 First, it makes ASCII `Character` values usable in ranges.
 
@@ -404,16 +402,6 @@ print(Array("abc") < Array("abd")) // true
 
 Even when you convert strings to arrays, you can compare them lexicographically in a string-like way.
 
-#### Usage
-
-This module must be imported individually.
-
-```swift
-import CharacterUtil
-```
-
-It is not included in `AcFoundation`.
-
 Some people use `String` for string problems, while others use `[Character]` or `[UInt8]`.
 
 This library keeps `Character`-oriented features as an individual import so users can choose freely.
@@ -425,6 +413,11 @@ This library keeps `Character`-oriented features as an individual import so user
 For string problems, there are several possible representations, including `String`, `[Character]`, and `[UInt8]`.
 
 `UInt8Util` provides useful features for cases where you use `[UInt8]`.
+It requires an individual import.
+
+```swift
+import UInt8Util
+```
 
 Swift does not have character literals for `UInt8`, which can be inconvenient when handling ASCII characters.
 
@@ -445,17 +438,9 @@ print(abc < abd) // true
 
 It also adds several `Character`-like helpers that are useful when handling ASCII strings.
 
-#### Usage
-
-This module must be imported individually.
-
-```swift
-import UInt8Util
-```
-
 The right representation for string problems depends on the problem and your preferences.
 
-For that reason, `UInt8`-oriented features are not included in `AcFoundation`; use them only when needed.
+For that reason, `UInt8`-oriented features are kept as an individual import.
 
 ---
 
@@ -501,7 +486,11 @@ import Miscellaneous
 ### Convenience
 
 Convenience is a helper module for writing shorter submitted code.
-It is also available through `AcFoundation`, but you can import it individually when you want to limit the enabled features.
+It requires an individual import.
+
+```swift
+import Convenience
+```
 
 It collects APIs that make standard-library operations shorter, such as array and string repetition, prefix sums, aggregation, range loops, and bit operations.
 
@@ -571,12 +560,6 @@ for i in 3 ..>= 0 {
 
 Empty ranges are handled safely, so you can write loops without worrying about that condition.
 
-#### Partial Import
-
-```swift
-import Convenience
-```
-
 ---
 
 ### CxxWrapped
@@ -608,17 +591,14 @@ import CxxWrapped
 
 This is a Mersenne Twister pseudorandom number generator.
 Use it when you need reproducible random numbers, such as in AHC.
-
-```swift
-var mt = mt19937_64(seed: 0)
-let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)
-let randomDouble = Double.random(in: 0...1, using: &mt)
-```
-
-It is available only through an individual import.
+It requires an individual import.
 
 ```swift
 import MT19937
+
+var mt = mt19937_64(seed: 0)
+let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)
+let randomDouble = Double.random(in: 0...1, using: &mt)
 ```
 
 ---
