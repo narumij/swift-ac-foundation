@@ -96,17 +96,17 @@ func ___printNegativeTwo(_ value: Int) {
 
     let base16 = ___printBuffer16.baseAddress!
 
-    var x = value
+    var x = UInt(0) &- UInt(bitPattern: value)
     var j = ___printBuffer16.count
-    var r = 0
+    var r: UInt = 0
 
     repeat {
-      let q: Int
+      let q: UInt
       (q, r) = x.quotientAndRemainder(dividingBy: 100)
 
       j &-= 1
 
-      (base16 + j).update(from: pairs + r, count: 1)
+      (base16 + j).update(from: pairs + Int(bitPattern: r), count: 1)
 
       x = q
     } while x != 0

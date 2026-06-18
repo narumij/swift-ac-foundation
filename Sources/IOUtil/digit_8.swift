@@ -75,21 +75,21 @@ func ___printNegativeEight(_ value: Int) {
     let base8 = ___printBuffer8.baseAddress!
     let base16 = ___printBuffer16.baseAddress!
 
-    var x = value
+    var x = UInt(0) &- UInt(bitPattern: value)
     var j = ___printBuffer16.count
-    var r = 0
+    var r: UInt = 0
 
     repeat {
-      let q: Int
+      let q: UInt
       (q, r) = x.quotientAndRemainder(dividingBy: 100_000_000)
 
       j &-= 4
-      ___write8Digits(UInt(r), pairs, base16, j)
+      ___write8Digits(r, pairs, base16, j)
 
       x = q
     } while x != 0
 
-    let i = (j << 1) &+ ___skipZeros8(UInt(r))
+    let i = (j << 1) &+ ___skipZeros8(r)
 
     fwrite(base8 + i, 1, ___printBuffer8.count &- i, stdout)
   }
