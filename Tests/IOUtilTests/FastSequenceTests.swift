@@ -46,4 +46,37 @@ final class FastSequenceTests: XCTestCase {
       END
       """)
   }
+
+  func testFastPrintSignedIntegerSequenceOfSequences() throws {
+    XCTAssertEqual(
+      try SolverRunner {
+        [[1, 2, 3], [-4, -5]].fastPrint(separator: ",", terminator: ";")
+      }
+      .outputOnly(),
+
+      "1,2,3;-4,-5;")
+  }
+
+  func testFastPrintUnsignedIntegerSequenceOfSequences() throws {
+    XCTAssertEqual(
+      try SolverRunner {
+        AnySequence([[1, 2], [3, 4]] as [[UInt16]]).fastPrint(separator: "|", terminator: "!")
+      }
+      .outputOnly(),
+
+      "1|2!3|4!")
+  }
+
+  func testFastPrintSequenceOfEmptySequencesProducesNoOutput() throws {
+    XCTAssertEqual(
+      try SolverRunner {
+        [[Int](), []].fastPrint()
+        print("END")
+      }
+      .outputOnly(),
+
+      """
+      END
+      """)
+  }
 }
