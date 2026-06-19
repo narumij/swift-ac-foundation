@@ -1,0 +1,155 @@
+import Bisect
+import XCTest
+
+struct C {
+  var value: Int
+  var serial: Int
+}
+
+extension C: Comparable {
+  static func < (lhs: C, rhs: C) -> Bool {
+    lhs.value < rhs.value
+  }
+}
+
+final class BinarySearchTests: XCTestCase {
+
+  override func setUpWithError() throws {
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+  }
+
+  override func tearDownWithError() throws {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+  }
+
+  func testBinarySearch_old() throws {
+    let array = [1, 3, 5, 7, 9]
+
+    XCTAssertEqual(0, array.bisectLeft(0))
+    XCTAssertEqual(0, array.bisectRight(0))
+
+    XCTAssertEqual(0, array.bisectLeft(1))
+    XCTAssertEqual(1, array.bisectRight(1))
+
+    XCTAssertEqual(1, array.bisectLeft(2))
+    XCTAssertEqual(1, array.bisectRight(2))
+
+    XCTAssertEqual(1, array.bisectLeft(3))
+    XCTAssertEqual(2, array.bisectRight(3))
+
+    XCTAssertEqual(2, array.bisectLeft(4))
+    XCTAssertEqual(2, array.bisectRight(4))
+
+    XCTAssertEqual(2, array.bisectLeft(5))
+    XCTAssertEqual(3, array.bisectRight(5))
+
+    XCTAssertEqual(3, array.bisectLeft(6))
+    XCTAssertEqual(3, array.bisectRight(6))
+  }
+
+  func testBinarySearch() throws {
+    let range = 0..<10
+
+    XCTAssertEqual(range.bisectLeft(-1), 0)
+    XCTAssertEqual(range.bisectRight(-1), 0)
+    XCTAssertEqual(range.bisectLeft(-1) { $0 }, 0)
+    XCTAssertEqual(range.bisectRight(-1) { $0 }, 0)
+
+    XCTAssertEqual(range.bisectLeft(0), 0)
+    XCTAssertEqual(range.bisectRight(0), 1)
+    XCTAssertEqual(range.bisectLeft(0) { $0 }, 0)
+    XCTAssertEqual(range.bisectRight(0) { $0 }, 1)
+
+    XCTAssertEqual(range.bisectLeft(5), 5)
+    XCTAssertEqual(range.bisectRight(5), 6)
+    XCTAssertEqual(range.bisectLeft(5) { $0 }, 5)
+    XCTAssertEqual(range.bisectRight(5) { $0 }, 6)
+
+    XCTAssertEqual(range.bisectLeft(9), 9)
+    XCTAssertEqual(range.bisectRight(9), 10)
+    XCTAssertEqual(range.bisectLeft(9) { $0 }, 9)
+    XCTAssertEqual(range.bisectRight(9) { $0 }, 10)
+
+    XCTAssertEqual(range.bisectLeft(10), 10)
+    XCTAssertEqual(range.bisectRight(10), 10)
+    XCTAssertEqual(range.bisectLeft(10) { $0 }, 10)
+    XCTAssertEqual(range.bisectRight(10) { $0 }, 10)
+  }
+
+  func testMid() throws {
+    func mid1(_ lo: Int, _ hi: Int) -> Int {
+      (lo &+ hi) / 2
+    }
+    func mid2(_ lo: Int, _ hi: Int) -> Int {
+      lo &+ (hi &- lo) / 2
+    }
+    XCTAssertNotEqual(mid1(Int.max, Int.max), Int.max)  // オーバーフローまたはクラッシュとなる
+    XCTAssertEqual(mid1(Int.max / 2, Int.max / 2), Int.max / 2)
+    XCTAssertEqual(mid2(Int.max, Int.max), Int.max)
+  }
+
+  func testInsort1() throws {
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: $0, serial: 0) }
+    list.insortLeft(C(value: 2, serial: 1))
+    XCTAssertEqual(list.map { $0.serial }, [0, 0, 1, 0, 0, 0, 0, 0])
+  }
+
+  func testInsort2() throws {
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: $0, serial: 0) }
+    list.insortRight(C(value: 2, serial: 1))
+    XCTAssertEqual(list.map { $0.serial }, [0, 0, 0, 0, 0, 1, 0, 0])
+  }
+
+  func testInsort3() throws {
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: 0, serial: $0) }
+    list.insortLeft(C(value: 1, serial: 2), key: { $0.serial })
+    XCTAssertEqual(list.map { $0.value }, [0, 0, 1, 0, 0, 0, 0, 0])
+  }
+
+  func testInsort4() throws {
+    var list = [0, 1, 2, 2, 2, 3, 4].map { C(value: 0, serial: $0) }
+    list.insortRight(C(value: 1, serial: 2), key: { $0.serial })
+    XCTAssertEqual(list.map { $0.value }, [0, 0, 0, 0, 0, 1, 0, 0])
+  }
+
+  func testEmptyCollectionBisect() throws {
+    let array: [Int] = []
+    XCTAssertEqual(array.bisectLeft(0), 0)
+    XCTAssertEqual(array.bisectRight(0), 0)
+    XCTAssertEqual(array.bisectLeft(0) { $0 }, 0)
+    XCTAssertEqual(array.bisectRight(0) { $0 }, 0)
+  }
+
+  func testSingleElementBisect() throws {
+    let array = [10]
+    XCTAssertEqual(array.bisectLeft(9), 0)
+    XCTAssertEqual(array.bisectRight(9), 0)
+    XCTAssertEqual(array.bisectLeft(10), 0)
+    XCTAssertEqual(array.bisectRight(10), 1)
+    XCTAssertEqual(array.bisectLeft(11), 1)
+    XCTAssertEqual(array.bisectRight(11), 1)
+  }
+
+  func testInsortAtBounds() throws {
+    var list = [10, 20]
+    list.insortLeft(5)
+    list.insortRight(30)
+    XCTAssertEqual(list, [5, 10, 20, 30])
+  }
+
+  func testKeyedInsortAtBounds() throws {
+    var list = [1, 3].map { C(value: 0, serial: $0) }
+    list.insortLeft(C(value: 10, serial: 0), key: { $0.serial })
+    list.insortRight(C(value: 20, serial: 4), key: { $0.serial })
+    XCTAssertEqual(list.map { $0.value }, [10, 0, 0, 20])
+    XCTAssertEqual(list.map { $0.serial }, [0, 1, 3, 4])
+  }
+
+  func testPerformanceExample() throws {
+    // This is an example of a performance test case.
+    self.measure {
+      // Put the code you want to measure the time of here.
+    }
+  }
+
+}

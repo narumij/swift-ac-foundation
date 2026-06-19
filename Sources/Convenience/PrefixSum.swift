@@ -3,6 +3,15 @@ import Foundation
 /// 累積和1D
 ///
 /// evimaさんの解説を参考にしました
+///
+/// 以下が等価な為、そちらを推奨します。
+/// '''
+/// import Algorithm
+///
+/// let A: [Int] = ...
+/// let a = A.reductions(0, +)
+/// '''
+@available(*, deprecated, renamed: "reductions", message: "swift-algorithmのreduction(0, +)を代わりにご使用ください。")
 @inlinable
 public func prefixSum<T>(N: Int, _ A: [T]) -> [T] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {
   var s: [T] = [0] * (N + 1)
@@ -17,6 +26,15 @@ public func prefixSum<T>(N: Int, _ A: [T]) -> [T] where T: AdditiveArithmetic, T
 /// 累積和1D
 ///
 /// evimaさんの解説を参考にしました
+/// 
+/// 以下が等価な為、そちらを推奨します。
+/// '''
+/// import Algorithm
+///
+/// let A: [Int] = ...
+/// let a = A.reductions(0, +)
+/// '''
+@available(*, deprecated, renamed: "reductions", message: "swift-algorithmのreduction(0, +)を代わりにご使用ください。")
 @inlinable
 @inline(__always)
 public func prefixSum<T>(_ A: [T]) -> [T] where T: AdditiveArithmetic, T: ExpressibleByIntegerLiteral {

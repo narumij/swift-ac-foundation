@@ -27,3 +27,28 @@ public func Takahashi(_ b: Bool = true) -> String { b ? .Takahashi : .Aoki }
 @inlinable
 @inline(__always)
 public func Aoki(_ b: Bool = true) -> String { Takahashi(!b) }
+
+/// 真ならTakahashiを返す、偽ならAokiを返す、nilならDrawを返す
+@inlinable
+@inline(__always)
+public func TakahashiAokiDraw(_ b: Bool?) -> String { b.map(Takahashi) ?? .Draw }
+
+/// 真ならcorrectを返す、偽ならincorrectを返す
+@inlinable
+@inline(__always)
+public func correct(_ b: Bool = true) -> String { b ? .correct : .incorrect }
+
+/// 真ならincorrectを返す、偽ならcorrectを返す
+@inlinable
+@inline(__always)
+public func incorrect(_ b: Bool = true) -> String { correct(!b) }
+
+/// 真ならSuccessを返す、偽ならFailureを返す
+@inlinable
+@inline(__always)
+public func Success(_ b: Bool = true) -> String { b ? .Success : .Failure }
+
+/// 真ならFailureを返す、偽ならSuccessを返す
+@inlinable
+@inline(__always)
+public func Failure(_ b: Bool = true) -> String { correct(!b) }

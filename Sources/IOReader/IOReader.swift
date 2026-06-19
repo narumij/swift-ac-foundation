@@ -3,7 +3,7 @@ import Foundation
 // MARK: - IOReader
 
 public
-  enum Error: Swift.Error
+  enum IOReaderError: Swift.Error
 {
   case unexpectedNil
   case unexpectedSpace
@@ -46,7 +46,7 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
 
 extension Optional {
   @inlinable @inline(__always)
-  func unwrap(or error: @autoclosure () -> Error) throws -> Wrapped {
+  package func unwrap(or error: @autoclosure () -> IOReaderError) throws -> Wrapped {
     guard let value = self else { throw error() }
     return value
   }
@@ -61,7 +61,7 @@ extension FixedWidthInteger {
     repeat {
       let c = getchar_unlocked()
       if c == -1 {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       head = numericCast(c)
     } while (1 << head) & spaces != 0
@@ -116,9 +116,46 @@ extension ZeroBufferIOReader {
   }
 }
 
+public enum IOConfig {
+  nonisolated(unsafe)
+    public static var bufferPolicy = BufferPolicy.default
+}
+
+extension IOConfig {
+
+  public struct BufferPolicy {
+    public var minCapacity: Int
+    public var maxCapacity: Int
+    public static var `default`: BufferPolicy {
+      BufferPolicy(
+        minCapacity: 16,
+        maxCapacity: 1 << 20
+      )
+    }
+  }
+}
+
 @usableFromInline
-protocol VariableBufferIOReader: IOReader {
-  associatedtype BufferElement: FixedWidthInteger
+protocol VariableBuffer {
+  associatedtype BufferElement
+  var buffer: [BufferElement] { get set }
+}
+
+extension VariableBuffer {
+
+  @inlinable
+  @inline(__always)
+  mutating func resetBufferIfNeeded() {
+    let policy = IOConfig.bufferPolicy
+    if buffer.capacity > policy.maxCapacity {
+      buffer = []
+      buffer.reserveCapacity(policy.maxCapacity)
+    }
+  }
+}
+
+@usableFromInline
+protocol VariableBufferIOReader: IOReader, VariableBuffer where BufferElement: FixedWidthInteger {
   var buffer: [BufferElement] { get set }
 }
 
@@ -135,7 +172,8 @@ extension VariableBufferIOReader {
       buffer.append(current)
       current = nullIfEOF(getchar_unlocked())
     }
-    return try f(buffer, current).unwrap(or: Error.unexpectedNil)
+    defer { resetBufferIfNeeded() }
+    return try f(buffer, current).unwrap(or: IOReaderError.unexpectedNil)
   }
 
   @inlinable
@@ -146,13 +184,14 @@ extension VariableBufferIOReader {
     for i in 0..<count {
       lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
       if lastByte == .NULL {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {
-        throw Error.unexpectedSpace
+        throw IOReaderError.unexpectedSpace
       }
       buffer.append(lastByte)
     }
+    defer { resetBufferIfNeeded() }
     return buffer
   }
 }
@@ -260,7 +299,7 @@ struct _atof: InstanceIOReader {
       buffer.append(nullIfEOF(getchar_unlocked()))
     }
     return try buffer.withUnsafeBufferPointer {
-      try f($0, current).unwrap(or: Error.unexpectedNil)
+      try f($0, current).unwrap(or: IOReaderError.unexpectedNil)
     }
   }
 
@@ -282,8 +321,6 @@ struct _atof: InstanceIOReader {
     public static var instance = Self()
 }
 
-let bufferCapcity = 16
-
 @usableFromInline
 struct _atob: VariableBufferIOReader, InstanceIOReader {
 
@@ -292,14 +329,14 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try read { b, c in b }
+    return try read { b, c in b }
   }
 
   @inlinable
@@ -322,14 +359,14 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 }
 
 @usableFromInline
-struct _atoc: InstanceIOReader {
+struct _atoc: InstanceIOReader, VariableBuffer {
 
   @usableFromInline
   typealias Element = [Character]
 
   public var buffer: [Character] = {
     var b = [Character]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
@@ -342,6 +379,7 @@ struct _atoc: InstanceIOReader {
       buffer.append(Character(UnicodeScalar(current)))
       current = nullIfEOF(getchar_unlocked())
     }
+    defer { resetBufferIfNeeded() }
     return (buffer, current)
   }
 
@@ -365,13 +403,14 @@ struct _atoc: InstanceIOReader {
     for i in 0..<count {
       lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
       if lastByte == .NULL {
-        throw Error.unexpectedEOF
+        throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {
-        throw Error.unexpectedSpace
+        throw IOReaderError.unexpectedSpace
       }
       buffer.append(Character(UnicodeScalar(lastByte)))
     }
+    defer { resetBufferIfNeeded() }
     return buffer
   }
 
@@ -394,7 +433,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
-    b.reserveCapacity(bufferCapcity)
+    b.reserveCapacity(IOConfig.bufferPolicy.minCapacity)
     return b
   }()
 
@@ -425,7 +464,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   static func read(count: Int) throws -> Element {
     defer { getchar_unlocked() }
     return try String(bytes: instance.readBytes(count: count), encoding: .ascii)
-      .unwrap(or: Error.unexpectedNil)
+      .unwrap(or: IOReaderError.unexpectedNil)
   }
 
   nonisolated(unsafe)

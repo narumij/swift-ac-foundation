@@ -18,6 +18,9 @@ public protocol AsciiReadable: SingleReadable {
   /// 文字種を問わずデリミタ分の文字を強制で消費します
   static var stdin: Self { get }
 
+  /// 標準入力からASCII文字を1文字読みます
+  ///
+  /// 整数が必要な場合は、他の方からキャストしてください
   static func read() throws -> Self
 }
 
@@ -25,6 +28,9 @@ public protocol AsciiReadable: SingleReadable {
 
 extension AsciiReadable {
   
+  /// 標準入力からASCII文字を1文字読みます
+  ///
+  /// 整数が必要な場合は、他の方からキャストしてください
   @inlinable
   @inline(__always)
   public static var stdin: Self {

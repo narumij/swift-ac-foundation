@@ -129,7 +129,10 @@ extension Array where Element == String {
   @inlinable
   @inline(__always)
   public static func read(rows: Int) throws -> [String] {
-    try (0..<rows).map { _ in try .read() }
+    try (0..<rows).map { _ in
+      let bytes = try [UInt8].readLine().unwrap(or: IOReaderError.unexpectedEOF)
+      return String(decoding: bytes, as: UTF8.self)
+    }
   }
 
   @inlinable

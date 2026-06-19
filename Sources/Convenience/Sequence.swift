@@ -1,25 +1,8 @@
-extension Sequence where Element: CustomStringConvertible {
-  /// 空白区切りで標準出力へ出力する
-  @inlinable
-  public func print(separator: String = " ", terminator: String = "\n") {
-    var first = true
-    forEach { element in
-      if first {
-        first = false
-      } else {
-        Swift.print(separator, terminator: "")
-      }
-      Swift.print(element.description, terminator: "")
-    }
-    Swift.print("", terminator: terminator)
-  }
-}
-
 extension Sequence where Element == Bool {
   /// 全部真
   @inlinable
   @inline(__always)
-  public var all: Bool { allSatisfy{ $0 } }
+  public var all: Bool { allSatisfy { $0 } }
   /// どれか真
   @inlinable
   @inline(__always)
@@ -64,7 +47,7 @@ extension Array where Element: IteratorProtocol {
 }
 
 extension Sequence where Element: Sequence {
-  
+
   /// 2次元配列を転置します
   @inlinable
   @inline(__always)
@@ -79,14 +62,14 @@ extension Sequence where Element: Sequence {
 }
 
 extension Sequence {
-  
+
   /// 条件に合致する数を数えます
   @inlinable
   @inline(__always)
   public func count(where f: (Element) -> Bool) -> Int {
     reduce(0) { $0 + (f($1) ? 1 : 0) }
   }
-  
+
   /// 要素と同じものの数を数えます
   @inlinable
   @inline(__always)

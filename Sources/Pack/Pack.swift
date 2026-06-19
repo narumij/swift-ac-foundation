@@ -17,18 +17,19 @@ import IOReader
 /// コンパイラが許す限りの要素数が使えます。
 ///
 /// 他にPack2やPack3があります。コンパイルに問題が生じた場合はそちらをお試しください。
+@available(macOS 14.0.0, *)
 public struct Pack<each T> {
-  
+
   public typealias RawValue = (repeat each T)
 
   public var rawValue: RawValue
-  
+
   @inlinable
   @inline(__always)
   public init(_ values: repeat each T) {
     self.rawValue = (repeat each values)
   }
-  
+
   @inlinable
   @inline(__always)
   public init(rawValue: (repeat each T)) {
@@ -36,8 +37,9 @@ public struct Pack<each T> {
   }
 }
 
+@available(macOS 14.0.0, *)
 extension Pack: Equatable where repeat each T: Equatable {
-  
+
   @inlinable
   @inline(__always)
   public static func == (lhs: Pack<repeat each T>, rhs: Pack<repeat each T>) -> Bool {
@@ -50,8 +52,9 @@ extension Pack: Equatable where repeat each T: Equatable {
   }
 }
 
+@available(macOS 14.0.0, *)
 extension Pack: Comparable where repeat each T: Comparable {
-  
+
   @inlinable
   @inline(__always)
   public static func < (lhs: Pack<repeat each T>, rhs: Pack<repeat each T>) -> Bool {
@@ -64,8 +67,9 @@ extension Pack: Comparable where repeat each T: Comparable {
   }
 }
 
+@available(macOS 14.0.0, *)
 extension Pack: Hashable where repeat each T: Hashable {
-  
+
   @inlinable
   @inline(__always)
   public func hash(into hasher: inout Hasher) {
@@ -75,6 +79,7 @@ extension Pack: Hashable where repeat each T: Hashable {
   }
 }
 
+@available(macOS 14.0.0, *)
 extension Pack: CustomStringConvertible {
   public var description: String {
     func type<V>(_ value: V) -> String {
@@ -95,17 +100,10 @@ extension Pack: CustomStringConvertible {
   }
 }
 
+@available(macOS 14.0.0, *)
 extension Pack: CustomDebugStringConvertible {
   public var debugDescription: String { description }
 }
 
-extension Pack: SingleReadable where repeat each T: SingleReadable {
-  
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Pack<repeat each T> {
-    .init(repeat try (each T).read())
-  }
-}
-
-extension Pack: Sendable where repeat each T: Sendable { }
+@available(macOS 14.0.0, *)
+extension Pack: Sendable where repeat each T: Sendable {}
