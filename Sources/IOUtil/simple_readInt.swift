@@ -1,5 +1,12 @@
 import Foundation
 
+/// 標準入力からトークン単位で値を得る
+///
+/// 使用例
+/// ```swift
+/// let N = simple_readint()
+/// let A = (0..<N).map { _ in simple_readInt() }
+/// ```
 @inlinable
 @inline(__always)
 func simple_readInt() -> Int {
