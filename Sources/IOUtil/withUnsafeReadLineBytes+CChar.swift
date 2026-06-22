@@ -119,3 +119,110 @@ func ___readPair() -> (Int, Int) {
     )
   }
 }
+
+public struct InputBuffer: ~Copyable {
+  
+  @usableFromInline
+  var start: UnsafeMutablePointer<UInt8>
+  @usableFromInline
+  var count: Int
+  @usableFromInline
+  var pos: Int
+  
+  @inlinable
+  init() {
+    start = UnsafeMutableRawPointer(malloc(1)!).assumingMemoryBound(to: UInt8.self)
+    start[0] = 0
+    count = 0
+    pos = 0
+    readLine()
+  }
+  
+  deinit {
+    free(start)
+  }
+  
+  @inlinable
+  mutating func readLine() {
+    free(start)
+    var utf8Start: UnsafeMutablePointer<CChar>?
+    let utf8Count = __readLine_stdin(&utf8Start)
+    guard let utf8Start, utf8Count >= 0 else {
+      start = UnsafeMutableRawPointer(malloc(1)!).assumingMemoryBound(to: UInt8.self)
+      start[0] = 0
+      count = 0
+      pos = 0
+      return
+    }
+    start = UnsafeMutableRawPointer(utf8Start).assumingMemoryBound(to: UInt8.self)
+    count = utf8Count
+    pos = 0
+  }
+  
+  @inlinable
+  mutating func readInt() -> Int? {
+    while true {
+      while pos < count {
+        let c = start[pos]
+        if c == 9 || c == 10 || c == 13 || c == 32 {
+          pos &+= 1
+        } else {
+          break
+        }
+      }
+
+      if pos < count {
+        break
+      }
+
+      readLine()
+      guard count > 0 else {
+        return nil
+      }
+    }
+
+    let isNegative = start[pos] == 45
+    if isNegative {
+      pos &+= 1
+    }
+
+    guard pos < count, 48...57 ~= start[pos] else {
+      return nil
+    }
+
+    var value: Int = 0
+
+    while pos < count {
+      let c = start[pos]
+      guard 48...57 ~= c else {
+        break
+      }
+
+      value = value &* 10 &+ Int(c &- 48)
+      pos &+= 1
+    }
+
+    if isNegative {
+      return value == Int.min ? value : -value
+    }
+
+    return value
+  }
+  
+  @inlinable
+  func __readLine_stdin(
+    _ p: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
+  ) -> Int {
+    var capacity = 0
+    var result = 0
+
+    repeat {
+      result = getline(p, &capacity, stdin)
+    } while result < 0 && errno == EINTR
+
+    return result
+  }
+  
+  nonisolated(unsafe)
+  static var buff = InputBuffer()
+}
