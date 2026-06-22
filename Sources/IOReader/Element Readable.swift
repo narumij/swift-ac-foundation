@@ -44,9 +44,9 @@ import Foundation
 /// ```
 /// [Int].stdin(rows: 2, columns: 2) // [[1, 2], [3, 4]]
 /// ```
-public protocol ArrayReadable: SingleReadable {}
+public protocol ElementReadable: SingleReadable {}
 
-extension Collection where Element: ArrayReadable {
+extension Collection where Element: ElementReadable {
 
   /// 標準入力から、値を連続で読み、配列で返します
   ///
@@ -96,7 +96,7 @@ extension Collection where Element: ArrayReadable {
   }
 }
 
-extension Collection where Element: Collection, Element.Element: ArrayReadable {
+extension Collection where Element: Collection, Element.Element: ElementReadable {
 
   /// 標準入力から、値を連続で読み、配列の配列で返します
   ///
@@ -127,7 +127,7 @@ extension Collection where Element: Collection, Element.Element: ArrayReadable {
 
 // MARK: - Implementation
 
-extension Collection where Element: ArrayReadable {
+extension Collection where Element: ElementReadable {
   
   @inlinable
   @inline(__always)
@@ -142,7 +142,7 @@ extension Collection where Element: ArrayReadable {
   }
 }
 
-extension Collection where Element: Collection, Element.Element: ArrayReadable {
+extension Collection where Element: Collection, Element.Element: ElementReadable {
   
   @inlinable
   @inline(__always)

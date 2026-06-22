@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol IOReadableInteger: SingleReadable, ArrayReadable, LineReadable
+public protocol IOReadableInteger: SingleReadable, ElementReadable, LineReadable
 where Self: FixedWidthInteger & SignedInteger {}
 
 extension IOReadableInteger {
@@ -18,7 +18,7 @@ extension IOReadableInteger {
   }
 }
 
-public protocol IOReadableUnsignedInteger: SingleReadable, ArrayReadable, LineReadable
+public protocol IOReadableUnsignedInteger: SingleReadable, ElementReadable, LineReadable
 where Self: FixedWidthInteger & UnsignedInteger {}
 
 extension IOReadableUnsignedInteger {
