@@ -19,13 +19,28 @@ func __readLine_stdin(
 @inlinable
 @inline(__always)
 public func __withUnsafeReadLineBytes<T>(
+  strippingNewline: Bool = false,
   _ body: (UnsafeBufferPointer<UInt8>) throws -> T
 ) rethrows -> T {
   var utf8Start: UnsafeMutablePointer<CChar>?
-  let utf8Count = __readLine_stdin(&utf8Start)
+  var utf8Count = __readLine_stdin(&utf8Start)
 
   defer {
     free(utf8Start)
+  }
+
+  let LF: CChar = 13
+  let CR: CChar = 10
+
+  if strippingNewline {
+    // UInt8とくらべて、不思議なコンパイル挙動の違いがある
+    if utf8Count > 0, utf8Start?[utf8Count - 1] == LF {
+      utf8Count -= 1
+    }
+    // UInt8とくらべて、不思議なコンパイル挙動の違いがある
+    if utf8Count > 0, utf8Start?[utf8Count - 1] == CR {
+      utf8Count -= 1
+    }
   }
 
   return try utf8Start!.withMemoryRebound(to: UInt8.self, capacity: utf8Count) {
@@ -121,14 +136,14 @@ func ___readPair() -> (Int, Int) {
 }
 
 public struct InputBuffer: ~Copyable {
-  
+
   @usableFromInline
   var start: UnsafeMutablePointer<UInt8>
   @usableFromInline
   var count: Int
   @usableFromInline
   var pos: Int
-  
+
   @inlinable
   init() {
     start = UnsafeMutableRawPointer(malloc(1)!).assumingMemoryBound(to: UInt8.self)
@@ -137,11 +152,11 @@ public struct InputBuffer: ~Copyable {
     pos = 0
     readLine()
   }
-  
+
   deinit {
     free(start)
   }
-  
+
   @inlinable
   mutating func readLine() {
     free(start)
@@ -158,7 +173,7 @@ public struct InputBuffer: ~Copyable {
     count = utf8Count
     pos = 0
   }
-  
+
   @inlinable
   mutating func readInt() -> Int? {
     while true {
@@ -208,7 +223,7 @@ public struct InputBuffer: ~Copyable {
 
     return value
   }
-  
+
   @inlinable
   func __readLine_stdin(
     _ p: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>
@@ -222,7 +237,7 @@ public struct InputBuffer: ~Copyable {
 
     return result
   }
-  
+
   nonisolated(unsafe)
-  static var buff = InputBuffer()
+    static var buff = InputBuffer()
 }

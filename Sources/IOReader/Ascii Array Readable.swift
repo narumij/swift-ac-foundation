@@ -52,7 +52,7 @@ extension Array where Element: AsciiArrayReadable {
   /// 一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
-  public static var stdin: [Element] {
+  public static var stdin_word: [Element] {
     try! .read()
   }
   

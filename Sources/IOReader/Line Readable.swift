@@ -8,7 +8,7 @@ public protocol LineReadable: SingleReadable {
 
 // MARK: - LineReadable.readLine()
 
-extension Collection where Element: LineReadable {
+extension Array where Element: LineReadable {
 
   @inlinable
   @inline(__always)
@@ -23,39 +23,7 @@ extension Collection where Element: LineReadable {
   }
 }
 
-extension Collection where Element == [Character] {
-
-  // 空白区切りの単語を行末まで読む
-  @inlinable
-  @inline(__always)
-  public static func readLine() throws -> [[Character]] {
-    try readLine(Element._readWithSeparator)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func stdin() -> [[Character]] {
-    try! readLine()
-  }
-}
-
-extension Collection where Element == [UInt8] {
-
-  // 空白区切りの単語を行末まで読む
-  @inlinable
-  @inline(__always)
-  public static func readLine() throws -> [[UInt8]] {
-    try readLine(Element._readWithSeparator)
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func stdin() -> [[UInt8]] {
-    try! readLine()
-  }
-}
-
-extension Collection where Element: Collection, Element.Element: LineReadable {
+extension Array where Element: Collection, Element.Element: LineReadable {
 
   @inlinable
   @inline(__always)
@@ -70,6 +38,56 @@ extension Collection where Element: Collection, Element.Element: LineReadable {
   }
 }
 
+// MARK: -
+
+extension Array where Element == String {
+
+  // 空白区切りの単語を行末まで読む
+  @inlinable
+  @inline(__always)
+  public static func readLine_words() throws -> [String] {
+    try readLine(Element._readWithSeparator)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func stdin_words() -> [String] {
+    try! readLine_words()
+  }
+}
+
+extension Array where Element == [Character] {
+
+  // 空白区切りの単語を行末まで読む
+  @inlinable
+  @inline(__always)
+  public static func readLine_words() throws -> [[Character]] {
+    try readLine(Element._readWithSeparator)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func stdin_words() -> [[Character]] {
+    try! readLine_words()
+  }
+}
+
+extension Array where Element == [UInt8] {
+
+  // 空白区切りの単語を行末まで読む
+  @inlinable
+  @inline(__always)
+  public static func readLine_words() throws -> [[UInt8]] {
+    try readLine(Element._readWithSeparator)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func stdin_words() -> [[UInt8]] {
+    try! readLine_words()
+  }
+}
+
 // MARK: - Swift.readLine(...)
 
 extension Collection where Element == Character {
@@ -78,31 +96,15 @@ extension Collection where Element == Character {
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Character]? {
     #if true
-      var utf8Start: UnsafeMutablePointer<UInt8>?
-      let utf8Count = _readLine_stdin(&utf8Start)
-      defer {
-        _free(utf8Start)
-      }
-      guard utf8Count > 0, let utf8Start else {
-        return nil
-      }
-      var count = utf8Count
-      if strippingNewline {
-        if count > 0, utf8Start[count - 1] == .LF {
-          count -= 1
-        }
-        if count > 0, utf8Start[count - 1] == .CR {
-          count -= 1
+      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+        return [Character](unsafeUninitializedCapacity: readBuffer.count) {
+          buffer, initializedCount in
+          initializedCount = readBuffer.count
+          for i in 0..<readBuffer.count {
+            buffer.initializeElement(at: i, to: Character(UnicodeScalar(readBuffer[i])))
+          }
         }
       }
-      let result = [Character].init(unsafeUninitializedCapacity: count) {
-        buffer, initializedCount in
-        initializedCount = count
-        for i in 0..<count {
-          buffer.initializeElement(at: i, to: Character(UnicodeScalar(utf8Start[i])))
-        }
-      }
-      return result
     #else
       Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
     #endif
@@ -115,29 +117,12 @@ extension Collection where Element == UInt8 {
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [UInt8]? {
     #if true
-      var utf8Start: UnsafeMutablePointer<UInt8>?
-      let utf8Count = _readLine_stdin(&utf8Start)
-      defer {
-        _free(utf8Start)
-      }
-      guard utf8Count > 0, let utf8Start else {
-        return nil
-      }
-      var count = utf8Count
-      if strippingNewline {
-        if count > 0, utf8Start[count - 1] == .LF {
-          count -= 1
-        }
-        if count > 0, utf8Start[count - 1] == .CR {
-          count -= 1
+      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+        return [UInt8](unsafeUninitializedCapacity: readBuffer.count) { buffer, initializedCount in
+          initializedCount = readBuffer.count
+          buffer.baseAddress?.initialize(from: readBuffer.baseAddress!, count: readBuffer.count)
         }
       }
-      let result = [UInt8].init(unsafeUninitializedCapacity: count) {
-        buffer, initializedCount in
-        initializedCount = count
-        buffer.baseAddress?.initialize(from: utf8Start, count: count)
-      }
-      return result
     #else
       Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
     #endif
@@ -163,4 +148,29 @@ extension Collection {
     }
     return result
   }
+}
+
+// MARK: -
+
+@inlinable
+@inline(__always)
+func __withUnsafeReadLineBytes<T>(
+  strippingNewline: Bool = false,
+  _ body: (UnsafeBufferPointer<UInt8>) throws -> T
+) throws -> T {
+  var utf8Start: UnsafeMutablePointer<UInt8>?
+  var utf8Count = _readLine_stdin(&utf8Start)
+  defer {
+    _free(utf8Start)
+  }
+  guard utf8Count > 0, let utf8Start else {
+    throw IOReaderError.unexpectedEmpty
+  }
+  if strippingNewline, utf8Count > 0, utf8Start[utf8Count - 1] == .LF {
+    utf8Count -= 1
+  }
+  if strippingNewline, utf8Count > 0, utf8Start[utf8Count - 1] == .CR {
+    utf8Count -= 1
+  }
+  return try body(.init(start: utf8Start, count: utf8Count))
 }
