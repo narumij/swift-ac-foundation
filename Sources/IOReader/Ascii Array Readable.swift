@@ -77,6 +77,7 @@ extension Array where Element: AsciiArrayReadable {
   /// ```
   /// print([UInt8].stdin(columns: 3), [UInt8].stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
+  @available(*, deprecated)
   @inlinable
   @inline(__always)
   public static func stdin(columns: Int) -> [Element] {
@@ -134,7 +135,7 @@ extension Array: SingleReadable where Element: AsciiArrayReadable {
   }
 }
 
-extension Array: LineReadable where Element: AsciiArrayReadable {
+extension Array where Element: AsciiArrayReadable {
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8) {

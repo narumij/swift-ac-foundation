@@ -1,40 +1,60 @@
 import Foundation
 import _FastIO
 
-public protocol LineReadable: SingleReadable {
+public protocol LineReadableElement: SingleReadable {
 
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8)
 }
 
+public protocol LineReadable {
+  associatedtype Element: LineReadableElement
+  static func readLine() throws -> Self
+}
+
 // MARK: - LineReadable.readLine()
 
-extension Array where Element: LineReadable {
+extension Array: LineReadable where Element: LineReadableElement {
 
   @inlinable
   @inline(__always)
-  public static func readLine() throws -> [Element] {
+  public static func readLine() throws -> Self {
     try readLine(Element._readWithSeparator)
   }
 
   @inlinable
   @inline(__always)
-  public static func stdin() -> [Element] {
+  public static func stdin() -> Self {
     try! readLine()
   }
 }
 
-extension Array where Element: Collection, Element.Element: LineReadable {
+extension Set: LineReadable where Element: LineReadableElement {
 
   @inlinable
   @inline(__always)
-  public static func readLine(rows: Int) throws -> [[Element.Element]] {
-    try (0..<rows).map { _ in try [Element.Element].readLine() }
+  public static func readLine() throws -> Self {
+    .init(try readLine(Element._readWithSeparator))
   }
 
   @inlinable
   @inline(__always)
-  public static func stdin(rows: Int) -> [[Element.Element]] {
-    try! readLine(rows: rows)
+  public static func stdin() -> Self {
+    try! readLine()
+  }
+}
+
+extension Array where Element: LineReadable {
+
+  @inlinable
+  @inline(__always)
+  public static func readLines(count: Int) throws -> Self {
+    try (0..<count).map { _ in try Element.readLine() }
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func stdin(rows: Int) -> Self {
+    try! readLines(count: rows)
   }
 }
 

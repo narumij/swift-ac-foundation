@@ -1,22 +1,22 @@
 import Foundation
 
-public protocol IOIntegerConversionReadable: SingleReadable, SequenceReadableElement, LineReadable {
+public protocol IOIntegerConversionReadable: SingleReadable, SequenceReadableElement, LineReadableElement {
   static func convert(from: Int) -> Self
 }
 
-public protocol IOUnsignedIntegerConversionReadable: SingleReadable, SequenceReadableElement, LineReadable {
+public protocol IOUnsignedIntegerConversionReadable: SingleReadable, SequenceReadableElement, LineReadableElement {
   static func convert(from: UInt) -> Self
 }
 
-public protocol IODoubleConversionReadable: SingleReadable, SequenceReadableElement, LineReadable {
+public protocol IODoubleConversionReadable: SingleReadable, SequenceReadableElement, LineReadableElement {
   static func convert(from: Double) -> Self
 }
 
-public protocol IOStringConversionReadable: SingleReadable, SequenceReadableElement, LineReadable {
+public protocol IOStringConversionReadable: SingleReadable, SequenceReadableElement, LineReadableElement {
   static func convert(from: String) -> Self
 }
 
-public protocol IOBytesConversionReadable: SingleReadable, SequenceReadableElement, LineReadable {
+public protocol IOBytesConversionReadable: SingleReadable, SequenceReadableElement, LineReadableElement {
   static func convert(from: [UInt8]) -> Self
 }
 
