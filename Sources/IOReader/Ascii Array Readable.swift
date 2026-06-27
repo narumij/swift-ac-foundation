@@ -25,7 +25,7 @@ public protocol AsciiArrayReadable {
   static func _readWithSeparator() throws -> (value: [Self], separator: UInt8)
 }
 
-extension Array where Element: AsciiArrayReadable {
+extension Collection where Element: AsciiArrayReadable {
 
   /// 標準入力から区切り無しの文字列を読み、配列で返します
   ///
@@ -52,10 +52,14 @@ extension Array where Element: AsciiArrayReadable {
   /// 一行を読む場合、Swift.readline()が圧倒的に高速ですので、そちらをお勧めします。
   @inlinable
   @inline(__always)
-  public static var stdin_word: [Element] {
+  public static var stdin: [Element] {
     try! .read()
   }
-  
+  // Arrayに生やすと衝突するのでCollectionにあるが、基本的にArray用
+}
+
+extension Array where Element: AsciiArrayReadable {
+
   /// 標準入力から指定した長さの文字列を読み、配列で返します
   ///
   /// 入力例1
@@ -77,7 +81,6 @@ extension Array where Element: AsciiArrayReadable {
   /// ```
   /// print([UInt8].stdin(columns: 3), [UInt8].stdin(columns: 3)) // [[0x61, 0x62, 0x63], [0x64, 0x65, 0x66]]
   /// ```
-  @available(*, deprecated)
   @inlinable
   @inline(__always)
   public static func stdin(columns: Int) -> [Element] {
@@ -86,26 +89,28 @@ extension Array where Element: AsciiArrayReadable {
 }
 
 extension Collection where Element: Collection, Element.Element: AsciiArrayReadable {
-  
-  /// 標準入力から文字列を指定した回数読み、配列の配列で返します
-  ///
-  /// 入力例1
-  /// ```
-  /// ####
-  /// #..#
-  /// ####
-  /// ```
-  ///
-  /// 読み込み例1
-  /// ```
-  /// [UInt8].stdin(rows: 3) // [[0x23,0x23,0x23,0x23],[0x23,0x2e,0x2e,0x23],[0x23,0x23,0x23,0x23]]
-  /// ```
-  @inlinable
-  @inline(__always)
-  public static func stdin(rows: Int) -> [[Element.Element]] {
-    try! .read(rows: rows)
-  }
-  
+
+  #if false
+    /// 標準入力から文字列を指定した回数読み、配列の配列で返します
+    ///
+    /// 入力例1
+    /// ```
+    /// ####
+    /// #..#
+    /// ####
+    /// ```
+    ///
+    /// 読み込み例1
+    /// ```
+    /// [UInt8].stdin(rows: 3) // [[0x23,0x23,0x23,0x23],[0x23,0x2e,0x2e,0x23],[0x23,0x23,0x23,0x23]]
+    /// ```
+    @inlinable
+    @inline(__always)
+    public static func stdin(rows: Int) -> [[Element.Element]] {
+      try! .read(rows: rows)
+    }
+  #endif
+
   /// 標準入力から指定した長さの文字列を指定した回数読み、配列の配列で返します
   ///
   /// 入力例1
@@ -126,7 +131,6 @@ extension Collection where Element: Collection, Element.Element: AsciiArrayReada
   }
 }
 
-
 extension Array: SingleReadable where Element: AsciiArrayReadable {
   @inlinable
   @inline(__always)
@@ -136,6 +140,7 @@ extension Array: SingleReadable where Element: AsciiArrayReadable {
 }
 
 extension Array where Element: AsciiArrayReadable {
+
   @inlinable
   @inline(__always)
   public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8) {
@@ -144,7 +149,7 @@ extension Array where Element: AsciiArrayReadable {
 }
 
 extension Collection where Element: AsciiArrayReadable {
-  
+
   @inlinable
   @inline(__always)
   public static func read(columns: Int) throws -> [Element] {
@@ -154,11 +159,14 @@ extension Collection where Element: AsciiArrayReadable {
 
 extension Array where Element: Collection, Element.Element: AsciiArrayReadable {
 
-  @inlinable
-  @inline(__always)
-  public static func read(rows: Int) throws -> [[Element.Element]] {
-    try (0..<rows).map { _ in try .read() }
-  }
+  #if false
+    @available(*, deprecated)
+    @inlinable
+    @inline(__always)
+    public static func read(rows: Int) throws -> [[Element.Element]] {
+      try (0..<rows).map { _ in try .read() }
+    }
+  #endif
 
   @inlinable
   @inline(__always)
@@ -166,4 +174,3 @@ extension Array where Element: Collection, Element.Element: AsciiArrayReadable {
     try (0..<rows).map { _ in try .read(columns: columns) }
   }
 }
-
