@@ -10,13 +10,13 @@ final class ReaderLineTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [Int] = try .readLine()
+        let A: [Int] = try ._readLine()
         print(A)
         let B: [Int] = (0..<5).map { _ in .stdin }
         XCTAssertEqual(B, [6, 7, 8, 9, 10])
-        let C: [Int] = try .readLine()
+        let C: [Int] = try ._readLine()
         XCTAssertEqual(C, [11, 12])
-        XCTAssertNil(try? [Int].readLine())
+        XCTAssertNil(try? [Int]._readLine())
       })
       .run(
         input:
@@ -31,13 +31,13 @@ final class ReaderLineTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [Double] = try .readLine()
+        let A: [Double] = try ._readLine()
         print(A)
         let B: [Int] = (0..<5).map { _ in .stdin }
         XCTAssertEqual(B, [6, 7, 8, 9, 10])
-        let C: [Double] = try .readLine()
+        let C: [Double] = try ._readLine()
         XCTAssertEqual(C, [11, 12])
-        XCTAssertNil(try? [Int].readLine())
+        XCTAssertNil(try? [Int]._readLine())
       })
       .run(
         input:

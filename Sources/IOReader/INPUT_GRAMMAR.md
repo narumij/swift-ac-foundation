@@ -79,7 +79,7 @@ element-read = { reader-space }, element, (reader-space | EOF) ;
 element-line = element, { horizontal-space, { horizontal-space }, element }, (LF | EOF) ;
 ```
 
-これは `ElementLineReadable.readLine()` を安定して使用するための正規化した行形式。
+これは `ElementLineReadable._readLine()` を安定して使用するための正規化した行形式。
 **空行・行末空白を含めず、最後の要素の直後にLFまたはEOFを置く。**
 各elementの具体的な文法は要素型に従う。
 
@@ -90,8 +90,8 @@ element-line = element, { horizontal-space, { horizontal-space }, element }, (LF
 
 | API | 文法・個数制約 |
 | --- | --- |
-| `[Int].readLine()`、`Set<Int>.readLine()` など | element-lineの要素列 |
-| `read(check:)`（ElementLineReadable） | readLineと同じ。現在checkによる違いはない |
+| `[Int]._readLine()`、`Set<Int>._readLine()` など | element-lineの要素列 |
+| `read(check:)`（ElementLineReadable） | _readLineと同じ。現在checkによる違いはない |
 | `read(columns: n, check: .none)` | element-readをn回。改行をまたげる |
 | `read(rows: n, check: .none)`（一次元） | 同上 |
 | `read(columns: n, check: .strict)` | element-lineを読み、入力要素数がnか確認 |
@@ -155,7 +155,8 @@ fixed-width-token = printable, { printable } ;
 
 文法のelementは入力表記、valueは読取り・変換後のSwift値を指す。
 InputElementReadableは区切り報告付きの読み能力、ElementLineReadableはelement-lineの読み能力。
-メソッド名readLineは互換性のため維持しており、名前だけで物理行とは判定しない。
+要素行の下位操作は_readLine、物理行の既存操作はreadLineと区別する。
+通常はstdin()やread(check:)を利用し、_readLineは入力操作の合成に用いる。
 ExpressibleByElementSequenceは読取り後の構築能力であり、対応する解析規則は新設しない。
 
 トークン読取り後に物理行読取りをすると、既に消費した区切りの次から読み始める。
@@ -180,7 +181,7 @@ CRLFではトークン読取りがCRだけ消費しLFを残す場合があり、
 - 各生成規則とAPIに対応する既存テストを棚卸しする。直近の関連57件通過は、文法全体の証明ではない。
 - 行末空白・空行・CRLF・EOFの経路差を維持するか整理するか判断する。
 - 浮動小数点と独自変換型の範囲を別に定義する。
-- メソッド名readLineの物理行・要素行の区別と、実装共通化は別途検討する。
+- 要素行の実装共通化は別途検討する。
 
 参照実装：IOReader.swift、InputMode.swift、CheckMode.swift、ElementLineReadable.swift、
 Buffer Readable.swift、Word Readable.swift、Ascii Array Readable.swift、Implementations/、

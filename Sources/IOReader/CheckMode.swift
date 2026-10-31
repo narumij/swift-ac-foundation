@@ -8,7 +8,7 @@ extension ElementLineReadable {
   
   @inlinable
   public static func read(check: InputCheckMode = .none) throws -> Self {
-    try readLine()
+    try _readLine()
   }
 
   @inlinable
@@ -24,7 +24,7 @@ extension ExpressibleByElementSequence where Element: InputElementReadable {
     if case .none = check {
       return Self(try (0..<columns).map { _ in try Element.read() })
     }
-    let values = try [Element].readLine()
+    let values = try [Element]._readLine()
     guard values.count == columns else {
       throw IOReaderError.elementCountMismatch(expected: columns, actual: values.count)
     }

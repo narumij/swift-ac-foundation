@@ -12,7 +12,8 @@ public protocol InputElementReadable: SingleReadable {
 /// described in INPUT_GRAMMAR.md (nonempty, with no trailing horizontal space).
 public protocol ElementLineReadable {
   associatedtype Element: InputElementReadable
-  static func readLine() throws -> Self
+  /// Low-level element-line reader used to compose the public input operations.
+  static func _readLine() throws -> Self
 }
 
 extension ElementLineReadable {
@@ -34,13 +35,13 @@ extension ElementLineReadable {
   }
 }
 
-// MARK: - ElementLineReadable.readLine()
+// MARK: - ElementLineReadable._readLine()
 
 extension Array: ElementLineReadable where Element: InputElementReadable {
 
   @inlinable
   @inline(__always)
-  public static func readLine() throws -> Self {
+  public static func _readLine() throws -> Self {
     try __readLine(Element._readWithSeparator)
   }
 
@@ -48,7 +49,7 @@ extension Array: ElementLineReadable where Element: InputElementReadable {
   @inlinable
   @inline(__always)
   public static func stdin() -> Self {
-    try! readLine()
+    try! _readLine()
   }
   #endif
 }
@@ -57,7 +58,7 @@ extension Set: ElementLineReadable where Element: InputElementReadable {
 
   @inlinable
   @inline(__always)
-  public static func readLine() throws -> Self {
+  public static func _readLine() throws -> Self {
     .init(try __readLine(Element._readWithSeparator))
   }
 
@@ -65,7 +66,7 @@ extension Set: ElementLineReadable where Element: InputElementReadable {
   @inlinable
   @inline(__always)
   public static func stdin() -> Self {
-    try! readLine()
+    try! _readLine()
   }
   #endif
 }
@@ -75,7 +76,7 @@ extension Array where Element: ElementLineReadable {
   @inlinable
   @inline(__always)
   public static func readLines(count: Int) throws -> Self {
-    try (0..<count).map { _ in try Element.readLine() }
+    try (0..<count).map { _ in try Element._readLine() }
   }
 
   @inlinable
