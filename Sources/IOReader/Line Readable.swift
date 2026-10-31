@@ -73,11 +73,9 @@ extension Array where Element: LineReadable {
     try (0..<count).map { _ in try Element.readLine() }
   }
 
-  #if false // Replaced by stdin(rows:check:) with a default argument.
   @inlinable
   @inline(__always)
   public static func stdin(rows: Int) -> Self {
     try! readLines(count: rows)
   }
-  #endif
 }

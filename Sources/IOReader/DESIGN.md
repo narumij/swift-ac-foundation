@@ -1,5 +1,8 @@
 # IOReader
 
+現在の入力文法とAPIの対応は [INPUT_GRAMMAR.md](INPUT_GRAMMAR.md) を参照。
+以下は従来の意図の記録であり、明示的な入力モード追加前の記述を含む。
+
 ## 意図の整理
 
 ### stdin系
