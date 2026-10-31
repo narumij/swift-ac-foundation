@@ -2,12 +2,13 @@ import Foundation
 
 // MARK: - IOReader
 
-public enum IOReaderError: Swift.Error {
+public enum IOReaderError: Swift.Error, Equatable {
   
   case unexpectedNil
   case unexpectedSpace
   case unexpectedEOF
   case unexpectedEmpty
+  case elementCountMismatch(expected: Int, actual: Int)
 }
 
 extension FixedWidthInteger {

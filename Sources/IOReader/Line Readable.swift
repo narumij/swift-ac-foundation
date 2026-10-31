@@ -39,11 +39,13 @@ extension Array: LineReadable where Element: LineReadableElement {
     try __readLine(Element._readWithSeparator)
   }
 
+  #if false // Replaced by stdin(check:) with a default argument.
   @inlinable
   @inline(__always)
   public static func stdin() -> Self {
     try! readLine()
   }
+  #endif
 }
 
 extension Set: LineReadable where Element: LineReadableElement {
@@ -54,11 +56,13 @@ extension Set: LineReadable where Element: LineReadableElement {
     .init(try __readLine(Element._readWithSeparator))
   }
 
+  #if false // Replaced by stdin(check:) with a default argument.
   @inlinable
   @inline(__always)
   public static func stdin() -> Self {
     try! readLine()
   }
+  #endif
 }
 
 extension Array where Element: LineReadable {
@@ -69,9 +73,11 @@ extension Array where Element: LineReadable {
     try (0..<count).map { _ in try Element.readLine() }
   }
 
+  #if false // Replaced by stdin(rows:check:) with a default argument.
   @inlinable
   @inline(__always)
   public static func stdin(rows: Int) -> Self {
     try! readLines(count: rows)
   }
+  #endif
 }
