@@ -4,7 +4,7 @@ public enum InputCheckMode: Sendable {
   case strict
 }
 
-extension LineReadable {
+extension ElementLineReadable {
   
   @inlinable
   public static func read(check: InputCheckMode = .none) throws -> Self {
@@ -16,7 +16,7 @@ extension LineReadable {
 
 }
 
-extension ExpressibleByElementSequence where Element: LineReadableElement {
+extension ExpressibleByElementSequence where Element: InputElementReadable {
 
   @inlinable
   @inline(__always)
@@ -54,7 +54,7 @@ extension ExpressibleByElementSequence where Element: LineReadableElement {
 }
 
 extension ExpressibleByElementSequence
-where Element: ExpressibleByElementSequence, Element.Element: LineReadableElement {
+where Element: ExpressibleByElementSequence, Element.Element: InputElementReadable {
 
   @inlinable
   @inline(__always)

@@ -48,11 +48,11 @@ token = printable, { printable } ;
 
 ## 単一要素の読み取り
 
-次の `value` を、対象に応じてsigned-integer、unsigned-integer、decimal、tokenに置き換える。
+次の `element` を、対象に応じてsigned-integer、unsigned-integer、decimal、tokenに置き換える。
 
 ```ebnf
-value = signed-integer | unsigned-integer | decimal | token ;
-value-read = { reader-space }, value, (reader-space | EOF) ;
+element = signed-integer | unsigned-integer | decimal | token ;
+element-read = { reader-space }, element, (reader-space | EOF) ;
 ```
 
 先頭の空白を読み飛ばし、値の後ろの区切りは**一文字だけ消費**する。
@@ -76,12 +76,12 @@ value-read = { reader-space }, value, (reader-space | EOF) ;
 ## 数値・変換要素の一行と固定個数
 
 ```ebnf
-value-line = value, { horizontal-space, { horizontal-space }, value }, (LF | EOF) ;
+element-line = element, { horizontal-space, { horizontal-space }, element }, (LF | EOF) ;
 ```
 
-これは `LineReadable.readLine()` を安定して使用するための正規化した行形式。
+これは `ElementLineReadable.readLine()` を安定して使用するための正規化した行形式。
 **空行・行末空白を含めず、最後の要素の直後にLFまたはEOFを置く。**
-各valueの具体的な文法は要素型に従う。
+各elementの具体的な文法は要素型に従う。
 
 現実装は、各要素が返した区切りがLF・CR・終端相当なら終了する。
 先頭空白や空行を保持する物理行パーサではない。
@@ -90,12 +90,12 @@ value-line = value, { horizontal-space, { horizontal-space }, value }, (LF | EOF
 
 | API | 文法・個数制約 |
 | --- | --- |
-| `[Int].readLine()`、`Set<Int>.readLine()` など | value-lineの要素列 |
-| `read(check:)`（LineReadable） | readLineと同じ。現在checkによる違いはない |
-| `read(columns: n, check: .none)` | value-readをn回。改行をまたげる |
+| `[Int].readLine()`、`Set<Int>.readLine()` など | element-lineの要素列 |
+| `read(check:)`（ElementLineReadable） | readLineと同じ。現在checkによる違いはない |
+| `read(columns: n, check: .none)` | element-readをn回。改行をまたげる |
 | `read(rows: n, check: .none)`（一次元） | 同上 |
-| `read(columns: n, check: .strict)` | value-lineを読み、入力要素数がnか確認 |
-| `read(rows: n, check: .strict)`（一次元） | 要素数1のvalue-lineをn回 |
+| `read(columns: n, check: .strict)` | element-lineを読み、入力要素数がnか確認 |
+| `read(rows: n, check: .strict)`（一次元） | 要素数1のelement-lineをn回 |
 | `read(rows: r, columns: c, check:)`（要素列型） | columns読取りをr回合成 |
 
 個数は非負。strictのcolumnsは非空行読みなので、0列の空行を読む機能にはならない。
@@ -128,7 +128,7 @@ CRLFはこの経路では末尾から両方取り除かれる。単独CRは行�
 | 上記の `read(read: .words, rows: r)` | words-lineをr回 |
 | `[Character].readLine()` / `[UInt8].readLine()` | physical-line。Optionalを返す既存API |
 | `stdin(rows: strippingNewline:)` | 既存の行読みの反復。compactMapなので欠けた行を除く |
-| `readLine_words()` / `stdin_words()` | 旧経路。tokenをvalueとしたvalue-line。新しい.wordsとは異なる |
+| `readLine_words()` / `stdin_words()` | 旧経路。tokenをelementとしたelement-line。新しい.wordsとは異なる |
 
 `strippingNewline: false` は改行も返す。
 新しい明示的なrows APIは各行を要求する設計で、既存compactMap経路とは同一ではない。
@@ -153,6 +153,11 @@ fixed-width-token = printable, { printable } ;
 
 ## 消費規則とプロトコルの対応
 
+文法のelementは入力表記、valueは読取り・変換後のSwift値を指す。
+InputElementReadableは区切り報告付きの読み能力、ElementLineReadableはelement-lineの読み能力。
+メソッド名readLineは互換性のため維持しており、名前だけで物理行とは判定しない。
+ExpressibleByElementSequenceは読取り後の構築能力であり、対応する解析規則は新設しない。
+
 トークン読取り後に物理行読取りをすると、既に消費した区切りの次から読み始める。
 例えば `1 abc\n` でIntを読むとSPも消費するため、次の.lineは `abc`。
 `1\nabc\n` ならLFも消費するため、次の.lineは次行の `abc`。
@@ -161,8 +166,8 @@ CRLFではトークン読取りがCRだけ消費しLFを残す場合があり、
 | プロトコル | 現在の責任 |
 | --- | --- |
 | SingleReadable | 一つの値を読む入口。文法は適合型次第 |
-| LineReadableElement / ExpressibleByUnquotedToken | 値と消費済み区切りを返す。alias追加のみで役割整理は未完 |
-| LineReadable | 要素を読み、区切りに基づいて行を終える |
+| InputElementReadable | elementを読み、値と消費済み区切りを返す。区切り報告は文法ではなくAPI契約 |
+| ElementLineReadable | 要素を読み、区切りに基づいて行を終える |
 | AsciiReadable / AsciiArrayReadable | 一文字・単語・固定幅ASCII入力 |
 | ExpressibleByElementSequence | 読取り後の要素配列から構成する。文法解析そのものではない |
 
@@ -175,8 +180,8 @@ CRLFではトークン読取りがCRだけ消費しLFを残す場合があり、
 - 各生成規則とAPIに対応する既存テストを棚卸しする。直近の関連57件通過は、文法全体の証明ではない。
 - 行末空白・空行・CRLF・EOFの経路差を維持するか整理するか判断する。
 - 浮動小数点と独自変換型の範囲を別に定義する。
-- プロトコルの改名・再配置は、この文書の合意後に行う。
+- メソッド名readLineの物理行・要素行の区別と、実装共通化は別途検討する。
 
-参照実装：IOReader.swift、InputMode.swift、CheckMode.swift、Line Readable.swift、
+参照実装：IOReader.swift、InputMode.swift、CheckMode.swift、ElementLineReadable.swift、
 Buffer Readable.swift、Word Readable.swift、Ascii Array Readable.swift、Implementations/、
 ../_FastIO/ReadLine.c。

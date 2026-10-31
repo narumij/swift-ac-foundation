@@ -1,16 +1,21 @@
 import Foundation
 
-public protocol LineReadableElement: SingleReadable {
+/// Reads an input `element` and reports the separator already consumed.
+/// See INPUT_GRAMMAR.md; reporting the separator is an API contract, not grammar.
+public protocol InputElementReadable: SingleReadable {
 
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8)
 }
 
-public protocol LineReadable {
-  associatedtype Element: LineReadableElement
+/// Reads an `element-line`, returning the values represented by its elements.
+/// Unlike a physical line reader, this requires the normalized line format
+/// described in INPUT_GRAMMAR.md (nonempty, with no trailing horizontal space).
+public protocol ElementLineReadable {
+  associatedtype Element: InputElementReadable
   static func readLine() throws -> Self
 }
 
-extension LineReadable {
+extension ElementLineReadable {
 
   @inlinable
   @inline(__always)
@@ -29,9 +34,9 @@ extension LineReadable {
   }
 }
 
-// MARK: - LineReadable.readLine()
+// MARK: - ElementLineReadable.readLine()
 
-extension Array: LineReadable where Element: LineReadableElement {
+extension Array: ElementLineReadable where Element: InputElementReadable {
 
   @inlinable
   @inline(__always)
@@ -48,7 +53,7 @@ extension Array: LineReadable where Element: LineReadableElement {
   #endif
 }
 
-extension Set: LineReadable where Element: LineReadableElement {
+extension Set: ElementLineReadable where Element: InputElementReadable {
 
   @inlinable
   @inline(__always)
@@ -65,7 +70,7 @@ extension Set: LineReadable where Element: LineReadableElement {
   #endif
 }
 
-extension Array where Element: LineReadable {
+extension Array where Element: ElementLineReadable {
 
   @inlinable
   @inline(__always)
