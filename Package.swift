@@ -25,7 +25,11 @@ let package = Package(
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "AcFoundation", targets: ["AcFoundation"])
   ],
-  traits: [],
+  traits: [
+    .trait(
+      name: "BENCHMARK"
+    ),
+  ],
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-algorithms",
@@ -191,6 +195,8 @@ let package = Package(
         "TestingUtil",
         "IOUtil",
         "IOReader",
+        "IOWriter",
+        "UInt8Util",
       ],
       swiftSettings: _settings
     ),
