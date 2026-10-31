@@ -65,7 +65,13 @@ jobs:
           swift --version | tee sanitizer-logs/environment.log
           uname -a | tee -a sanitizer-logs/environment.log
           set -o pipefail
-          swift test --build-system native -c ${{ matrix.configuration }} \
+          extra_args=()
+          # The dependency excludes DSU/MCFGraph for known TSan compiler crashes.
+          # Foundation uses its ModInt API; those excluded APIs are not used here.
+          if [[ "${{ matrix.sanitizer }}" == "thread" ]]; then
+            extra_args+=(--traits TSAN_TEST)
+          fi
+          swift test "${extra_args[@]}" --build-system native -c ${{ matrix.configuration }} \
             --sanitize ${{ matrix.sanitizer }} --skip 'Performance' \
             2>&1 | tee sanitizer-logs/full-console.log
           grep -Eq 'Executed [1-9][0-9]* tests?, with 0 failures' sanitizer-logs/full-console.log
