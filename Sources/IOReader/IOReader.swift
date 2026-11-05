@@ -483,6 +483,104 @@ extension ZeroBufferIOReaderAuto {
   }
 }
 
+@usableFromInline
+protocol ZeroBufferIOReaderAuto2: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReaderAuto2 {
+
+  @inlinable
+  @inline(__always)
+  static func hexDigit(_ c: UInt8) -> UInt8? {
+    switch c {
+    case UInt8(ascii: "0")...UInt8(ascii: "9"):
+      return c - UInt8(ascii: "0")
+    case UInt8(ascii: "a")...UInt8(ascii: "f"):
+      return c - UInt8(ascii: "a") + 10
+    case UInt8(ascii: "A")...UInt8(ascii: "F"):
+      return c - UInt8(ascii: "A") + 10
+    default:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    var radix: Element = 10
+    // Autoに0b/0Bによる2進判別を追加。
+    if c == .ZERO {
+      radix = 8
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+        radix = 16
+        c = nullIfEOF(_getchar_unlocked())
+      } else if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+        radix = 2
+        c = nullIfEOF(_getchar_unlocked())
+      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
+        return (0, c)
+      }
+    }
+    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = hexDigit(c), Element(digit) < radix {
+      let digit = Element(digit)
+      value = value * radix + (negative ? -digit : digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (value, c)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    var radix: Element = 10
+    // Autoに0b/0Bによる2進判別を追加。
+    if c == .ZERO {
+      radix = 8
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+        radix = 16
+        c = nullIfEOF(_getchar_unlocked())
+      } else if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+        radix = 2
+        c = nullIfEOF(_getchar_unlocked())
+      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
+        return (0, c)
+      }
+    }
+    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = hexDigit(c), Element(digit) < radix {
+      value = value * radix + Element(digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (negative ? 0 &- value : value, c)
+  }
+}
+
 public enum IOConfig {
   nonisolated(unsafe)
     public static var bufferPolicy = BufferPolicy.default
@@ -622,6 +720,8 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
       return try _atolAuto<Element>.read()
+    case FastIOIntegerAuto2:
+      return try _atolAuto2<Element>.read()
     case FastIOIntegerBinary:
       return try _atol2<Element>.read()
     case FastIOIntegerOctal:
@@ -641,6 +741,8 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
       return try _atolAuto<Element>.read()
+    case FastIOIntegerAuto2:
+      return try _atolAuto2<Element>.read()
     case FastIOIntegerBinary:
       return try _atol2<Element>.read()
     case FastIOIntegerOctal:
@@ -664,6 +766,8 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
       return try _atoulAuto<Element>.read()
+    case FastIOIntegerAuto2:
+      return try _atoulAuto2<Element>.read()
     case FastIOIntegerBinary:
       return try _atoul2<Element>.read()
     case FastIOIntegerOctal:
@@ -683,6 +787,8 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
       return try _atoulAuto<Element>.read()
+    case FastIOIntegerAuto2:
+      return try _atoulAuto2<Element>.read()
     case FastIOIntegerBinary:
       return try _atoul2<Element>.read()
     case FastIOIntegerOctal:
@@ -843,6 +949,38 @@ struct _atolAuto<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader
 
 @usableFromInline
 struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto2, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto2, StaticIOReader {
 
   @inlinable
   @inline(__always)

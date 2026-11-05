@@ -3,6 +3,7 @@
 
 typedef enum {
   FastIOIntegerAuto = 0,
+  FastIOIntegerAuto2 = 1,
   FastIOIntegerBinary = 2,
   FastIOIntegerOctal = 8,
   FastIOIntegerDecimal = 10,
