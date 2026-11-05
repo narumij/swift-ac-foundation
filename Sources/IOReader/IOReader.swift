@@ -1,10 +1,10 @@
-import _FastIO
 import Foundation
+import _FastIO
 
 // MARK: - IOReader
 
 public enum IOReaderError: Swift.Error, Equatable {
-  
+
   case unexpectedNil
   case unexpectedSpace
   case unexpectedEOF
@@ -28,16 +28,21 @@ let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
 @usableFromInline
 let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
 
+@usableFromInline
+let numbers: UInt =
+  1 << 0x30 | 1 << 0x31 | 1 << 0x32 | 1 << 0x33 | 1 << 0x34 | 1 << 0x35 | 1 << 0x36 | 1 << 0x37 | 1
+  << 0x38 | 1 << 0x39
+
 @inlinable
 @inline(__always)
 func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 << c) & spaces != 0
+  c == .NULL || (1 &<< c) & spaces != 0
 }
 
 @inlinable
 @inline(__always)
 func isASCIINewlineOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 << c) & newlines != 0
+  c == .NULL || (1 &<< c) & newlines != 0
 }
 
 @inlinable
@@ -370,7 +375,7 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
   static func read(count: Int) throws -> Element {
     return try instance.readBytes(count: count)
   }
-  
+
   @inlinable
   @inline(__always)
   static func readAscii() throws -> UInt8 {
