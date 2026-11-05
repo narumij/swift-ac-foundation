@@ -24,6 +24,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
       ("1E+3", 1000.0), ("1e-3", 0.001),
     ] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertEqual(try Double.read(), expected, input)
         self.assertRemaining("")
       }
@@ -34,6 +37,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testLeadingWhitespaceAndPreservedSeparator() throws {
     for whitespace in [" ", "\t", "\n", "\r", "\u{0B}", "\u{0C}"] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertEqual(try Double.read(), 1.25)
         self.assertRemaining(whitespace + "rest")
       }
@@ -44,6 +50,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testStopsAtSecondDecimalPointOrNonCandidateCharacter() throws {
     for (input, expected, remaining) in [("1.2.3", 1.2, ".3"), ("12z", 12.0, "z")] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertEqual(try Double.read(), expected, input)
         self.assertRemaining(remaining)
       }
@@ -54,6 +63,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testIncompleteExponentFailsAfterConsumption() throws {
     for input in ["1e", "1e+"] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining("")
       }
@@ -61,10 +73,12 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
     }
   }
 
-  #if LLVM_FLOAT_INPUT
   func testLibcxxInvalidCandidateConsumption() throws {
     for input in ["12x", "12abc"] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining("")
       }
@@ -75,6 +89,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testLibcxxSpecialNamesFailWithoutConsumption() throws {
     for input in ["nan", "inf"] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining(input)
       }
@@ -82,21 +99,24 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
     }
   }
 
-  #endif
 
-  #if !GCC_LIKE_FLOAT_INPUT
   func testHexadecimalFloat() throws {
     try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
       XCTAssertEqual(try Double.read(), 4)
       self.assertRemaining("")
     }
     .exactInput("0x1p2")
   }
 
-  #endif
 
   func testEOFBeforeValue() throws {
     try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
       XCTAssertThrowsError(try Double.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
       }
@@ -107,6 +127,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
 
   func testEOFAfterWhitespace() throws {
     try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointLLVM
       XCTAssertThrowsError(try Double.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
       }

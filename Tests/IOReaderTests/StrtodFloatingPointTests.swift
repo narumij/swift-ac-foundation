@@ -1,9 +1,8 @@
 import IOReader
 import TestingUtil
 import XCTest
-import _FastIO
+@preconcurrency import _FastIO
 
-#if !LLVM_FLOAT_INPUT && !GCC_LIKE_FLOAT_INPUT
 final class StrtodFloatingPointTests: IOReaderTests {
   func testValuesAndRemainingInput() throws {
     for (input, value, remaining) in [
@@ -13,6 +12,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
       ("-0.5e-2!", -0.005, "!"), ("1.2.3", 1.2, ".3"),
     ] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointSpecific
         XCTAssertEqual(try Double.read(), value, input)
         for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
         XCTAssertEqual(_getchar_unlocked(), EOF, input)
@@ -23,6 +25,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
   func testIncompleteSyntaxIsConsumedAndFails() throws {
     for prefix in ["+", ".", "1e", "1e+", "0x", "0x.", "0x1p-", "in", "infi", "nan("] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointSpecific
         XCTAssertThrowsError(try Double.read(), prefix) {
           XCTAssertEqual($0 as? IOReaderError, .invalidFloatingPoint)
         }
@@ -35,6 +40,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
   func testInfinityAndNaN() throws {
     for input in ["inf", "INFINITY", "-inf", "+Infinity", "nan", "NAN", "nan()", "nan(payload_1)"] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointSpecific
         let value = try Double.read()
         if input.lowercased().contains("nan") { XCTAssertTrue(value.isNaN, input) }
         else {
@@ -47,4 +55,3 @@ final class StrtodFloatingPointTests: IOReaderTests {
     }
   }
 }
-#endif

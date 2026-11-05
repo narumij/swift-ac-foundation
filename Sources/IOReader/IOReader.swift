@@ -1,5 +1,5 @@
 import Foundation
-import _FastIO
+@preconcurrency import _FastIO
 
 // MARK: - IOReader
 
@@ -384,13 +384,14 @@ struct _atof: InstanceIOReader {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    #if LLVM_FLOAT_INPUT
-      try read(state: LLVMFloatingPointState())
-    #elseif GCC_LIKE_FLOAT_INPUT
-      try read(state: GCCLikeFloatingPointState())
-    #else
-      try read(state: StrtodFloatingPointState.start)
-    #endif
+    switch _fastio_floating_point_mode {
+    case FastIOFloatingPointLLVM:
+      return try read(state: LLVMFloatingPointState())
+    case FastIOFloatingPointGCCLike:
+      return try read(state: GCCLikeFloatingPointState())
+    default:
+      return try read(state: StrtodFloatingPointState.start)
+    }
   }
 
   @inlinable

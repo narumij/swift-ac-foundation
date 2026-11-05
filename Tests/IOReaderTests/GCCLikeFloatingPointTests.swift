@@ -1,9 +1,8 @@
 import IOReader
 import TestingUtil
 import XCTest
-import _FastIO
+@preconcurrency import _FastIO
 
-#if GCC_LIKE_FLOAT_INPUT && !LLVM_FLOAT_INPUT
 final class GCCLikeFloatingPointTests: IOReaderTests {
   func testHexPrefixIsLeftInInput() throws {
     for (input, remaining) in [
@@ -11,6 +10,9 @@ final class GCCLikeFloatingPointTests: IOReaderTests {
       ("+0x1p2", "x1p2"), ("-0x1p2", "x1p2"),
     ] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointGCCLike
         let value = try Double.read()
         XCTAssertEqual(value, 0, input)
         XCTAssertEqual(value.sign, input.first == "-" ? .minus : .plus, input)
@@ -26,16 +28,21 @@ final class GCCLikeFloatingPointTests: IOReaderTests {
       ("0.5!", 0.5, "!"), ("0e2!", 0.0, "!"),
     ] {
       try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointGCCLike
         XCTAssertEqual(try Double.read(), expected, input)
         for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
         XCTAssertEqual(_getchar_unlocked(), EOF, input)
       }.exactInput(input)
     }
     try SolverRunner {
+        let savedMode = _fastio_floating_point_mode
+        defer { _fastio_floating_point_mode = savedMode }
+        _fastio_floating_point_mode = FastIOFloatingPointGCCLike
       XCTAssertTrue(try Double.read().isInfinite)
       XCTAssertTrue(try Double.read().isNaN)
       XCTAssertEqual(_getchar_unlocked(), EOF)
     }.exactInput("inf nan")
   }
 }
-#endif
