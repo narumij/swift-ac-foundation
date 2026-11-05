@@ -2,7 +2,7 @@
 #define IntegerInput_h
 
 typedef enum {
-  FastIOIntegerAuto = 0, // Reserved for automatic base detection; not implemented yet.
+  FastIOIntegerAuto = 0,
   FastIOIntegerBinary = 2,
   FastIOIntegerOctal = 8,
   FastIOIntegerDecimal = 10,
