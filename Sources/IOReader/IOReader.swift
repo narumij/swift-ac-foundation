@@ -23,12 +23,14 @@ extension FixedWidthInteger {
   @inlinable @inline(__always) static var CR: Self { 0x0D }
   @inlinable @inline(__always) static var SP: Self { 0x20 }
 
+  @inlinable @inline(__always) static var PLUS: Self { 0x2B }
   @inlinable @inline(__always) static var MINUS: Self { 0x2D }
   @inlinable @inline(__always) static var ZERO: Self { 0x30 }
 }
 
 @usableFromInline
-let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.VT | 1 << UInt.FF | 1 << UInt.CR | 1 << UInt.SP
+let spaces: UInt =
+  1 << UInt.HT | 1 << UInt.LF | 1 << UInt.VT | 1 << UInt.FF | 1 << UInt.CR | 1 << UInt.SP
 
 @usableFromInline
 let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
@@ -106,46 +108,6 @@ protocol ZeroBufferIOReader: IOReader {
   associatedtype Element: FixedWidthInteger
 }
 
-#if false
-extension ZeroBufferIOReader {
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var element: Element = 0
-    var negative: Bool = false
-    var c: Element = try .readHead()
-    if c == .MINUS {
-      negative = true
-    } else {
-      element = c - .ZERO
-    }
-    while true {
-      c = nullIfEOF(_getchar_unlocked())
-      if !isNumber(c) {
-        break
-      }
-      element = element * 10 + (negative ? -(c &- .ZERO) : (c &- .ZERO))
-    }
-    return (element, UInt8(truncatingIfNeeded: c))
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var element: Element = try .readHead() &- .ZERO
-    var c: Element
-    while true {
-      c = nullIfEOF(_getchar_unlocked())
-      if !isNumber(c) {
-        break
-      }
-      element = element * 10 + (c &- .ZERO)
-    }
-    return (element, UInt8(truncatingIfNeeded: c))
-  }
-}
-#else
 extension ZeroBufferIOReader {
 
   @inlinable
@@ -153,7 +115,7 @@ extension ZeroBufferIOReader {
   static func _read() throws -> (Element, UInt8) {
     var c: UInt8 = try .readHead()
     let negative = c == .MINUS
-    if negative || c == 0x2B {
+    if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
     }
     guard isNumber(c) else {
@@ -162,7 +124,8 @@ extension ZeroBufferIOReader {
     }
 
     // 符号付き最小値も表せるよう、絶対値を符号なしで蓄積する。
-    let limit = Element.isSigned && negative
+    let limit =
+      Element.isSigned && negative
       ? Element.min.magnitude : Element.max.magnitude
     var magnitude: Element.Magnitude = 0
     var overflow = false
@@ -192,7 +155,6 @@ extension ZeroBufferIOReader {
     return (value, c)
   }
 }
-#endif
 
 public enum IOConfig {
   nonisolated(unsafe)
