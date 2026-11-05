@@ -9,6 +9,8 @@ public enum IOReaderError: Swift.Error, Equatable {
   case unexpectedSpace
   case unexpectedEOF
   case unexpectedEmpty
+  case invalidInteger
+  case integerOutOfRange
   case elementCountMismatch(expected: Int, actual: Int)
 }
 
@@ -16,14 +18,17 @@ extension FixedWidthInteger {
   @inlinable @inline(__always) static var NULL: Self { 0x00 }
   @inlinable @inline(__always) static var HT: Self { 0x09 }
   @inlinable @inline(__always) static var LF: Self { 0x0A }
+  @inlinable @inline(__always) static var VT: Self { 0x0B }
+  @inlinable @inline(__always) static var FF: Self { 0x0C }
   @inlinable @inline(__always) static var CR: Self { 0x0D }
   @inlinable @inline(__always) static var SP: Self { 0x20 }
+
   @inlinable @inline(__always) static var MINUS: Self { 0x2D }
   @inlinable @inline(__always) static var ZERO: Self { 0x30 }
 }
 
 @usableFromInline
-let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.CR | 1 << UInt.SP
+let spaces: UInt = 1 << UInt.HT | 1 << UInt.LF | 1 << UInt.VT | 1 << UInt.FF | 1 << UInt.CR | 1 << UInt.SP
 
 @usableFromInline
 let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
@@ -36,13 +41,13 @@ let numbers: UInt =
 @inlinable
 @inline(__always)
 func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 &<< c) & spaces != 0
+  c == .NULL || (1 << c) & spaces != 0
 }
 
 @inlinable
 @inline(__always)
 func isASCIINewlineOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 &<< c) & newlines != 0
+  c == .NULL || (1 << c) & newlines != 0
 }
 
 @inlinable
@@ -101,6 +106,7 @@ protocol ZeroBufferIOReader: IOReader {
   associatedtype Element: FixedWidthInteger
 }
 
+#if false
 extension ZeroBufferIOReader {
 
   @inlinable
@@ -139,6 +145,54 @@ extension ZeroBufferIOReader {
     return (element, UInt8(truncatingIfNeeded: c))
   }
 }
+#else
+extension ZeroBufferIOReader {
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == 0x2B {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    guard isNumber(c) else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    // 符号付き最小値も表せるよう、絶対値を符号なしで蓄積する。
+    let limit = Element.isSigned && negative
+      ? Element.min.magnitude : Element.max.magnitude
+    var magnitude: Element.Magnitude = 0
+    var overflow = false
+    repeat {
+      let product = magnitude.multipliedReportingOverflow(by: 10)
+      let sum = product.partialValue.addingReportingOverflow(Element.Magnitude(c - .ZERO))
+      magnitude = sum.partialValue
+      overflow = overflow || product.overflow || sum.overflow || magnitude > limit
+      c = nullIfEOF(_getchar_unlocked())
+    } while isNumber(c)
+
+    // 範囲外でも数字列は最後まで消費し、最初の非数字は次の読取りへ残す。
+    guard !overflow else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.integerOutOfRange
+    }
+    let value: Element
+    if negative {
+      if Element.isSigned {
+        value = magnitude == Element.min.magnitude ? Element.min : 0 - Element(magnitude)
+      } else {
+        value = 0 &- Element(magnitude)
+      }
+    } else {
+      value = Element(magnitude)
+    }
+    return (value, c)
+  }
+}
+#endif
 
 public enum IOConfig {
   nonisolated(unsafe)

@@ -8,9 +8,7 @@ final class CinCompatibleIntegerTests: XCTestCase {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「整数の読取り」。
   // 資料: Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / 十進。
-  // 現在対応する範囲：十進数字、負号、SP・HT・LF・CR、型の範囲内。
-  // TODO: 正符号、VT・FF、符号なしの負号は未対応。
-  // これらの現在の挙動を仕様として固定するテストは追加しない。
+  // 十進、正負の符号、ASCII空白6種。失敗はread()の例外で通知する。
 
   func testSignedIntegerStopsBeforeNonDigit() throws {
     for (input, expected, remaining) in [
@@ -205,8 +203,6 @@ final class CinCompatibleIntegerTests: XCTestCase {
     }
   }
 
-  // TODO: 次の仕様は整数パーサーの改造が必要。現状の誤った値は期待値にしない。
-  #if false
   func testPositiveSignAndAllASCIIWhitespace() throws {
     for whitespace in [" ", "\t", "\n", "\r", "\u{0B}", "\u{0C}"] {
       try withExactInput(whitespace + "+12x") {
@@ -252,7 +248,40 @@ final class CinCompatibleIntegerTests: XCTestCase {
       }
     }
   }
-  #endif
+
+  private func readValue<T: SingleReadable>(_ type: T.Type) throws -> T {
+    try T.read()
+  }
+
+  func testUnsignedSignsAndOutOfRange() throws {
+    for (text, expected) in [("+12", UInt(12)), ("-0", 0), ("-1", UInt.max),
+      ("-" + String(UInt.max), 1)] {
+      try withExactInput(text + "x") {
+        XCTAssertEqual(try self.readValue(UInt.self), expected)
+        XCTAssertEqual(_getchar_unlocked(), 120)
+      }
+    }
+    for prefix in ["", "+", "-"] {
+      try withExactInput(prefix + String(UInt.max) + "0x") {
+        XCTAssertThrowsError(try self.readValue(UInt.self)) {
+          XCTAssertEqual($0 as? IOReaderError, .integerOutOfRange)
+        }
+        XCTAssertEqual(_getchar_unlocked(), 120)
+        XCTAssertEqual(_getchar_unlocked(), EOF)
+      }
+    }
+  }
+
+  func testReadContinuesAfterHandlingInvalidInteger() throws {
+    try withExactInput("+x12") {
+      XCTAssertThrowsError(try Int.read()) {
+        XCTAssertEqual($0 as? IOReaderError, .invalidInteger)
+      }
+      XCTAssertEqual(try Character.read(), "x")
+      XCTAssertEqual(try Int.read(), 12)
+      XCTAssertEqual(_getchar_unlocked(), EOF)
+    }
+  }
 
   func test128BitIntegerLimits() throws {
     if #available(macOS 15.0, *) {
