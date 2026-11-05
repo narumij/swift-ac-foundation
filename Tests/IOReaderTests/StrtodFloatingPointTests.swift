@@ -29,7 +29,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
         defer { _fastio_floating_point_mode = savedMode }
         _fastio_floating_point_mode = FastIOFloatingPointSpecific
         XCTAssertThrowsError(try Double.read(), prefix) {
-          XCTAssertEqual($0 as? IOReaderError, .invalidFloatingPoint)
+          XCTAssertEqual(($0 as? FloatingPointInputError)?.reason, .invalidFloatingPoint)
+          XCTAssertEqual(($0 as? FloatingPointInputError)?.input, prefix)
+          XCTAssertEqual(($0 as? FloatingPointInputError)?.nextByte, UInt8(ascii: "!"))
         }
         XCTAssertEqual(_getchar_unlocked(), 33, prefix)
         XCTAssertEqual(_getchar_unlocked(), EOF, prefix)

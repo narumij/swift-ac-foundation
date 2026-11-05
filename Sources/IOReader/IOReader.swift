@@ -371,11 +371,19 @@ struct _atof: InstanceIOReader {
       buffer.append(c)
       c = nullIfEOF(_getchar_unlocked())
     }
+    let count = buffer.count
     do {
       return (try convert(&buffer, isComplete: state.isComplete), c)
     } catch {
       if c != .NULL {
         _ = _ungetc(Int32(c))
+      }
+      if let reason = error as? IOReaderError {
+        throw FloatingPointInputError(
+          reason: reason,
+          input: String(decoding: buffer.prefix(count), as: UTF8.self),
+          nextByte: c == .NULL ? nil : c
+        )
       }
       throw error
     }
