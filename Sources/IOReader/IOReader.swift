@@ -42,6 +42,12 @@ func isASCIINewlineOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
 
 @inlinable
 @inline(__always)
+func isNumber<T: FixedWidthInteger>(_ c: T) -> Bool {
+  c >= .ZERO && c <= .ZERO + 9
+}
+
+@inlinable
+@inline(__always)
 func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
   c == -1 ? .NULL : numericCast(c)
 }
@@ -105,7 +111,7 @@ extension ZeroBufferIOReader {
     }
     while true {
       c = nullIfEOF(_getchar_unlocked())
-      if isASCIIWhitespaceOrNull(c) {
+      if !isNumber(c) {
         break
       }
       element = element * 10 + (negative ? -(c &- .ZERO) : (c &- .ZERO))
@@ -120,7 +126,7 @@ extension ZeroBufferIOReader {
     var c: Element
     while true {
       c = nullIfEOF(_getchar_unlocked())
-      if isASCIIWhitespaceOrNull(c) {
+      if !isNumber(c) {
         break
       }
       element = element * 10 + (c &- .ZERO)
