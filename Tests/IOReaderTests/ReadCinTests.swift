@@ -48,6 +48,7 @@ final class ReadCinTests: XCTestCase {
     }
   }
 
+  #if false
   func testExistingSingleAndFixedWidthReadersKeepTheirConsumption() throws {
     try SolverRunner(solver: {
       // 既存入口は幅分の直後の1バイトも消費する。別名のcinとは併存させる。
@@ -60,4 +61,18 @@ final class ReadCinTests: XCTestCase {
       XCTAssertEqual(getchar_unlocked(), 10)
     }).inputOnly("abcdefghij\n")
   }
+  #else
+  func testSingleAndFixedWidthReadersPreserveFollowingCharacters() throws {
+    try SolverRunner(solver: {
+      // stdin/readも指定した幅だけ読む。cinとの交互利用でも文字を落とさない。
+      XCTAssertEqual(Character.stdin, "a")
+      XCTAssertEqual(Character.cin, "b")
+      XCTAssertEqual(UInt8.stdin, 99)
+      XCTAssertEqual(UInt8.cin, 100)
+      XCTAssertEqual(try String.read(columns: 2), "ef")
+      XCTAssertEqual(Character.cin, "g")
+      XCTAssertEqual(getchar_unlocked(), 10)
+    }).inputOnly("abcdefg\n")
+  }
+  #endif
 }

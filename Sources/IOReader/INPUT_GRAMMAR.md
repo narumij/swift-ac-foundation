@@ -52,12 +52,17 @@ token = printable, { printable } ;
 
 ```ebnf
 element = signed-integer | unsigned-integer | decimal | token ;
-element-read = { reader-space }, element, (reader-space | EOF) ;
+element-read = { reader-space }, element ;
 ```
 
-先頭の空白を読み飛ばし、値の後ろの区切りは**一文字だけ消費**する。
-次の呼出しが残りの空白を読み飛ばす。値に到達する前のEOFはエラー。
+先頭の空白を読み飛ばし、値の後ろの区切りは**消費せず残す**。
+後続条件としてreader-spaceまたはEOFを要求するが、その境界は上記の消費範囲に含めない。
+実装では読取りを止めた区切りを `ungetc` で戻す。EOFを表す内部のNULLは戻さない。
+次の単一要素読取りが、残した区切りを含めて先頭の空白を読み飛ばす。
+値に到達する前のEOFはエラー。
 実装は型に応じた読み取りを行い、上記の選択肢を自動判別するわけではない。
+数値の字句解析は従来のままであり、例えば整数の `12x` を12として読みxを残すような
+C++数値抽出への完全な互換変更ではない。
 
 | API | 文法上の対象 | 結果 |
 | --- | --- | --- |
@@ -88,7 +93,8 @@ ASCII入力で、C++のclassic（C）ロケールの既定の `cin >> char` / `c
 
 例えば `ab\n` への `Character.cin` の2回呼出しは `a`、`b` を返し、LFを残す。
 続いて `.line` で読むと、そのLFを消費して空文字列を返す。
-既存の `stdin` / `read()` と固定幅 `columns:` の消費規則は変えない。
+既存の `stdin` / `read()` と固定幅 `columns:` も後続を残す。
+先頭空白の範囲は従来のreader-spaceを維持しており、cin-spaceとはVT・FFの扱いが異なる。
 
 ## 数値・変換要素の一行と固定個数
 
@@ -100,7 +106,9 @@ element-line = element, { horizontal-space, { horizontal-space }, element }, (LF
 **空行・行末空白を含めず、最後の要素の直後にLFまたはEOFを置く。**
 各elementの具体的な文法は要素型に従う。
 
-現実装は、各要素が返した区切りがLF・CR・終端相当なら終了する。
+現実装は、各要素が返した消費済み区切りがLF・CR・終端相当なら終了する。
+行を構成する `_readWithSeparator()` は単独の `read()` と異なり、区切りを戻さない。
+したがって要素行を読んだ後は、行末のLFも消費済みとなる。
 先頭空白や空行を保持する物理行パーサではない。
 最後の値の後がSP/HTだと、次の要素読取りが改行を飛び越えることがある。
 したがって `.strict` も任意の空白を含む物理行を完全に検証するものではない。
@@ -155,7 +163,7 @@ EOF・I/Oエラーの全経路は別途検証が必要。ここでは終了時�
 ## 固定幅ASCII文字列・一文字
 
 ```ebnf
-fixed-width-read = { reader-space }, fixed-width-token, (reader-space | EOF) ;
+fixed-width-read = { reader-space }, fixed-width-token ;
 fixed-width-token = printable, { printable } ;
 ```
 
@@ -164,8 +172,8 @@ fixed-width-token = printable, { printable } ;
 これらの文字列を繰り返すrows:columns:も、同じ操作の合成。
 `Character.read()` と `UInt8.read()` は幅1のこの操作に対応する。
 
-現実装は幅分を読んだ後、次の一文字を区切りか検査せず消費する。
-幅より長い単語を分割して読む契約ではない。実データの幅が指定値と一致することが前提。
+現実装は幅分だけ読み、後続を読まない。区切りがなくても、指定幅で続けて分割して読める。
+幅に達する前の空白・EOFは従来どおりエラー。失敗時も、その後の余分な一文字を消費しない。
 このcolumnsは**文字数（ASCIIバイト数）**であり、数値列のcolumnsは**要素数**。
 
 ## 消費規則とプロトコルの対応
@@ -176,14 +184,16 @@ InputElementReadableは区切り報告付きの読み能力、ElementLineReadabl
 通常はstdin()やread(check:)を利用し、_readLineは入力操作の合成に用いる。
 ExpressibleByElementSequenceは読取り後の構築能力であり、対応する解析規則は新設しない。
 
-トークン読取り後に物理行読取りをすると、既に消費した区切りの次から読み始める。
-例えば `1 abc\n` でIntを読むとSPも消費するため、次の.lineは `abc`。
-`1\nabc\n` ならLFも消費するため、次の.lineは次行の `abc`。
-CRLFではトークン読取りがCRだけ消費しLFを残す場合があり、同じ組合せの結果は異なる。
+トークン読取り後に物理行読取りをすると、残した区切りから読み始める。
+例えば `1 abc\n` でIntを読むとSPが残るため、次の.lineは ` abc`。
+`1\nabc\n` ならLFが残るため、次の.lineは空文字列。その次の.lineで `abc` を読む。
+次の行へ進めたい場合は、数値読取り後に現在の行の残りを明示的に読み捨てる。
+CRLFでも単独読取りはCRを残す。物理行読取りは続くCRLFをまとめて消費できるが、
+要素行の `_readWithSeparator()` は従来どおりCRだけを消費して終了し得る。
 
 | プロトコル | 現在の責任 |
 | --- | --- |
-| SingleReadable | 一つの値を読む入口。文法は適合型次第 |
+| SingleReadable | 一つの値を読む入口。標準の適合型は後続の区切りを残す。文法は適合型次第 |
 | InputElementReadable | elementを読み、値と消費済み区切りを返す。区切り報告は文法ではなくAPI契約 |
 | ElementLineReadable | 要素を読み、区切りに基づいて行を終える |
 | AsciiReadable / AsciiArrayReadable | 一文字・単語・固定幅ASCII入力 |

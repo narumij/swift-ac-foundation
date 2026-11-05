@@ -1,6 +1,7 @@
 import Foundation
 
 /// Reads an input `element` and reports the separator already consumed.
+/// Unlike a value-only `read()`, this operation leaves the separator consumed for line composition.
 /// See INPUT_GRAMMAR.md; reporting the separator is an API contract, not grammar.
 public protocol InputElementReadable: SingleReadable {
 

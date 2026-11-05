@@ -15,7 +15,7 @@ public protocol AsciiReadable: SingleReadable {
   /// let c3 = Character.stdin // "C"
   /// ```
   ///
-  /// 文字種を問わずデリミタ分の文字を強制で消費します
+  /// 先頭の空白を読み飛ばし、1文字だけ読みます。後続の文字や区切りは残します。
   static var stdin: Self { get }
 
   /// 標準入力からASCII文字を1文字読みます

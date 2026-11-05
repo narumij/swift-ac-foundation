@@ -45,6 +45,17 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
   c == -1 ? .NULL : numericCast(c)
 }
 
+// The low-level readers consume their separator; value-only reads leave it for the next operation.
+// NULL is the existing EOF sentinel. NUL input is outside the supported input grammar.
+@inlinable
+@inline(__always)
+func valuePreservingSeparator<Value>(_ result: (value: Value, separator: UInt8)) -> Value {
+  if result.separator != .NULL {
+    _ = ungetc(Int32(result.separator), stdin)
+  }
+  return result.value
+}
+
 extension Optional {
   @inlinable @inline(__always)
   package func unwrap(or error: @autoclosure () -> IOReaderError) throws -> Wrapped {
@@ -253,7 +264,7 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, St
   @inlinable
   @inline(__always)
   public static func read() throws -> Element {
-    try Self._read().0
+    valuePreservingSeparator(try Self._read())
   }
 
   @inlinable
@@ -269,7 +280,7 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader,
   @inlinable
   @inline(__always)
   public static func read() throws -> Element {
-    try Self._read().0
+    valuePreservingSeparator(try Self._read())
   }
 
   @inlinable
@@ -307,8 +318,7 @@ struct _atof: InstanceIOReader {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    // 末尾に区切り文字が必要な模様
-    try read { b, _ in atof(b.baseAddress!) }
+    valuePreservingSeparator(try read() as Item)
   }
 
   @inlinable
@@ -337,7 +347,7 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    return try read { b, c in b }
+    valuePreservingSeparator(try read() as Item)
   }
 
   @inlinable
@@ -351,7 +361,6 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
   @inlinable
   @inline(__always)
   static func read(count: Int) throws -> Element {
-    defer { getchar_unlocked() }
     return try instance.readBytes(count: count)
   }
 
@@ -387,7 +396,7 @@ struct _atoc: InstanceIOReader, VariableBuffer {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-    try _read().0
+    valuePreservingSeparator(try _read())
   }
 
   @inlinable
@@ -418,7 +427,6 @@ struct _atoc: InstanceIOReader, VariableBuffer {
   @inlinable
   @inline(__always)
   static func read(count: Int) throws -> Element {
-    defer { getchar_unlocked() }
     return try instance._readCharacters(count: count)
   }
 
@@ -441,11 +449,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
-
-    try read {
-      (b: [UInt8], c: UInt8) in
-      String(bytes: b, encoding: .ascii)
-    }
+    valuePreservingSeparator(try read() as Item)
   }
 
   @inlinable
@@ -463,7 +467,6 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   @inlinable
   @inline(__always)
   static func read(count: Int) throws -> Element {
-    defer { getchar_unlocked() }
     return try String(bytes: instance.readBytes(count: count), encoding: .ascii)
       .unwrap(or: IOReaderError.unexpectedNil)
   }
