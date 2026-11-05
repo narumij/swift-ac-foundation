@@ -386,6 +386,8 @@ struct _atof: InstanceIOReader {
   public mutating func read() throws -> Item {
     #if LLVM_FLOAT_INPUT
       try read(state: LLVMFloatingPointState())
+    #elseif GCC_LIKE_FLOAT_INPUT
+      try read(state: GCCLikeFloatingPointState())
     #else
       try read(state: StrtodFloatingPointState.start)
     #endif

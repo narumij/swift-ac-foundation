@@ -84,6 +84,7 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
 
   #endif
 
+  #if !GCC_LIKE_FLOAT_INPUT
   func testHexadecimalFloat() throws {
     try SolverRunner {
       XCTAssertEqual(try Double.read(), 4)
@@ -91,6 +92,8 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
     }
     .exactInput("0x1p2")
   }
+
+  #endif
 
   func testEOFBeforeValue() throws {
     try SolverRunner {

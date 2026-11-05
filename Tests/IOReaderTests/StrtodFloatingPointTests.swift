@@ -3,7 +3,7 @@ import TestingUtil
 import XCTest
 import _FastIO
 
-#if !LLVM_FLOAT_INPUT
+#if !LLVM_FLOAT_INPUT && !GCC_LIKE_FLOAT_INPUT
 final class StrtodFloatingPointTests: IOReaderTests {
   func testValuesAndRemainingInput() throws {
     for (input, value, remaining) in [

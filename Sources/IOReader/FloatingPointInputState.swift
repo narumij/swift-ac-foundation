@@ -148,3 +148,21 @@ struct LLVMFloatingPointState: FloatingPointInputState {
     return true
   }
 }
+
+// specificの構文を使い、16進接頭辞への遷移だけ止める。GCC完全互換ではない。
+@usableFromInline
+struct GCCLikeFloatingPointState: FloatingPointInputState {
+  @usableFromInline var state = StrtodFloatingPointState.start
+
+  @inlinable init() {}
+
+  @inlinable var isComplete: Bool { state.isComplete }
+
+  @inlinable
+  mutating func advance(_ c: UInt8) -> Bool {
+    if case .zero = state, c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+      return false
+    }
+    return state.advance(c)
+  }
+}
