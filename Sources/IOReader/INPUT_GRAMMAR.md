@@ -73,6 +73,23 @@ element-read = { reader-space }, element, (reader-space | EOF) ;
 変換用プロトコルは基礎となる読み取り結果を `convert` に渡す。独自型の値域や変換失敗は
 その実装の契約になる。
 
+## 後続を消費しない一文字読み（別名の入口）
+
+```ebnf
+cin-space = SP | HT | LF | VT | FF | CR ;
+cin-character-read = { cin-space }, printable ;
+```
+
+`Character.cin` / `UInt8.cin` と、例外版の `Character.readCin()` / `UInt8.readCin()` が対応する。
+ASCII入力で、C++のclassic（C）ロケールの既定の `cin >> char` / `cin >> unsigned char`
+と同じ消費規則にする。先頭の空白を飛ばして一文字だけ読み、**後続は区切りも含めて残す**。
+文字を読む前のEOFは `unexpectedEOF`。`cin` は `try! readCin()` の入口。
+ロケール・書式フラグ・ストリーム状態の互換や、Unicodeの文字単位の読取りは対象外。
+
+例えば `ab\n` への `Character.cin` の2回呼出しは `a`、`b` を返し、LFを残す。
+続いて `.line` で読むと、そのLFを消費して空文字列を返す。
+既存の `stdin` / `read()` と固定幅 `columns:` の消費規則は変えない。
+
 ## 数値・変換要素の一行と固定個数
 
 ```ebnf
@@ -123,7 +140,7 @@ CRLFはこの経路では末尾から両方取り除かれる。単独CRは行�
 | API | 文法上の対象 |
 | --- | --- |
 | String / [Character] / [UInt8] の `read(read: .line)` | physical-line、返すのはline-content |
-| それらの配列の `read(read: .line, rows: r)` | physical-lineをr回 |
+| それらの配列の `read(rows: r)` | physical-lineをr回 |
 | `[String]` / `[[Character]]` / `[[UInt8]]` の `read(read: .words)` | words-lineを読み、tokenの配列にする |
 | 上記の `read(read: .words, rows: r)` | words-lineをr回 |
 | `[Character].readLine()` / `[UInt8].readLine()` | physical-line。Optionalを返す既存API |

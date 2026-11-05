@@ -5,14 +5,11 @@ public enum TextInputMode: Sendable {
   case line
 }
 
-/// Explicit line reading for collections; `rows` repeats the operation.
-public enum LineReadMode: Sendable { case line }
-
 /// Split a physical line into ASCII whitespace-separated words.
 public enum WordsInputMode: Sendable { case words }
 
-// Keep existing overloads and their defaults unchanged. Explicit modes are additive.
-// An explicit row read requires every requested row; EOF throws rather than shortening it.
+// Text modes choose how to read one value; rows alone denotes physical lines.
+// Throwing line reads require input; EOF is not an empty line.
 private func inputLineBytes() throws -> [UInt8] {
   guard let bytes = [UInt8].readLine() else { throw IOReaderError.unexpectedEOF }
   return bytes
@@ -36,14 +33,6 @@ extension String {
 }
 
 extension Array where Element == String {
-  public static func read(read mode: LineReadMode, rows: Int) throws -> Self {
-    try (0..<rows).map { _ in try Element.read(read: TextInputMode.line) }
-  }
-
-  public static func stdin(read mode: LineReadMode, rows: Int) -> Self {
-    try! read(read: mode, rows: rows)
-  }
-
   public static func read(read mode: WordsInputMode) throws -> Self {
     try inputWords().map { bytes in String(decoding: bytes, as: UTF8.self) }
   }
@@ -75,12 +64,8 @@ extension Array where Element == Character {
 }
 
 extension Array where Element == [Character] {
-  public static func read(read mode: LineReadMode, rows: Int) throws -> Self {
+  public static func read(rows: Int) throws -> Self {
     try (0..<rows).map { _ in try Element.read(read: TextInputMode.line) }
-  }
-
-  public static func stdin(read mode: LineReadMode, rows: Int) -> Self {
-    try! read(read: mode, rows: rows)
   }
 
   public static func read(read mode: WordsInputMode) throws -> Self {
@@ -114,12 +99,8 @@ extension Array where Element == UInt8 {
 }
 
 extension Array where Element == [UInt8] {
-  public static func read(read mode: LineReadMode, rows: Int) throws -> Self {
+  public static func read(rows: Int) throws -> Self {
     try (0..<rows).map { _ in try Element.read(read: TextInputMode.line) }
-  }
-
-  public static func stdin(read mode: LineReadMode, rows: Int) -> Self {
-    try! read(read: mode, rows: rows)
   }
 
   public static func read(read mode: WordsInputMode) throws -> Self {

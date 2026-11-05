@@ -16,11 +16,11 @@ final class InputModeTests: XCTestCase {
     }).inputOnly("a b\nc d\ne f\naa bb  \ncc dd\nee ff\n\nlast row\n")
   }
 
-  func testExplicitTextRowsAndWords() throws {
+  func testTextRowsAndWords() throws {
     try SolverRunner(solver: {
-      XCTAssertEqual(try [String].read(read: .line, rows: 2), ["a b", ""])
-      XCTAssertEqual([[Character]].stdin(read: .line, rows: 1), [Array("c d")])
-      XCTAssertEqual(try [[UInt8]].read(read: .line, rows: 1), [Array("e f".utf8)])
+      XCTAssertEqual(try [String].read(rows: 2), ["a b", ""])
+      XCTAssertEqual([[Character]].stdin(rows: 1), [Array("c d")])
+      XCTAssertEqual(try [[UInt8]].read(rows: 1), [Array("e f".utf8)])
       XCTAssertEqual(String.stdin(read: .word), "tail")
       XCTAssertEqual(try [Character].read(read: .word), Array("word"))
       XCTAssertEqual([UInt8].stdin(read: .word), Array("bytes".utf8))
