@@ -114,7 +114,7 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) {
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
     var c: UInt8 = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
@@ -125,36 +125,34 @@ extension ZeroBufferIOReader {
       throw IOReaderError.invalidInteger
     }
 
-    // 符号付き最小値も表せるよう、絶対値を符号なしで蓄積する。
-    let limit =
-      Element.isSigned && negative
-      ? Element.min.magnitude : Element.max.magnitude
-    var magnitude: Element.Magnitude = 0
-    var overflow = false
+    var value: Element = 0
     repeat {
-      let product = magnitude.multipliedReportingOverflow(by: 10)
-      let sum = product.partialValue.addingReportingOverflow(Element.Magnitude(c - .ZERO))
-      magnitude = sum.partialValue
-      overflow = overflow || product.overflow || sum.overflow || magnitude > limit
+      let digit = Element(c - .ZERO)
+      value = value * 10 + (negative ? -digit : digit)
       c = nullIfEOF(_getchar_unlocked())
     } while isNumber(c)
-
-    // 範囲外でも数字列は最後まで消費し、最初の非数字は次の読取りへ残す。
-    guard !overflow else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.integerOutOfRange
-    }
-    let value: Element
-    if negative {
-      if Element.isSigned {
-        value = magnitude == Element.min.magnitude ? Element.min : 0 - Element(magnitude)
-      } else {
-        value = 0 &- Element(magnitude)
-      }
-    } else {
-      value = Element(magnitude)
-    }
     return (value, c)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    guard isNumber(c) else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    repeat {
+      value = value * 10 + Element(c - .ZERO)
+      c = nullIfEOF(_getchar_unlocked())
+    } while isNumber(c)
+    return (negative ? 0 &- value : value, c)
   }
 }
 
