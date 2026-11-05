@@ -32,6 +32,19 @@ final class SolverRunnerTests: XCTestCase {
     XCTAssertEqual(lines, ["single-line"])
   }
 
+  func testEmptyInputIsEOF() throws {
+    try SolverRunner {
+      XCTAssertEqual(getchar(), EOF)
+    }.emptyInput()
+  }
+
+  func testExactInputDoesNotAppendNewline() throws {
+    try SolverRunner {
+      XCTAssertEqual(getchar(), 65)
+      XCTAssertEqual(getchar(), EOF)
+    }.exactInput("A")
+  }
+
   func testStdoutSilencerSuppressesOutputAndRestoresStdout() throws {
     let runner = SolverRunner {
       print("before")

@@ -11,6 +11,8 @@ public enum IOReaderError: Swift.Error, Equatable {
   case unexpectedEmpty
   case invalidInteger
   case integerOutOfRange
+  case invalidFloatingPoint
+  case floatingPointOutOfRange
   case elementCountMismatch(expected: Int, actual: Int)
 }
 
@@ -328,32 +330,71 @@ struct _atof: InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  mutating func read<T>(
-    _ f: (UnsafeBufferPointer<UInt8>, Int) -> T?
-  ) throws -> T {
-    var current = 0
+  func convert(_ buffer: inout [UInt8], isComplete: Bool) throws -> Double {
+
+    let count = buffer.count
+    buffer.append(.NULL)
+
+    return try buffer.withUnsafeMutableBytes {
+      try $0.baseAddress!.withMemoryRebound(to: CChar.self, capacity: $0.count) { start in
+
+        guard count > 0, isComplete else {
+          throw IOReaderError.invalidFloatingPoint
+        }
+
+        var end: UnsafeMutablePointer<CChar>?
+
+        let savedErrno = errno
+        defer { errno = savedErrno }
+        errno = 0
+        let value = strtod(start, &end)
+        guard errno != ERANGE else {
+          throw IOReaderError.floatingPointOutOfRange
+        }
+
+        guard let end, end - start == count else {
+          throw IOReaderError.invalidFloatingPoint
+        }
+
+        return value
+      }
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  mutating func read<State: FloatingPointInputState>(state initialState: State) throws -> Item {
     buffer.removeAll(keepingCapacity: true)
-    buffer.append(try .readHead())
-    while !isASCIIWhitespaceOrNull(buffer[current]) {
-      current += 1
-      buffer.append(nullIfEOF(_getchar_unlocked()))
+    var c: UInt8 = try .readHead()
+    var state = initialState
+    while c != .NULL && state.advance(c) {
+      buffer.append(c)
+      c = nullIfEOF(_getchar_unlocked())
     }
-    return try buffer.withUnsafeBufferPointer {
-      try f($0, current).unwrap(or: IOReaderError.unexpectedNil)
+    do {
+      return (try convert(&buffer, isComplete: state.isComplete), c)
+    } catch {
+      if c != .NULL {
+        _ = _ungetc(Int32(c))
+      }
+      throw error
     }
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func read() throws -> Item {
+    #if LLVM_FLOAT_INPUT
+      try read(state: LLVMFloatingPointState())
+    #else
+      try read(state: StrtodFloatingPointState.start)
+    #endif
   }
 
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Element {
     valuePreservingSeparator(try read() as Item)
-  }
-
-  @inlinable
-  @inline(__always)
-  public mutating func read() throws -> Item {
-    // 末尾に区切り文字が必要な模様
-    try read { b, c in (atof(b.baseAddress!), b[c]) }
   }
 
   nonisolated(unsafe)

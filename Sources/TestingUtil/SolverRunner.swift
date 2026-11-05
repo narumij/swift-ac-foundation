@@ -122,10 +122,14 @@ public struct SolverRunner {
     testingUtilFDLock.lock()
     defer { testingUtilFDLock.unlock() }
 
-    var input = input
-    if input.last != "\n" {
-      input.append("\n")
-    }
+    try exactInput(input.last == "\n" ? input : input + "\n")
+  }
+
+  /// 改行を追加せず、指定した入力をそのまま渡す。
+  public func exactInput(_ input: String) throws {
+    testingUtilFDLock.lock()
+    defer { testingUtilFDLock.unlock() }
+
     var inputBuffer: [Int8] = input.utf8CString.dropLast()
     let count = inputBuffer.count
     try inputBuffer.withUnsafeMutableBytes {
@@ -144,5 +148,24 @@ public struct SolverRunner {
       }
       try solver()
     }
+  }
+
+  /// 最初からEOFになる空の入力を渡す。
+  public func emptyInput() throws {
+    testingUtilFDLock.lock()
+    defer { testingUtilFDLock.unlock() }
+
+    guard let file = tmpfile() else {
+      throw NSError(domain: NSPOSIXErrorDomain, code: Int(errno))
+    }
+    let backup = stdin
+    stdin = file
+    clearerr(stdin)
+    defer {
+      stdin = backup
+      fclose(file)
+      clearerr(stdin)
+    }
+    try solver()
   }
 }

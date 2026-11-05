@@ -2,4 +2,4 @@
 
 int _fastio_pending_character = EOF;
 
-int _use_fastio_pending_character = 1;
+int _use_fastio_pending_character = 0;
