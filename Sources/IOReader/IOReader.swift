@@ -156,6 +156,241 @@ extension ZeroBufferIOReader {
   }
 }
 
+// 16進読取り。十進側とは独立して形を検討する。
+@usableFromInline
+protocol ZeroBufferIOReader16: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReader16 {
+
+  @inlinable
+  @inline(__always)
+  static func hexDigit(_ c: UInt8) -> UInt8? {
+    switch c {
+    case UInt8(ascii: "0")...UInt8(ascii: "9"):
+      return c - UInt8(ascii: "0")
+    case UInt8(ascii: "a")...UInt8(ascii: "f"):
+      return c - UInt8(ascii: "a") + 10
+    case UInt8(ascii: "A")...UInt8(ascii: "F"):
+      return c - UInt8(ascii: "A") + 10
+    default:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    // 先頭の0は値として読める。直後がx/Xの場合だけ接頭辞として扱う。
+    if c == .ZERO {
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+        c = nullIfEOF(_getchar_unlocked())
+      } else if hexDigit(c) == nil {
+        return (0, c)
+      }
+    }
+    guard hexDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = hexDigit(c) {
+      let digit = Element(digit)
+      value = value * 16 + (negative ? -digit : digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (value, c)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    // 先頭の0は値として読める。直後がx/Xの場合だけ接頭辞として扱う。
+    if c == .ZERO {
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+        c = nullIfEOF(_getchar_unlocked())
+      } else if hexDigit(c) == nil {
+        return (0, c)
+      }
+    }
+    guard hexDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = hexDigit(c) {
+      value = value * 16 + Element(digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (negative ? 0 &- value : value, c)
+  }
+}
+
+// 2進読取り。基数ごとの実装を独立して保つ。
+@usableFromInline
+protocol ZeroBufferIOReader2: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReader2 {
+
+  @inlinable
+  @inline(__always)
+  static func binaryDigit(_ c: UInt8) -> UInt8? {
+    switch c {
+    case UInt8(ascii: "0")...UInt8(ascii: "1"):
+      return c - UInt8(ascii: "0")
+    default:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    // 先頭の0は値として読める。直後がb/Bの場合だけ接頭辞として扱う。
+    if c == .ZERO {
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+        c = nullIfEOF(_getchar_unlocked())
+      } else if binaryDigit(c) == nil {
+        return (0, c)
+      }
+    }
+    guard binaryDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = binaryDigit(c) {
+      let digit = Element(digit)
+      value = value * 2 + (negative ? -digit : digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (value, c)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    // 先頭の0は値として読める。直後がb/Bの場合だけ接頭辞として扱う。
+    if c == .ZERO {
+      c = nullIfEOF(_getchar_unlocked())
+      if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+        c = nullIfEOF(_getchar_unlocked())
+      } else if binaryDigit(c) == nil {
+        return (0, c)
+      }
+    }
+    guard binaryDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = binaryDigit(c) {
+      value = value * 2 + Element(digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (negative ? 0 &- value : value, c)
+  }
+}
+
+// 8進読取り。基数ごとの実装を独立して保つ。
+@usableFromInline
+protocol ZeroBufferIOReader8: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReader8 {
+
+  @inlinable
+  @inline(__always)
+  static func octalDigit(_ c: UInt8) -> UInt8? {
+    switch c {
+    case UInt8(ascii: "0")...UInt8(ascii: "7"):
+      return c - UInt8(ascii: "0")
+    default:
+      return nil
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    guard octalDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = octalDigit(c) {
+      let digit = Element(digit)
+      value = value * 8 + (negative ? -digit : digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (value, c)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: UInt8 = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    guard octalDigit(c) != nil else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    while let digit = octalDigit(c) {
+      value = value * 8 + Element(digit)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (negative ? 0 &- value : value, c)
+  }
+}
+
 public enum IOConfig {
   nonisolated(unsafe)
     public static var bufferPolicy = BufferPolicy.default
@@ -287,7 +522,83 @@ extension InstanceIOReader {
 }
 
 @usableFromInline
-struct _atol<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, StaticIOReader {
+struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    switch _fastio_integer_mode {
+    case FastIOIntegerBinary:
+      return try _atol2<Element>.read()
+    case FastIOIntegerOctal:
+      return try _atol8<Element>.read()
+    case FastIOIntegerDecimal:
+      return try _atol10<Element>.read()
+    case FastIOIntegerHexadecimal:
+      return try _atol16<Element>.read()
+    default:
+      fatalError("Integer input mode is not implemented")
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    switch _fastio_integer_mode {
+    case FastIOIntegerBinary:
+      return try _atol2<Element>.read()
+    case FastIOIntegerOctal:
+      return try _atol8<Element>.read()
+    case FastIOIntegerDecimal:
+      return try _atol10<Element>.read()
+    case FastIOIntegerHexadecimal:
+      return try _atol16<Element>.read()
+    default:
+      fatalError("Integer input mode is not implemented")
+    }
+  }
+}
+
+@usableFromInline
+struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    switch _fastio_integer_mode {
+    case FastIOIntegerBinary:
+      return try _atoul2<Element>.read()
+    case FastIOIntegerOctal:
+      return try _atoul8<Element>.read()
+    case FastIOIntegerDecimal:
+      return try _atoul10<Element>.read()
+    case FastIOIntegerHexadecimal:
+      return try _atoul16<Element>.read()
+    default:
+      fatalError("Integer input mode is not implemented")
+    }
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    switch _fastio_integer_mode {
+    case FastIOIntegerBinary:
+      return try _atoul2<Element>.read()
+    case FastIOIntegerOctal:
+      return try _atoul8<Element>.read()
+    case FastIOIntegerDecimal:
+      return try _atoul10<Element>.read()
+    case FastIOIntegerHexadecimal:
+      return try _atoul16<Element>.read()
+    default:
+      fatalError("Integer input mode is not implemented")
+    }
+  }
+}
+
+@usableFromInline
+struct _atol10<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, StaticIOReader {
 
   @inlinable
   @inline(__always)
@@ -303,7 +614,103 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, St
 }
 
 @usableFromInline
-struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader, StaticIOReader {
+struct _atoul10<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atol16<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader16, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader16, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atol2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader2, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atoul2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader2, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atol8<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader8, StaticIOReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
+struct _atoul8<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader8, StaticIOReader {
 
   @inlinable
   @inline(__always)

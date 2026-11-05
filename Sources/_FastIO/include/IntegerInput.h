@@ -9,4 +9,6 @@ typedef enum {
   FastIOIntegerHexadecimal = 16
 } FastIOIntegerMode;
 
+extern FastIOIntegerMode _fastio_integer_mode;
+
 #endif
