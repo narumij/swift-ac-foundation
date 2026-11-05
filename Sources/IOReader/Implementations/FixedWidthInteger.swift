@@ -5,13 +5,6 @@ where Self: FixedWidthInteger & SignedInteger {}
 
 extension IOReadableInteger {
 
-  /// 指定した基数（2〜16）の数字列を読む。接頭辞は解釈しない。
-  @inlinable
-  @inline(__always)
-  public static func read(radix: Int) throws -> Self {
-    valuePreservingSeparator(try _atol<Self>._read(radix: radix))
-  }
-
   @inlinable
   @inline(__always)
   public static func read() throws -> Self {
@@ -29,13 +22,6 @@ public protocol IOReadableUnsignedInteger: SingleReadable, InputElementReadable
 where Self: FixedWidthInteger & UnsignedInteger {}
 
 extension IOReadableUnsignedInteger {
-
-  /// 指定した基数（2〜16）の数字列を読む。接頭辞は解釈しない。
-  @inlinable
-  @inline(__always)
-  public static func read(radix: Int) throws -> Self {
-    valuePreservingSeparator(try _atoul<Self>._read(radix: radix))
-  }
 
   @inlinable
   @inline(__always)

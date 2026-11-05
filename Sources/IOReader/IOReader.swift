@@ -114,14 +114,13 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read(radix: Int = 10) throws -> (Element, UInt8) {
-    precondition((2...16).contains(radix), "Radix must be between 2 and 16")
+  static func _read() throws -> (Element, UInt8) {
     var c: UInt8 = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
     }
-    guard let firstDigit = integerDigit(c, radix: radix) else {
+    guard isNumber(c) else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
@@ -132,16 +131,13 @@ extension ZeroBufferIOReader {
       ? Element.min.magnitude : Element.max.magnitude
     var magnitude: Element.Magnitude = 0
     var overflow = false
-    var digit = firstDigit
     repeat {
-      let product = magnitude.multipliedReportingOverflow(by: Element.Magnitude(radix))
-      let sum = product.partialValue.addingReportingOverflow(Element.Magnitude(digit))
+      let product = magnitude.multipliedReportingOverflow(by: 10)
+      let sum = product.partialValue.addingReportingOverflow(Element.Magnitude(c - .ZERO))
       magnitude = sum.partialValue
       overflow = overflow || product.overflow || sum.overflow || magnitude > limit
       c = nullIfEOF(_getchar_unlocked())
-      guard let nextDigit = integerDigit(c, radix: radix) else { break }
-      digit = nextDigit
-    } while true
+    } while isNumber(c)
 
     // 範囲外でも数字列は最後まで消費し、最初の非数字は次の読取りへ残す。
     guard !overflow else {
