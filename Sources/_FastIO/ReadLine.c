@@ -1,9 +1,12 @@
+#include "BufferedInput.h"
 #include "FastIO.h"
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 
 size_t _readLine_stdin(unsigned char **LinePtr) {
+  if (_restore_stdin() == EOF)
+    return 0;
   size_t Capacity = 0;
   size_t result;
   do {
@@ -12,6 +15,4 @@ size_t _readLine_stdin(unsigned char **LinePtr) {
   return result;
 }
 
-void _free(void * ptr) {
-  free(ptr);
-}
+void _free(void *ptr) { free(ptr); }

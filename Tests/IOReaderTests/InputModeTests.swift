@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class InputModeTests: XCTestCase {
+final class InputModeTests: IOReaderTests {
   func testTextRepresentationsAndWordRows() throws {
     try SolverRunner(solver: {
       XCTAssertEqual(String.stdin(read: .line), "a b")

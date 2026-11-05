@@ -4,7 +4,7 @@ import TestingUtil
 import XCTest
 import _FastIO
 
-final class CinCompatibleCharacterTests: XCTestCase {
+final class CinCompatibleCharacterTests: IOReaderTests {
 
   // Test as Spec: CIN_READING_GUIDE.md「前提」「文字の読取り」。
   // 資料: Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md

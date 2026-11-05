@@ -2,7 +2,8 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CheckModeTests: XCTestCase {
+final class CheckModeTests: IOReaderTests {
+  
   func testExistingReaders() throws {
     try SolverRunner(solver: {
       XCTAssertEqual([Int].stdin(rows: 2, check: .strict), [1, 2])

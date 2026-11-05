@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderUnexpectedEOFTests: XCTestCase {
+final class ReaderUnexpectedEOFTests: IOReaderTests {
 
   func testUnexpectedEOF1() throws {
 

@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderFixtureTests: XCTestCase {
+final class ReaderFixtureTests: IOReaderTests {
   
   func testOneLineFixtureInt() throws {
 

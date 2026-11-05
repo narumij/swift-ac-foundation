@@ -135,6 +135,7 @@ let package = Package(
     .target(
       name: "TestingUtil",
       dependencies: [
+        "_FastIO",
         .product(name: "Algorithms", package: "swift-algorithms")
       ],
       swiftSettings: _settings),

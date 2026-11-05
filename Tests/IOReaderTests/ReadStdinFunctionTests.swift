@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class ReadStdinFunctionTests: XCTestCase {
+final class ReadStdinFunctionTests: IOReaderTests {
   
   func testStdinReadsIntegersUntilEndOfLine() throws {
     try SolverRunner(solver: {

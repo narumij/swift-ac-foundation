@@ -1,9 +1,14 @@
 import _FastIO
 
+package func standardReadLine(strippingNewline: Bool = true) -> String? {
+  guard _restore_stdin() == 0 else { return nil }
+  return Swift.readLine(strippingNewline: strippingNewline)
+}
+
 extension Array where Element == String {
 
   public static func stdin(rows: Int, strippingNewline: Bool = true) -> Self {
-    (0..<rows).compactMap { _ in Swift.readLine(strippingNewline: strippingNewline) }
+    (0..<rows).compactMap { _ in standardReadLine(strippingNewline: strippingNewline) }
   }
 }
 
@@ -12,19 +17,15 @@ extension Array where Element == Character {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Character]? {
-    #if true
-      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
-        return [Character](unsafeUninitializedCapacity: readBuffer.count) {
-          buffer, initializedCount in
-          initializedCount = readBuffer.count
-          for i in 0..<readBuffer.count {
-            buffer.initializeElement(at: i, to: Character(UnicodeScalar(readBuffer[i])))
-          }
+    return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+      return [Character](unsafeUninitializedCapacity: readBuffer.count) {
+        buffer, initializedCount in
+        initializedCount = readBuffer.count
+        for i in 0..<readBuffer.count {
+          buffer.initializeElement(at: i, to: Character(UnicodeScalar(readBuffer[i])))
         }
       }
-    #else
-      Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
-    #endif
+    }
   }
 }
 
@@ -40,16 +41,12 @@ extension Array where Element == UInt8 {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [UInt8]? {
-    #if true
-      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
-        return [UInt8](unsafeUninitializedCapacity: readBuffer.count) { buffer, initializedCount in
-          initializedCount = readBuffer.count
-          buffer.baseAddress?.initialize(from: readBuffer.baseAddress!, count: readBuffer.count)
-        }
+    return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+      return [UInt8](unsafeUninitializedCapacity: readBuffer.count) { buffer, initializedCount in
+        initializedCount = readBuffer.count
+        buffer.baseAddress?.initialize(from: readBuffer.baseAddress!, count: readBuffer.count)
       }
-    #else
-      Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
-    #endif
+    }
   }
 }
 

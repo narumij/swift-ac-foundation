@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderLineTests: XCTestCase {
+final class ReaderLineTests: IOReaderTests {
   
   func testReadLine() throws {
 
@@ -156,7 +156,7 @@ final class ReaderLineTests: XCTestCase {
       """)
 
     _ = try SolverRunner(solver: {
-      let A = Swift.readLine()
+      let A = standardReadLine()
       XCTAssertEqual(A, "Takahashi Aoki")
     })
     .run(input: "Takahashi Aoki")

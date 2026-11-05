@@ -2,24 +2,25 @@ import Foundation
 import IOReader
 import TestingUtil
 import XCTest
+import _FastIO
 
-final class ReadSeparatorTests: XCTestCase {
+final class ReadSeparatorTests: IOReaderTests {
   func testValueReadersLeaveEachSupportedSeparator() throws {
     for separator in [" ", "\t", "\n", "\r"] {
       try withExactInput(["-12", "34", "1.25", "word", "bytes", "chars", ""].joined(separator: separator)) {
         let byte = Int32(separator.utf8.first!)
         XCTAssertEqual(Int.stdin, -12)
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(try CUnsignedInt.read(), 34)
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(Double.stdin, 1.25)
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(String.stdin(read: .word), "word")
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(try [UInt8].read(), Array("bytes".utf8))
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(try [Character].read(), Array("chars"))
-        XCTAssertEqual(getchar_unlocked(), byte)
+        XCTAssertEqual(_getchar_unlocked(), byte)
         XCTAssertEqual(getchar_unlocked(), -1)
       }
     }
@@ -73,7 +74,7 @@ final class ReadSeparatorTests: XCTestCase {
     for (input, read) in readers {
       try withExactInput(input) {
         try read()
-        XCTAssertEqual(getchar_unlocked(), -1)
+        XCTAssertEqual(_getchar_unlocked(), -1)
         XCTAssertThrowsError(try String.read()) {
           XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
         }
@@ -96,8 +97,26 @@ final class ReadSeparatorTests: XCTestCase {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedSpace)
       }
       XCTAssertEqual(try String.read(), "next")
-      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(_getchar_unlocked(), 10)
     }).inputOnly("ab next\n")
+  }
+
+  func testRestorePendingByteBeforeSwiftReadLine() throws {
+    try SolverRunner(solver: {
+      XCTAssertEqual(Int.stdin, 12)
+      XCTAssertEqual(_restore_stdin(), 0)
+      XCTAssertEqual(_restore_stdin(), 0) // 再実行で二重に戻さない。
+      XCTAssertEqual(standardReadLine(), " rest")
+      XCTAssertEqual(Int.stdin, 34)
+      XCTAssertEqual(_getchar_unlocked(), 10)
+    }).inputOnly("12 rest\n34\n")
+  }
+
+  func testStringRowsRestorePendingNewline() throws {
+    try SolverRunner(solver: {
+      XCTAssertEqual(Int.stdin, 12)
+      XCTAssertEqual([String].stdin(rows: 2, strippingNewline: true), ["", "next"])
+    }).inputOnly("12\nnext\n")
   }
 
   private func withExactInput(_ input: String, _ body: @escaping () throws -> Void) throws {
