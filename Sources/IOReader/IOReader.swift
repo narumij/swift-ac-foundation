@@ -1,3 +1,4 @@
+import _FastIO
 import Foundation
 
 // MARK: - IOReader
@@ -51,7 +52,7 @@ func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
 @inline(__always)
 func valuePreservingSeparator<Value>(_ result: (value: Value, separator: UInt8)) -> Value {
   if result.separator != .NULL {
-    _ = ungetc(Int32(result.separator), stdin)
+    _ = _ungetc(Int32(result.separator))
   }
   return result.value
 }
@@ -71,7 +72,7 @@ extension FixedWidthInteger {
   static func readHead() throws -> Self {
     var head: Self
     repeat {
-      let c = getchar_unlocked()
+      let c = _getchar_unlocked()
       if c == -1 {
         throw IOReaderError.unexpectedEOF
       }
@@ -103,7 +104,7 @@ extension ZeroBufferIOReader {
       element = c - .ZERO
     }
     while true {
-      c = nullIfEOF(getchar_unlocked())
+      c = nullIfEOF(_getchar_unlocked())
       if isASCIIWhitespaceOrNull(c) {
         break
       }
@@ -118,7 +119,7 @@ extension ZeroBufferIOReader {
     var element: Element = try .readHead() &- .ZERO
     var c: Element
     while true {
-      c = nullIfEOF(getchar_unlocked())
+      c = nullIfEOF(_getchar_unlocked())
       if isASCIIWhitespaceOrNull(c) {
         break
       }
@@ -182,7 +183,7 @@ extension VariableBufferIOReader {
     var current: BufferElement = try .readHead()
     while !isASCIIWhitespaceOrNull(current) {
       buffer.append(current)
-      current = nullIfEOF(getchar_unlocked())
+      current = nullIfEOF(_getchar_unlocked())
     }
     defer { resetBufferIfNeeded() }
     return try f(buffer, current).unwrap(or: IOReaderError.unexpectedNil)
@@ -194,7 +195,7 @@ extension VariableBufferIOReader {
     buffer.removeAll(keepingCapacity: true)
     var lastByte: BufferElement = 0
     for i in 0..<count {
-      lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
+      lastByte = i == 0 ? try .readHead() : nullIfEOF(_getchar_unlocked())
       if lastByte == .NULL {
         throw IOReaderError.unexpectedEOF
       }
@@ -308,7 +309,7 @@ struct _atof: InstanceIOReader {
     buffer.append(try .readHead())
     while !isASCIIWhitespaceOrNull(buffer[current]) {
       current += 1
-      buffer.append(nullIfEOF(getchar_unlocked()))
+      buffer.append(nullIfEOF(_getchar_unlocked()))
     }
     return try buffer.withUnsafeBufferPointer {
       try f($0, current).unwrap(or: IOReaderError.unexpectedNil)
@@ -363,6 +364,17 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
   static func read(count: Int) throws -> Element {
     return try instance.readBytes(count: count)
   }
+  
+  @inlinable
+  @inline(__always)
+  static func readAscii() throws -> UInt8 {
+    while true {
+      let c = _getchar_unlocked()
+      if c == -1 { throw IOReaderError.unexpectedEOF }
+      if c == 0x20 || (0x09...0x0D).contains(c) { continue }
+      return UInt8(c)
+    }
+  }
 
   nonisolated(unsafe)
     public static var instance = Self()
@@ -387,7 +399,7 @@ struct _atoc: InstanceIOReader, VariableBuffer {
     var current: UInt8 = try .readHead()
     while !isASCIIWhitespaceOrNull(current) {
       buffer.append(Character(UnicodeScalar(current)))
-      current = nullIfEOF(getchar_unlocked())
+      current = nullIfEOF(_getchar_unlocked())
     }
     defer { resetBufferIfNeeded() }
     return (buffer, current)
@@ -411,7 +423,7 @@ struct _atoc: InstanceIOReader, VariableBuffer {
     buffer.removeAll(keepingCapacity: true)
     var lastByte: UInt8 = 0
     for i in 0..<count {
-      lastByte = i == 0 ? try .readHead() : nullIfEOF(getchar_unlocked())
+      lastByte = i == 0 ? try .readHead() : nullIfEOF(_getchar_unlocked())
       if lastByte == .NULL {
         throw IOReaderError.unexpectedEOF
       }
