@@ -426,6 +426,26 @@ extension StaticIOReader {
 }
 
 @usableFromInline
+protocol StaticIOSubReader: StaticIOReader {
+  static func _read() throws -> (Element, UInt8)
+}
+
+extension StaticIOSubReader {
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> Element {
+    valuePreservingSeparator(try Self._read())
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read() throws -> (value: Element, separator: UInt8) {
+    try Self._read()
+  }
+}
+
+@usableFromInline
 protocol InstanceIOReader {
   associatedtype Element
   mutating func read() throws -> Element
@@ -521,204 +541,64 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
 }
 
 @usableFromInline
-struct _atol10<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atol10<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReader, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoul10<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoul10<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReader, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atol16<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader16, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atol16<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReader16, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader16, StaticIOReader
-{
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReader16, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atol2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader2, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atol2<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReader2, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoul2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader2, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoul2<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReader2, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atol8<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader8, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atol8<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReader8, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoul8<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader8, StaticIOReader {
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoul8<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReader8, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atolAuto<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto, StaticIOReader
-{
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atolAuto<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReaderAuto, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto,
-  StaticIOReader
-{
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReaderAuto, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto2,
-  StaticIOReader
-{
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>:
+  ZeroBufferIOReaderAuto2, StaticIOSubReader
+{}
 
 @usableFromInline
-struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto2,
-  StaticIOReader
-{
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    try Self._read()
-  }
-}
+struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>:
+  ZeroBufferIOReaderAuto2, StaticIOSubReader
+{}
 
 @usableFromInline
 struct _atof: InstanceIOReader {
