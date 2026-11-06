@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleFloatingPointTests: IOReaderTests {
+final class CinCompatibleFloatingPointTests: CinCompatibleTestCase {
   // Test as Specの原型:
   // Specifications/CIN_READING_GUIDE.md「浮動小数の読取り」。
   // ASCII / classic locale / skipws有効。失敗はSwift側ではread()の例外として確認。

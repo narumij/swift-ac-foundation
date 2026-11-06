@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class ReadStdinPropertyTests: IOReaderTests {
+final class ReadStdinPropertyTests: IOReaderTestCase {
   
   func testStringProperties() throws {
     try SolverRunner(solver: {

@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleStringTests: IOReaderTests {
+final class CinCompatibleStringTests: CinCompatibleTestCase {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「単語と行の読取り」。
   // Specifications/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / width=0。NULは対象外。

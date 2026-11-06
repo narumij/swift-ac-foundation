@@ -3,7 +3,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class IOReaderCRLFTests: IOReaderTests {
+final class IOReaderCRLFTests: IOReaderTestCase {
 
   func testRawReadLineStripsCRLF() throws {
     // 修正前の `[UInt8].readLine(strippingNewline: true)` と

@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleCharacterTests: IOReaderTests {
+final class CinCompatibleCharacterTests: CinCompatibleTestCase {
 
   // Test as Spec: CIN_READING_GUIDE.md「前提」「文字の読取り」。
   // 資料: Specifications/CIN_READING_GUIDE.md

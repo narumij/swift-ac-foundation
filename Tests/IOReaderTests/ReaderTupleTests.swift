@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderTupleTests: IOReaderTests {
+final class ReaderTupleTests: IOReaderTestCase {
   
   func testTuple1() throws {
     XCTAssertEqual(

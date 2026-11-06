@@ -6,7 +6,7 @@ int _fastio_pending_character = EOF;
 
 // 1文字キャッシュを利用するかどうか
 // 知ってる人だけ切り替える方式でいい気はする
-int _use_fastio_pending_character = 0;
+int _use_fastio_pending_character = 1;
 
 // 整数入力モード
 // 知ってる人だけ切り替える方式でいい気はする
@@ -21,6 +21,9 @@ FastIOFloatingPointMode _fastio_floating_point_mode = FastIOFloatingPointGCCLike
 int _set_fastio_uses_pending_character(int enabled) {
   if (!enabled && _restore_stdin() == EOF)
     return EOF;
+  else {
+    _restore_stdin();
+  }
   _use_fastio_pending_character = enabled != 0;
   return 0;
 }

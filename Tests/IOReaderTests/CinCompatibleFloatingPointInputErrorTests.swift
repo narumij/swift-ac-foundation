@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
+final class CinCompatibleFloatingPointInputErrorTests: CinCompatibleTestCase {
   func testFailedInputAndRemainingCharacterAreReported() throws {
     for (input, candidate, next, reason) in [
       ("1e+!", "1e+", UInt8(ascii: "!"), IOReaderError.invalidFloatingPoint),

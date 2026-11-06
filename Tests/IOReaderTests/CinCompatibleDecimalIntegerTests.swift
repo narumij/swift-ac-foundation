@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleDecimalIntegerTests: IOReaderTests {
+final class CinCompatibleDecimalIntegerTests: CinCompatibleTestCase {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「整数の読取り」。
   // 資料: Specifications/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / 十進。

@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleAuto2IntegerTests: IOReaderTests {
+final class CinCompatibleAuto2IntegerTests: CinCompatibleTestCase {
   func testAuto2DetectionAndRemainingInput() throws {
     // Extension of cin-style Auto: also recognize 0b/0B.
     for (input, expected, tail) in [

@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
+final class CinCompatibleStrtodFloatingPointTests: CinCompatibleTestCase {
   func testValuesAndRemainingInput() throws {
     for (input, value, remaining) in [
       ("12abc rest", 12.0, "abc rest"), ("12x", 12.0, "x"),

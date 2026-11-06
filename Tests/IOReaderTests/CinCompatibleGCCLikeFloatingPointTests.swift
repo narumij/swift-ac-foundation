@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleGCCLikeFloatingPointTests: IOReaderTests {
+final class CinCompatibleGCCLikeFloatingPointTests: CinCompatibleTestCase {
   func testHexPrefixIsLeftInInput() throws {
     for (input, remaining) in [
       ("0x1p2", "x1p2"), ("0X1P2", "X1P2"),

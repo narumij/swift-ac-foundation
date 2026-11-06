@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderLineTests: IOReaderTests {
+final class ReaderLineTests: IOReaderTestCase {
   
   func testReadLine() throws {
 

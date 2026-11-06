@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleOctalIntegerTests: IOReaderTests {
+final class CinCompatibleOctalIntegerTests: CinCompatibleTestCase {
   // Explicit octal input; a leading zero is optional.
   func testOctalInput() throws {
     for (input, expected) in [("0", 0), ("017", 15), ("+17", 15), ("-017", -15)] {

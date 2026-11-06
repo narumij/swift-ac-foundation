@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleAutoIntegerTests: IOReaderTests {
+final class CinCompatibleAutoIntegerTests: CinCompatibleTestCase {
   func testAutoDetectionAndRemainingInput() throws {
     // cin / setbase(0): binary prefixes are not recognized.
     for (input, expected, tail) in [

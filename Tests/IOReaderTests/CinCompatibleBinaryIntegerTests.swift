@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleBinaryIntegerTests: IOReaderTests {
+final class CinCompatibleBinaryIntegerTests: CinCompatibleTestCase {
   // Binary is an extension; cin has no binary input manipulator.
   func testBinaryInput() throws {
     for (input, expected) in [("0", 0), ("101", 5), ("+0b11", 3), ("-0B11", -3)] {

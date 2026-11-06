@@ -4,7 +4,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleReadSeparatorTests: IOReaderTests {
+final class CinCompatibleReadSeparatorTests: CinCompatibleTestCase {
   func testValueReadersLeaveEachSupportedSeparator() throws {
     for separator in [" ", "\t", "\n", "\r"] {
       try withExactInput(["-12", "34", "1.25", "word", "bytes", "chars", ""].joined(separator: separator)) {

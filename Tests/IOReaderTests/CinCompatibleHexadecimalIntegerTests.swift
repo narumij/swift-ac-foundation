@@ -3,7 +3,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
+final class CinCompatibleHexadecimalIntegerTests: CinCompatibleTestCase {
   func testHexadecimalSignedValuesAndRemainingInput() throws {
     for (input, expected) in [("0", 0), ("00", 0), ("2f", 47), ("0X2F", 47),
                               ("+0x3", 3), ("-0x3", -3), ("-F", -15)] {
