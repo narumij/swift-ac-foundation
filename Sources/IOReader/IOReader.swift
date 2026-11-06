@@ -487,21 +487,42 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader {
   public static func read() throws -> (value: Element, separator: UInt8) {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
-      return try _atolAuto<Element>.read()
+      return try _atolAuto.read()
     case FastIOIntegerAuto2:
-      return try _atolAuto2<Element>.read()
+      return try _atolAuto2.read()
     case FastIOIntegerBinary:
-      return try _atol2<Element>.read()
+      return try _atol2.read()
     case FastIOIntegerOctal:
-      return try _atol8<Element>.read()
+      return try _atol8.read()
     case FastIOIntegerDecimal:
-      return try _atol10<Element>.read()
+      return try _atol10.read()
     case FastIOIntegerHexadecimal:
-      return try _atol16<Element>.read()
+      return try _atol16.read()
     default:
       fatalError("Integer input mode is not implemented")
     }
   }
+}
+
+extension _atol {
+
+  @usableFromInline
+  struct _atol2: ZeroBufferIOReader2, StaticIOSubReader {}
+
+  @usableFromInline
+  struct _atol8: ZeroBufferIOReader8, StaticIOSubReader {}
+
+  @usableFromInline
+  struct _atol10: ZeroBufferIOReader, StaticIOSubReader {}
+
+  @usableFromInline
+  struct _atol16: ZeroBufferIOReader16, StaticIOSubReader {}
+
+  @usableFromInline
+  struct _atolAuto: ZeroBufferIOReaderAuto, StaticIOSubReader {}
+
+  @usableFromInline
+  struct _atolAuto2: ZeroBufferIOReaderAuto2, StaticIOSubReader {}
 }
 
 @usableFromInline
@@ -518,82 +539,43 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
   public static func read() throws -> (value: Element, separator: UInt8) {
     switch _fastio_integer_mode {
     case FastIOIntegerAuto:
-      return try _atoulAuto<Element>.read()
+      return try _atoulAuto.read()
     case FastIOIntegerAuto2:
-      return try _atoulAuto2<Element>.read()
+      return try _atoulAuto2.read()
     case FastIOIntegerBinary:
-      return try _atoul2<Element>.read()
+      return try _atoul2.read()
     case FastIOIntegerOctal:
-      return try _atoul8<Element>.read()
+      return try _atoul8.read()
     case FastIOIntegerDecimal:
-      return try _atoul10<Element>.read()
+      return try _atoul10.read()
     case FastIOIntegerHexadecimal:
-      return try _atoul16<Element>.read()
+      return try _atoul16.read()
     default:
       fatalError("Integer input mode is not implemented")
     }
   }
 }
 
-@usableFromInline
-struct _atol10<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReader, StaticIOSubReader
-{}
+extension _atoul {
 
-@usableFromInline
-struct _atoul10<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReader, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoul2: ZeroBufferIOReader2, StaticIOSubReader {}
 
-@usableFromInline
-struct _atol16<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReader16, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoul8: ZeroBufferIOReader8, StaticIOSubReader {}
 
-@usableFromInline
-struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReader16, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoul10: ZeroBufferIOReader, StaticIOSubReader {}
 
-@usableFromInline
-struct _atol2<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReader2, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoul16: ZeroBufferIOReader16, StaticIOSubReader {}
 
-@usableFromInline
-struct _atoul2<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReader2, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoulAuto: ZeroBufferIOReaderAuto, StaticIOSubReader {}
 
-@usableFromInline
-struct _atol8<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReader8, StaticIOSubReader
-{}
-
-@usableFromInline
-struct _atoul8<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReader8, StaticIOSubReader
-{}
-
-@usableFromInline
-struct _atolAuto<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReaderAuto, StaticIOSubReader
-{}
-
-@usableFromInline
-struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReaderAuto, StaticIOSubReader
-{}
-
-@usableFromInline
-struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>:
-  ZeroBufferIOReaderAuto2, StaticIOSubReader
-{}
-
-@usableFromInline
-struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>:
-  ZeroBufferIOReaderAuto2, StaticIOSubReader
-{}
+  @usableFromInline
+  struct _atoulAuto2: ZeroBufferIOReaderAuto2, StaticIOSubReader {}
+}
 
 @usableFromInline
 struct _atof: InstanceIOReader {
