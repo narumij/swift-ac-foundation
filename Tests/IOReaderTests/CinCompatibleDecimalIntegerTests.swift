@@ -4,7 +4,7 @@ import TestingUtil
 import XCTest
 @preconcurrency import _FastIO
 
-final class DecimalIntegerTests: IOReaderTests {
+final class CinCompatibleDecimalIntegerTests: IOReaderTests {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「整数の読取り」。
   // 資料: Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / 十進。

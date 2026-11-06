@@ -3,7 +3,7 @@ import TestingUtil
 import XCTest
 @preconcurrency import _FastIO
 
-final class StrtodFloatingPointTests: IOReaderTests {
+final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
   func testValuesAndRemainingInput() throws {
     for (input, value, remaining) in [
       ("12abc rest", 12.0, "abc rest"), ("12x", 12.0, "x"),
@@ -12,9 +12,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
       ("-0.5e-2!", -0.005, "!"), ("1.2.3", 1.2, ".3"),
     ] {
       try SolverRunner {
-        let savedMode = _fastio_floating_point_mode
-        defer { _fastio_floating_point_mode = savedMode }
-        _fastio_floating_point_mode = FastIOFloatingPointSpecific
+        let savedMode = InputConfiguration.shared.floatingPointMode
+        defer { InputConfiguration.shared.floatingPointMode = savedMode }
+        InputConfiguration.shared.floatingPointMode = .specific
         XCTAssertEqual(try Double.read(), value, input)
         for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
         XCTAssertEqual(_getchar_unlocked(), EOF, input)
@@ -25,9 +25,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
   func testIncompleteSyntaxIsConsumedAndFails() throws {
     for prefix in ["+", ".", "1e", "1e+", "0x", "0x.", "0x1p-", "in", "infi", "nan("] {
       try SolverRunner {
-        let savedMode = _fastio_floating_point_mode
-        defer { _fastio_floating_point_mode = savedMode }
-        _fastio_floating_point_mode = FastIOFloatingPointSpecific
+        let savedMode = InputConfiguration.shared.floatingPointMode
+        defer { InputConfiguration.shared.floatingPointMode = savedMode }
+        InputConfiguration.shared.floatingPointMode = .specific
         XCTAssertThrowsError(try Double.read(), prefix) {
           XCTAssertEqual(($0 as? FloatingPointInputError)?.reason, .invalidFloatingPoint)
           XCTAssertEqual(($0 as? FloatingPointInputError)?.input, prefix)
@@ -42,9 +42,9 @@ final class StrtodFloatingPointTests: IOReaderTests {
   func testInfinityAndNaN() throws {
     for input in ["inf", "INFINITY", "-inf", "+Infinity", "nan", "NAN", "nan()", "nan(payload_1)"] {
       try SolverRunner {
-        let savedMode = _fastio_floating_point_mode
-        defer { _fastio_floating_point_mode = savedMode }
-        _fastio_floating_point_mode = FastIOFloatingPointSpecific
+        let savedMode = InputConfiguration.shared.floatingPointMode
+        defer { InputConfiguration.shared.floatingPointMode = savedMode }
+        InputConfiguration.shared.floatingPointMode = .specific
         let value = try Double.read()
         if input.lowercased().contains("nan") { XCTAssertTrue(value.isNaN, input) }
         else {

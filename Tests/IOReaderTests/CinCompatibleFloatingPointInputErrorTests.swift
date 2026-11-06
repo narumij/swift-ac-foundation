@@ -3,7 +3,7 @@ import TestingUtil
 import XCTest
 @preconcurrency import _FastIO
 
-final class FloatingPointInputErrorTests: IOReaderTests {
+final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
   func testFailedInputAndRemainingCharacterAreReported() throws {
     for (input, candidate, next, reason) in [
       ("1e+!", "1e+", UInt8(ascii: "!"), IOReaderError.invalidFloatingPoint),
@@ -11,9 +11,9 @@ final class FloatingPointInputErrorTests: IOReaderTests {
       ("1e9999 ", "1e9999", UInt8(ascii: " "), IOReaderError.floatingPointOutOfRange),
     ] {
       try SolverRunner {
-        let saved = _fastio_floating_point_mode
-        defer { _fastio_floating_point_mode = saved }
-        _fastio_floating_point_mode = FastIOFloatingPointGCCLike
+        let saved = InputConfiguration.shared.floatingPointMode
+        defer { InputConfiguration.shared.floatingPointMode = saved }
+        InputConfiguration.shared.floatingPointMode = .gccLike
         XCTAssertThrowsError(try Double.read()) {
           let error = $0 as? FloatingPointInputError
           XCTAssertEqual(error?.reason, reason)

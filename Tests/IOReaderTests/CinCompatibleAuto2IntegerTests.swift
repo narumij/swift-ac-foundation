@@ -14,9 +14,9 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
       ("12abc", 12, "abc"), ("00x1", 0, "x1"),
     ] {
       try SolverRunner {
-        let saved = _fastio_integer_mode
-        defer { _fastio_integer_mode = saved }
-        _fastio_integer_mode = FastIOIntegerAuto2
+        let saved = InputConfiguration.shared.integerMode
+        defer { InputConfiguration.shared.integerMode = saved }
+        InputConfiguration.shared.integerMode = .auto2
         XCTAssertEqual(Int.stdin, expected, input)
         for byte in tail.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(byte), input) }
         XCTAssertEqual(_getchar_unlocked(), EOF)
@@ -26,15 +26,15 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
 
   func testAuto2MixedBasesAndModeSwitch() throws {
     try SolverRunner {
-      let saved = _fastio_integer_mode
-      defer { _fastio_integer_mode = saved }
-      _fastio_integer_mode = FastIOIntegerAuto2
+      let saved = InputConfiguration.shared.integerMode
+      defer { InputConfiguration.shared.integerMode = saved }
+      InputConfiguration.shared.integerMode = .auto2
       XCTAssertEqual(Int.stdin, 42)
       XCTAssertEqual(Int.stdin, 42)
       XCTAssertEqual(Int.stdin, 42)
-      _fastio_integer_mode = FastIOIntegerDecimal
+      InputConfiguration.shared.integerMode = .decimal
       XCTAssertEqual(Int.stdin, 52)
-      _fastio_integer_mode = FastIOIntegerAuto2
+      InputConfiguration.shared.integerMode = .auto2
       XCTAssertEqual(Int.stdin, 42)
     }.exactInput("42 052 0x2a 052 052")
   }
@@ -42,9 +42,9 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
   func testAuto2IntegerLimits() throws {
     for (radix, prefix) in [(2, "0b"), (10, ""), (8, "0"), (16, "0x")] {
       try SolverRunner {
-        let saved = _fastio_integer_mode
-        defer { _fastio_integer_mode = saved }
-        _fastio_integer_mode = FastIOIntegerAuto2
+        let saved = InputConfiguration.shared.integerMode
+        defer { InputConfiguration.shared.integerMode = saved }
+        InputConfiguration.shared.integerMode = .auto2
         XCTAssertEqual(Int.stdin, Int.min)
         XCTAssertEqual(Int.stdin, Int.max)
         XCTAssertEqual(UInt.stdin, UInt.max)
@@ -55,9 +55,9 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
         + " -" + prefix + String(UInt.max, radix: radix))
       if #available(macOS 15.0, *) {
         try SolverRunner {
-          let saved = _fastio_integer_mode
-          defer { _fastio_integer_mode = saved }
-          _fastio_integer_mode = FastIOIntegerAuto2
+          let saved = InputConfiguration.shared.integerMode
+          defer { InputConfiguration.shared.integerMode = saved }
+          InputConfiguration.shared.integerMode = .auto2
           XCTAssertEqual(Int128.stdin, Int128.min)
           XCTAssertEqual(UInt128.stdin, UInt128.max)
         }.exactInput("-" + prefix + String(Int128.min.magnitude, radix: radix)
@@ -67,13 +67,13 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
   }
   func testAuto2AndAutoTreatBinaryPrefixDifferently() throws {
     try SolverRunner {
-      let saved = _fastio_integer_mode
-      defer { _fastio_integer_mode = saved }
-      _fastio_integer_mode = FastIOIntegerAuto
+      let saved = InputConfiguration.shared.integerMode
+      defer { InputConfiguration.shared.integerMode = saved }
+      InputConfiguration.shared.integerMode = .auto
       XCTAssertEqual(Int.stdin, 0)
       XCTAssertEqual(Character.stdin, "b")
       XCTAssertEqual(Int.stdin, 11)
-      _fastio_integer_mode = FastIOIntegerAuto2
+      InputConfiguration.shared.integerMode = .auto2
       XCTAssertEqual(Int.stdin, 3)
       XCTAssertEqual(_getchar_unlocked(), EOF)
     }.exactInput("0b11 0b11")

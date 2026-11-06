@@ -8,9 +8,9 @@ final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
     for (input, expected) in [("0", 0), ("00", 0), ("2f", 47), ("0X2F", 47),
                               ("+0x3", 3), ("-0x3", -3), ("-F", -15)] {
       try SolverRunner {
-        let saved = _fastio_integer_mode
-        defer { _fastio_integer_mode = saved }
-        _fastio_integer_mode = FastIOIntegerHexadecimal
+        let saved = InputConfiguration.shared.integerMode
+        defer { InputConfiguration.shared.integerMode = saved }
+        InputConfiguration.shared.integerMode = .hexadecimal
         XCTAssertEqual(Int.stdin, expected)
         XCTAssertEqual(_getchar_unlocked(), 33)
         XCTAssertEqual(_getchar_unlocked(), EOF)
@@ -20,9 +20,9 @@ final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
 
   func testHexadecimalUnsignedValues() throws {
     try SolverRunner {
-      let saved = _fastio_integer_mode
-      defer { _fastio_integer_mode = saved }
-      _fastio_integer_mode = FastIOIntegerHexadecimal
+      let saved = InputConfiguration.shared.integerMode
+      defer { InputConfiguration.shared.integerMode = saved }
+      InputConfiguration.shared.integerMode = .hexadecimal
       XCTAssertEqual(UInt.stdin, 47)
       XCTAssertEqual(UInt.stdin, UInt.max)
       XCTAssertEqual(UInt.stdin, 1)
@@ -31,22 +31,22 @@ final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
 
   func testModeSwitchBetweenReads() throws {
     try SolverRunner {
-      let saved = _fastio_integer_mode
-      defer { _fastio_integer_mode = saved }
-      _fastio_integer_mode = FastIOIntegerDecimal
+      let saved = InputConfiguration.shared.integerMode
+      defer { InputConfiguration.shared.integerMode = saved }
+      InputConfiguration.shared.integerMode = .decimal
       XCTAssertEqual(Int.stdin, 10)
-      _fastio_integer_mode = FastIOIntegerHexadecimal
+      InputConfiguration.shared.integerMode = .hexadecimal
       XCTAssertEqual(Int.stdin, 16)
-      _fastio_integer_mode = FastIOIntegerDecimal
+      InputConfiguration.shared.integerMode = .decimal
       XCTAssertEqual(Int.stdin, 10)
     }.exactInput("10 10 10")
   }
 
   func testHexadecimalIntegerLimits() throws {
     try SolverRunner {
-      let saved = _fastio_integer_mode
-      defer { _fastio_integer_mode = saved }
-      _fastio_integer_mode = FastIOIntegerHexadecimal
+      let saved = InputConfiguration.shared.integerMode
+      defer { InputConfiguration.shared.integerMode = saved }
+      InputConfiguration.shared.integerMode = .hexadecimal
       XCTAssertEqual(Int.stdin, Int.min)
       XCTAssertEqual(Int.stdin, Int.max)
       XCTAssertEqual(Int32.stdin, Int32.min)
@@ -54,9 +54,9 @@ final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
     }.exactInput("-8000000000000000 7fffffffffffffff -80000000 ffffffff")
     if #available(macOS 15.0, *) {
       try SolverRunner {
-        let saved = _fastio_integer_mode
-        defer { _fastio_integer_mode = saved }
-        _fastio_integer_mode = FastIOIntegerHexadecimal
+        let saved = InputConfiguration.shared.integerMode
+        defer { InputConfiguration.shared.integerMode = saved }
+        InputConfiguration.shared.integerMode = .hexadecimal
         XCTAssertEqual(Int128.stdin, Int128.min)
         XCTAssertEqual(Int128.stdin, Int128.max)
         XCTAssertEqual(UInt128.stdin, UInt128.max)
