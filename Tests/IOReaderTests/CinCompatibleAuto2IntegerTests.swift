@@ -14,8 +14,6 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
       ("12abc", 12, "abc"), ("00x1", 0, "x1"),
     ] {
       try SolverRunner {
-        let saved = InputConfiguration.shared.integerMode
-        defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .auto2
         XCTAssertEqual(Int.stdin, expected, input)
         for byte in tail.utf8 { XCTAssertEqual(getchar_unlocked(), Int32(byte), input) }
@@ -26,8 +24,6 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
 
   func testAuto2MixedBasesAndModeSwitch() throws {
     try SolverRunner {
-      let saved = InputConfiguration.shared.integerMode
-      defer { InputConfiguration.shared.integerMode = saved }
       InputConfiguration.shared.integerMode = .auto2
       XCTAssertEqual(Int.stdin, 42)
       XCTAssertEqual(Int.stdin, 42)
@@ -42,8 +38,6 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
   func testAuto2IntegerLimits() throws {
     for (radix, prefix) in [(2, "0b"), (10, ""), (8, "0"), (16, "0x")] {
       try SolverRunner {
-        let saved = InputConfiguration.shared.integerMode
-        defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .auto2
         XCTAssertEqual(Int.stdin, Int.min)
         XCTAssertEqual(Int.stdin, Int.max)
@@ -55,8 +49,6 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
         + " -" + prefix + String(UInt.max, radix: radix))
       if #available(macOS 15.0, *) {
         try SolverRunner {
-          let saved = InputConfiguration.shared.integerMode
-          defer { InputConfiguration.shared.integerMode = saved }
           InputConfiguration.shared.integerMode = .auto2
           XCTAssertEqual(Int128.stdin, Int128.min)
           XCTAssertEqual(UInt128.stdin, UInt128.max)
@@ -67,8 +59,6 @@ final class CinCompatibleAuto2IntegerTests: IOReaderTests {
   }
   func testAuto2AndAutoTreatBinaryPrefixDifferently() throws {
     try SolverRunner {
-      let saved = InputConfiguration.shared.integerMode
-      defer { InputConfiguration.shared.integerMode = saved }
       InputConfiguration.shared.integerMode = .auto
       XCTAssertEqual(Int.stdin, 0)
       XCTAssertEqual(Character.stdin, "b")

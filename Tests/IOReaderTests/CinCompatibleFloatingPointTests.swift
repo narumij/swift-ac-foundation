@@ -23,8 +23,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
       ("1E+3", 1000.0), ("1e-3", 0.001),
     ] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertEqual(try Double.read(), expected, input)
         self.assertRemaining("")
@@ -36,8 +34,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testLeadingWhitespaceAndPreservedSeparator() throws {
     for whitespace in [" ", "\t", "\n", "\r", "\u{0B}", "\u{0C}"] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertEqual(try Double.read(), 1.25)
         self.assertRemaining(whitespace + "rest")
@@ -47,10 +43,8 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   }
 
   func testStopsAtSecondDecimalPointOrNonCandidateCharacter() throws {
-    for (input, expected, remaining) in [("1.2.3", 1.2, ".3"), ("12z", 12.0, "z")] {
+    for (input, expected, remaining) in [("1.2.3", 1.2, ".3"), ("12z", 12.0, "z"), ("12n", 12.0, "n")] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertEqual(try Double.read(), expected, input)
         self.assertRemaining(remaining)
@@ -62,8 +56,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   func testIncompleteExponentFailsAfterConsumption() throws {
     for input in ["1e", "1e+"] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining("")
@@ -73,10 +65,8 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
   }
 
   func testLibcxxInvalidCandidateConsumption() throws {
-    for input in ["12x", "12abc"] {
+    for input in ["12x", "12abc", "12p", "1e5e3"] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining("")
@@ -85,11 +75,9 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
     }
   }
 
-  func testLibcxxSpecialNamesFailWithoutConsumption() throws {
-    for input in ["nan", "inf"] {
+  func testLibcxxInvalidStartsFailWithoutConsumption() throws {
+    for input in ["nan", "inf", "e5"] {
       try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
         XCTAssertThrowsError(try Double.read(), input)
         self.assertRemaining(input)
@@ -101,8 +89,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
 
   func testHexadecimalFloat() throws {
     try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
       XCTAssertEqual(try Double.read(), 4)
       self.assertRemaining("")
@@ -113,8 +99,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
 
   func testEOFBeforeValue() throws {
     try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
       XCTAssertThrowsError(try Double.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
@@ -126,8 +110,6 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
 
   func testEOFAfterWhitespace() throws {
     try SolverRunner {
-        let savedMode = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .llvm
       XCTAssertThrowsError(try Double.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
@@ -136,4 +118,14 @@ final class CinCompatibleFloatingPointTests: IOReaderTests {
     }
     .exactInput(" \t\n")
   }
+  func testSecondExponentSignRemainsAfterFailure() throws {
+    try SolverRunner {
+      InputConfiguration.shared.floatingPointMode = .llvm
+      XCTAssertThrowsError(try Double.read()) {
+        XCTAssertEqual(($0 as? FloatingPointInputError)?.reason, .invalidFloatingPoint)
+      }
+      self.assertRemaining("-3")
+    }.exactInput("1e+-3")
+  }
+
 }

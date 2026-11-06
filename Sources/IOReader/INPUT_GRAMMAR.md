@@ -24,13 +24,13 @@ EOF = ? end of input, not a character ? ;
 
 digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 digits = digit, { digit } ;
-unsigned-integer = digits ;
-signed-integer = [ "-" ], digits ;
+unsigned-integer = [ "+" | "-" ], digits ;
+signed-integer = [ "+" | "-" ], digits ;
 decimal = [ "+" | "-" ],
           (digits, [ ".", [ digits ] ] | ".", digits),
           [ ("e" | "E"), [ "+" | "-" ], digits ] ;
 
-reader-space = SP | HT | LF | CR ;
+reader-space = SP | HT | LF | VT | FF | CR ;
 horizontal-space = SP | HT ;
 printable = ? ASCII 0x21 through 0x7E ? ;
 token = printable, { printable } ;
@@ -41,10 +41,46 @@ token = printable, { printable } ;
 ここでのtokenは共通利用に向けた印字可能ASCIIの範囲。低水準実装にはこれ以外の制御文字を
 受理する経路もあるが、意図した文字集合としては採用していない。
 
-整数の `+` は対応表記に含めない。符号なし整数の `-` も含めない。
-整数は対象型に収まることが前提。桁・符号・オーバーフローの網羅的な検査は行っていない。
-浮動小数点は `atof` に委譲している。上記decimalは通常の十進入力の整理であり、
-ロケール、丸め、オーバーフロー、NaN/Infinity、十六進表記の保証は別途検討が必要。
+整数は符号付き・符号なしともに `+` / `-` を受け付ける。符号なしの負号は、
+読み取った絶対値を対象型の `0 &- value` で反映する（例：`UInt` の `-1` は `UInt.max`）。
+桁の積み上げは対象型の値域内を前提とし、オーバーフローは通常の演算子による停止となる。
+上の整数文法は既定の十進モードを表す。
+
+## 入力モードとcinとの対応
+
+`InputConfiguration.shared.integerMode` で整数の読み方を切り替える。
+符号の後に以下の規則を適用し、最初の基数外の文字は次の読取りに残す。
+
+| モード | 数字・接頭辞 | 例（値／残入力） | cinとの対応 |
+| --- | --- | --- | --- |
+| `.decimal`（既定） | 0〜9。接頭辞判定なし | `0x10` → 0／`x10` | `std::dec` |
+| `.octal` | 0〜7 | `018` → 1／`8` | `std::oct` |
+| `.hexadecimal` | 0〜9、a〜f、A〜F。先頭の0x/0Xは省略可 | `0X2F!` → 47／`!` | `std::hex` |
+| `.auto` | 0x/0Xなら16進、先頭0なら8進、それ以外は10進 | `09` → 0／`9`、`00A0` → 0／`A0` | `std::setbase(0)` |
+| `.binary` | 0、1。先頭の0b/0Bは省略可 | `0b11!` → 3／`!` | 独自拡張 |
+| `.auto2` | autoに0b/0Bの2進判定を追加 | `0b11!` → 3／`!` | 独自拡張 |
+
+接頭辞を認識したら、その直後に少なくとも1桁必要。`0x!` は `0x` を消費して
+`invalidInteger`、`!` は残る。autoの `0b11` は接頭辞を認識せず、0と残入力 `b11` になる。
+
+`InputConfiguration.shared.floatingPointMode` で浮動小数の候補の切出し方を切り替える。
+値への変換はどのモードも `strtod` を使う。
+
+| モード | 読み方 | 例（値／残入力） |
+| --- | --- | --- |
+| `.gccLike`（既定） | specificと同じ構文から16進接頭辞への遷移を除く | `0x1p2` → 0／`x1p2`、`12abc` → 12／`abc` |
+| `.specific` | 十進・16進浮動小数、inf/infinity、nan（大文字小文字を区別しない）を状態機械で切り出す | `0x1p2` → 4／空、`12abc` → 12／`abc` |
+| `.llvm` | libc++型の候補文字収集に従う | `0x1p2` → 4／空、`12abc` → 候補を全消費して失敗 |
+
+specificは `nan(payload)` も受理する。payloadはASCII英数字と `_`。
+未完成の候補は変換できる接頭辞へ戻さず失敗する。例えば `1e+` は消費後に失敗し、
+specificの `1ee3` は `1e` を消費して失敗、`e3` を残す。
+`strtod` が `ERANGE` を返す場合は `floatingPointOutOfRange` となる。
+
+gccLikeはlibstdc++の完全互換を表さない。inf/nanの受理などspecificの挙動を保つ。
+llvmの記述はmacOSのlibc++との比較に基づき、すべてのC++実装との一致を保証しない。
+この対応はASCII・classic locale相当・先頭空白を飛ばす読取りを対象とし、
+cinのストリーム状態（failbit等）、width、noskipwsの再現は含めない。
 
 ## 単一要素の読み取り
 
@@ -56,19 +92,18 @@ element-read = { reader-space }, element ;
 ```
 
 先頭の空白を読み飛ばし、値の後ろの区切りは**消費せず残す**。
-後続条件としてreader-spaceまたはEOFを要求するが、その境界は上記の消費範囲に含めない。
+数値では空白でなくても読取り規則から外れた文字で止まる。単語は空白またはEOFで止まる。
 実装では読取りを止めた区切りを `ungetc` で戻す。EOFを表す内部のNULLは戻さない。
 次の単一要素読取りが、残した区切りを含めて先頭の空白を読み飛ばす。
 値に到達する前のEOFはエラー。
 実装は型に応じた読み取りを行い、上記の選択肢を自動判別するわけではない。
-数値の字句解析は従来のままであり、例えば整数の `12x` を12として読みxを残すような
-C++数値抽出への完全な互換変更ではない。
+例えば十進整数の `12x` は12として読み、`x` を残す。
 
 | API | 文法上の対象 | 結果 |
 | --- | --- | --- |
 | `Int.read()` などの符号付き整数 | signed-integer | 対象整数型 |
 | `UInt.read()` などの符号なし整数 | unsigned-integer | 対象整数型 |
-| `Double.read()` | decimal（上記留保あり） | Double |
+| `Double.read()` | 浮動小数モードに従う候補 | Double |
 | `String.read()` / `.read(read: .word)` | token | String |
 | `[Character].read()` / `.read(read: .word)` | token | ASCII文字の配列 |
 | `[UInt8].read()` / `.read(read: .word)` | token | バイト配列 |
@@ -78,23 +113,22 @@ C++数値抽出への完全な互換変更ではない。
 変換用プロトコルは基礎となる読み取り結果を `convert` に渡す。独自型の値域や変換失敗は
 その実装の契約になる。
 
-## 後続を消費しない一文字読み（別名の入口）
+## 後続を消費しない一文字読み
 
 ```ebnf
-cin-space = SP | HT | LF | VT | FF | CR ;
-cin-character-read = { cin-space }, printable ;
+cin-character-read = { reader-space }, printable ;
 ```
 
-`Character.cin` / `UInt8.cin` と、例外版の `Character.readCin()` / `UInt8.readCin()` が対応する。
+`Character.stdin` / `UInt8.stdin` と、例外版の `Character.read()` / `UInt8.read()` が対応する。
 ASCII入力で、C++のclassic（C）ロケールの既定の `cin >> char` / `cin >> unsigned char`
 と同じ消費規則にする。先頭の空白を飛ばして一文字だけ読み、**後続は区切りも含めて残す**。
-文字を読む前のEOFは `unexpectedEOF`。`cin` は `try! readCin()` の入口。
+文字を読む前のEOFは `unexpectedEOF`。`stdin` は `try! read()` の入口。
 ロケール・書式フラグ・ストリーム状態の互換や、Unicodeの文字単位の読取りは対象外。
 
-例えば `ab\n` への `Character.cin` の2回呼出しは `a`、`b` を返し、LFを残す。
+例えば `ab\n` への `Character.stdin` の2回呼出しは `a`、`b` を返し、LFを残す。
 続いて `.line` で読むと、そのLFを消費して空文字列を返す。
 既存の `stdin` / `read()` と固定幅 `columns:` も後続を残す。
-先頭空白の範囲は従来のreader-spaceを維持しており、cin-spaceとはVT・FFの扱いが異なる。
+先頭空白は数値・単語と同じreader-spaceで、VT・FFも飛ばす。
 
 ## 数値・変換要素の一行と固定個数
 
@@ -205,7 +239,7 @@ CRLFでも単独読取りはCRを残す。物理行読取りは続くCRLFをま�
 ## 品質保証に向けた残件
 
 - 上記の文法・追加制約を正式な保証範囲として採用するか判断する。
-- 各生成規則とAPIに対応する既存テストを棚卸しする。直近の関連57件通過は、文法全体の証明ではない。
+- 各生成規則とAPIに対応する既存テストを棚卸しする。CinCompatible系テストと比較例の通過は、文法全体の証明ではない。
 - 行末空白・空行・CRLF・EOFの経路差を維持するか整理するか判断する。
 - 浮動小数点と独自変換型の範囲を別に定義する。
 - 要素行の実装共通化は別途検討する。

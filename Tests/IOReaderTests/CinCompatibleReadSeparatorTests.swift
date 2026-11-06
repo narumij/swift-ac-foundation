@@ -102,10 +102,7 @@ final class CinCompatibleReadSeparatorTests: IOReaderTests {
 
   func testRestorePendingByteBeforeSwiftReadLine() throws {
     try SolverRunner(solver: {
-      let configuration = InputConfiguration.shared
-      let saved = configuration.usesPendingCharacter
-      defer { configuration.usesPendingCharacter = saved }
-      configuration.usesPendingCharacter = true
+      InputConfiguration.shared.usesPendingCharacter = true
       XCTAssertEqual(Int.stdin, 12)
       InputConfiguration.shared.usesPendingCharacter = false
       InputConfiguration.shared.usesPendingCharacter = false // 再実行で二重に戻さない。
@@ -140,4 +137,29 @@ final class CinCompatibleReadSeparatorTests: IOReaderTests {
       }
     }).inputOnly("")
   }
+  func testConfigurationSnapshotAndRestore() throws {
+    try SolverRunner {
+      InputConfiguration.shared.integerMode = .decimal
+      InputConfiguration.shared.floatingPointMode = .gccLike
+      InputConfiguration.shared.usesPendingCharacter = false
+      let saved = InputConfiguration.shared
+      var changed = saved
+      changed.integerMode = .hexadecimal
+      changed.floatingPointMode = .specific
+      changed.usesPendingCharacter = true
+
+      XCTAssertEqual(try Int.read(), 10)
+      InputConfiguration.shared = changed
+      XCTAssertEqual(try Int.read(), 16)
+      XCTAssertEqual(try Double.read(), 4)
+
+      InputConfiguration.shared = saved
+      XCTAssertEqual(getchar_unlocked(), 32)
+      XCTAssertEqual(try Int.read(), 10)
+      XCTAssertEqual(try Double.read(), 0)
+      XCTAssertEqual(getchar_unlocked(), 120)
+      XCTAssertEqual(try String.read(), "1p2")
+    }.exactInput("10 10 0x1p2 10 0x1p2")
+  }
+
 }

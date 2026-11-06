@@ -11,8 +11,6 @@ final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
       ("1e9999 ", "1e9999", UInt8(ascii: " "), IOReaderError.floatingPointOutOfRange),
     ] {
       try SolverRunner {
-        let saved = InputConfiguration.shared.floatingPointMode
-        defer { InputConfiguration.shared.floatingPointMode = saved }
         InputConfiguration.shared.floatingPointMode = .gccLike
         XCTAssertThrowsError(try Double.read()) {
           let error = $0 as? FloatingPointInputError

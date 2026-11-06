@@ -8,8 +8,6 @@ final class CinCompatibleBinaryIntegerTests: IOReaderTests {
   func testBinaryInput() throws {
     for (input, expected) in [("0", 0), ("101", 5), ("+0b11", 3), ("-0B11", -3)] {
       try SolverRunner {
-        let saved = InputConfiguration.shared.integerMode
-        defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .binary
         XCTAssertEqual(Int.stdin, expected)
         XCTAssertEqual(getchar_unlocked(), 33)
@@ -17,8 +15,6 @@ final class CinCompatibleBinaryIntegerTests: IOReaderTests {
       }.exactInput(input + "!")
     }
     try SolverRunner {
-      let saved = InputConfiguration.shared.integerMode
-      defer { InputConfiguration.shared.integerMode = saved }
       InputConfiguration.shared.integerMode = .binary
       XCTAssertEqual(UInt.stdin, UInt.max)
       XCTAssertEqual(UInt.stdin, 1)
@@ -30,8 +26,6 @@ final class CinCompatibleBinaryIntegerTests: IOReaderTests {
       + " " + String(Int.min, radix: 2) + " " + String(Int.max, radix: 2) + " 12")
     if #available(macOS 15.0, *) {
       try SolverRunner {
-        let saved = InputConfiguration.shared.integerMode
-        defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .binary
         XCTAssertEqual(Int128.stdin, Int128.min)
         XCTAssertEqual(UInt128.stdin, UInt128.max)

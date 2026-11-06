@@ -162,13 +162,12 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       }
       rewind(file)
       let savedInput = stdin
-      let configuration = InputConfiguration.shared
-      let savedUsesPendingCharacter = configuration.usesPendingCharacter
-      configuration.usesPendingCharacter = false
+      let savedConfiguration = InputConfiguration.shared
+      InputConfiguration.shared.usesPendingCharacter = false
       stdin = file
       defer {
         stdin = savedInput
-        configuration.usesPendingCharacter = savedUsesPendingCharacter
+        InputConfiguration.shared = savedConfiguration
       }
       try body()
     }).inputOnly("")
