@@ -15,48 +15,51 @@ func __readLine_word<Element>(
 
 extension Array where Element == String {
 
-  // 空白区切りの単語を行末まで読む
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func readLine_words() throws -> [String] {
+  public static func readLine() throws -> [String] {
     try __readLine_word(Element._readWithSeparator)
   }
 
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func stdin_words() -> [String] {
-    try! readLine_words()
+  public static func stdin() -> [String] {
+    try! readLine()
   }
 }
 
 extension Array where Element == [Character] {
 
-  // 空白区切りの単語を行末まで読む
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func readLine_words() throws -> [[Character]] {
+  public static func readLine() throws -> [[Character]] {
     try __readLine_word(Element._readWithSeparator)
   }
 
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func stdin_words() -> [[Character]] {
-    try! readLine_words()
+  public static func stdin() -> [[Character]] {
+    try! readLine()
   }
 }
 
 extension Array where Element == [UInt8] {
 
-  // 空白区切りの単語を行末まで読む
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func readLine_words() throws -> [[UInt8]] {
+  public static func readLine() throws -> [[UInt8]] {
     try __readLine_word(Element._readWithSeparator)
   }
 
+  /// 空白区切りの単語を行末まで読む
   @inlinable
   @inline(__always)
-  public static func stdin_words() -> [[UInt8]] {
-    try! readLine_words()
+  public static func stdin() -> [[UInt8]] {
+    try! readLine()
   }
 }

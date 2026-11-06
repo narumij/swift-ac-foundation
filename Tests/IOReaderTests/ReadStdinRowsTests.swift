@@ -36,7 +36,7 @@ final class ReadStdinRowsTests: IOReaderTestCase {
   func testStringRowsReadsGridLines() throws {
     try SolverRunner(solver: {
       let SS: [String] = .stdin(rows: 3)
-      let rest: [String] = .stdin_words()
+      let rest: [String] = .stdin()
 
       XCTAssertEqual(SS, ["#####", "#...#", "#####"])
       XCTAssertEqual(rest, ["done"])
@@ -53,7 +53,7 @@ final class ReadStdinRowsTests: IOReaderTestCase {
   func testCharacterArrayRowsReadsGridLines() throws {
     try SolverRunner(solver: {
       let CC: [[Character]] = .stdin(rows: 3)
-      let rest: [String] = .stdin_words()
+      let rest: [String] = .stdin()
 
       XCTAssertEqual(CC.map { String($0) }, ["#####", "#...#", "#####"])
       XCTAssertEqual(rest, ["done"])
@@ -70,7 +70,7 @@ final class ReadStdinRowsTests: IOReaderTestCase {
   func testByteArrayRowsReadsGridLines() throws {
     try SolverRunner(solver: {
       let CC: [[UInt8]] = .stdin(rows: 3)
-      let rest: [String] = .stdin_words()
+      let rest: [String] = .stdin()
 
       XCTAssertEqual(CC.map { String(bytes: $0, encoding: .ascii) }, ["#####", "#...#", "#####"])
       XCTAssertEqual(rest, ["done"])

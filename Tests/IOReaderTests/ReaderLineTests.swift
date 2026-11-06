@@ -52,13 +52,13 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [String] = try .readLine_words()
+        let A: [String] = try .readLine()
         print(A)
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = try .readLine_words()
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil(try? [String].readLine_words())
+        XCTAssertNil(try? [String].readLine())
       })
       .run(
         input:
@@ -73,13 +73,13 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[Character]] = try .readLine_words()
+        let A: [[Character]] = try .readLine()
         print(A.map { String($0) })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = try .readLine_words()
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil(try? [[UInt8]].readLine_words())
+        XCTAssertNil(try? [[UInt8]].readLine())
       })
       .run(
         input:
@@ -94,13 +94,13 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[UInt8]] = try .readLine_words()
+        let A: [[UInt8]] = try .readLine()
         print(A.map { String(bytes: $0, encoding: .ascii)! })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = try .readLine_words()
+        let C: [String] = try .readLine()
         XCTAssertEqual(C, ["Foo", "Bar"])
-        XCTAssertNil(try? [[UInt8]].readLine_words())
+        XCTAssertNil(try? [[UInt8]].readLine())
       })
       .run(
         input:
@@ -218,11 +218,11 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [String] = .stdin_words()
+        let A: [String] = .stdin()
         print(A)
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .stdin_words()  // 部分を読んでも後続が行末まで読めること
+        let C: [String] = .stdin()  // 部分を読んでも後続が行末まで読めること
         XCTAssertEqual(C, ["Foo", "Bar"])
       })
       .run(
@@ -238,11 +238,11 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[Character]] = .stdin_words()
+        let A: [[Character]] = .stdin()
         print(A.map { String($0) })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .stdin_words()
+        let C: [String] = .stdin()
         XCTAssertEqual(C, ["Foo", "Bar"])
       })
       .run(
@@ -258,11 +258,11 @@ final class ReaderLineTests: IOReaderTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        let A: [[UInt8]] = .stdin_words()
+        let A: [[UInt8]] = .stdin()
         print(A.map { String(bytes: $0, encoding: .ascii)! })
         let B: [String] = (0..<2).map { _ in .stdin }
         XCTAssertEqual(B, ["Tanaka", "Aoi"])
-        let C: [String] = .stdin_words()
+        let C: [String] = .stdin()
         XCTAssertEqual(C, ["Foo", "Bar"])
       })
       .run(
@@ -276,7 +276,7 @@ final class ReaderLineTests: IOReaderTestCase {
       ["Takahashi", "Aoki"]
       """)
 
-    #if false
+    #if true
       XCTAssertEqual(
         try SolverRunner(solver: {
           let A = String(bytes: [UInt8].stdin(), encoding: .ascii)!

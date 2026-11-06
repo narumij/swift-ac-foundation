@@ -33,6 +33,14 @@ extension Array where Element == Character {
   }
 }
 
+extension Array where Element == Character {
+  @inlinable
+  @inline(__always)
+  public static func stdin(strippingNewline: Bool = true) -> [Character] {
+    readLine(strippingNewline: strippingNewline).unsafelyUnwrapped
+  }
+}
+
 extension Array where Element == [Character] {
 
   public static func stdin(rows: Int, strippingNewline: Bool = true) -> Self {
@@ -55,6 +63,14 @@ extension Array where Element == UInt8 {
     #else
       Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
     #endif
+  }
+}
+
+extension Array where Element == UInt8 {
+  @inlinable
+  @inline(__always)
+  public static func stdin(strippingNewline: Bool = true) -> [UInt8] {
+    readLine(strippingNewline: strippingNewline).unsafelyUnwrapped
   }
 }
 
