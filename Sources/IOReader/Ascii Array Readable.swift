@@ -25,6 +25,8 @@ public protocol AsciiArrayReadable {
   static func _readWithSeparator() throws -> (value: [Self], separator: UInt8)
 }
 
+
+
 extension Collection where Element: AsciiArrayReadable {
 
   /// 標準入力から区切り無しの文字列を読み、配列で返します
