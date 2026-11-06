@@ -11,7 +11,7 @@ final class CinCompatibleAutoIntegerTests: IOReaderTests {
       ("+0X2A!", 42, "!"), ("-052!", -42, "!"), ("-0x2a!", -42, "!"),
       ("0", 0, ""), ("00!", 0, "!"), ("09", 0, "9"), ("078", 7, "8"),
       ("0b11", 0, "b11"), ("-0B11", 0, "B11"), ("0o17", 0, "o17"),
-      ("12abc", 12, "abc"), ("00x1", 0, "x1"),
+      ("12abc", 12, "abc"), ("00x1", 0, "x1"), ("00A0", 0, "A0"),
     ] {
       try SolverRunner {
         let saved = _fastio_integer_mode

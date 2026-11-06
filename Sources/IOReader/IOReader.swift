@@ -106,83 +106,93 @@ extension FixedWidthInteger {
 protocol IOReader {}
 
 @usableFromInline
-protocol ZeroBufferIOReader: IOReader {
+protocol ZeroBufferIOReaderBase: IOReader {
   associatedtype Element: FixedWidthInteger
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element)
+  static func element(_ c: Element) -> Element
+  static func isElement(_ c: Element) -> Bool
 }
 
-extension ZeroBufferIOReader {
+extension ZeroBufferIOReaderBase {
 
   @inlinable
   @inline(__always)
   static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    guard isNumber(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
+    var (negative, c, radix) = try readIntegerHead()
 
     var value: Element = 0
-    repeat {
-      let digit = Element(c - .ZERO)
-      value = value * 10 + (negative ? -digit : digit)
+    while isElement(c) && element(c) < radix {
+      let digit = element(c)
+      value = value * radix + (negative ? -digit : digit)
       c = nullIfEOF(_getchar_unlocked())
-    } while isNumber(c)
-    return (value, c)
+    }
+    return (value, UInt8(truncatingIfNeeded: c))
   }
 
   @inlinable
   @inline(__always)
   static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
+    var (negative, c, radix) = try readIntegerHead()
+
+    var value: Element = 0
+    while isElement(c) && element(c) < radix {
+      value = value * radix + element(c)
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    return (negative ? 0 &- value : value, UInt8(truncatingIfNeeded: c))
+  }
+}
+
+@usableFromInline
+protocol ZeroBufferIOReader: ZeroBufferIOReaderBase {}
+
+extension ZeroBufferIOReader {
+
+  @inlinable
+  static func element(_ c: Element) -> Element { c - .ZERO }
+
+  @inlinable
+  static func isElement(_ c: Element) -> Bool { isNumber(c) }
+
+  @inlinable
+  @inline(__always)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
     }
-    guard isNumber(c) else {
+    guard isElement(c) else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    repeat {
-      value = value * 10 + Element(c - .ZERO)
-      c = nullIfEOF(_getchar_unlocked())
-    } while isNumber(c)
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, 10)
   }
 }
 
-// 16進読取り。十進側とは独立して形を検討する。
 @usableFromInline
-protocol ZeroBufferIOReader16: IOReader {
-  associatedtype Element: FixedWidthInteger
-}
+protocol ZeroBufferIOReader16: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReader16 {
 
   @inlinable
   @inline(__always)
-  static func hexDigit(_ c: UInt8) -> UInt8? {
-    switch c {
-    case UInt8(ascii: "0")...UInt8(ascii: "9"):
-      return c - UInt8(ascii: "0")
-    case UInt8(ascii: "a")...UInt8(ascii: "f"):
-      return c - UInt8(ascii: "a") + 10
-    case UInt8(ascii: "A")...UInt8(ascii: "F"):
-      return c - UInt8(ascii: "A") + 10
-    default:
-      return nil
-    }
+  static func element(_ c: Element) -> Element {
+    if c >= 0x61 { return c - 0x61 + 10 }
+    if c >= 0x41 { return c - 0x41 + 10 }
+    return c - .ZERO
   }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
+  static func isElement(_ c: Element) -> Bool {
+    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
@@ -191,81 +201,35 @@ extension ZeroBufferIOReader16 {
     // 先頭の0は値として読める。直後がx/Xの場合だけ接頭辞として扱う。
     if c == .ZERO {
       c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+      if c == 0x78 || c == 0x58 {
         c = nullIfEOF(_getchar_unlocked())
-      } else if hexDigit(c) == nil {
-        return (0, c)
+      } else if !isElement(c) {
+        return (negative, c, 16)
       }
     }
-    guard hexDigit(c) != nil else {
+    guard isElement(c) else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    while let digit = hexDigit(c) {
-      let digit = Element(digit)
-      value = value * 16 + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (value, c)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    // 先頭の0は値として読める。直後がx/Xの場合だけ接頭辞として扱う。
-    if c == .ZERO {
-      c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
-        c = nullIfEOF(_getchar_unlocked())
-      } else if hexDigit(c) == nil {
-        return (0, c)
-      }
-    }
-    guard hexDigit(c) != nil else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-
-    var value: Element = 0
-    while let digit = hexDigit(c) {
-      value = value * 16 + Element(digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, 16)
   }
 }
 
-// 2進読取り。基数ごとの実装を独立して保つ。
 @usableFromInline
-protocol ZeroBufferIOReader2: IOReader {
-  associatedtype Element: FixedWidthInteger
-}
+protocol ZeroBufferIOReader2: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReader2 {
 
   @inlinable
-  @inline(__always)
-  static func binaryDigit(_ c: UInt8) -> UInt8? {
-    switch c {
-    case UInt8(ascii: "0")...UInt8(ascii: "1"):
-      return c - UInt8(ascii: "0")
-    default:
-      return nil
-    }
-  }
+  static func element(_ c: Element) -> Element { c - .ZERO }
+
+  @inlinable
+  static func isElement(_ c: Element) -> Bool { c >= .ZERO && c <= .ZERO + 1 }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
@@ -274,149 +238,71 @@ extension ZeroBufferIOReader2 {
     // 先頭の0は値として読める。直後がb/Bの場合だけ接頭辞として扱う。
     if c == .ZERO {
       c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+      if c == 0x62 || c == 0x42 {
         c = nullIfEOF(_getchar_unlocked())
-      } else if binaryDigit(c) == nil {
-        return (0, c)
+      } else if !isElement(c) {
+        return (negative, c, 2)
       }
     }
-    guard binaryDigit(c) != nil else {
+    guard isElement(c) else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    while let digit = binaryDigit(c) {
-      let digit = Element(digit)
-      value = value * 2 + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (value, c)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    // 先頭の0は値として読める。直後がb/Bの場合だけ接頭辞として扱う。
-    if c == .ZERO {
-      c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
-        c = nullIfEOF(_getchar_unlocked())
-      } else if binaryDigit(c) == nil {
-        return (0, c)
-      }
-    }
-    guard binaryDigit(c) != nil else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-
-    var value: Element = 0
-    while let digit = binaryDigit(c) {
-      value = value * 2 + Element(digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, 2)
   }
 }
 
-// 8進読取り。基数ごとの実装を独立して保つ。
 @usableFromInline
-protocol ZeroBufferIOReader8: IOReader {
-  associatedtype Element: FixedWidthInteger
-}
+protocol ZeroBufferIOReader8: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReader8 {
 
   @inlinable
-  @inline(__always)
-  static func octalDigit(_ c: UInt8) -> UInt8? {
-    switch c {
-    case UInt8(ascii: "0")...UInt8(ascii: "7"):
-      return c - UInt8(ascii: "0")
-    default:
-      return nil
-    }
-  }
+  static func element(_ c: Element) -> Element { c - .ZERO }
+
+  @inlinable
+  static func isElement(_ c: Element) -> Bool { c >= .ZERO && c <= .ZERO + 7 }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
     }
 
-    guard octalDigit(c) != nil else {
+    guard isElement(c) else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    while let digit = octalDigit(c) {
-      let digit = Element(digit)
-      value = value * 8 + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (value, c)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    guard octalDigit(c) != nil else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-
-    var value: Element = 0
-    while let digit = octalDigit(c) {
-      value = value * 8 + Element(digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, 8)
   }
 }
 
 @usableFromInline
-protocol ZeroBufferIOReaderAuto: IOReader {
-  associatedtype Element: FixedWidthInteger
-}
+protocol ZeroBufferIOReaderAuto: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReaderAuto {
 
   @inlinable
   @inline(__always)
-  static func hexDigit(_ c: UInt8) -> UInt8? {
-    switch c {
-    case UInt8(ascii: "0")...UInt8(ascii: "9"):
-      return c - UInt8(ascii: "0")
-    case UInt8(ascii: "a")...UInt8(ascii: "f"):
-      return c - UInt8(ascii: "a") + 10
-    case UInt8(ascii: "A")...UInt8(ascii: "F"):
-      return c - UInt8(ascii: "A") + 10
-    default:
-      return nil
-    }
+  static func element(_ c: Element) -> Element {
+    if c >= 0x61 { return c - 0x61 + 10 }
+    if c >= 0x41 { return c - 0x41 + 10 }
+    return c - .ZERO
   }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
+  static func isElement(_ c: Element) -> Bool {
+    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
@@ -427,88 +313,44 @@ extension ZeroBufferIOReaderAuto {
     if c == .ZERO {
       radix = 8
       c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+      if c == 0x78 || c == 0x58 {
         radix = 16
         c = nullIfEOF(_getchar_unlocked())
-      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
-        return (0, c)
+      } else if !(c >= .ZERO && c <= .ZERO + 7) {
+        return (negative, c, radix)
       }
     }
-    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
+    guard isElement(c), element(c) < radix else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    while let digit = hexDigit(c), Element(digit) < radix {
-      let digit = Element(digit)
-      value = value * radix + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (value, c)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    var radix: Element = 10
-    // cinの自動判別：0x/0Xは16進、先頭0は8進、それ以外は10進。
-    if c == .ZERO {
-      radix = 8
-      c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
-        radix = 16
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
-        return (0, c)
-      }
-    }
-    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-
-    var value: Element = 0
-    while let digit = hexDigit(c), Element(digit) < radix {
-      value = value * radix + Element(digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, radix)
   }
 }
 
 @usableFromInline
-protocol ZeroBufferIOReaderAuto2: IOReader {
-  associatedtype Element: FixedWidthInteger
-}
+protocol ZeroBufferIOReaderAuto2: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReaderAuto2 {
 
   @inlinable
   @inline(__always)
-  static func hexDigit(_ c: UInt8) -> UInt8? {
-    switch c {
-    case UInt8(ascii: "0")...UInt8(ascii: "9"):
-      return c - UInt8(ascii: "0")
-    case UInt8(ascii: "a")...UInt8(ascii: "f"):
-      return c - UInt8(ascii: "a") + 10
-    case UInt8(ascii: "A")...UInt8(ascii: "F"):
-      return c - UInt8(ascii: "A") + 10
-    default:
-      return nil
-    }
+  static func element(_ c: Element) -> Element {
+    if c >= 0x61 { return c - 0x61 + 10 }
+    if c >= 0x41 { return c - 0x41 + 10 }
+    return c - .ZERO
   }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
-    var c: UInt8 = try .readHead()
+  static func isElement(_ c: Element) -> Bool {
+    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
       c = nullIfEOF(_getchar_unlocked())
@@ -519,65 +361,21 @@ extension ZeroBufferIOReaderAuto2 {
     if c == .ZERO {
       radix = 8
       c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+      if c == 0x78 || c == 0x58 {
         radix = 16
         c = nullIfEOF(_getchar_unlocked())
-      } else if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
+      } else if c == 0x62 || c == 0x42 {
         radix = 2
         c = nullIfEOF(_getchar_unlocked())
-      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
-        return (0, c)
+      } else if !(c >= .ZERO && c <= .ZERO + 7) {
+        return (negative, c, radix)
       }
     }
-    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
+    guard isElement(c), element(c) < radix else {
       if c != .NULL { _ = _ungetc(Int32(c)) }
       throw IOReaderError.invalidInteger
     }
-
-    var value: Element = 0
-    while let digit = hexDigit(c), Element(digit) < radix {
-      let digit = Element(digit)
-      value = value * radix + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (value, c)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
-    var c: UInt8 = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    var radix: Element = 10
-    // Autoに0b/0Bによる2進判別を追加。
-    if c == .ZERO {
-      radix = 8
-      c = nullIfEOF(_getchar_unlocked())
-      if c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
-        radix = 16
-        c = nullIfEOF(_getchar_unlocked())
-      } else if c == UInt8(ascii: "b") || c == UInt8(ascii: "B") {
-        radix = 2
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !(UInt8(ascii: "0")...UInt8(ascii: "7")).contains(c) {
-        return (0, c)
-      }
-    }
-    guard let firstDigit = hexDigit(c), Element(firstDigit) < radix else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-
-    var value: Element = 0
-    while let digit = hexDigit(c), Element(digit) < radix {
-      value = value * radix + Element(digit)
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    return (negative ? 0 &- value : value, c)
+    return (negative, c, radix)
   }
 }
 
