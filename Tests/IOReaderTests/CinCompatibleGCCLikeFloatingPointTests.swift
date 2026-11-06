@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleGCCLikeFloatingPointTests: IOReaderTests {
   func testHexPrefixIsLeftInInput() throws {
@@ -16,8 +16,8 @@ final class CinCompatibleGCCLikeFloatingPointTests: IOReaderTests {
         let value = try Double.read()
         XCTAssertEqual(value, 0, input)
         XCTAssertEqual(value.sign, input.first == "-" ? .minus : .plus, input)
-        for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
-        XCTAssertEqual(_getchar_unlocked(), EOF, input)
+        for c in remaining.utf8 { XCTAssertEqual(getchar_unlocked(), Int32(c), input) }
+        XCTAssertEqual(getchar_unlocked(), EOF, input)
       }.exactInput(input)
     }
   }
@@ -32,8 +32,8 @@ final class CinCompatibleGCCLikeFloatingPointTests: IOReaderTests {
         defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .gccLike
         XCTAssertEqual(try Double.read(), expected, input)
-        for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
-        XCTAssertEqual(_getchar_unlocked(), EOF, input)
+        for c in remaining.utf8 { XCTAssertEqual(getchar_unlocked(), Int32(c), input) }
+        XCTAssertEqual(getchar_unlocked(), EOF, input)
       }.exactInput(input)
     }
     try SolverRunner {
@@ -42,7 +42,7 @@ final class CinCompatibleGCCLikeFloatingPointTests: IOReaderTests {
         InputConfiguration.shared.floatingPointMode = .gccLike
       XCTAssertTrue(try Double.read().isInfinite)
       XCTAssertTrue(try Double.read().isNaN)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.exactInput("inf nan")
   }
 }

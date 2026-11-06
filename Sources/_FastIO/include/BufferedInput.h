@@ -47,4 +47,8 @@ static inline int _restore_stdin(void) {
   return 0;
 }
 
+// Disabling restores the pending byte to stdio first.
+// Returns 0 on success; EOF retains the pending byte and setting.
+int _set_fastio_uses_pending_character(int enabled);
+
 #endif /* BufferedInput_h */

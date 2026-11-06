@@ -2,12 +2,11 @@ import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-import _FastIO
 
 final class CinCompatibleCharacterTests: IOReaderTests {
 
   // Test as Spec: CIN_READING_GUIDE.md「前提」「文字の読取り」。
-  // 資料: Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md
+  // 資料: Specifications/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効。文字を1つ読み、後続を残す。
   func testCharacterConsumesOneCharacterAndLeavesTheRest() throws {
     for (input, expected, remaining) in [
@@ -18,9 +17,9 @@ final class CinCompatibleCharacterTests: IOReaderTests {
       try SolverRunner(solver: {
         XCTAssertEqual(Character.stdin, expected)
         for byte in (remaining + "\n").utf8 {
-          XCTAssertEqual(_getchar_unlocked(), Int32(byte))
+          XCTAssertEqual(getchar_unlocked(), Int32(byte))
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly(input)
     }
   }
@@ -29,7 +28,7 @@ final class CinCompatibleCharacterTests: IOReaderTests {
     try SolverRunner(solver: {
       XCTAssertEqual(UInt8.stdin, 49)  // ASCII '1'、数値1ではない。
       XCTAssertEqual(UInt8.stdin, 50)  // ASCII '2'
-      XCTAssertEqual(_getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), 10)
     }).inputOnly("12")
   }
 
@@ -37,10 +36,10 @@ final class CinCompatibleCharacterTests: IOReaderTests {
     for whitespace in [" ", "\t", "\n", "\u{0B}", "\u{0C}", "\r"] {
       try SolverRunner(solver: {
         XCTAssertEqual(Character.stdin, "a")
-        XCTAssertEqual(_getchar_unlocked(), Int32(whitespace.utf8.first!))
+        XCTAssertEqual(getchar_unlocked(), Int32(whitespace.utf8.first!))
         XCTAssertEqual(UInt8.stdin, 98)
-        XCTAssertEqual(_getchar_unlocked(), Int32(whitespace.utf8.first!))
-        XCTAssertEqual(_getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), Int32(whitespace.utf8.first!))
+        XCTAssertEqual(getchar_unlocked(), 10)
       }).inputOnly("\(whitespace)a\(whitespace)\(whitespace)b\(whitespace)\n")
     }
   }

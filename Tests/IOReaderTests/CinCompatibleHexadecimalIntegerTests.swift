@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
   func testHexadecimalSignedValuesAndRemainingInput() throws {
@@ -12,8 +12,8 @@ final class CinCompatibleHexadecimalIntegerTests: IOReaderTests {
         defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .hexadecimal
         XCTAssertEqual(Int.stdin, expected)
-        XCTAssertEqual(_getchar_unlocked(), 33)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 33)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }.exactInput(input + "!")
     }
   }

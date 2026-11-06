@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
   func testFailedInputAndRemainingCharacterAreReported() throws {
@@ -22,7 +22,7 @@ final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
           XCTAssertTrue(String(describing: $0).contains("Double"))
           XCTAssertTrue(String(describing: $0).contains(candidate.debugDescription))
         }
-        XCTAssertEqual(_getchar_unlocked(), Int32(next))
+        XCTAssertEqual(getchar_unlocked(), Int32(next))
       }.exactInput(input)
     }
   }
@@ -35,7 +35,7 @@ final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
         XCTAssertNil(error?.nextByte)
         XCTAssertTrue(String(describing: $0).contains("EOF"))
       }
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.exactInput("1e+")
   }
 }

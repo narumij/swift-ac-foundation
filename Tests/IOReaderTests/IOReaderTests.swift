@@ -1,5 +1,5 @@
 import XCTest
-import _FastIO
+import IOReader
 
 class IOReaderTests: XCTestCase {
   
@@ -8,7 +8,7 @@ class IOReaderTests: XCTestCase {
   }
 
   override func tearDownWithError() throws {
-    _restore_stdin()
+    InputConfiguration.shared.usesPendingCharacter = false
     try super.tearDownWithError()
   }
 }

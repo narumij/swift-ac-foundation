@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
   func testValuesAndRemainingInput() throws {
@@ -16,8 +16,8 @@ final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
         defer { InputConfiguration.shared.floatingPointMode = savedMode }
         InputConfiguration.shared.floatingPointMode = .specific
         XCTAssertEqual(try Double.read(), value, input)
-        for c in remaining.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(c), input) }
-        XCTAssertEqual(_getchar_unlocked(), EOF, input)
+        for c in remaining.utf8 { XCTAssertEqual(getchar_unlocked(), Int32(c), input) }
+        XCTAssertEqual(getchar_unlocked(), EOF, input)
       }.exactInput(input)
     }
   }
@@ -33,8 +33,8 @@ final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
           XCTAssertEqual(($0 as? FloatingPointInputError)?.input, prefix)
           XCTAssertEqual(($0 as? FloatingPointInputError)?.nextByte, UInt8(ascii: "!"))
         }
-        XCTAssertEqual(_getchar_unlocked(), 33, prefix)
-        XCTAssertEqual(_getchar_unlocked(), EOF, prefix)
+        XCTAssertEqual(getchar_unlocked(), 33, prefix)
+        XCTAssertEqual(getchar_unlocked(), EOF, prefix)
       }.exactInput(prefix + "!")
     }
   }
@@ -51,8 +51,8 @@ final class CinCompatibleStrtodFloatingPointTests: IOReaderTests {
           XCTAssertTrue(value.isInfinite, input)
           XCTAssertEqual(value.sign, input.first == "-" ? .minus : .plus, input)
         }
-        XCTAssertEqual(_getchar_unlocked(), 33, input)
-        XCTAssertEqual(_getchar_unlocked(), EOF, input)
+        XCTAssertEqual(getchar_unlocked(), 33, input)
+        XCTAssertEqual(getchar_unlocked(), EOF, input)
       }.exactInput(input + "!")
     }
   }

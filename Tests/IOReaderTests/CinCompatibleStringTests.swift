@@ -1,11 +1,11 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-import _FastIO
 
 final class CinCompatibleStringTests: IOReaderTests {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「単語と行の読取り」。
-  // Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md
+  // Specifications/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / width=0。NULは対象外。
 
   func testWordAndRemainingInput() throws {
@@ -18,9 +18,9 @@ final class CinCompatibleStringTests: IOReaderTests {
       try SolverRunner {
         XCTAssertEqual(try String.read(), expected, input)
         for byte in remaining.utf8 {
-          XCTAssertEqual(_getchar_unlocked(), Int32(byte), input)
+          XCTAssertEqual(getchar_unlocked(), Int32(byte), input)
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF, input)
+        XCTAssertEqual(getchar_unlocked(), EOF, input)
       }.exactInput(input)
     }
   }
@@ -29,10 +29,10 @@ final class CinCompatibleStringTests: IOReaderTests {
     for whitespace in [" ", "\t", "\n", "\r", "\u{0B}", "\u{0C}"] {
       try SolverRunner {
         XCTAssertEqual(String.stdin, "abc")
-        XCTAssertEqual(_getchar_unlocked(), Int32(whitespace.utf8.first!))
-        XCTAssertEqual(_getchar_unlocked(), Int32(whitespace.utf8.first!))
+        XCTAssertEqual(getchar_unlocked(), Int32(whitespace.utf8.first!))
+        XCTAssertEqual(getchar_unlocked(), Int32(whitespace.utf8.first!))
         XCTAssertEqual(try String.read(), "def")
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }.exactInput(whitespace + whitespace + "abc" + whitespace + whitespace + "def")
     }
   }
@@ -43,7 +43,7 @@ final class CinCompatibleStringTests: IOReaderTests {
       XCTAssertThrowsError(try String.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
       }
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.exactInput("abc")
   }
 
@@ -52,7 +52,7 @@ final class CinCompatibleStringTests: IOReaderTests {
       XCTAssertThrowsError(try String.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
       }
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.emptyInput()
   }
 
@@ -61,7 +61,7 @@ final class CinCompatibleStringTests: IOReaderTests {
       XCTAssertThrowsError(try String.read()) {
         XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
       }
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.exactInput(" \t\n\r\u{0B}\u{0C}")
   }
 
@@ -71,7 +71,7 @@ final class CinCompatibleStringTests: IOReaderTests {
       XCTAssertEqual(Character.stdin, "d")
       XCTAssertEqual(try String.read(), "ef")
       XCTAssertEqual(try String.read(), "ghi")
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }.exactInput("abc def\nghi")
   }
 }

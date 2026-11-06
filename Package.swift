@@ -173,6 +173,7 @@ let package = Package(
         "UInt8Util",
         "Pack",
       ],
+      exclude: ["Specifications"],
       resources: [
         .copy("Resources")
       ],

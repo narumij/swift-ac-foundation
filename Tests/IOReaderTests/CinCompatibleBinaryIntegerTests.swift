@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleBinaryIntegerTests: IOReaderTests {
   // Binary is an extension; cin has no binary input manipulator.
@@ -12,8 +12,8 @@ final class CinCompatibleBinaryIntegerTests: IOReaderTests {
         defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .binary
         XCTAssertEqual(Int.stdin, expected)
-        XCTAssertEqual(_getchar_unlocked(), 33)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 33)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }.exactInput(input + "!")
     }
     try SolverRunner {
@@ -25,7 +25,7 @@ final class CinCompatibleBinaryIntegerTests: IOReaderTests {
       XCTAssertEqual(Int.stdin, Int.min)
       XCTAssertEqual(Int.stdin, Int.max)
       XCTAssertEqual(Int.stdin, 1)
-      XCTAssertEqual(_getchar_unlocked(), 50)
+      XCTAssertEqual(getchar_unlocked(), 50)
     }.exactInput(String(UInt.max, radix: 2) + " -" + String(UInt.max, radix: 2)
       + " " + String(Int.min, radix: 2) + " " + String(Int.max, radix: 2) + " 12")
     if #available(macOS 15.0, *) {

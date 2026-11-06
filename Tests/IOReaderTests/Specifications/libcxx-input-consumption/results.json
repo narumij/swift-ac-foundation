@@ -1,0 +1,4388 @@
+[
+  {
+    "input": "12 34",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "203334",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": " 34"
+      }
+    ]
+  },
+  {
+    "input": "12\n34",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "0a3334",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "\n34"
+      }
+    ]
+  },
+  {
+    "input": "\n\t12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "+12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "2d3132",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "-12",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12x",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "12abc",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "616263",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "abc"
+      }
+    ]
+  },
+  {
+    "input": "12.5",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "2e35",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ".5"
+      }
+    ]
+  },
+  {
+    "input": "1e3",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "6533",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": "e3"
+      }
+    ]
+  },
+  {
+    "input": "+",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "x12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "783132",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x12"
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3432",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "42",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": " \n",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3432",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "42",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0012",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x10",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x10"
+      }
+    ]
+  },
+  {
+    "input": "010",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3130",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "10",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "08",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "38",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "8",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "2147483648x",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "32313437343833363437",
+        "position": 10,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "2147483647",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "-2147483649 ",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "2d32313437343833363438",
+        "position": 11,
+        "remaining_hex": "20",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "-2147483648",
+        "remaining": " "
+      }
+    ]
+  },
+  {
+    "input": "999999999999999999999999999999 7",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "32313437343833363437",
+        "position": 30,
+        "remaining_hex": "2037",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "2147483647",
+        "remaining": " 7"
+      }
+    ]
+  },
+  {
+    "input": "+ 12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "203132",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": " 12"
+      }
+    ]
+  },
+  {
+    "input": "--12",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "2d3132",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "-12"
+      }
+    ]
+  },
+  {
+    "input": "1_000",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "5f303030",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": "_000"
+      }
+    ]
+  },
+  {
+    "input": "1,000",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "2c303030",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ",000"
+      }
+    ]
+  },
+  {
+    "input": "12\u000034",
+    "ops": [
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "003334",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "\u000034"
+      }
+    ]
+  },
+  {
+    "input": "010",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "303130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "010"
+      },
+      {
+        "op": "int",
+        "value_hex": "38",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "8",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "010",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "303130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "010"
+      },
+      {
+        "op": "int",
+        "value_hex": "3136",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "16",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "010",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "303130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "010"
+      },
+      {
+        "op": "int",
+        "value_hex": "38",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "8",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x10",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "3136",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "16",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x10",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "3136",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "16",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x10",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x10"
+      }
+    ]
+  },
+  {
+    "input": "08",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3038",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "08"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "38",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "8"
+      }
+    ]
+  },
+  {
+    "input": "08",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3038",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "08"
+      },
+      {
+        "op": "int",
+        "value_hex": "38",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "8",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "08",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3038",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "08"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "38",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "8"
+      }
+    ]
+  },
+  {
+    "input": "0x",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3078",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3078",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0x",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3078",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0x"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "0xG",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "307847",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0xG"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "47",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "G"
+      }
+    ]
+  },
+  {
+    "input": "0xG",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "307847",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0xG"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "47",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "G"
+      }
+    ]
+  },
+  {
+    "input": "0xG",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "307847",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0xG"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "7847",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "xG"
+      }
+    ]
+  },
+  {
+    "input": "FF",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "4646",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "FF"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "4646",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "FF"
+      }
+    ]
+  },
+  {
+    "input": "FF",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "4646",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "FF"
+      },
+      {
+        "op": "int",
+        "value_hex": "323535",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "255",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "FF",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "4646",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "FF"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "4646",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "FF"
+      }
+    ]
+  },
+  {
+    "input": "-0x10",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "2d30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "-0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "2d3136",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "-16",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-0x10",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "2d30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "-0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "2d3136",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "-16",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-0x10",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "2d30783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "-0x10"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "783130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x10"
+      }
+    ]
+  },
+  {
+    "input": "0",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "30",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "09 10",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3039203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "09 10"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "39203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "9 10"
+      }
+    ]
+  },
+  {
+    "input": "09 10",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3039203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "09 10"
+      },
+      {
+        "op": "int",
+        "value_hex": "39",
+        "position": 2,
+        "remaining_hex": "203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "9",
+        "remaining": " 10"
+      }
+    ]
+  },
+  {
+    "input": "09 10",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3039203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "09 10"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "39203130",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "9 10"
+      }
+    ]
+  },
+  {
+    "input": "0X1A!",
+    "ops": [
+      "auto",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "auto",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3058314121",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0X1A!"
+      },
+      {
+        "op": "int",
+        "value_hex": "3236",
+        "position": 4,
+        "remaining_hex": "21",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "26",
+        "remaining": "!"
+      }
+    ]
+  },
+  {
+    "input": "0X1A!",
+    "ops": [
+      "hex",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "hex",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3058314121",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0X1A!"
+      },
+      {
+        "op": "int",
+        "value_hex": "3236",
+        "position": 4,
+        "remaining_hex": "21",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "26",
+        "remaining": "!"
+      }
+    ]
+  },
+  {
+    "input": "0X1A!",
+    "ops": [
+      "oct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "oct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "3058314121",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "0X1A!"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "58314121",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "X1A!"
+      }
+    ]
+  },
+  {
+    "input": "-1",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-0",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "+1",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "31",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "4294967295",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 10,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "4294967296",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 10,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-4294967296",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 11,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "18446744073709551615",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 20,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "18446744073709551616",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 20,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-18446744073709551615",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 21,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-18446744073709551616",
+    "ops": [
+      "uint"
+    ],
+    "steps": [
+      {
+        "op": "uint",
+        "value_hex": "34323934393637323935",
+        "position": 21,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-1",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "3138343436373434303733373039353531363135",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "18446744073709551615",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-0",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "+1",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "31",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "4294967295",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "34323934393637323935",
+        "position": 10,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967295",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "4294967296",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "34323934393637323936",
+        "position": 10,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "4294967296",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-4294967296",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "3138343436373434303639343134353834333230",
+        "position": 11,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "18446744069414584320",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "18446744073709551615",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "3138343436373434303733373039353531363135",
+        "position": 20,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "18446744073709551615",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "18446744073709551616",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "3138343436373434303733373039353531363135",
+        "position": 20,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "18446744073709551615",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-18446744073709551615",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "31",
+        "position": 21,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-18446744073709551616",
+    "ops": [
+      "ulonglong"
+    ],
+    "steps": [
+      {
+        "op": "ulonglong",
+        "value_hex": "3138343436373434303733373039353531363135",
+        "position": 21,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "18446744073709551615",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "32767",
+    "ops": [
+      "short"
+    ],
+    "steps": [
+      {
+        "op": "short",
+        "value_hex": "3332373637",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "32767",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "32768",
+    "ops": [
+      "short"
+    ],
+    "steps": [
+      {
+        "op": "short",
+        "value_hex": "3332373637",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "32767",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-32769",
+    "ops": [
+      "short"
+    ],
+    "steps": [
+      {
+        "op": "short",
+        "value_hex": "2d3332373638",
+        "position": 6,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "-32768",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "9223372036854775807",
+    "ops": [
+      "longlong"
+    ],
+    "steps": [
+      {
+        "op": "longlong",
+        "value_hex": "39323233333732303336383534373735383037",
+        "position": 19,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "9223372036854775807",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "9223372036854775808",
+    "ops": [
+      "longlong"
+    ],
+    "steps": [
+      {
+        "op": "longlong",
+        "value_hex": "39323233333732303336383534373735383037",
+        "position": 19,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "9223372036854775807",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-9223372036854775809",
+    "ops": [
+      "longlong"
+    ],
+    "steps": [
+      {
+        "op": "longlong",
+        "value_hex": "2d39323233333732303336383534373735383038",
+        "position": 20,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "-9223372036854775808",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1.25 rest",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "312e3235",
+        "position": 4,
+        "remaining_hex": "2072657374",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1.25",
+        "remaining": " rest"
+      }
+    ]
+  },
+  {
+    "input": ".5",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "302e35",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0.5",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1.",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "31",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1e3",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "31303030",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1000",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1e",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1e+",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1.2.3",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "312e32",
+        "position": 3,
+        "remaining_hex": "2e33",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1.2",
+        "remaining": ".3"
+      }
+    ]
+  },
+  {
+    "input": "1e+X",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "nan",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "6e616e",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "nan"
+      }
+    ]
+  },
+  {
+    "input": "inf",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "696e66",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "inf"
+      }
+    ]
+  },
+  {
+    "input": "0x1p2",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "34",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "4",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1e9999",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "696e66",
+        "position": 6,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "inf",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1e-9999",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 7,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12abc",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12x",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12z",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "7a",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "z"
+      }
+    ]
+  },
+  {
+    "input": "12f",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "+",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": ".",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1,25",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "2c3235",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ",25"
+      }
+    ]
+  },
+  {
+    "input": "0x1a.bp+07p",
+    "ops": [
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "double",
+        "value_hex": "30",
+        "position": 11,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "0",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "2",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "-1",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "true",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "74727565",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "true"
+      }
+    ]
+  },
+  {
+    "input": "1x",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "x",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "true",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "74727565",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "true"
+      },
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "trueX",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "7472756558",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "trueX"
+      },
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 4,
+        "remaining_hex": "58",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": "X"
+      }
+    ]
+  },
+  {
+    "input": "false ",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "66616c736520",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "false "
+      },
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 5,
+        "remaining_hex": "20",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": " "
+      }
+    ]
+  },
+  {
+    "input": "truX",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "74727558",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "truX"
+      },
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 3,
+        "remaining_hex": "58",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "X"
+      }
+    ]
+  },
+  {
+    "input": "TRUE",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "54525545",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "TRUE"
+      },
+      {
+        "op": "bool",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "54525545",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "TRUE"
+      }
+    ]
+  },
+  {
+    "input": "truefalse",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "7472756566616c7365",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "truefalse"
+      },
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 4,
+        "remaining_hex": "66616c7365",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": "false"
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "boolalpha",
+      "bool"
+    ],
+    "steps": [
+      {
+        "op": "boolalpha",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      },
+      {
+        "op": "bool",
+        "value_hex": "31",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "abc def",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "616263",
+        "position": 3,
+        "remaining_hex": "20646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": " def"
+      }
+    ]
+  },
+  {
+    "input": "abc\ndef",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "616263",
+        "position": 3,
+        "remaining_hex": "0a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": "\ndef"
+      }
+    ]
+  },
+  {
+    "input": " abc",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "616263",
+        "position": 4,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "abc",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "616263",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "73656564",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "seed",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": " \n",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "73656564",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "seed",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "a\u0000b c",
+    "ops": [
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "string",
+        "value_hex": "610062",
+        "position": 3,
+        "remaining_hex": "2063",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "a\u0000b",
+        "remaining": " c"
+      }
+    ]
+  },
+  {
+    "input": "\nabc",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 1,
+        "remaining_hex": "616263",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "abc"
+      }
+    ]
+  },
+  {
+    "input": "abc\nxyz",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "616263",
+        "position": 4,
+        "remaining_hex": "78797a",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": "xyz"
+      }
+    ]
+  },
+  {
+    "input": "abc",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "616263",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": " a b\r\nnext",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "206120620d",
+        "position": 6,
+        "remaining_hex": "6e657874",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": " a b\r",
+        "remaining": "next"
+      }
+    ]
+  },
+  {
+    "input": "\n",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "  abc\n",
+    "ops": [
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "line",
+        "value_hex": "2020616263",
+        "position": 6,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "  abc",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "a,b,c",
+    "ops": [
+      "comma-line",
+      "comma-line"
+    ],
+    "steps": [
+      {
+        "op": "comma-line",
+        "value_hex": "61",
+        "position": 2,
+        "remaining_hex": "622c63",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "a",
+        "remaining": "b,c"
+      },
+      {
+        "op": "comma-line",
+        "value_hex": "62",
+        "position": 4,
+        "remaining_hex": "63",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "b",
+        "remaining": "c"
+      }
+    ]
+  },
+  {
+    "input": "123x",
+    "ops": [
+      "width1",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "width1",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "31323378",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 1,
+        "gcount": 0,
+        "value": "",
+        "remaining": "123x"
+      },
+      {
+        "op": "int",
+        "value_hex": "313233",
+        "position": 3,
+        "remaining_hex": "78",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 1,
+        "gcount": 0,
+        "value": "123",
+        "remaining": "x"
+      }
+    ]
+  },
+  {
+    "input": "ab",
+    "ops": [
+      "width1",
+      "string",
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "width1",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "6162",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 1,
+        "gcount": 0,
+        "value": "",
+        "remaining": "ab"
+      },
+      {
+        "op": "string",
+        "value_hex": "61",
+        "position": 1,
+        "remaining_hex": "62",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "a",
+        "remaining": "b"
+      },
+      {
+        "op": "string",
+        "value_hex": "62",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "b",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "a",
+    "ops": [
+      "width1",
+      "string",
+      "char"
+    ],
+    "steps": [
+      {
+        "op": "width1",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "61",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 1,
+        "gcount": 0,
+        "value": "",
+        "remaining": "a"
+      },
+      {
+        "op": "string",
+        "value_hex": "61",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "a",
+        "remaining": ""
+      },
+      {
+        "op": "char",
+        "value_hex": "23",
+        "position": 1,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "#",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": " 12",
+    "ops": [
+      "noskip",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "noskip",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "203132",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": " 12"
+      },
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "203132",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": " 12"
+      }
+    ]
+  },
+  {
+    "input": " abc",
+    "ops": [
+      "noskip",
+      "string"
+    ],
+    "steps": [
+      {
+        "op": "noskip",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "20616263",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": " abc"
+      },
+      {
+        "op": "string",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "20616263",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": " abc"
+      }
+    ]
+  },
+  {
+    "input": "12\n34\n",
+    "ops": [
+      "int",
+      "line",
+      "int",
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "0a33340a",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "\n34\n"
+      },
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 3,
+        "remaining_hex": "33340a",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "34\n"
+      },
+      {
+        "op": "int",
+        "value_hex": "3334",
+        "position": 5,
+        "remaining_hex": "0a",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "34",
+        "remaining": "\n"
+      },
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 6,
+        "remaining_hex": "",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12\n\n  abc\ndef",
+    "ops": [
+      "int",
+      "ignore-line",
+      "line",
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "0a0a20206162630a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "\n\n  abc\ndef"
+      },
+      {
+        "op": "ignore-line",
+        "value_hex": "",
+        "position": 3,
+        "remaining_hex": "0a20206162630a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 1,
+        "value": "",
+        "remaining": "\n  abc\ndef"
+      },
+      {
+        "op": "line",
+        "value_hex": "",
+        "position": 4,
+        "remaining_hex": "20206162630a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 1,
+        "value": "",
+        "remaining": "  abc\ndef"
+      },
+      {
+        "op": "line",
+        "value_hex": "2020616263",
+        "position": 10,
+        "remaining_hex": "646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 1,
+        "value": "  abc",
+        "remaining": "def"
+      }
+    ]
+  },
+  {
+    "input": "12\n\n  abc\ndef",
+    "ops": [
+      "int",
+      "ws",
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "0a0a20206162630a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": "\n\n  abc\ndef"
+      },
+      {
+        "op": "ws",
+        "value_hex": "",
+        "position": 6,
+        "remaining_hex": "6162630a646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "abc\ndef"
+      },
+      {
+        "op": "line",
+        "value_hex": "616263",
+        "position": 10,
+        "remaining_hex": "646566",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "abc",
+        "remaining": "def"
+      }
+    ]
+  },
+  {
+    "input": "12 rest\nabc",
+    "ops": [
+      "int",
+      "ignore-line",
+      "line"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "20726573740a616263",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": " rest\nabc"
+      },
+      {
+        "op": "ignore-line",
+        "value_hex": "",
+        "position": 8,
+        "remaining_hex": "616263",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 6,
+        "value": "",
+        "remaining": "abc"
+      },
+      {
+        "op": "line",
+        "value_hex": "616263",
+        "position": 11,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 6,
+        "value": "abc",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "x12 3",
+    "ops": [
+      "int",
+      "int",
+      "clear",
+      "char",
+      "int",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 0,
+        "remaining_hex": "7831322033",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x12 3"
+      },
+      {
+        "op": "int",
+        "value_hex": "3432",
+        "position": 0,
+        "remaining_hex": "7831322033",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "42",
+        "remaining": "x12 3"
+      },
+      {
+        "op": "clear",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "7831322033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "x12 3"
+      },
+      {
+        "op": "char",
+        "value_hex": "78",
+        "position": 1,
+        "remaining_hex": "31322033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "x",
+        "remaining": "12 3"
+      },
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 3,
+        "remaining_hex": "2033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": " 3"
+      },
+      {
+        "op": "int",
+        "value_hex": "33",
+        "position": 5,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "3",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "+x12 3",
+    "ops": [
+      "int",
+      "clear",
+      "char",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "30",
+        "position": 1,
+        "remaining_hex": "7831322033",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "0",
+        "remaining": "x12 3"
+      },
+      {
+        "op": "clear",
+        "value_hex": "",
+        "position": 1,
+        "remaining_hex": "7831322033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "x12 3"
+      },
+      {
+        "op": "char",
+        "value_hex": "78",
+        "position": 2,
+        "remaining_hex": "31322033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "x",
+        "remaining": "12 3"
+      },
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 4,
+        "remaining_hex": "2033",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": " 3"
+      }
+    ]
+  },
+  {
+    "input": "12",
+    "ops": [
+      "int",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": ""
+      },
+      {
+        "op": "int",
+        "value_hex": "3432",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "42",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "12 ",
+    "ops": [
+      "int",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "int",
+        "value_hex": "3132",
+        "position": 2,
+        "remaining_hex": "20",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "12",
+        "remaining": " "
+      },
+      {
+        "op": "int",
+        "value_hex": "3432",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "42",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1 2",
+    "ops": [
+      "char",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "char",
+        "value_hex": "31",
+        "position": 1,
+        "remaining_hex": "2032",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1",
+        "remaining": " 2"
+      },
+      {
+        "op": "int",
+        "value_hex": "32",
+        "position": 3,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "2",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "1.234,5 rest",
+    "ops": [
+      "punct",
+      "double"
+    ],
+    "steps": [
+      {
+        "op": "punct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "312e3233342c352072657374",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "1.234,5 rest"
+      },
+      {
+        "op": "double",
+        "value_hex": "313233342e35",
+        "position": 7,
+        "remaining_hex": "2072657374",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "1234.5",
+        "remaining": " rest"
+      }
+    ]
+  },
+  {
+    "input": "12.34 rest",
+    "ops": [
+      "punct",
+      "int"
+    ],
+    "steps": [
+      {
+        "op": "punct",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "31322e33342072657374",
+        "eof": 0,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": "12.34 rest"
+      },
+      {
+        "op": "int",
+        "value_hex": "31323334",
+        "position": 5,
+        "remaining_hex": "2072657374",
+        "eof": 0,
+        "fail": 1,
+        "bad": 0,
+        "bool": 0,
+        "width": 0,
+        "gcount": 0,
+        "value": "1234",
+        "remaining": " rest"
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "ws"
+    ],
+    "steps": [
+      {
+        "op": "ws",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": " \n",
+    "ops": [
+      "ws"
+    ],
+    "steps": [
+      {
+        "op": "ws",
+        "value_hex": "",
+        "position": 2,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  },
+  {
+    "input": "",
+    "ops": [
+      "ignore-line"
+    ],
+    "steps": [
+      {
+        "op": "ignore-line",
+        "value_hex": "",
+        "position": 0,
+        "remaining_hex": "",
+        "eof": 1,
+        "fail": 0,
+        "bad": 0,
+        "bool": 1,
+        "width": 0,
+        "gcount": 0,
+        "value": "",
+        "remaining": ""
+      }
+    ]
+  }
+]

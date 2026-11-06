@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleAutoIntegerTests: IOReaderTests {
   func testAutoDetectionAndRemainingInput() throws {
@@ -18,8 +18,8 @@ final class CinCompatibleAutoIntegerTests: IOReaderTests {
         defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .auto
         XCTAssertEqual(Int.stdin, expected, input)
-        for byte in tail.utf8 { XCTAssertEqual(_getchar_unlocked(), Int32(byte), input) }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        for byte in tail.utf8 { XCTAssertEqual(getchar_unlocked(), Int32(byte), input) }
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }.exactInput(input)
     }
   }

@@ -1,7 +1,7 @@
+import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleOctalIntegerTests: IOReaderTests {
   // Explicit octal input; a leading zero is optional.
@@ -12,8 +12,8 @@ final class CinCompatibleOctalIntegerTests: IOReaderTests {
         defer { InputConfiguration.shared.integerMode = saved }
         InputConfiguration.shared.integerMode = .octal
         XCTAssertEqual(Int.stdin, expected)
-        XCTAssertEqual(_getchar_unlocked(), 33)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 33)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }.exactInput(input + "!")
     }
     try SolverRunner {
@@ -25,7 +25,7 @@ final class CinCompatibleOctalIntegerTests: IOReaderTests {
       XCTAssertEqual(Int.stdin, Int.min)
       XCTAssertEqual(Int.stdin, Int.max)
       XCTAssertEqual(Int.stdin, 1)
-      XCTAssertEqual(_getchar_unlocked(), 56)
+      XCTAssertEqual(getchar_unlocked(), 56)
     }.exactInput(String(UInt.max, radix: 8) + " -" + String(UInt.max, radix: 8)
       + " " + String(Int.min, radix: 8) + " " + String(Int.max, radix: 8) + " 18")
     if #available(macOS 15.0, *) {

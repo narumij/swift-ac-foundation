@@ -2,19 +2,18 @@ import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleFloatingPointTests: IOReaderTests {
   // Test as Specの原型:
-  // Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md「浮動小数の読取り」。
+  // Specifications/CIN_READING_GUIDE.md「浮動小数の読取り」。
   // ASCII / classic locale / skipws有効。失敗はSwift側ではread()の例外として確認。
   // 異常入力の消費範囲は保存済みのlibc++観測に基づく。全C++実装共通とはしない。
 
   private func assertRemaining(_ text: String, file: StaticString = #filePath, line: UInt = #line) {
     for byte in text.utf8 {
-      XCTAssertEqual(_getchar_unlocked(), Int32(byte), file: file, line: line)
+      XCTAssertEqual(getchar_unlocked(), Int32(byte), file: file, line: line)
     }
-    XCTAssertEqual(_getchar_unlocked(), EOF, file: file, line: line)
+    XCTAssertEqual(getchar_unlocked(), EOF, file: file, line: line)
   }
 
   func testDecimalPointAndExponent() throws {

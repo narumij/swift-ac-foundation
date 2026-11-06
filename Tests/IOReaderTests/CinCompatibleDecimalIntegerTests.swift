@@ -2,11 +2,10 @@ import Foundation
 import IOReader
 import TestingUtil
 import XCTest
-@preconcurrency import _FastIO
 
 final class CinCompatibleDecimalIntegerTests: IOReaderTests {
   // Test as Spec: CIN_READING_GUIDE.md「前提」「整数の読取り」。
-  // 資料: Maintanance/Studio/reviews/stdin-cin-20261105/CIN_READING_GUIDE.md
+  // 資料: Specifications/CIN_READING_GUIDE.md
   // ASCII / classic locale / skipws有効 / 十進。
   // 十進、正負の符号、ASCII空白6種。失敗はread()の例外で通知する。
 
@@ -22,9 +21,9 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       try SolverRunner(solver: {
         XCTAssertEqual(Int.stdin, expected)
         for byte in (remaining + "\n").utf8 {
-          XCTAssertEqual(_getchar_unlocked(), Int32(byte))
+          XCTAssertEqual(getchar_unlocked(), Int32(byte))
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly(input)
     }
   }
@@ -39,9 +38,9 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       try SolverRunner(solver: {
         XCTAssertEqual(UInt.stdin, expected)
         for byte in (remaining + "\n").utf8 {
-          XCTAssertEqual(_getchar_unlocked(), Int32(byte))
+          XCTAssertEqual(getchar_unlocked(), Int32(byte))
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly(input)
     }
   }
@@ -52,17 +51,17 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       let suffix = String(UnicodeScalar(byte)) + "7"
       try SolverRunner(solver: {
         XCTAssertEqual(try Int.read(), -12, "stop byte: \(byte)")
-        XCTAssertEqual(_getchar_unlocked(), Int32(byte))
-        XCTAssertEqual(_getchar_unlocked(), 55)
-        XCTAssertEqual(_getchar_unlocked(), 10)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), Int32(byte))
+        XCTAssertEqual(getchar_unlocked(), 55)
+        XCTAssertEqual(getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly("-12" + suffix)
       try SolverRunner(solver: {
         XCTAssertEqual(UInt.stdin, 12, "stop byte: \(byte)")
-        XCTAssertEqual(_getchar_unlocked(), Int32(byte))
-        XCTAssertEqual(_getchar_unlocked(), 55)
-        XCTAssertEqual(_getchar_unlocked(), 10)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), Int32(byte))
+        XCTAssertEqual(getchar_unlocked(), 55)
+        XCTAssertEqual(getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly("12" + suffix)
     }
   }
@@ -72,8 +71,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       try SolverRunner(solver: {
         XCTAssertEqual(Int.stdin, -(100 + digit))
         XCTAssertEqual(UInt.stdin, UInt(100 + digit))
-        XCTAssertEqual(_getchar_unlocked(), 10)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly("-10\(digit) 10\(digit)")
     }
   }
@@ -85,8 +84,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       XCTAssertEqual(try Int.read(), -34)
       XCTAssertEqual(try Character.read(), "/")
       XCTAssertEqual(UInt.stdin, 56)
-      XCTAssertEqual(_getchar_unlocked(), 10)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }).inputOnly("12x-34/56")
   }
 
@@ -98,8 +97,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       XCTAssertEqual(Int.stdin, 12)
       XCTAssertEqual(Int.stdin, 10) // 先頭0でも十進。
       XCTAssertEqual(Int.stdin, 0) // 負のゼロ。
-      XCTAssertEqual(_getchar_unlocked(), 10)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }).inputOnly("0 12 -12 0012 010 -0")
   }
 
@@ -107,10 +106,10 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
     for separator in [" ", "\t", "\n", "\r"] {
       try SolverRunner(solver: {
         XCTAssertEqual(Int.stdin, -12)
-        XCTAssertEqual(_getchar_unlocked(), Int32(separator.utf8.first!))
-        XCTAssertEqual(_getchar_unlocked(), 120) // 後続のxも残る。
-        XCTAssertEqual(_getchar_unlocked(), 10)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), Int32(separator.utf8.first!))
+        XCTAssertEqual(getchar_unlocked(), 120) // 後続のxも残る。
+        XCTAssertEqual(getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly("\(separator)\(separator)-12\(separator)x")
     }
   }
@@ -121,8 +120,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       XCTAssertEqual(try Int.read(), 34)
       XCTAssertEqual(Int.stdin, -56)
       XCTAssertEqual(UInt.stdin, 78)
-      XCTAssertEqual(_getchar_unlocked(), 10)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }).inputOnly("12\n\t34  -56\r\n78")
   }
 
@@ -134,8 +133,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       XCTAssertEqual(CInt.stdin, CInt.max)
       XCTAssertEqual(CLongLong.stdin, CLongLong.min)
       XCTAssertEqual(CLongLong.stdin, CLongLong.max)
-      XCTAssertEqual(_getchar_unlocked(), 10)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }).inputOnly("\(Int.min) \(Int.max) \(CInt.min) \(CInt.max) \(CLongLong.min) \(CLongLong.max)")
   }
 
@@ -145,8 +144,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       XCTAssertEqual(UInt.stdin, UInt.max)
       XCTAssertEqual(CUnsignedInt.stdin, CUnsignedInt.max)
       XCTAssertEqual(CUnsignedLongLong.stdin, CUnsignedLongLong.max)
-      XCTAssertEqual(_getchar_unlocked(), 10)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 10)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }).inputOnly("0 \(UInt.max) \(CUnsignedInt.max) \(CUnsignedLongLong.max)")
   }
 
@@ -163,12 +162,13 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       }
       rewind(file)
       let savedInput = stdin
-      let savedPending = _fastio_pending_character
+      let configuration = InputConfiguration.shared
+      let savedUsesPendingCharacter = configuration.usesPendingCharacter
+      configuration.usesPendingCharacter = false
       stdin = file
-      _fastio_pending_character = EOF
       defer {
         stdin = savedInput
-        _fastio_pending_character = savedPending
+        configuration.usesPendingCharacter = savedUsesPendingCharacter
       }
       try body()
     }).inputOnly("")
@@ -178,7 +178,7 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
     for value in [Int.min, -12, 0, 12, Int.max] {
       try withExactInput(String(value)) {
         XCTAssertEqual(try Int.read(), value)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
         XCTAssertThrowsError(try Int.read()) {
           XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
         }
@@ -187,7 +187,7 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
     for value in [UInt(0), 12, UInt.max] {
       try withExactInput(String(value)) {
         XCTAssertEqual(UInt.stdin, value)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
   }
@@ -198,7 +198,7 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
         XCTAssertThrowsError(try Int.read()) {
           XCTAssertEqual($0 as? IOReaderError, .unexpectedEOF)
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
   }
@@ -207,8 +207,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
     for whitespace in [" ", "\t", "\n", "\r", "\u{0B}", "\u{0C}"] {
       try withExactInput(whitespace + "+12x") {
         XCTAssertEqual(try Int.read(), 12)
-        XCTAssertEqual(_getchar_unlocked(), 120)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 120)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
   }
@@ -216,8 +216,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
   func testUnsignedNegativeSign() throws {
     try withExactInput("-1x") {
       XCTAssertEqual(UInt.stdin, UInt.max)
-      XCTAssertEqual(_getchar_unlocked(), 120)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), 120)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }
   }
 
@@ -226,15 +226,15 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       try withExactInput(prefix + "x12") {
         XCTAssertThrowsError(try Int.read())
         for byte in "x12".utf8 {
-          XCTAssertEqual(_getchar_unlocked(), Int32(byte))
+          XCTAssertEqual(getchar_unlocked(), Int32(byte))
         }
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
     for input in ["+", "-"] {
       try withExactInput(input) {
         XCTAssertThrowsError(try Int.read())
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
   }
@@ -244,8 +244,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
     for input in [String(Int.max) + "0", String(Int.min) + "0"] {
       try withExactInput(input + "x") {
         XCTAssertThrowsError(try Int.read())
-        XCTAssertEqual(_getchar_unlocked(), 120)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 120)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
   }
@@ -261,7 +261,7 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       ("-" + String(UInt.max), 1)] {
       try withExactInput(text + "x") {
         XCTAssertEqual(try self.readValue(UInt.self), expected)
-        XCTAssertEqual(_getchar_unlocked(), 120)
+        XCTAssertEqual(getchar_unlocked(), 120)
       }
     }
     #if false // Preserve the former throwing specification for later review.
@@ -270,8 +270,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
         XCTAssertThrowsError(try self.readValue(UInt.self)) {
           XCTAssertEqual($0 as? IOReaderError, .integerOutOfRange)
         }
-        XCTAssertEqual(_getchar_unlocked(), 120)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 120)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }
     }
     #endif
@@ -284,7 +284,7 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
       }
       XCTAssertEqual(try Character.read(), "x")
       XCTAssertEqual(try Int.read(), 12)
-      XCTAssertEqual(_getchar_unlocked(), EOF)
+      XCTAssertEqual(getchar_unlocked(), EOF)
     }
   }
 
@@ -294,8 +294,8 @@ final class CinCompatibleDecimalIntegerTests: IOReaderTests {
         XCTAssertEqual(Int128.stdin, Int128.min)
         XCTAssertEqual(Int128.stdin, Int128.max)
         XCTAssertEqual(UInt128.stdin, UInt128.max)
-        XCTAssertEqual(_getchar_unlocked(), 10)
-        XCTAssertEqual(_getchar_unlocked(), EOF)
+        XCTAssertEqual(getchar_unlocked(), 10)
+        XCTAssertEqual(getchar_unlocked(), EOF)
       }).inputOnly("\(Int128.min) \(Int128.max) \(UInt128.max)")
     }
   }
