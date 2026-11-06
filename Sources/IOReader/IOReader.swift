@@ -37,11 +37,6 @@ let spaces: UInt =
 @usableFromInline
 let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
 
-@usableFromInline
-let numbers: UInt =
-  1 << 0x30 | 1 << 0x31 | 1 << 0x32 | 1 << 0x33 | 1 << 0x34 | 1 << 0x35 | 1 << 0x36 | 1 << 0x37 | 1
-  << 0x38 | 1 << 0x39
-
 @inlinable
 @inline(__always)
 func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
