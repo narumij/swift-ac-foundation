@@ -52,3 +52,13 @@ public func Success(_ b: Bool = true) -> String { b ? .Success : .Failure }
 @inlinable
 @inline(__always)
 public func Failure(_ b: Bool = true) -> String { correct(!b) }
+
+/// 真ならEastを返す、偽ならWestを返す
+@inlinable
+@inline(__always)
+public func East(_ b: Bool = true) -> String { b ? .East : .West }
+
+/// 真ならWestを返す、偽ならEastを返す
+@inlinable
+@inline(__always)
+public func West(_ b: Bool = true) -> String { East(!b) }

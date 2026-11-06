@@ -1,6 +1,6 @@
 import Foundation
 
-extension String: SingleReadable & LineReadable {}
+extension String: SingleReadable {}
 
 extension String {
 

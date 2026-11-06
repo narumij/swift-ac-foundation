@@ -1,0 +1,39 @@
+import Foundation
+import IOReader
+import TestingUtil
+import XCTest
+
+final class CinCompatibleFloatingPointInputErrorTests: IOReaderTests {
+  func testFailedInputAndRemainingCharacterAreReported() throws {
+    for (input, candidate, next, reason) in [
+      ("1e+!", "1e+", UInt8(ascii: "!"), IOReaderError.invalidFloatingPoint),
+      ("abc", "", UInt8(ascii: "a"), IOReaderError.invalidFloatingPoint),
+      ("1e9999 ", "1e9999", UInt8(ascii: " "), IOReaderError.floatingPointOutOfRange),
+    ] {
+      try SolverRunner {
+        InputConfiguration.shared.floatingPointMode = .gccLike
+        XCTAssertThrowsError(try Double.read()) {
+          let error = $0 as? FloatingPointInputError
+          XCTAssertEqual(error?.reason, reason)
+          XCTAssertEqual(error?.input, candidate)
+          XCTAssertEqual(error?.nextByte, next)
+          XCTAssertTrue(String(describing: $0).contains("Double"))
+          XCTAssertTrue(String(describing: $0).contains(candidate.debugDescription))
+        }
+        XCTAssertEqual(getchar_unlocked(), Int32(next))
+      }.exactInput(input)
+    }
+  }
+
+  func testIncompleteValueAtEOFReportsCandidateWithoutTerminator() throws {
+    try SolverRunner {
+      XCTAssertThrowsError(try Double.read()) {
+        let error = $0 as? FloatingPointInputError
+        XCTAssertEqual(error?.input, "1e+")
+        XCTAssertNil(error?.nextByte)
+        XCTAssertTrue(String(describing: $0).contains("EOF"))
+      }
+      XCTAssertEqual(getchar_unlocked(), EOF)
+    }.exactInput("1e+")
+  }
+}

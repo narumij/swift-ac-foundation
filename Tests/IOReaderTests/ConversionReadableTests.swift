@@ -72,14 +72,16 @@ extension StringStub: IOStringConversionReadable {
   public static func convert(from: String) -> Self { .init(value: from) }
 }
 
-final class ConversionReadableTests: XCTestCase {
+final class ConversionReadableTests: IOReaderTests {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.
+    try super.setUpWithError()
   }
 
   override func tearDownWithError() throws {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    try super.tearDownWithError()
   }
 
   func testIntegerStub() throws {
@@ -98,7 +100,7 @@ final class ConversionReadableTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [IntegerStub].readLine().forEach { print($0.value) }
+        try [IntegerStub]._readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -142,7 +144,7 @@ final class ConversionReadableTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [StringStub].readLine().forEach { print($0.value) }
+        try [StringStub]._readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -171,7 +173,7 @@ final class ConversionReadableTests: XCTestCase {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [BytesStub].readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
+        try [BytesStub]._readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
       })
       .run(
         input:

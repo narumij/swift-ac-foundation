@@ -4,7 +4,7 @@ import TestingUtil
 import UInt8Util
 import XCTest
 
-final class ReaderPerformanceTests: XCTestCase {
+final class ReaderPerformanceTests: IOReaderTests {
   
   #if DEBUG
     let stringFixtureA = ""

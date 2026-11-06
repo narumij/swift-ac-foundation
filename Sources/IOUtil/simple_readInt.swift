@@ -9,7 +9,7 @@ import Foundation
 /// ```
 @inlinable
 @inline(__always)
-func simple_readInt() -> Int {
+package func simple_readInt() -> Int {
   var c = getchar_unlocked()
 
   while c == 9 || c == 10 || c == 13 || c == 32 {

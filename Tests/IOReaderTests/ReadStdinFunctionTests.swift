@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class ReadStdinFunctionTests: XCTestCase {
+final class ReadStdinFunctionTests: IOReaderTests {
   
   func testStdinReadsIntegersUntilEndOfLine() throws {
     try SolverRunner(solver: {
@@ -51,8 +51,8 @@ final class ReadStdinFunctionTests: XCTestCase {
 
   func testStdinReadsStringsUntilEndOfLine() throws {
     try SolverRunner(solver: {
-      let A: [String] = .stdin()
-      let B: [String] = .stdin()
+      let A: [String] = .stdin_words()
+      let B: [String] = .stdin_words()
 
       XCTAssertEqual(A, ["Takahashi", "Aoki"])
       XCTAssertEqual(B, ["Tanaka", "Aoi"])
@@ -66,8 +66,8 @@ final class ReadStdinFunctionTests: XCTestCase {
 
   func testStdinReadsCharacterArraysUntilEndOfLine() throws {
     try SolverRunner(solver: {
-      let A: [[Character]] = .stdin()
-      let B: [[Character]] = .stdin()
+      let A: [[Character]] = .stdin_words()
+      let B: [[Character]] = .stdin_words()
 
       XCTAssertEqual(A.map { String($0) }, ["Takahashi", "Aoki"])
       XCTAssertEqual(B.map { String($0) }, ["Tanaka", "Aoi"])
@@ -81,8 +81,8 @@ final class ReadStdinFunctionTests: XCTestCase {
 
   func testStdinReadsByteArraysUntilEndOfLine() throws {
     try SolverRunner(solver: {
-      let A: [[UInt8]] = .stdin()
-      let B: [[UInt8]] = .stdin()
+      let A: [[UInt8]] = .stdin_words()
+      let B: [[UInt8]] = .stdin_words()
 
       XCTAssertEqual(A.map { String(bytes: $0, encoding: .ascii) }, ["Takahashi", "Aoki"])
       XCTAssertEqual(B.map { String(bytes: $0, encoding: .ascii) }, ["Tanaka", "Aoi"])

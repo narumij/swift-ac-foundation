@@ -4,6 +4,7 @@
 name: Swift
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -15,8 +16,12 @@ on:
 
 jobs:
   build:
-
+    name: Tests (${{ matrix.configuration }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        configuration: [debug, release]
 
     steps:
     - uses: actions/checkout@v4
@@ -34,6 +39,50 @@ jobs:
       uses: SwiftyLab/setup-swift@latest
     
     - name: Build
-      run: swift build -v
+      run: swift build -v -c ${{ matrix.configuration }}
     - name: Run tests
-      run: swift test -v
+      run: swift test -v -c ${{ matrix.configuration }}
+
+  sanitizers:
+    name: ${{ matrix.sanitizer }} sanitizer (${{ matrix.configuration }})
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer: [address, thread]
+        configuration: [debug, release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Swift
+        uses: SwiftyLab/setup-swift@latest
+      # These XCTest cases replace process-wide stdin/stdout. Do not use --parallel.
+      # Performance measurements are not memory-safety checks and are excluded.
+      - name: Run sanitizer tests
+        env:
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1
+          TSAN_OPTIONS: halt_on_error=1:exitcode=66
+          SWIFT_BACKTRACE: enable=yes
+        shell: bash
+        run: |
+          mkdir -p sanitizer-logs
+          swift --version | tee sanitizer-logs/environment.log
+          uname -a | tee -a sanitizer-logs/environment.log
+          set -o pipefail
+          extra_args=()
+          # The dependency excludes DSU/MCFGraph for known TSan compiler crashes.
+          # Foundation uses its ModInt API; those excluded APIs are not used here.
+          if [[ "${{ matrix.sanitizer }}" == "thread" ]]; then
+            extra_args+=(--traits TSAN_TEST)
+          fi
+          swift test "${extra_args[@]}" --build-system native -c ${{ matrix.configuration }} \
+            --sanitize ${{ matrix.sanitizer }} --skip 'Performance' \
+            2>&1 | tee sanitizer-logs/full-console.log
+          grep -Eq 'Executed [1-9][0-9]* tests?, with 0 failures' sanitizer-logs/full-console.log
+      - name: Upload sanitizer diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.sanitizer }}-${{ matrix.configuration }}-diagnostics
+          path: sanitizer-logs
+          if-no-files-found: warn

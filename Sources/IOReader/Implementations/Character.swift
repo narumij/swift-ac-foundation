@@ -3,24 +3,24 @@ import Foundation
 extension Character: AsciiReadable {}
 
 extension Character {
-  
+
   /// Single Readable
   @inlinable
   public static func read() throws -> Character {
-    try Character(String.read(columns: 1))
+    try Character(UnicodeScalar(UInt8.read()))
   }
 }
 
 extension Character: AsciiArrayReadable {}
 
 extension Character {
-  
+
   /// Ascii Array Readable
   @inlinable
   public static func read() throws -> [Character] {
     try _atoc.read()
   }
-  
+
   /// Ascii Array Readable
   @inlinable
   @inline(__always)
@@ -34,4 +34,3 @@ extension Character {
     try _atoc.read()
   }
 }
-

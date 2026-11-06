@@ -25,7 +25,15 @@ let package = Package(
     // Products define the executables and libraries a package produces, making them visible to other packages.
     .library(name: "AcFoundation", targets: ["AcFoundation"])
   ],
-  traits: [],
+  traits: [
+    .trait(
+      name: "TSAN_TEST",
+      description: "Use swift-ac-library's TSan compiler workarounds; its DSU and MCFGraph APIs are excluded only in this test configuration."
+    ),
+    .trait(
+      name: "BENCHMARK"
+    ),
+  ],
   dependencies: [
     .package(
       url: "https://github.com/apple/swift-algorithms",
@@ -35,7 +43,8 @@ let package = Package(
       from: "5.7.0"),
     .package(
       url: "https://github.com/narumij/swift-ac-library",
-      branch: "main"),
+      branch: "main",
+      traits: [.defaults, .init(name: "TSAN_TEST", condition: .when(traits: ["TSAN_TEST"]))]),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -126,6 +135,7 @@ let package = Package(
     .target(
       name: "TestingUtil",
       dependencies: [
+        "_FastIO",
         .product(name: "Algorithms", package: "swift-algorithms")
       ],
       swiftSettings: _settings),
@@ -163,6 +173,7 @@ let package = Package(
         "UInt8Util",
         "Pack",
       ],
+      exclude: ["Specifications"],
       resources: [
         .copy("Resources")
       ],
@@ -191,6 +202,8 @@ let package = Package(
         "TestingUtil",
         "IOUtil",
         "IOReader",
+        "IOWriter",
+        "UInt8Util",
       ],
       swiftSettings: _settings
     ),

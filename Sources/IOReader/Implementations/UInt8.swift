@@ -1,14 +1,15 @@
+import _FastIO
 import Foundation
 
 extension UInt8: AsciiReadable {}
 
 extension UInt8 {
-  
+
   /// Ascii Readable
   @inlinable
   @inline(__always)
   public static func read() throws -> UInt8 {
-    try _atob.read(count: 1).first.unwrap(or: IOReaderError.unexpectedNil)
+    try _atob.readAscii()
   }
 }
 

@@ -1,4 +1,5 @@
 import IOWriter
+import UInt8Util
 import TestingUtil
 import XCTest
 
@@ -43,9 +44,9 @@ final class SequenceTests: XCTestCase {
   func testPrint3() throws {
     XCTAssertEqual(
       try SolverRunner {
-        "Hello, world!".unicodeScalars.map { UInt8($0.value) }.print()
-        "Apple".unicodeScalars.map { UInt8($0.value) }.print(separator: "-")
-        "PenPinaple".unicodeScalars.map { UInt8($0.value) }.print(terminator: "-")
+        "Hello, world!".asciiValues.print()
+        "Apple".asciiValues.print(separator: "-")
+        "PenPinaple".asciiValues.print(terminator: "-")
         print("ApplePen")
       }
       .outputOnly(),
@@ -89,9 +90,9 @@ final class SequenceTests: XCTestCase {
     XCTAssertEqual(
       try SolverRunner {
         [
-          "Apple".utf8.map { $0 },
-          "Pen".utf8.map { $0 },
-          "Pineapple".utf8.map { $0 },
+          "Apple".asciiValues,
+          "Pen".asciiValues,
+          "Pineapple".asciiValues,
         ].print()
       }
       .outputOnly(),
