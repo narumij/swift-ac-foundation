@@ -701,17 +701,6 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
     return try instance.readBytes(count: count)
   }
 
-  @inlinable
-  @inline(__always)
-  static func readAscii() throws -> UInt8 {
-    while true {
-      let c = _getchar_unlocked()
-      if c == -1 { throw IOReaderError.unexpectedEOF }
-      if c == 0x20 || (0x09...0x0D).contains(c) { continue }
-      return UInt8(c)
-    }
-  }
-
   nonisolated(unsafe)
     public static var instance = Self()
 }

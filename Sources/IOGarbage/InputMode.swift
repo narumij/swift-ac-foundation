@@ -1,3 +1,4 @@
+#if false
 /// Reading one textual value. Existing property-style `stdin` still reads one word.
 public enum TextInputMode: Sendable {
   case word
@@ -119,3 +120,4 @@ extension Array where Element == [[UInt8]] {
     try! read(read: mode, rows: rows)
   }
 }
+#endif

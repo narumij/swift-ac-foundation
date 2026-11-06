@@ -1,5 +1,3 @@
-// Previous sequence-reading API retained for comparison with CheckMode.swift.
-#if false
 import Foundation
 
 /// Array型に、数値の配列に対する読み込み方法を加えるプロトコルです
@@ -152,4 +150,4 @@ extension Collection where Element: Collection, Element.Element: SequenceReadabl
     try (0..<rows).map { _ in try (0..<columns).map { _ in try .read() } }
   }
 }
-#endif
+

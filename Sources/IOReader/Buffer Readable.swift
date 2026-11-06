@@ -17,15 +17,19 @@ extension Array where Element == Character {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [Character]? {
-    return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
-      return [Character](unsafeUninitializedCapacity: readBuffer.count) {
-        buffer, initializedCount in
-        initializedCount = readBuffer.count
-        for i in 0..<readBuffer.count {
-          buffer.initializeElement(at: i, to: Character(UnicodeScalar(readBuffer[i])))
+    #if true
+      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+        return [Character](unsafeUninitializedCapacity: readBuffer.count) {
+          buffer, initializedCount in
+          initializedCount = readBuffer.count
+          for i in 0..<readBuffer.count {
+            buffer.initializeElement(at: i, to: Character(UnicodeScalar(readBuffer[i])))
+          }
         }
       }
-    }
+    #else
+      Swift.readLine(strippingNewline: strippingNewline)?.map { $0 }
+    #endif
   }
 }
 
@@ -41,12 +45,16 @@ extension Array where Element == UInt8 {
   @inlinable
   @inline(__always)
   public static func readLine(strippingNewline: Bool = true) -> [UInt8]? {
-    return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
-      return [UInt8](unsafeUninitializedCapacity: readBuffer.count) { buffer, initializedCount in
-        initializedCount = readBuffer.count
-        buffer.baseAddress?.initialize(from: readBuffer.baseAddress!, count: readBuffer.count)
+    #if true
+      return try? __withUnsafeReadLineBytes(strippingNewline: strippingNewline) { readBuffer in
+        return [UInt8](unsafeUninitializedCapacity: readBuffer.count) { buffer, initializedCount in
+          initializedCount = readBuffer.count
+          buffer.baseAddress?.initialize(from: readBuffer.baseAddress!, count: readBuffer.count)
+        }
       }
-    }
+    #else
+      Swift.readLine(strippingNewline: strippingNewline)?.compactMap { $0.asciiValue }
+    #endif
   }
 }
 

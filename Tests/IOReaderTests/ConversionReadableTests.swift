@@ -100,7 +100,7 @@ final class ConversionReadableTests: IOReaderTests {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [IntegerStub]._readLine().forEach { print($0.value) }
+        try [IntegerStub].readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -144,7 +144,7 @@ final class ConversionReadableTests: IOReaderTests {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [StringStub]._readLine().forEach { print($0.value) }
+        try [StringStub].readLine().forEach { print($0.value) }
       })
       .run(
         input:
@@ -173,7 +173,7 @@ final class ConversionReadableTests: IOReaderTests {
 
     XCTAssertEqual(
       try SolverRunner(solver: {
-        try [BytesStub]._readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
+        try [BytesStub].readLine().forEach { print(String(bytes: $0.value, encoding: .ascii)!) }
       })
       .run(
         input:
