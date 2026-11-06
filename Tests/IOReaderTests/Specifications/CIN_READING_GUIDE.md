@@ -125,7 +125,3 @@ C++の `unsigned char` は数値ではなく、1文字として読み取る。
 ## 調査資料
 
 2026-11-05に調査したmacOS arm64のXcode SDK/system libc++での観測を含む。特に浮動小数の異常入力は、実装に依存する観測として記載した。
-
-- [文字読み取りの実測](libcxx-character-analysis/results.json)
-- [数値・単語・行の実測](libcxx-input-consumption/results.json)
-- [測定環境](libcxx-input-consumption/environment.json)
