@@ -106,14 +106,118 @@ extension FixedWidthInteger {
 protocol IOReader {}
 
 @usableFromInline
+protocol ZeroBufferIOReader: IOReader {
+  associatedtype Element: FixedWidthInteger
+}
+
+extension ZeroBufferIOReader {
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+    var c: Element = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    guard isNumber(c) else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    repeat {
+      let digit = c - .ZERO
+      value = value * 10 + (negative ? -digit : digit)
+      c = nullIfEOF(_getchar_unlocked())
+    } while isNumber(c)
+    return (value, UInt8(truncatingIfNeeded: c))
+  }
+
+  @inlinable
+  @inline(__always)
+  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+    var c: Element = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+    guard isNumber(c) else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+
+    var value: Element = 0
+    repeat {
+      value = value * 10 + (c - .ZERO)
+      c = nullIfEOF(_getchar_unlocked())
+    } while isNumber(c)
+    return (negative ? 0 &- value : value, UInt8(truncatingIfNeeded: c))
+  }
+}
+
+// MARK: -
+
+@usableFromInline
 protocol ZeroBufferIOReaderBase: IOReader {
   associatedtype Element: FixedWidthInteger
+  static var integerMode: FastIOIntegerMode { get }
   static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element)
   static func element(_ c: Element) -> Element
   static func isElement(_ c: Element) -> Bool
 }
 
 extension ZeroBufferIOReaderBase {
+
+  @inlinable
+  @inline(__always)
+  static func element(_ c: Element) -> Element {
+    if c >= 0x61 { return c - 0x61 + 10 }
+    if c >= 0x41 { return c - 0x41 + 10 }
+    return c - .ZERO
+  }
+
+  @inlinable
+  @inline(__always)
+  static func isElement(_ c: Element) -> Bool {
+    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
+  }
+
+  @inlinable
+  @inline(__always)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
+    var c: Element = try .readHead()
+    let negative = c == .MINUS
+    if negative || c == .PLUS {
+      c = nullIfEOF(_getchar_unlocked())
+    }
+
+    let mode = integerMode
+    let automatic = mode == FastIOIntegerAuto || mode == FastIOIntegerAuto2
+    var radix: Element = automatic ? 10 : Element(mode.rawValue)
+    if c == .ZERO && (automatic || mode == FastIOIntegerHexadecimal || mode == FastIOIntegerBinary)
+    {
+      if automatic { radix = 8 }
+      c = nullIfEOF(_getchar_unlocked())
+      if (automatic || mode == FastIOIntegerHexadecimal) && (c == 0x78 || c == 0x58) {
+        radix = 16
+        c = nullIfEOF(_getchar_unlocked())
+      } else if (mode == FastIOIntegerAuto2 || mode == FastIOIntegerBinary)
+        && (c == 0x62 || c == 0x42)
+      {
+        radix = 2
+        c = nullIfEOF(_getchar_unlocked())
+      } else if !isElement(c) || element(c) >= radix {
+        // 接頭辞ではない先頭0だけでも値は成立する。次の文字は区切りとして返す。
+        return (negative, c, radix)
+      }
+    }
+    guard isElement(c), element(c) < radix else {
+      if c != .NULL { _ = _ungetc(Int32(c)) }
+      throw IOReaderError.invalidInteger
+    }
+    return (negative, c, radix)
+  }
 
   @inlinable
   @inline(__always)
@@ -144,239 +248,43 @@ extension ZeroBufferIOReaderBase {
 }
 
 @usableFromInline
-protocol ZeroBufferIOReader: ZeroBufferIOReaderBase {}
-
-extension ZeroBufferIOReader {
-
-  @inlinable
-  static func element(_ c: Element) -> Element { c - .ZERO }
-
-  @inlinable
-  static func isElement(_ c: Element) -> Bool { isNumber(c) }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-    guard isElement(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, 10)
-  }
-}
-
-@usableFromInline
-protocol ZeroBufferIOReader16: ZeroBufferIOReaderBase {}
-
-extension ZeroBufferIOReader16 {
-
-  @inlinable
-  @inline(__always)
-  static func element(_ c: Element) -> Element {
-    if c >= 0x61 { return c - 0x61 + 10 }
-    if c >= 0x41 { return c - 0x41 + 10 }
-    return c - .ZERO
-  }
-
-  @inlinable
-  @inline(__always)
-  static func isElement(_ c: Element) -> Bool {
-    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    // 先頭の0は値として読める。直後がx/Xの場合だけ接頭辞として扱う。
-    if c == .ZERO {
-      c = nullIfEOF(_getchar_unlocked())
-      if c == 0x78 || c == 0x58 {
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !isElement(c) {
-        return (negative, c, 16)
-      }
-    }
-    guard isElement(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, 16)
-  }
-}
-
-@usableFromInline
 protocol ZeroBufferIOReader2: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReader2 {
-
   @inlinable
-  static func element(_ c: Element) -> Element { c - .ZERO }
-
-  @inlinable
-  static func isElement(_ c: Element) -> Bool { c >= .ZERO && c <= .ZERO + 1 }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    // 先頭の0は値として読める。直後がb/Bの場合だけ接頭辞として扱う。
-    if c == .ZERO {
-      c = nullIfEOF(_getchar_unlocked())
-      if c == 0x62 || c == 0x42 {
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !isElement(c) {
-        return (negative, c, 2)
-      }
-    }
-    guard isElement(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, 2)
-  }
+  static var integerMode: FastIOIntegerMode { FastIOIntegerBinary }
 }
 
 @usableFromInline
 protocol ZeroBufferIOReader8: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReader8 {
-
   @inlinable
-  static func element(_ c: Element) -> Element { c - .ZERO }
+  static var integerMode: FastIOIntegerMode { FastIOIntegerOctal }
+}
 
+@usableFromInline
+protocol ZeroBufferIOReader16: ZeroBufferIOReaderBase {}
+
+extension ZeroBufferIOReader16 {
   @inlinable
-  static func isElement(_ c: Element) -> Bool { c >= .ZERO && c <= .ZERO + 7 }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    guard isElement(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, 8)
-  }
+  static var integerMode: FastIOIntegerMode { FastIOIntegerHexadecimal }
 }
 
 @usableFromInline
 protocol ZeroBufferIOReaderAuto: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReaderAuto {
-
   @inlinable
-  @inline(__always)
-  static func element(_ c: Element) -> Element {
-    if c >= 0x61 { return c - 0x61 + 10 }
-    if c >= 0x41 { return c - 0x41 + 10 }
-    return c - .ZERO
-  }
-
-  @inlinable
-  @inline(__always)
-  static func isElement(_ c: Element) -> Bool {
-    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    var radix: Element = 10
-    // cinの自動判別：0x/0Xは16進、先頭0は8進、それ以外は10進。
-    if c == .ZERO {
-      radix = 8
-      c = nullIfEOF(_getchar_unlocked())
-      if c == 0x78 || c == 0x58 {
-        radix = 16
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !(c >= .ZERO && c <= .ZERO + 7) {
-        return (negative, c, radix)
-      }
-    }
-    guard isElement(c), element(c) < radix else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, radix)
-  }
+  static var integerMode: FastIOIntegerMode { FastIOIntegerAuto }
 }
 
 @usableFromInline
 protocol ZeroBufferIOReaderAuto2: ZeroBufferIOReaderBase {}
 
 extension ZeroBufferIOReaderAuto2 {
-
   @inlinable
-  @inline(__always)
-  static func element(_ c: Element) -> Element {
-    if c >= 0x61 { return c - 0x61 + 10 }
-    if c >= 0x41 { return c - 0x41 + 10 }
-    return c - .ZERO
-  }
-
-  @inlinable
-  @inline(__always)
-  static func isElement(_ c: Element) -> Bool {
-    isNumber(c) || (c >= 0x61 && c <= 0x66) || (c >= 0x41 && c <= 0x46)
-  }
-
-  @inlinable
-  @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
-    }
-
-    var radix: Element = 10
-    // Autoに0b/0Bによる2進判別を追加。
-    if c == .ZERO {
-      radix = 8
-      c = nullIfEOF(_getchar_unlocked())
-      if c == 0x78 || c == 0x58 {
-        radix = 16
-        c = nullIfEOF(_getchar_unlocked())
-      } else if c == 0x62 || c == 0x42 {
-        radix = 2
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !(c >= .ZERO && c <= .ZERO + 7) {
-        return (negative, c, radix)
-      }
-    }
-    guard isElement(c), element(c) < radix else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
-      throw IOReaderError.invalidInteger
-    }
-    return (negative, c, radix)
-  }
+  static var integerMode: FastIOIntegerMode { FastIOIntegerAuto2 }
 }
 
 public enum IOConfig {
@@ -620,7 +528,8 @@ struct _atol16<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader16
 }
 
 @usableFromInline
-struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader16, StaticIOReader {
+struct _atoul16<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader16, StaticIOReader
+{
 
   @inlinable
   @inline(__always)
@@ -700,7 +609,8 @@ struct _atoul8<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReader
 }
 
 @usableFromInline
-struct _atolAuto<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto, StaticIOReader {
+struct _atolAuto<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto, StaticIOReader
+{
 
   @inlinable
   @inline(__always)
@@ -716,7 +626,9 @@ struct _atolAuto<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReader
 }
 
 @usableFromInline
-struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto, StaticIOReader {
+struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto,
+  StaticIOReader
+{
 
   @inlinable
   @inline(__always)
@@ -732,7 +644,9 @@ struct _atoulAuto<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIORea
 }
 
 @usableFromInline
-struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto2, StaticIOReader {
+struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReaderAuto2,
+  StaticIOReader
+{
 
   @inlinable
   @inline(__always)
@@ -748,7 +662,9 @@ struct _atolAuto2<Element: FixedWidthInteger & SignedInteger>: ZeroBufferIOReade
 }
 
 @usableFromInline
-struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto2, StaticIOReader {
+struct _atoulAuto2<Element: FixedWidthInteger & UnsignedInteger>: ZeroBufferIOReaderAuto2,
+  StaticIOReader
+{
 
   @inlinable
   @inline(__always)
