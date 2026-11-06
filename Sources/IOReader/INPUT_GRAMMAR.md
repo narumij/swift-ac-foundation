@@ -70,7 +70,7 @@ token = printable, { printable } ;
 | --- | --- | --- |
 | `.gccLike`（既定） | specificと同じ構文から16進接頭辞への遷移を除く | `0x1p2` → 0／`x1p2`、`12abc` → 12／`abc` |
 | `.specific` | 十進・16進浮動小数、inf/infinity、nan（大文字小文字を区別しない）を状態機械で切り出す | `0x1p2` → 4／空、`12abc` → 12／`abc` |
-| `.llvm` | libc++型の候補文字収集に従う | `0x1p2` → 4／空、`12abc` → 候補を全消費して失敗 |
+| `.libcxx` | libc++型の候補文字収集に従う | `0x1p2` → 4／空、`12abc` → 候補を全消費して失敗 |
 
 specificは `nan(payload)` も受理する。payloadはASCII英数字と `_`。
 未完成の候補は変換できる接頭辞へ戻さず失敗する。例えば `1e+` は消費後に失敗し、

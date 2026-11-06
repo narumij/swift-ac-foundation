@@ -15,6 +15,7 @@ public struct InputConfiguration {
     /// 0x/0Xは16進、先頭0は8進、それ以外は10進。
     case auto = 0
     /// autoに0b/0Bの2進判別を加える。
+    // TODO(ATCODER-004): auto2の名前を再検討する。autoWithBinaryは候補で、採用は保留。
     case auto2 = 1
     case binary = 2
     case octal = 8
@@ -23,8 +24,9 @@ public struct InputConfiguration {
   }
 
   public enum FloatingPointMode: UInt32 {
+    // TODO(ATCODER-004): specificとgccLikeの名前を再検討する。decimal等の案は未採用。
     case specific = 0
-    case llvm = 1
+    case libcxx = 1
     case gccLike = 2
   }
 
