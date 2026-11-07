@@ -3,6 +3,7 @@
 
 @usableFromInline
 protocol FloatingPointInputState {
+  static var start: Self { get }
   var isComplete: Bool { get }
   mutating func advance(_ c: UInt8) -> Bool
 }
@@ -14,7 +15,7 @@ enum StrtodFloatingPointState: FloatingPointInputState {
   case exponent, exponentSign, exponentDigits
   case i, infN, inf, infI, infIN, infINI, infINIT, infinity
   case n, nanA, nan, nanPayload, complete
-
+  
   @inlinable
   var isComplete: Bool {
     switch self {
@@ -117,6 +118,8 @@ struct LLVMFloatingPointState: FloatingPointInputState {
   @usableFromInline var exponent: UInt8 = UInt8(ascii: "e")
   @usableFromInline var previous: UInt8 = 0
 
+  @inlinable static var start: Self { .init() }
+
   @inlinable var isComplete: Bool { true }
 
   @inlinable
@@ -153,6 +156,8 @@ struct LLVMFloatingPointState: FloatingPointInputState {
 @usableFromInline
 struct GCCLikeFloatingPointState: FloatingPointInputState {
   @usableFromInline var state = StrtodFloatingPointState.start
+
+  @inlinable static var start: Self { .init() }
 
   @inlinable init() {}
 
