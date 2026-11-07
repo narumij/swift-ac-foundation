@@ -13,7 +13,7 @@ extension UInt8 {
 extension Character {
   
   public static func read() throws -> Character {
-    try! Character(UnicodeScalar(UInt8.read()))
+    try Character(UnicodeScalar(UInt8.read()))
   }
   
   public static var stdin: Character {
