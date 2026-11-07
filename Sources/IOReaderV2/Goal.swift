@@ -1,8 +1,14 @@
 // プロトコル名が現れる必要はないが、概念的に以下のような振る舞いを手に入れる
 
+public protocol ReadableElement {
+  // Character, UInt8
+  static var stdin: Self { get }
+}
+
 public protocol ReadableUnit {}
 
 public protocol ReadableAsciiLine: ReadableUnit {
+  associatedtype Element: ReadableElement
   // String, [Character], [UInt8]
   static func stdin() -> Self
   static func stdin(columns: Int) -> Self
@@ -16,6 +22,7 @@ public protocol ReadableAsciiLines {
 }
 
 public protocol ReadableAsciiWord: ReadableUnit {
+  associatedtype Element: ReadableElement
   // String, [Character], [UInt8]
   static var stdin: Self { get }
   // cin互換風
