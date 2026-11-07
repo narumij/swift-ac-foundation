@@ -1,21 +1,6 @@
 import _FastIO
 import Foundation
 
-// 浮動小数の3モードに共通する読取り。モードの違いは候補を切り出す状態機械だけに収める。
-@usableFromInline
-protocol FloatingPointIOReader: ElementReader where Element == Double {
-  associatedtype State: FloatingPointInputState
-}
-
-extension FloatingPointIOReader {
-
-  @inlinable
-  @inline(__always)
-  static func _read() throws -> Item {
-    try FloatingPointIOReaderBuffer.instance.read(state: State.start)
-  }
-}
-
 // 3モードが共有する候補文字のバッファ。候補の切り出しと変換を担う。
 @usableFromInline
 struct FloatingPointIOReaderBuffer {
