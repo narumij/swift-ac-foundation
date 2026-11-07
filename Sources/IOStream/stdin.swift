@@ -116,8 +116,38 @@ extension String {
     try _atos.read()
   }
 
-  public static func read(columns: Int) throws -> String {
+  public static func read(columns: Int) throws -> Self {
     try _atos.read(count: columns)
+  }
+
+  public static var stdin: Self {
+    try! .read()
+  }
+}
+
+extension Array where Element == UInt8 {
+  
+  public static func read() throws -> Self {
+    try _atob.read()
+  }
+
+  public static func read(columns: Int) throws -> Self {
+    try _atob.read(count: columns)
+  }
+
+  public static var stdin: Self {
+    try! .read()
+  }
+}
+
+extension Array where Element == Character {
+  
+  public static func read() throws -> Self {
+    try _atoc.read()
+  }
+
+  public static func read(columns: Int) throws -> Self {
+    try _atoc.read(count: columns)
   }
 
   public static var stdin: Self {
