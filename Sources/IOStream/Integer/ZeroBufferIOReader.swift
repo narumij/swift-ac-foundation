@@ -16,7 +16,7 @@ extension ZeroBufferIOReader {
       c = __getchar_unlocked()
     }
     guard c.map(isNumber) == true else {
-      _ = _ungetc(c)
+      _ = __ungetc(c)
       throw IOReaderError.invalidInteger
     }
 
@@ -38,7 +38,7 @@ extension ZeroBufferIOReader {
       c = __getchar_unlocked()
     }
     guard c.map(isNumber) == true else {
-      _ = _ungetc(c)
+      _ = __ungetc(c)
       throw IOReaderError.invalidInteger
     }
 
@@ -139,7 +139,7 @@ extension ZeroBufferIOReaderBase {
       }
     }
     guard c.map({ isElement($0) && element($0) < radix }) == true else {
-      _ = _ungetc(c)
+      _ = __ungetc(c)
       throw IOReaderError.invalidInteger
     }
     return (negative, c, radix)

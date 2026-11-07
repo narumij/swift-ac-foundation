@@ -25,7 +25,7 @@ struct FloatingPointIOReaderBuffer {
     do {
       return (try Self.convert(&buffer, isComplete: state.isComplete), c)
     } catch {
-      _ = _ungetc(c)
+      _ = __ungetc(c)
       if let reason = error as? IOReaderError {
         throw FloatingPointInputError(
           reason: reason,

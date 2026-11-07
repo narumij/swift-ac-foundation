@@ -5,6 +5,6 @@ import _FastIO
 @inlinable
 @inline(__always)
 func valuePreservingSeparator<Value>(_ result: ReaderItem<Value>) -> Value {
-  _ = _ungetc(result.separator)
+  _ = __ungetc(result.separator)
   return result.value
 }
