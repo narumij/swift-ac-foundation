@@ -29,13 +29,13 @@ extension VariableBufferIOReader {
   @inlinable
   @inline(__always)
   mutating func read<T>(
-    _ f: ([BufferElement], BufferElement) -> T?
+    _ f: ([BufferElement], BufferElement?) -> T?
   ) throws -> T {
     buffer.removeAll(keepingCapacity: true)
-    var current: BufferElement = try .readHead()
-    while !isASCIIWhitespaceOrNull(current) {
-      buffer.append(current)
-      current = nullIfEOF(_getchar_unlocked())
+    var current: BufferElement? = try BufferElement.readHead()
+    while let c = current, !isASCIIWhitespace(c) {
+      buffer.append(c)
+      current = __getchar_unlocked()
     }
     defer { resetBufferIfNeeded() }
     return try f(buffer, current).unwrap(or: IOReaderError.unexpectedNil)
@@ -45,10 +45,8 @@ extension VariableBufferIOReader {
   @inline(__always)
   mutating func readBytes(count: Int) throws -> [BufferElement] {
     buffer.removeAll(keepingCapacity: true)
-    var lastByte: BufferElement = 0
     for i in 0..<count {
-      lastByte = i == 0 ? try .readHead() : nullIfEOF(_getchar_unlocked())
-      if lastByte == .NULL {
+      guard let lastByte: BufferElement = i == 0 ? try BufferElement.readHead() : __getchar_unlocked() else {
         throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {

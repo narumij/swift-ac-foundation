@@ -1,12 +1,10 @@
 import _FastIO
 
 // The low-level readers consume their separator; value-only reads leave it for the next operation.
-// NULL is the existing EOF sentinel. NUL input is outside the supported input grammar.
+// nil means there is no separator to restore.
 @inlinable
 @inline(__always)
 func valuePreservingSeparator<Value>(_ result: ReaderItem<Value>) -> Value {
-  if result.separator != .NULL {
-    _ = _ungetc(Int32(result.separator))
-  }
+  _ = _ungetc(result.separator)
   return result.value
 }

@@ -9,45 +9,45 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (value: Element, separator: UInt8) where Element: SignedInteger {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
+  static func _read() throws -> (value: Element, separator: UInt8?) where Element: SignedInteger {
+    var c: Element? = try Element.readHead()
+    let negative = c == Element.MINUS
+    if negative || c == Element.PLUS {
+      c = __getchar_unlocked()
     }
-    guard isNumber(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
+    guard c.map(isNumber) == true else {
+      _ = _ungetc(c)
       throw IOReaderError.invalidInteger
     }
 
     var value: Element = 0
-    repeat {
-      let digit = c - .ZERO
+    while let _c = c, isNumber(_c) {
+      let digit = _c - .ZERO
       value = value * 10 + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
-    } while isNumber(c)
-    return (value, UInt8(truncatingIfNeeded: c))
+      c = __getchar_unlocked()
+    }
+    return (value, c.map { UInt8(truncatingIfNeeded: $0) })
   }
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (value: Element, separator: UInt8) where Element: UnsignedInteger {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
+  static func _read() throws -> (value: Element, separator: UInt8?) where Element: UnsignedInteger {
+    var c: Element? = try Element.readHead()
+    let negative = c == Element.MINUS
+    if negative || c == Element.PLUS {
+      c = __getchar_unlocked()
     }
-    guard isNumber(c) else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
+    guard c.map(isNumber) == true else {
+      _ = _ungetc(c)
       throw IOReaderError.invalidInteger
     }
 
     var value: Element = 0
-    repeat {
-      value = value * 10 + (c - .ZERO)
-      c = nullIfEOF(_getchar_unlocked())
-    } while isNumber(c)
-    return (negative ? 0 &- value : value, UInt8(truncatingIfNeeded: c))
+    while let _c = c, isNumber(_c) {
+      value = value * 10 + (_c - .ZERO)
+      c = __getchar_unlocked()
+    }
+    return (negative ? 0 &- value : value, c.map { UInt8(truncatingIfNeeded: $0) })
   }
 }
 
@@ -62,7 +62,7 @@ extension ZeroBufferIOReader {
 // 文字・桁・計算値をElementで扱い、桁ごとの型変換を避ける。
 // 戻り値の区切り文字だけ、既存の読取り契約に合わせてUInt8にする。
 //
-// 対象はASCII入力。NULLは既存のEOF代用値であり、入力中のNULは対象外。
+// 対象はASCII入力。EOFは読み済みの文字がないことをnilで表す。
 // C++ストリームのfailbitや復帰機構を実装するものではない。
 @usableFromInline
 protocol ZeroBufferIOReaderBase: IOReader {
@@ -70,7 +70,7 @@ protocol ZeroBufferIOReaderBase: IOReader {
   // 具体的な読取り型が選ぶモード。Cの実行時設定は呼出し元の_atol/_atoulが振り分ける。
   static var integerMode: FastIOIntegerMode { get }
   // firstは既に入力から取り出した文字。先頭0だけで値が成立した場合は区切りでもよい。
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element)
+  static func readIntegerHead() throws -> (negative: Bool, first: Element?, radix: Element)
   // isElement(c)を満たす文字を0...15の桁値へ変換する。基数内かの判定は別。
   static func element(_ c: Element) -> Element
   // 16進の候補文字かどうか。実際に読める桁かはelement(c) < radixも併せて判定する。
@@ -107,39 +107,39 @@ extension ZeroBufferIOReaderBase {
   // 符号・接頭辞は失敗しても巻き戻さない。最初の空白読みでのEOFはreadHeadに従う。
   @inlinable
   @inline(__always)
-  static func readIntegerHead() throws -> (negative: Bool, first: Element, radix: Element) {
-    var c: Element = try .readHead()
-    let negative = c == .MINUS
-    if negative || c == .PLUS {
-      c = nullIfEOF(_getchar_unlocked())
+  static func readIntegerHead() throws -> (negative: Bool, first: Element?, radix: Element) {
+    var c: Element? = try Element.readHead()
+    let negative = c == Element.MINUS
+    if negative || c == Element.PLUS {
+      c = __getchar_unlocked()
     }
 
     let mode = integerMode
     let automatic = mode == FastIOIntegerAuto || mode == FastIOIntegerAuto2
     // 固定モードのrawValueは基数そのもの。Auto/Auto2の0/1は基数に使わない。
     var radix: Element = automatic ? 10 : Element(mode.rawValue)
-    if c == .ZERO && (automatic || mode == FastIOIntegerHexadecimal || mode == FastIOIntegerBinary)
+    if c == Element.ZERO && (automatic || mode == FastIOIntegerHexadecimal || mode == FastIOIntegerBinary)
     {
       // 先頭0は桁として消費済み。次の文字で接頭辞か、通常の続きかを見分ける。
       if automatic { radix = 8 }
-      c = nullIfEOF(_getchar_unlocked())
+      c = __getchar_unlocked()
       if (automatic || mode == FastIOIntegerHexadecimal) && (c == 0x78 || c == 0x58) {
         radix = 16
-        c = nullIfEOF(_getchar_unlocked())
+        c = __getchar_unlocked()
       } else if (mode == FastIOIntegerAuto2 || mode == FastIOIntegerBinary)
         && (c == 0x62 || c == 0x42)
       {
         radix = 2
-        c = nullIfEOF(_getchar_unlocked())
-      } else if !isElement(c) || element(c) >= radix {
+        c = __getchar_unlocked()
+      } else if c.map({ isElement($0) && element($0) < radix }) != true {
         // 接頭辞ではない先頭0だけでも値は成立する。次の文字は区切りとして返す。
-        // 例: Autoの09 → 0と残り9、0b11 → 0と残りb11、0 EOF → 0とNULL。
+        // 例: Autoの09 → 0と残り9、0b11 → 0と残りb11、0 EOF → 0とnil。
         // _readのループはこの文字を数値に加えず、値0のまま終了する。
         return (negative, c, radix)
       }
     }
-    guard isElement(c), element(c) < radix else {
-      if c != .NULL { _ = _ungetc(Int32(c)) }
+    guard c.map({ isElement($0) && element($0) < radix }) == true else {
+      _ = _ungetc(c)
       throw IOReaderError.invalidInteger
     }
     return (negative, c, radix)
@@ -154,16 +154,16 @@ extension ZeroBufferIOReaderBase {
   // 例外化や残りの数字列を最後まで消費する処理は、ここへ追加していない。
   @inlinable
   @inline(__always)
-  static func _read() throws -> (value: Element, separator: UInt8) where Element: SignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8?) where Element: SignedInteger {
     var (negative, c, radix) = try readIntegerHead()
 
     var value: Element = 0
-    while isElement(c) && element(c) < radix {
-      let digit = element(c)
+    while let _c = c, isElement(_c), element(_c) < radix {
+      let digit = element(_c)
       value = value * radix + (negative ? -digit : digit)
-      c = nullIfEOF(_getchar_unlocked())
+      c = __getchar_unlocked()
     }
-    return (value, UInt8(truncatingIfNeeded: c))
+    return (value, c.map { UInt8(truncatingIfNeeded: $0) })
   }
 
   // 符号なしは正の値を積み上げ、負号があれば最後に0 &- valueで符号を反映する。
@@ -171,15 +171,15 @@ extension ZeroBufferIOReaderBase {
   // 区切りの先読み・返却は符号付きと同じ。
   @inlinable
   @inline(__always)
-  static func _read() throws -> (value: Element, separator: UInt8) where Element: UnsignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8?) where Element: UnsignedInteger {
     var (negative, c, radix) = try readIntegerHead()
 
     var value: Element = 0
-    while isElement(c) && element(c) < radix {
-      value = value * radix + element(c)
-      c = nullIfEOF(_getchar_unlocked())
+    while let _c = c, isElement(_c), element(_c) < radix {
+      value = value * radix + element(_c)
+      c = __getchar_unlocked()
     }
-    return (negative ? 0 &- value : value, UInt8(truncatingIfNeeded: c))
+    return (negative ? 0 &- value : value, c.map { UInt8(truncatingIfNeeded: $0) })
   }
 }
 

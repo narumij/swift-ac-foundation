@@ -22,7 +22,7 @@ struct _atos: VariableBufferIOReader, InstanceIOReader {
   @inline(__always)
   public mutating func read() throws -> Item {
 
-    try read { (b: [UInt8], c: UInt8) in
+    try read { (b: [UInt8], c: UInt8?) in
       String(
         bytes: b,
         encoding: .ascii

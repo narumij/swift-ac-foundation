@@ -21,14 +21,15 @@ let newlines: UInt = 1 << UInt.LF | 1 << UInt.CR
 
 @inlinable
 @inline(__always)
-func isASCIIWhitespaceOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 << c) & spaces != 0
+func isASCIINewline<T: FixedWidthInteger>(_ c: T) -> Bool {
+  (1 << c) & newlines != 0
 }
 
 @inlinable
 @inline(__always)
-func isASCIINewlineOrNull<T: FixedWidthInteger>(_ c: T) -> Bool {
-  c == .NULL || (1 << c) & newlines != 0
+func isNilOrAsciiNewLine<T: FixedWidthInteger>(_ c: T?) -> Bool {
+  guard let c else { return true }
+  return isASCIINewline(c)
 }
 
 @inlinable
@@ -39,6 +40,6 @@ func isNumber<T: FixedWidthInteger>(_ c: T) -> Bool {
 
 @inlinable
 @inline(__always)
-func nullIfEOF<T: FixedWidthInteger>(_ c: Int32) -> T {
-  c == -1 ? .NULL : numericCast(c)
+func isASCIIWhitespace<T: FixedWidthInteger>(_ c: T) -> Bool {
+  (1 << c) & spaces != 0
 }

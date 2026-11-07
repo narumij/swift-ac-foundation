@@ -5,7 +5,7 @@
 protocol FloatingPointInputState {
   static var start: Self { get }
   var isComplete: Bool { get }
-  mutating func advance(_ c: UInt8) -> Bool
+  mutating func advance<T: FixedWidthInteger>(_ c: T) -> Bool
 }
 
 @usableFromInline
@@ -26,52 +26,52 @@ enum StrtodFloatingPointState: FloatingPointInputState {
   }
 
   @inlinable
-  mutating func advance(_ c: UInt8) -> Bool {
+  mutating func advance<T: FixedWidthInteger>(_ c: T) -> Bool {
     let lower = c | 0x20
-    let digit = c >= UInt8(ascii: "0") && c <= UInt8(ascii: "9")
-    let hexDigit = digit || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "f"))
+    let digit = c >= T(UInt8(ascii: "0")) && c <= T(UInt8(ascii: "9"))
+    let hexDigit = digit || (lower >= T(UInt8(ascii: "a")) && lower <= T(UInt8(ascii: "f")))
     switch self {
     case .start:
-      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { self = .sign; return true }
+      if c == T(UInt8(ascii: "+")) || c == T(UInt8(ascii: "-")) { self = .sign; return true }
       fallthrough
     case .sign:
-      if c == UInt8(ascii: "0") { self = .zero }
+      if c == T(UInt8(ascii: "0")) { self = .zero }
       else if digit { self = .integer }
-      else if c == UInt8(ascii: ".") { self = .leadingPoint }
-      else if lower == UInt8(ascii: "i") { self = .i }
-      else if lower == UInt8(ascii: "n") { self = .n }
+      else if c == T(UInt8(ascii: ".")) { self = .leadingPoint }
+      else if lower == T(UInt8(ascii: "i")) { self = .i }
+      else if lower == T(UInt8(ascii: "n")) { self = .n }
       else { return false }
     case .zero:
-      if lower == UInt8(ascii: "x") { self = .hexPrefix; return true }
+      if lower == T(UInt8(ascii: "x")) { self = .hexPrefix; return true }
       fallthrough
     case .integer:
       if digit { self = .integer }
-      else if c == UInt8(ascii: ".") { self = .fraction }
-      else if lower == UInt8(ascii: "e") { self = .exponent }
+      else if c == T(UInt8(ascii: ".")) { self = .fraction }
+      else if lower == T(UInt8(ascii: "e")) { self = .exponent }
       else { return false }
     case .leadingPoint:
       guard digit else { return false }
       self = .fraction
     case .fraction:
       if digit { return true }
-      if lower == UInt8(ascii: "e") { self = .exponent } else { return false }
+      if lower == T(UInt8(ascii: "e")) { self = .exponent } else { return false }
     case .hexPrefix:
       if hexDigit { self = .hexInteger }
-      else if c == UInt8(ascii: ".") { self = .hexLeadingPoint }
+      else if c == T(UInt8(ascii: ".")) { self = .hexLeadingPoint }
       else { return false }
     case .hexInteger:
       if hexDigit { return true }
-      if c == UInt8(ascii: ".") { self = .hexFraction }
-      else if lower == UInt8(ascii: "p") { self = .exponent }
+      if c == T(UInt8(ascii: ".")) { self = .hexFraction }
+      else if lower == T(UInt8(ascii: "p")) { self = .exponent }
       else { return false }
     case .hexLeadingPoint:
       guard hexDigit else { return false }
       self = .hexFraction
     case .hexFraction:
       if hexDigit { return true }
-      if lower == UInt8(ascii: "p") { self = .exponent } else { return false }
+      if lower == T(UInt8(ascii: "p")) { self = .exponent } else { return false }
     case .exponent:
-      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { self = .exponentSign; return true }
+      if c == T(UInt8(ascii: "+")) || c == T(UInt8(ascii: "-")) { self = .exponentSign; return true }
       fallthrough
     case .exponentSign:
       guard digit else { return false }
@@ -79,28 +79,28 @@ enum StrtodFloatingPointState: FloatingPointInputState {
     case .exponentDigits:
       return digit
     case .i:
-      guard lower == UInt8(ascii: "n") else { return false }; self = .infN
+      guard lower == T(UInt8(ascii: "n")) else { return false }; self = .infN
     case .infN:
-      guard lower == UInt8(ascii: "f") else { return false }; self = .inf
+      guard lower == T(UInt8(ascii: "f")) else { return false }; self = .inf
     case .inf:
-      guard lower == UInt8(ascii: "i") else { return false }; self = .infI
+      guard lower == T(UInt8(ascii: "i")) else { return false }; self = .infI
     case .infI:
-      guard lower == UInt8(ascii: "n") else { return false }; self = .infIN
+      guard lower == T(UInt8(ascii: "n")) else { return false }; self = .infIN
     case .infIN:
-      guard lower == UInt8(ascii: "i") else { return false }; self = .infINI
+      guard lower == T(UInt8(ascii: "i")) else { return false }; self = .infINI
     case .infINI:
-      guard lower == UInt8(ascii: "t") else { return false }; self = .infINIT
+      guard lower == T(UInt8(ascii: "t")) else { return false }; self = .infINIT
     case .infINIT:
-      guard lower == UInt8(ascii: "y") else { return false }; self = .infinity
+      guard lower == T(UInt8(ascii: "y")) else { return false }; self = .infinity
     case .n:
-      guard lower == UInt8(ascii: "a") else { return false }; self = .nanA
+      guard lower == T(UInt8(ascii: "a")) else { return false }; self = .nanA
     case .nanA:
-      guard lower == UInt8(ascii: "n") else { return false }; self = .nan
+      guard lower == T(UInt8(ascii: "n")) else { return false }; self = .nan
     case .nan:
-      guard c == UInt8(ascii: "(") else { return false }; self = .nanPayload
+      guard c == T(UInt8(ascii: "(")) else { return false }; self = .nanPayload
     case .nanPayload:
-      if c == UInt8(ascii: ")") { self = .complete }
-      else if digit || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "z")) || c == UInt8(ascii: "_") { return true }
+      if c == T(UInt8(ascii: ")")) { self = .complete }
+      else if digit || (lower >= T(UInt8(ascii: "a")) && lower <= T(UInt8(ascii: "z"))) || c == T(UInt8(ascii: "_")) { return true }
       else { return false }
     case .infinity, .complete:
       return false
@@ -126,28 +126,28 @@ struct LLVMFloatingPointState: FloatingPointInputState {
   init() {}
 
   @inlinable
-  mutating func advance(_ c: UInt8) -> Bool {
+  mutating func advance<T: FixedWidthInteger>(_ c: T) -> Bool {
     let lower = c | 0x20
-    let digit = c >= UInt8(ascii: "0") && c <= UInt8(ascii: "9")
+    let digit = c >= T(UInt8(ascii: "0")) && c <= T(UInt8(ascii: "9"))
     switch c {
-    case UInt8(ascii: "+"), UInt8(ascii: "-"):
+    case T(UInt8(ascii: "+")), T(UInt8(ascii: "-")):
       guard phase == .start || (previous | 0x20) == exponent else { return false }
       if phase == .start { phase = .sign }
-    case UInt8(ascii: "."):
+    case T(UInt8(ascii: ".")):
       guard phase != .afterPointOrExponent else { return false }
       phase = .afterPointOrExponent
     default:
-      guard digit || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "f")) || lower == UInt8(ascii: "x") || lower == UInt8(ascii: "p") else {
+      guard digit || (lower >= T(UInt8(ascii: "a")) && lower <= T(UInt8(ascii: "f"))) || lower == T(UInt8(ascii: "x")) || lower == T(UInt8(ascii: "p")) else {
         return false
       }
       if phase == .start || phase == .sign {
         guard digit else { return false }
         phase = .significand
       }
-      if lower == UInt8(ascii: "x") { exponent = UInt8(ascii: "p") }
-      else if lower == exponent { phase = .afterPointOrExponent }
+      if lower == T(UInt8(ascii: "x")) { exponent = UInt8(ascii: "p") }
+      else if lower == T(exponent) { phase = .afterPointOrExponent }
     }
-    previous = c
+    previous = UInt8(c)
     return true
   }
 }
@@ -164,8 +164,8 @@ struct GCCLikeFloatingPointState: FloatingPointInputState {
   @inlinable var isComplete: Bool { state.isComplete }
 
   @inlinable
-  mutating func advance(_ c: UInt8) -> Bool {
-    if case .zero = state, c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
+  mutating func advance<T: FixedWidthInteger>(_ c: T) -> Bool {
+    if case .zero = state, c == T(UInt8(ascii: "x")) || c == T(UInt8(ascii: "X")) {
       return false
     }
     return state.advance(c)

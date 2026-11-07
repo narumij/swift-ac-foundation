@@ -10,7 +10,7 @@ protocol ElementReader: IOReader {
 }
 
 @usableFromInline
-typealias ReaderItem<Element> = (value: Element, separator: UInt8)
+typealias ReaderItem<Element> = (value: Element, separator: UInt8?)
 
 
 extension ElementReader {

@@ -6,7 +6,7 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
   @inlinable
   @inline(__always)
   public static func read() throws -> Element {
-    valuePreservingSeparator(try read() as (value: Element, separator: UInt8))
+    valuePreservingSeparator(try read())
   }
 
   @inlinable

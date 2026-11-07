@@ -1,5 +1,5 @@
-import _FastIO
 import Foundation
+import _FastIO
 
 // 3モードが共有する候補文字のバッファ。候補の切り出しと変換を担う。
 @usableFromInline
@@ -15,24 +15,22 @@ struct FloatingPointIOReaderBuffer {
     -> ReaderItem<Double>
   {
     buffer.removeAll(keepingCapacity: true)
-    var c: UInt8 = try .readHead()
+    var c: UInt8? = try .readHead()
     var state = initialState
-    while c != .NULL && state.advance(c) {
-      buffer.append(c)
-      c = nullIfEOF(_getchar_unlocked())
+    while let _c = c, state.advance(_c) {
+      buffer.append(_c)
+      c = __getchar_unlocked()
     }
     let count = buffer.count
     do {
       return (try Self.convert(&buffer, isComplete: state.isComplete), c)
     } catch {
-      if c != .NULL {
-        _ = _ungetc(Int32(c))
-      }
+      _ = _ungetc(c)
       if let reason = error as? IOReaderError {
         throw FloatingPointInputError(
           reason: reason,
           input: String(decoding: buffer.prefix(count), as: UTF8.self),
-          nextByte: c == .NULL ? nil : c
+          nextByte: c
         )
       }
       throw error

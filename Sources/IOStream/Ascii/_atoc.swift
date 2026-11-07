@@ -14,12 +14,12 @@ struct _atoc: InstanceIOReader, VariableBuffer {
 
   @inlinable
   @inline(__always)
-  mutating func _read() throws -> ([Character], UInt8) {
+  mutating func _read() throws -> Item {
     buffer.removeAll(keepingCapacity: true)
-    var current: UInt8 = try .readHead()
-    while !isASCIIWhitespaceOrNull(current) {
-      buffer.append(Character(UnicodeScalar(current)))
-      current = nullIfEOF(_getchar_unlocked())
+    var current: UInt8? = try .readHead()
+    while let c = current, !isASCIIWhitespace(c) {
+      buffer.append(Character(UnicodeScalar(c)))
+      current = __getchar_unlocked()
     }
     defer { resetBufferIfNeeded() }
     return (buffer, current)
@@ -41,10 +41,8 @@ struct _atoc: InstanceIOReader, VariableBuffer {
   @inline(__always)
   mutating func _readCharacters(count: Int) throws -> Element {
     buffer.removeAll(keepingCapacity: true)
-    var lastByte: UInt8 = 0
     for i in 0..<count {
-      lastByte = i == 0 ? try .readHead() : nullIfEOF(_getchar_unlocked())
-      if lastByte == .NULL {
+      guard let lastByte: UInt8 = i == 0 ? try UInt8.readHead() : __getchar_unlocked() else {
         throw IOReaderError.unexpectedEOF
       }
       if (1 << lastByte) & spaces != 0 {
