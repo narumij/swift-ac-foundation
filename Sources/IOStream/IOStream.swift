@@ -5,17 +5,30 @@ import Foundation
 protocol IOReader {}
 
 @usableFromInline
-protocol StaticIOReader {
+protocol ElementReader: IOReader {
   associatedtype Element
+}
+
+@usableFromInline
+typealias ReaderItem<Element> = (value: Element, separator: UInt8)
+
+
+extension ElementReader {
+  @usableFromInline
+  typealias Item = ReaderItem<Element>
+}
+
+@usableFromInline
+protocol StaticIOReader: ElementReader {
   static func read() throws -> Element
-  static func read() throws -> (value: Element, separator: UInt8)
+  static func read() throws -> Item
 }
 
 extension StaticIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> ReaderItem<T> {
     let (a, b) = try read()
     return (try f(a), b)
   }
@@ -23,7 +36,7 @@ extension StaticIOReader {
 
 @usableFromInline
 protocol StaticIOSubReader: StaticIOReader {
-  static func _read() throws -> (Element, UInt8)
+  static func _read() throws -> Item
 }
 
 extension StaticIOSubReader {
@@ -36,13 +49,13 @@ extension StaticIOSubReader {
 
   @inlinable
   @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
+  public static func read() throws -> Item {
     try Self._read()
   }
 }
 
 @usableFromInline
-protocol InstanceIOReader {
+protocol InstanceIOReader: ElementReader {
   associatedtype Element
   mutating func read() throws -> Element
   mutating func read() throws -> Item
@@ -50,9 +63,6 @@ protocol InstanceIOReader {
 }
 
 extension InstanceIOReader {
-
-  @usableFromInline
-  typealias Item = (value: Element, separator: UInt8)
 
   @inlinable
   @inline(__always)
@@ -68,7 +78,7 @@ extension InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read<T>(_ f: (Element) throws -> T) throws -> (value: T, separator: UInt8) {
+  public static func read<T>(_ f: (Element) throws -> T) throws -> ReaderItem<T> {
     let (a, b) = try instance.read()
     return (try f(a), b)
   }

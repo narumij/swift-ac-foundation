@@ -9,7 +9,7 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8) where Element: SignedInteger {
     var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
@@ -31,7 +31,7 @@ extension ZeroBufferIOReader {
 
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8) where Element: UnsignedInteger {
     var c: Element = try .readHead()
     let negative = c == .MINUS
     if negative || c == .PLUS {
@@ -154,7 +154,7 @@ extension ZeroBufferIOReaderBase {
   // 例外化や残りの数字列を最後まで消費する処理は、ここへ追加していない。
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: SignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8) where Element: SignedInteger {
     var (negative, c, radix) = try readIntegerHead()
 
     var value: Element = 0
@@ -171,7 +171,7 @@ extension ZeroBufferIOReaderBase {
   // 区切りの先読み・返却は符号付きと同じ。
   @inlinable
   @inline(__always)
-  static func _read() throws -> (Element, UInt8) where Element: UnsignedInteger {
+  static func _read() throws -> (value: Element, separator: UInt8) where Element: UnsignedInteger {
     var (negative, c, radix) = try readIntegerHead()
 
     var value: Element = 0

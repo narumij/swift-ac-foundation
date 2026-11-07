@@ -73,13 +73,19 @@ struct _atof: InstanceIOReader {
   @inlinable
   @inline(__always)
   public mutating func read() throws -> Item {
-    switch _fastio_floating_point_mode {
-    case FastIOFloatingPointLLVM:
-      return try read(state: LLVMFloatingPointState())
-    case FastIOFloatingPointGCCLike:
-      return try read(state: GCCLikeFloatingPointState())
-    default:
-      return try read(state: StrtodFloatingPointState.start)
+    try read(floatingPointMode: FloatingPointMode(rawValue: _fastio_floating_point_mode.rawValue)!)
+  }
+
+  @inlinable
+  @inline(__always)
+  public mutating func read(floatingPointMode: FloatingPointMode) throws -> Item {
+    switch floatingPointMode {
+    case .libcxx:
+      try read(state: LLVMFloatingPointState())
+    case .gccLike:
+      try read(state: GCCLikeFloatingPointState())
+    case .specific:
+      try read(state: StrtodFloatingPointState.start)
     }
   }
 

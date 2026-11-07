@@ -4,7 +4,7 @@ import _FastIO
 // NULL is the existing EOF sentinel. NUL input is outside the supported input grammar.
 @inlinable
 @inline(__always)
-func valuePreservingSeparator<Value>(_ result: (value: Value, separator: UInt8)) -> Value {
+func valuePreservingSeparator<Value>(_ result: ReaderItem<Value>) -> Value {
   if result.separator != .NULL {
     _ = _ungetc(Int32(result.separator))
   }

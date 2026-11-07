@@ -6,27 +6,31 @@ struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader {
   @inlinable
   @inline(__always)
   public static func read() throws -> Element {
-    valuePreservingSeparator(try read() as (value: Element, separator: UInt8))
+    valuePreservingSeparator(try read())
   }
 
   @inlinable
   @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    switch _fastio_integer_mode {
-    case FastIOIntegerAuto:
-      return try _atolAuto.read()
-    case FastIOIntegerAuto2:
-      return try _atolAuto2.read()
-    case FastIOIntegerBinary:
-      return try _atol2.read()
-    case FastIOIntegerOctal:
-      return try _atol8.read()
-    case FastIOIntegerDecimal:
-      return try _atol10.read()
-    case FastIOIntegerHexadecimal:
-      return try _atol16.read()
-    default:
-      fatalError("Integer input mode is not implemented")
+  public static func read() throws -> Item {
+    try read(integerMode: IntegerMode(rawValue: _fastio_integer_mode.rawValue)!)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read(integerMode: IntegerMode) throws -> Item {
+    switch integerMode {
+    case .auto:
+      try _atolAuto.read()
+    case .auto2:
+      try _atolAuto2.read()
+    case .binary:
+      try _atol2.read()
+    case .octal:
+      try _atol8.read()
+    case .decimal:
+      try _atol10.read()
+    case .hexadecimal:
+      try _atol16.read()
     }
   }
 }

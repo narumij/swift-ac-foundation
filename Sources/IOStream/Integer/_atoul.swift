@@ -11,22 +11,26 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
 
   @inlinable
   @inline(__always)
-  public static func read() throws -> (value: Element, separator: UInt8) {
-    switch _fastio_integer_mode {
-    case FastIOIntegerAuto:
-      return try _atoulAuto.read()
-    case FastIOIntegerAuto2:
-      return try _atoulAuto2.read()
-    case FastIOIntegerBinary:
-      return try _atoul2.read()
-    case FastIOIntegerOctal:
-      return try _atoul8.read()
-    case FastIOIntegerDecimal:
-      return try _atoul10.read()
-    case FastIOIntegerHexadecimal:
-      return try _atoul16.read()
-    default:
-      fatalError("Integer input mode is not implemented")
+  public static func read() throws -> Item {
+    try read(integerMode: IntegerMode(rawValue: _fastio_integer_mode.rawValue)!)
+  }
+
+  @inlinable
+  @inline(__always)
+  public static func read(integerMode: IntegerMode) throws -> Item {
+    switch integerMode {
+    case .auto:
+      try _atoulAuto.read()
+    case .auto2:
+      try _atoulAuto2.read()
+    case .binary:
+      try _atoul2.read()
+    case .octal:
+      try _atoul8.read()
+    case .decimal:
+      try _atoul10.read()
+    case .hexadecimal:
+      try _atoul16.read()
     }
   }
 }
