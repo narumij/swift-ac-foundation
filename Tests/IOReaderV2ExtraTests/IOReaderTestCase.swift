@@ -1,5 +1,5 @@
 import XCTest
-import IOReaderV2
+import IOStream
 
 class IOReaderV2ExtraTestCase: XCTestCase {
   private var savedConfiguration = InputConfiguration.shared

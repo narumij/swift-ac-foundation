@@ -1,6 +1,6 @@
 #if false
 @preconcurrency import Foundation
-import IOReaderV2
+import IOStream
 import TestingUtil
 import XCTest
 

@@ -1,6 +1,6 @@
-import IOReaderV2
+import IOStream
 
-class CinCompatibleV2TestCase: IOReaderV2TestCase {
+class CinCompatibleV2TestCase: IOStreamTestCase {
   override func setUpWithError() throws {
     try super.setUpWithError()
     InputConfiguration.shared.usesPendingCharacter = false

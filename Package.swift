@@ -61,12 +61,12 @@ let package = Package(
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
-      name: "IOReaderV2",
+      name: "IOStream",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2Extra",
-      dependencies: ["IOReaderV2"],
+      dependencies: ["IOStream"],
       swiftSettings: _settings),
     .target(
       name: "IOWriter",
@@ -151,7 +151,7 @@ let package = Package(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
-        "IOReaderV2",
+        "IOStream",
         "IOWriter",
         "IOUtil",
         "Bisect",
@@ -175,8 +175,8 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "IOReaderV2Tests",
-      dependencies: ["IOReaderV2", "TestingUtil"],
+      name: "IOStreamTests",
+      dependencies: ["IOStream", "TestingUtil"],
       swiftSettings: _settings),
     .testTarget(
       name: "IOReaderV2ExtraTests",
