@@ -16,13 +16,13 @@ struct _atof: StaticIOReader {
   @inlinable
   @inline(__always)
   public static func read() throws -> Item {
-    try read(floatingPointMode: FloatingPointMode(rawValue: _fastio_floating_point_mode.rawValue)!)
+    try read(mode: FloatingPointMode(rawValue: _fastio_floating_point_mode.rawValue)!)
   }
 
   @inlinable
   @inline(__always)
-  public static func read(floatingPointMode: FloatingPointMode) throws -> Item {
-    switch floatingPointMode {
+  public static func read(mode: FloatingPointMode) throws -> Item {
+    switch mode {
     case .libcxx:
       try _atofReader<LLVMFloatingPointState>.read()
     case .gccLike:

@@ -12,13 +12,13 @@ struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
   @inlinable
   @inline(__always)
   public static func read() throws -> Item {
-    try read(integerMode: IntegerMode(rawValue: _fastio_integer_mode.rawValue)!)
+    try read(mode: IntegerMode(rawValue: _fastio_integer_mode.rawValue)!)
   }
 
   @inlinable
   @inline(__always)
-  public static func read(integerMode: IntegerMode) throws -> Item {
-    switch integerMode {
+  public static func read(mode: IntegerMode) throws -> Item {
+    switch mode {
     case .auto:
       try _atoulAuto.read()
     case .auto2:
