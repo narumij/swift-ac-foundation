@@ -1,4 +1,4 @@
-import IOStream
+import IOBase
 
 extension Int {
 

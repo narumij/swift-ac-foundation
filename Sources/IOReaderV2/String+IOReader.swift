@@ -1,4 +1,4 @@
-import IOStream
+import IOBase
 
 // MARK: - 行系統
 

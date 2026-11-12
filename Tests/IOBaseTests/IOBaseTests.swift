@@ -1,3 +1,3 @@
-import IOStream
+import IOBase
 import TestingUtil
 import XCTest

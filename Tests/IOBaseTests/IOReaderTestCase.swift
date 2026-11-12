@@ -1,7 +1,7 @@
 import XCTest
-import IOStream
+import IOBase
 
-class IOStreamTestCase: XCTestCase {
+class IOBaseTestCase: XCTestCase {
   private var savedConfiguration = InputConfiguration.shared
 
   override func setUpWithError() throws {

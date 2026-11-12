@@ -1,6 +1,6 @@
 #if false
 @preconcurrency import Foundation
-import IOStream
+import IOBase
 import TestingUtil
 import XCTest
 

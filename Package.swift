@@ -61,17 +61,17 @@ let package = Package(
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
-      name: "IOStream",
+      name: "IOBase",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2",
-      dependencies: ["IOStream"],
+      dependencies: ["IOBase"],
       exclude: ["MEMO.md"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2Extra",
-      dependencies: ["IOStream"],
+      dependencies: ["IOBase"],
       swiftSettings: _settings),
     .target(
       name: "IOWriter",
@@ -156,7 +156,7 @@ let package = Package(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
-        "IOStream",
+        "IOBase",
         "IOWriter",
         "IOUtil",
         "Bisect",
@@ -180,8 +180,8 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "IOStreamTests",
-      dependencies: ["IOStream", "TestingUtil"],
+      name: "IOBaseTests",
+      dependencies: ["IOBase", "TestingUtil"],
       swiftSettings: _settings),
     .testTarget(
       name: "IOReaderV2Tests",
