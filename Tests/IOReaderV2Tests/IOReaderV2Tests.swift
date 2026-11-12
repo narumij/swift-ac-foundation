@@ -30,6 +30,12 @@ final class IntReaderTests: XCTestCase {
     }.inputOnly("1 2 3")
   }
 
+  func testNumbers2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Int]].stdin(rows: 2), [[1, 2, 3], [4]])
+    }.inputOnly("1 2 3\n4")
+  }
+
   func testNumbers2D() throws {
     try SolverRunner {
       XCTAssertEqual([[Int]].stdin(rows: 2, columns: 3), [[1, 2, 3], [4, 5, 6]])

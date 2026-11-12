@@ -59,5 +59,6 @@ public protocol ReadableNumbers1D {
 public protocol ReadableNumbers2D {
   associatedtype Unit: ReadableNumber
   // [[Int]], [[Double]]
+  static func stdin(rows: Int) -> Self
   static func stdin(rows: Int, columns: Int) -> Self
 }
