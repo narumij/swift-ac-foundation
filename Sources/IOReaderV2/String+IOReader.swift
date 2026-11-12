@@ -136,3 +136,46 @@ extension Array where Element == String {
     (0..<columns).map { _ in .stdin }
   }
 }
+
+extension Array where Element == [String] {
+
+  /// 標準入力から指定した行数を読み、各行の空白で区切られた文字列を2次元配列で返します
+  ///
+  /// 各行は `[String].stdin()` と同じく、1行分の文字列を読みます。
+  ///
+  /// 入力例
+  /// ```
+  /// abc def
+  /// ghi
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print([[String]].stdin(rows: 2)) // [["abc", "def"], ["ghi"]]
+  /// ```
+  public static func stdin(rows: Int) -> [[String]] {
+    (0..<rows).map { _ in .stdin() }
+  }
+
+  /// 標準入力から指定した行数と列数の、空白で区切られた文字列を読み、2次元配列で返します
+  ///
+  /// 各行の最後の文字列の直後が改行でない場合は停止します。
+  ///
+  /// 入力例
+  /// ```
+  /// a b
+  /// c d
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print([[String]].stdin(rows: 2, columns: 2)) // [["a", "b"], ["c", "d"]]
+  /// ```
+  public static func stdin(rows: Int, columns: Int) -> [[String]] {
+    (0..<rows).map { _ in
+      let items: [ReaderItem<String>] = (0..<columns).map { _ in try! _atos.read() }
+      precondition(isNilOrAsciiNewLine(items.last?.separator ?? nil))
+      return items.map(\.value)
+    }
+  }
+}

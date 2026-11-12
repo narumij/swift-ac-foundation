@@ -39,6 +39,7 @@ public protocol ReadableAsciiWords2D {
   associatedtype Unit: ReadableAsciiWord
   // 過剰なので、実装は不要。概念整理の為にある
   // [[String]], [[[Character]]], [[[UInt8]]]
+  static func stdin(rows: Int) -> Self
   static func stdin(rows: Int, columns: Int) -> Self
 }
 

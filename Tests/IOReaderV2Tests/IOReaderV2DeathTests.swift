@@ -23,5 +23,11 @@
         try SolverRunner { _ = [String].stdin(rows: 1, columns: 2) }.inputOnly("###")
       }
     }
+
+    @Test func words2D_traps_whenRowHasMoreColumns() async throws {
+      await #expect(processExitsWith: .failure) {
+        try SolverRunner { _ = [[String]].stdin(rows: 1, columns: 2) }.inputOnly("a b c")
+      }
+    }
   }
 #endif

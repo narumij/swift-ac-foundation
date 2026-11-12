@@ -92,6 +92,18 @@ final class StringReaderTests: XCTestCase {
     }.inputOnly("abc def\nghi")
   }
 
+  func testWords2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[String]].stdin(rows: 2), [["abc", "def"], ["ghi"]])
+    }.inputOnly("abc def\nghi")
+  }
+
+  func testWords2D() throws {
+    try SolverRunner {
+      XCTAssertEqual([[String]].stdin(rows: 2, columns: 2), [["a", "b"], ["c", "d"]])
+    }.inputOnly("a b\nc d")
+  }
+
   func testWordsColumns() throws {
     try SolverRunner {
       XCTAssertEqual([String].stdin(columns: 3), ["a", "bc", "def"])
