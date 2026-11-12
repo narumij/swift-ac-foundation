@@ -32,7 +32,7 @@ package struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  static func read(count: Int) throws -> Element {
+  package static func read(count: Int) throws -> Element {
     return try String(bytes: instance.readBytes(count: count), encoding: .ascii)
       .unwrap(or: IOReaderError.unexpectedNil)
   }

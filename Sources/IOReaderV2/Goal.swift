@@ -10,7 +10,7 @@ public protocol ReadableUnit {}
 public protocol ReadableAsciiLine: ReadableUnit {
   associatedtype Element: ReadableElement
   // String, [Character], [UInt8]
-  static func stdin() -> Self
+  static func readLine() -> Self // 衝突するのでよけるしかない
   static func stdin(columns: Int) -> Self
 }
 

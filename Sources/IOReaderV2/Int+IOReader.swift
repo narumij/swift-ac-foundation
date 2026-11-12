@@ -3,7 +3,7 @@ import IOStream
 extension Int {
 
   public static var stdin: Int {
-    try! read()
+    try! _atol<Int>.read()
   }
 }
 

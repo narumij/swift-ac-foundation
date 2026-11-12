@@ -1,23 +1,20 @@
 import IOStream
 
-extension StringProtocol where Self == String {
-
-  public static func stdin() -> String {
-    readLine()!
-  }
-}
-
 extension String {
 
+  public static func readLine() -> String {
+    Swift.readLine()!
+  }
+
   public static func stdin(columns: Int) -> String {
-    try! read(columns: columns)
+    try! _atos.read(count: columns)
   }
 }
 
 extension Array where Element == String {
 
   public static func stdin(rows: Int) -> [String] {
-    (0..<rows).map { _ in .stdin() }
+    (0..<rows).map { _ in .readLine() }
   }
 
   public static func stdin(rows: Int, columns: Int) -> [String] {
@@ -28,7 +25,7 @@ extension Array where Element == String {
 extension String {
 
   public static var stdin: String {
-    try! read()
+    try! _atos.read()
   }
 }
 
