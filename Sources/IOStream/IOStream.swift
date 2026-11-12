@@ -2,20 +2,20 @@ import Foundation
 @preconcurrency import _FastIO
 
 @usableFromInline
-protocol IOReader {}
+package protocol IOReader {}
 
 @usableFromInline
-protocol ElementReader: IOReader {
+package protocol ElementReader: IOReader {
   associatedtype Element
 }
 
 @usableFromInline
-typealias ReaderItem<Element> = (value: Element, separator: UInt8?)
+package typealias ReaderItem<Element> = (value: Element, separator: UInt8?)
 
 
 extension ElementReader {
   @usableFromInline
-  typealias Item = ReaderItem<Element>
+  package typealias Item = ReaderItem<Element>
 }
 
 @usableFromInline

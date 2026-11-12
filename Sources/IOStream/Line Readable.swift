@@ -22,12 +22,12 @@ extension LineReader {
   }
 }
 
-struct LineIterator<Element>: IteratorProtocol, Sequence {
+package struct LineIterator<Element>: IteratorProtocol, Sequence {
   
   let read: () throws -> ReaderItem<Element>
   var finished = false
 
-  mutating func next() -> Element? {
+  package mutating func next() -> Element? {
     guard !finished else { return nil }
     let (value, separator) = try! read()
     _ = __ungetc(separator)
@@ -36,7 +36,7 @@ struct LineIterator<Element>: IteratorProtocol, Sequence {
   }
 }
 
-func makeLineIterator<Element>(
+package func makeLineIterator<Element>(
   _ read: @escaping () throws -> ReaderItem<Element>
 ) -> LineIterator<Element> {
   LineIterator(read: read)
