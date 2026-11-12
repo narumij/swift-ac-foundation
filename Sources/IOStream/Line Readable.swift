@@ -30,8 +30,10 @@ package struct LineIterator<Element>: IteratorProtocol, Sequence {
   package mutating func next() -> Element? {
     guard !finished else { return nil }
     let (value, separator) = try! read()
-    _ = __ungetc(separator)
     finished = isNilOrAsciiNewLine(separator)
+    if !finished {
+      _ = __ungetc(separator)
+    }
     return value
   }
 }

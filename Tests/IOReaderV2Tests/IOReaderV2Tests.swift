@@ -18,6 +18,13 @@ final class IntReaderTests: XCTestCase {
     }.inputOnly("1 2 3\n4")
   }
 
+  func testNumbersLineThenReadLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([Int].stdin(), [1, 2])
+      XCTAssertEqual(String.readLine(), "a b")
+    }.inputOnly("1 2\na b")
+  }
+
   func testNumbersRows() throws {
     try SolverRunner {
       XCTAssertEqual([Int].stdin(rows: 3), [1, 2, 3])
