@@ -18,7 +18,7 @@ extension FixedWidthInteger {
 }
 
 @inlinable
-func __getchar_unlocked<I:FixedWidthInteger>() -> I? {
+package func __getchar_unlocked<I:FixedWidthInteger>() -> I? {
   let c = _getchar_unlocked()
   if c == EOF {
     return nil

@@ -73,7 +73,12 @@ extension Array where Element == String {
   /// print([String].stdin(rows: 3, columns: 4)) // ["####", "#..#", "####"]
   /// ```
   public static func stdin(rows: Int, columns: Int) -> [String] {
-    (0..<rows).map { _ in .stdin(columns: columns) }
+    (0..<rows).map { _ in
+      let line = String.stdin(columns: columns)
+      let separator: UInt8? = __getchar_unlocked()
+      precondition(isNilOrAsciiNewLine(separator))
+      return line
+    }
   }
 }
 

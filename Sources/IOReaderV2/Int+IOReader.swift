@@ -51,7 +51,11 @@ extension Array where Element == Int {
   /// print([Int].stdin(rows: 3)) // [1, 2, 3]
   /// ```
   public static func stdin(rows: Int) -> [Int] {
-    (0..<rows).map { _ in .stdin }
+    (0..<rows).map { _ in
+      let (value, separator): ReaderItem<Int> = try! _atol<Int>.read()
+      precondition(isNilOrAsciiNewLine(separator))
+      return value
+    }
   }
 
   /// 標準入力から横に並んだ整数を指定した個数読み、配列で返します
@@ -103,6 +107,10 @@ extension Array where Element == [Int] {
   /// print([[Int]].stdin(rows: 2, columns: 3)) // [[1, 2, 3], [4, 5, 6]]
   /// ```
   public static func stdin(rows: Int, columns: Int) -> [[Int]] {
-    (0..<rows).map { _ in .stdin(columns: columns) }
+    (0..<rows).map { _ in
+      let items: [ReaderItem<Int>] = (0..<columns).map { _ in try! _atol<Int>.read() }
+      precondition(isNilOrAsciiNewLine(items.last?.separator ?? nil))
+      return items.map(\.value)
+    }
   }
 }

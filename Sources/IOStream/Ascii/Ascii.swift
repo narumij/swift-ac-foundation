@@ -27,7 +27,7 @@ func isASCIINewline<T: FixedWidthInteger>(_ c: T) -> Bool {
 
 @inlinable
 @inline(__always)
-func isNilOrAsciiNewLine<T: FixedWidthInteger>(_ c: T?) -> Bool {
+package func isNilOrAsciiNewLine<T: FixedWidthInteger>(_ c: T?) -> Bool {
   guard let c else { return true }
   return isASCIINewline(c)
 }
