@@ -1,10 +1,10 @@
 import Foundation
 
 @usableFromInline
-struct _atos: VariableBufferIOReader, InstanceIOReader {
+package struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   @usableFromInline
-  typealias Element = String
+  package typealias Element = String
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
