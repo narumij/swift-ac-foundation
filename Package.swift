@@ -65,6 +65,10 @@ let package = Package(
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
+      name: "IOReaderV2",
+      dependencies: ["IOStream"],
+      swiftSettings: _settings),
+    .target(
       name: "IOReaderV2Extra",
       dependencies: ["IOStream"],
       swiftSettings: _settings),
@@ -177,6 +181,10 @@ let package = Package(
     .testTarget(
       name: "IOStreamTests",
       dependencies: ["IOStream", "TestingUtil"],
+      swiftSettings: _settings),
+    .testTarget(
+      name: "IOReaderV2Tests",
+      dependencies: ["IOReaderV2", "TestingUtil"],
       swiftSettings: _settings),
     .testTarget(
       name: "IOReaderV2ExtraTests",
