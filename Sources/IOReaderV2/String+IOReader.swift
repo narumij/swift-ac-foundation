@@ -16,7 +16,7 @@ extension String {
   /// print(String.stdin, String.stdin) // abc def
   /// ```
   public static var stdin: String {
-    try! _atos.read()
+    valuePreservingSeparator(try! _readWithSeparator())
   }
 }
 

@@ -14,7 +14,7 @@ extension Int {
   /// print(Int.stdin, Int.stdin) // 1 -2
   /// ```
   public static var stdin: Int {
-    try! _atol<Int>.read()
+    valuePreservingSeparator(try! _readWithSeparator())
   }
 }
 
