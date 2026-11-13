@@ -98,3 +98,14 @@ extension Array where Element == [Character] {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
 }
+
+extension Array where Element == [UInt8] {
+
+  public static func stdin(rows: Int) -> Self {
+    .init((0..<rows).map { _ in Element.readLine() })
+  }
+
+  public static func stdin(rows: Int, columns: Int) -> Self {
+    .init((0..<rows).map { _ in Element.stdin(columns: columns) })
+  }
+}
