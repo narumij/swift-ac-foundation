@@ -3,26 +3,40 @@
 
 @usableFromInline
 protocol FloatingPointInputState {
-  static var start: Self { get }
   var isComplete: Bool { get }
   mutating func advance(_ c: UInt8) -> Bool
 }
 
+// strtodの構文。10進と16進は同じ形で、数字の種類と指数の文字だけが違う。
+// allowsHexがfalseなら0xへ進まない（GCC型。GCC完全互換ではない）。
 @usableFromInline
-enum StrtodFloatingPointState: FloatingPointInputState {
-  case start, sign, zero, integer, leadingPoint, fraction
-  case hexPrefix, hexInteger, hexLeadingPoint, hexFraction
-  case exponent, exponentSign, exponentDigits
-  case inf(matched: Int), nan(matched: Int), nanPayload, complete
+struct StrtodFloatingPointState: FloatingPointInputState {
+
+  @usableFromInline
+  enum Phase: Equatable {
+    case start, sign, zero, hexPrefix
+    case integer, leadingPoint, fraction
+    case exponent, exponentSign, exponentDigits
+    case inf(matched: Int), nan(matched: Int), nanPayload, complete
+  }
 
   @usableFromInline static let infinityLetters = Array("infinity".utf8)
   @usableFromInline static let nanLetters = Array("nan".utf8)
-  
+
+  @usableFromInline var phase = Phase.start
+  @usableFromInline var hex = false
+  @usableFromInline let allowsHex: Bool
+
+  @inlinable
+  init(allowsHex: Bool) {
+    self.allowsHex = allowsHex
+  }
+
   @inlinable
   var isComplete: Bool {
-    switch self {
-    case .zero, .integer, .fraction, .hexInteger, .hexFraction,
-         .exponentDigits, .inf(matched: 3), .inf(matched: 8), .nan(matched: 3), .complete: return true
+    switch phase {
+    case .zero, .integer, .fraction, .exponentDigits,
+         .inf(matched: 3), .inf(matched: 8), .nan(matched: 3), .complete: return true
     default: return false
     }
   }
@@ -30,72 +44,63 @@ enum StrtodFloatingPointState: FloatingPointInputState {
   @inlinable
   mutating func advance(_ c: UInt8) -> Bool {
     let lower = c | 0x20
-    let digit = c >= UInt8(ascii: "0") && c <= UInt8(ascii: "9")
-    let hexDigit = digit || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "f"))
-    switch self {
+    let decimal = c >= UInt8(ascii: "0") && c <= UInt8(ascii: "9")
+    let digit = decimal || (hex && lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "f"))
+    let exponentMarker = hex ? UInt8(ascii: "p") : UInt8(ascii: "e")
+    switch phase {
     case .start:
-      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { self = .sign; return true }
+      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { phase = .sign; return true }
       fallthrough
     case .sign:
-      if c == UInt8(ascii: "0") { self = .zero }
-      else if digit { self = .integer }
-      else if c == UInt8(ascii: ".") { self = .leadingPoint }
-      else if lower == UInt8(ascii: "i") { self = .inf(matched: 1) }
-      else if lower == UInt8(ascii: "n") { self = .nan(matched: 1) }
+      if c == UInt8(ascii: "0") { phase = .zero }
+      else if decimal { phase = .integer }
+      else if c == UInt8(ascii: ".") { phase = .leadingPoint }
+      else if lower == UInt8(ascii: "i") { phase = .inf(matched: 1) }
+      else if lower == UInt8(ascii: "n") { phase = .nan(matched: 1) }
       else { return false }
     case .zero:
-      if lower == UInt8(ascii: "x") { self = .hexPrefix; return true }
+      if allowsHex, lower == UInt8(ascii: "x") { phase = .hexPrefix; hex = true; return true }
       fallthrough
     case .integer:
-      if digit { self = .integer }
-      else if c == UInt8(ascii: ".") { self = .fraction }
-      else if lower == UInt8(ascii: "e") { self = .exponent }
+      if digit { phase = .integer }
+      else if c == UInt8(ascii: ".") { phase = .fraction }
+      else if lower == exponentMarker { phase = .exponent }
+      else { return false }
+    case .hexPrefix:
+      if digit { phase = .integer }
+      else if c == UInt8(ascii: ".") { phase = .leadingPoint }
       else { return false }
     case .leadingPoint:
       guard digit else { return false }
-      self = .fraction
+      phase = .fraction
     case .fraction:
       if digit { return true }
-      if lower == UInt8(ascii: "e") { self = .exponent } else { return false }
-    case .hexPrefix:
-      if hexDigit { self = .hexInteger }
-      else if c == UInt8(ascii: ".") { self = .hexLeadingPoint }
-      else { return false }
-    case .hexInteger:
-      if hexDigit { return true }
-      if c == UInt8(ascii: ".") { self = .hexFraction }
-      else if lower == UInt8(ascii: "p") { self = .exponent }
-      else { return false }
-    case .hexLeadingPoint:
-      guard hexDigit else { return false }
-      self = .hexFraction
-    case .hexFraction:
-      if hexDigit { return true }
-      if lower == UInt8(ascii: "p") { self = .exponent } else { return false }
+      guard lower == exponentMarker else { return false }
+      phase = .exponent
     case .exponent:
-      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { self = .exponentSign; return true }
+      if c == UInt8(ascii: "+") || c == UInt8(ascii: "-") { phase = .exponentSign; return true }
       fallthrough
     case .exponentSign:
-      guard digit else { return false }
-      self = .exponentDigits
+      guard decimal else { return false }
+      phase = .exponentDigits
     case .exponentDigits:
-      return digit
+      return decimal
     case .inf(let matched):
       let letters = Self.infinityLetters
       guard matched < letters.count, lower == letters[matched] else { return false }
-      self = .inf(matched: matched + 1)
+      phase = .inf(matched: matched + 1)
     case .nan(let matched):
       let letters = Self.nanLetters
       if matched < letters.count {
         guard lower == letters[matched] else { return false }
-        self = .nan(matched: matched + 1)
+        phase = .nan(matched: matched + 1)
       } else {
         guard c == UInt8(ascii: "(") else { return false }
-        self = .nanPayload
+        phase = .nanPayload
       }
     case .nanPayload:
-      if c == UInt8(ascii: ")") { self = .complete }
-      else if digit || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "z")) || c == UInt8(ascii: "_") { return true }
+      if c == UInt8(ascii: ")") { phase = .complete }
+      else if decimal || (lower >= UInt8(ascii: "a") && lower <= UInt8(ascii: "z")) || c == UInt8(ascii: "_") { return true }
       else { return false }
     case .complete:
       return false
@@ -112,8 +117,6 @@ struct LLVMFloatingPointState: FloatingPointInputState {
   @usableFromInline var phase: Phase = .start
   @usableFromInline var exponent: UInt8 = UInt8(ascii: "e")
   @usableFromInline var previous: UInt8 = 0
-
-  @inlinable static var start: Self { .init() }
 
   @inlinable var isComplete: Bool { true }
 
@@ -144,25 +147,5 @@ struct LLVMFloatingPointState: FloatingPointInputState {
     }
     previous = c
     return true
-  }
-}
-
-// specificの構文を使い、16進接頭辞への遷移だけ止める。GCC完全互換ではない。
-@usableFromInline
-struct GCCLikeFloatingPointState: FloatingPointInputState {
-  @usableFromInline var state = StrtodFloatingPointState.start
-
-  @inlinable static var start: Self { .init() }
-
-  @inlinable init() {}
-
-  @inlinable var isComplete: Bool { state.isComplete }
-
-  @inlinable
-  mutating func advance(_ c: UInt8) -> Bool {
-    if case .zero = state, c == UInt8(ascii: "x") || c == UInt8(ascii: "X") {
-      return false
-    }
-    return state.advance(c)
   }
 }
