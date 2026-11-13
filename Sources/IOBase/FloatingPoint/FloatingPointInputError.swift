@@ -13,8 +13,7 @@ public struct FloatingPointInputError: Error, Equatable, CustomStringConvertible
   }
 
   public var description: String {
-    let next = nextByte.map { String(UnicodeScalar($0)).debugDescription } ?? "EOF"
-    return "\(reason): read \(input.debugDescription), next \(next)"
+    "cannot read Double, \(reason): read \(input.debugDescription), next \(describeByte(nextByte))"
   }
 
   public var errorDescription: String? { description }

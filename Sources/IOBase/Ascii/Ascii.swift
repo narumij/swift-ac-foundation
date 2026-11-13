@@ -32,6 +32,10 @@ package func isNilOrAsciiNewLine<T: FixedWidthInteger>(_ c: T?) -> Bool {
   return isASCIINewline(c)
 }
 
+package func describeByte(_ c: UInt8?) -> String {
+  c.map { String(UnicodeScalar($0)).debugDescription } ?? "EOF"
+}
+
 @inlinable
 @inline(__always)
 func isNumber<T: FixedWidthInteger>(_ c: T) -> Bool {

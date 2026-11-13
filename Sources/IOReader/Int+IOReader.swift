@@ -53,7 +53,7 @@ extension Array where Element == Int {
   public static func stdin(rows: Int) -> [Int] {
     (0..<rows).map { _ in
       let (value, separator): ReaderItem<Int> = try! _atol<Int>.read()
-      precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one value")
+      precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one value: read \(value), next \(describeByte(separator))")
       return value
     }
   }
