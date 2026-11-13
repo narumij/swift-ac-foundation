@@ -45,24 +45,26 @@ extension Word1D {
 }
 
 extension Array: Word1D where Element: Word {}
+extension Set: Word1D where Element: Word { }
 
-protocol Word2D {
+public protocol Word2D {
   associatedtype Element: Word1D
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
 extension Word2D {
 
-  static func stdin(rows: Int) -> Self {
+  public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin() })
   }
 
-  static func stdin(rows: Int, columns: Int) -> Self {
+  public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
 }
 
 extension Array: Word2D where Element: Word1D {}
+extension Set: Word2D where Element: Word1D { }
 
 // MARK: -
 
