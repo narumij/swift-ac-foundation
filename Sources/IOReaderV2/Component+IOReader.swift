@@ -18,8 +18,11 @@ extension Group {
   static func groups(count: Int) -> AnyIterator<Self> {
     var count = count
     return .init {
-      defer { count -= 1 }
-      return count > 0 ? .stdin : nil
+      guard count > 0 else { return nil }
+      count -= 1
+      let (value, separator) = try! _readWithSeparator()
+      precondition(isNilOrAsciiNewLine(separator))
+      return value
     }
   }
 }
@@ -44,7 +47,11 @@ extension SIMD where Scalar: Component {
 
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     var v = Self()
-    for i in v.indices { v[i] = valuePreservingSeparator(try Scalar._readWithSeparator()) }
+    for i in v.indices {
+      let item = try Scalar._readWithSeparator()
+      if i < v.scalarCount - 1 { precondition(!isNilOrAsciiNewLine(item.separator)) }
+      v[i] = valuePreservingSeparator(item)
+    }
     return (v, __getchar_unlocked())
   }
 }
@@ -57,7 +64,16 @@ extension SIMD4: Group where Scalar: Component { }
 extension Pack: Group where repeat each T: Component {
   
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    (.init(repeat valuePreservingSeparator(try (each T)._readWithSeparator())), __getchar_unlocked())
+    var started = false
+    var previous: UInt8?
+    func read<U: Component>(_: U.Type) throws -> U {
+      if started { precondition(!isNilOrAsciiNewLine(previous)) }
+      started = true
+      let item = try U._readWithSeparator()
+      previous = item.separator
+      return valuePreservingSeparator(item)
+    }
+    return (.init(repeat try read((each T).self)), __getchar_unlocked())
   }
 }
 
