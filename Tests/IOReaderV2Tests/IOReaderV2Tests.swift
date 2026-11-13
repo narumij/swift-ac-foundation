@@ -50,6 +50,47 @@ final class IntReaderTests: XCTestCase {
   }
 }
 
+final class UIntReaderTests: XCTestCase {
+
+  func testNumber() throws {
+    try SolverRunner {
+      XCTAssertEqual(UInt.stdin, 1)
+      XCTAssertEqual(UInt.stdin, 2)
+    }.inputOnly("1 2")
+  }
+
+  func testNumbersLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([UInt].stdin(), [1, 2, 3])
+      XCTAssertEqual([UInt].stdin(), [4])
+    }.inputOnly("1 2 3\n4")
+  }
+
+  func testNumbersRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([UInt].stdin(rows: 3), [1, 2, 3])
+    }.inputOnly("1\n2\n3")
+  }
+
+  func testNumbersColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([UInt].stdin(columns: 3), [1, 2, 3])
+    }.inputOnly("1 2 3")
+  }
+
+  func testNumbers2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[UInt]].stdin(rows: 2), [[1, 2, 3], [4]])
+    }.inputOnly("1 2 3\n4")
+  }
+
+  func testNumbers2D() throws {
+    try SolverRunner {
+      XCTAssertEqual([[UInt]].stdin(rows: 2, columns: 3), [[1, 2, 3], [4, 5, 6]])
+    }.inputOnly("1 2 3\n4 5 6")
+  }
+}
+
 final class StringReaderTests: XCTestCase {
 
   func testReadLine() throws {

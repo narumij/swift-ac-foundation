@@ -1,7 +1,7 @@
 @preconcurrency import _FastIO
 
 @usableFromInline
-struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
+package struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIOReader {
 
   @inlinable
   @inline(__always)
