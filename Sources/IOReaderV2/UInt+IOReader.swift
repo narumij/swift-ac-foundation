@@ -5,18 +5,6 @@ extension FixedWidthInteger where Self: UnsignedInteger {
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atoul<Self>.read()
   }
-
-  public static func lineIterator() -> LineIterator<Self> {
-    makeLineIterator { try! _atoul<Self>.read() }
-  }
-
-  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? try! _atoul<Self>.read() : nil
-    }
-  }
 }
 
 extension UInt: Numeric {}

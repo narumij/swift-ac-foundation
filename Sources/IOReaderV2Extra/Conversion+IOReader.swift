@@ -5,21 +5,6 @@ public protocol IOConversionReadable: Component & Numeric {
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
 }
 
-extension IOConversionReadable {
-  
-  public static func lineIterator() -> IOBase.LineIterator<Self> {
-    makeLineIterator { try Self._readWithSeparator() }
-  }
-  
-  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? try! Self._readWithSeparator().value : nil
-    }
-  }
-}
-
 public protocol IOIntegerConversionReadable: IOConversionReadable {
   static func convert(from: Int) -> Self
 }

@@ -2,15 +2,26 @@ import IOBase
 
 public protocol Numeric: Component {
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
-  static func lineIterator() -> LineIterator
+  static func lineIterator() -> LineIterator<Self>
   static func lineIterator(columns: Int) -> AnyIterator<Self>
-  associatedtype LineIterator: LineIteratorProtocol where LineIterator.Element == Self
 }
 
 extension Numeric {
 
   public static var stdin: Self {
     valuePreservingSeparator(try! _readWithSeparator())
+  }
+
+  public static func lineIterator() -> LineIterator<Self> {
+    makeLineIterator { try _readWithSeparator() }
+  }
+
+  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
+    var columns = columns
+    return AnyIterator {
+      defer { columns -= 1 }
+      return columns > 0 ? .stdin : nil
+    }
   }
 }
 

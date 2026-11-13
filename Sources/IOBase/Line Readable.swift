@@ -46,24 +46,3 @@ package func makeLineIterator<Element>(
   LineIterator(read: read)
 }
 
-public struct FloatingPointLineIterator<Element: BinaryFloatingPoint>: LineIteratorProtocol {
-  
-  let read: () throws -> ReaderItem<Double>
-  var finished = false
-
-  public mutating func next() -> Element? {
-    guard !finished else { return nil }
-    let (value, separator) = try! read()
-    finished = isNilOrAsciiNewLine(separator)
-    if !finished {
-      _ = __ungetc(separator)
-    }
-    return .init(value)
-  }
-}
-
-package func makeFloatingPointLineIterator<Element: BinaryFloatingPoint>(
-  _ read: @escaping () throws -> ReaderItem<Double>
-) -> FloatingPointLineIterator<Element> {
-  FloatingPointLineIterator(read: read)
-}

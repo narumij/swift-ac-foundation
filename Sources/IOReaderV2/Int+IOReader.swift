@@ -122,18 +122,6 @@ extension FixedWidthInteger where Self: SignedInteger {
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atol<Self>.read()
   }
-
-  public static func lineIterator() -> LineIterator<Self> {
-    makeLineIterator { try! _atol<Self>.read() }
-  }
-
-  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? try! _atol<Self>.read() : nil
-    }
-  }
 }
 
 extension Int: Numeric {}
