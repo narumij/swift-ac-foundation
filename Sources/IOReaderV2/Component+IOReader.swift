@@ -1,17 +1,19 @@
 import Pack
+import IOBase
 
 public protocol Component {
-  static var stdin: Self { get }
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
 }
 
-//extension Int: Component { }
-//extension String: Component { }
-
 public protocol Group {
-  static var stdin: Self { get }
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
 }
 
 extension Group {
+
+  public static var stdin: Self {
+    valuePreservingSeparator(try! _readWithSeparator())
+  }
 
   static func groups(count: Int) -> AnyIterator<Self> {
     var count = count
@@ -42,8 +44,12 @@ extension SIMD where Scalar: Component {
 
   public static var stdin: Self {
     var v = Self()
-    for i in v.indices { v[i] = .stdin }
+    for i in v.indices { v[i] = try! ._readWithSeparator().value }
     return v
+  }
+  
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    fatalError()
   }
 }
 
@@ -55,7 +61,11 @@ extension SIMD4: Group where Scalar: Component { }
 extension Pack: Group where repeat each T: Component {
   
   public static var stdin: Pack<repeat each T> {
-    .init(repeat (each T).stdin)
+    .init(repeat try! (each T)._readWithSeparator().value)
+  }
+  
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    fatalError()
   }
 }
 
@@ -63,5 +73,5 @@ extension Pack: Group where repeat each T: Component {
 @inlinable
 @inline(__always)
 public func stdin<each T: Component>() -> (repeat each T) {
-  (repeat (each T).stdin)
+  (repeat try! (each T)._readWithSeparator().value)
 }
