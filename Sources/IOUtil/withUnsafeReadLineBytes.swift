@@ -24,8 +24,8 @@ public func withUnsafeReadLineBytes<T>(
     throw IOUtilError.unexpectedEmpty
   }
 
-  let LF: UInt8 = 13
-  let CR: UInt8 = 10
+  let LF: UInt8 = 10
+  let CR: UInt8 = 13
 
   if strippingNewline {
     if utf8Count > 0, utf8Start[utf8Count - 1] == LF {

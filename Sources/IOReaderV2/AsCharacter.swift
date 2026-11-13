@@ -64,7 +64,7 @@ protocol Line {
 
 extension Array: Line where Element: LineCharacter {
 
-  static func readLine() -> [Element] {
+  public static func readLine() -> [Element] {
     Element.readLine()
   }
   
@@ -75,11 +75,11 @@ extension Array: Line where Element: LineCharacter {
 
 extension Array where Element == [Character] {
   
-  static func stdin(rows: Int) -> Self {
+  public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.readLine() })
   }
   
-  static func stdin(rows: Int, columns: Int) -> Self {
+  public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
 }
@@ -88,7 +88,7 @@ extension Array where Element == [Character] {
 
 extension Character: LineCharacter {
   
-  static var stdin: Self {
+  public static var stdin: Self {
     try! _atoc.read(count: 1).first!
   }
 }
@@ -115,7 +115,7 @@ extension Array where Element == Character {
 extension Character {
 
   public static func readLine() -> [Character] {
-    try! withUnsafeReadLineBytes { $0.map { Character(UnicodeScalar($0)) } }
+    try! withUnsafeReadLineBytes(strippingNewline: true) { $0.map { Character(UnicodeScalar($0)) } }
   }
   
   public static func readLine(columns: Int) -> [Character] {

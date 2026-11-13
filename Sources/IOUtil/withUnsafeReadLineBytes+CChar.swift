@@ -29,8 +29,8 @@ public func __withUnsafeReadLineBytes<T>(
     free(utf8Start)
   }
 
-  let LF: CChar = 13
-  let CR: CChar = 10
+  let LF: CChar = 10
+  let CR: CChar = 13
 
   if strippingNewline {
     // UInt8とくらべて、不思議なコンパイル挙動の違いがある
