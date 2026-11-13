@@ -1,87 +1,5 @@
 import IOBase
 
-// MARK: - 行系統
-
-extension String {
-
-  /// 標準入力から1行を読み、改行を除いて返します
-  ///
-  /// 空白も含めて、行をそのまま返します。
-  ///
-  /// 入力例
-  /// ```
-  /// abc def
-  /// ghi
-  /// ```
-  ///
-  /// 読み込み例
-  /// ```
-  /// print(String.readLine()) // abc def
-  /// print(String.readLine()) // ghi
-  /// ```
-  public static func readLine() -> String {
-    Swift.readLine()!
-  }
-
-  /// 標準入力から指定した長さの文字列を読み、返します
-  ///
-  /// 入力例
-  /// ```
-  /// abcde
-  /// ```
-  ///
-  /// 読み込み例
-  /// ```
-  /// print(String.stdin(columns: 3), String.stdin(columns: 2)) // abc de
-  /// ```
-  public static func stdin(columns: Int) -> String {
-    try! _atos.read(count: columns)
-  }
-}
-
-extension Array where Element == String {
-
-  /// 標準入力から指定した行数を読み、配列で返します
-  ///
-  /// 各行は ``String/readLine()`` と同じく、空白も含めてそのまま返します。
-  ///
-  /// 入力例
-  /// ```
-  /// a b
-  /// c d
-  /// ```
-  ///
-  /// 読み込み例
-  /// ```
-  /// print([String].stdin(rows: 2)) // ["a b", "c d"]
-  /// ```
-  public static func stdin(rows: Int) -> [String] {
-    (0..<rows).map { _ in .readLine() }
-  }
-
-  /// 標準入力から指定した長さの文字列を指定した行数読み、配列で返します
-  ///
-  /// 入力例
-  /// ```
-  /// ####
-  /// #..#
-  /// ####
-  /// ```
-  ///
-  /// 読み込み例
-  /// ```
-  /// print([String].stdin(rows: 3, columns: 4)) // ["####", "#..#", "####"]
-  /// ```
-  public static func stdin(rows: Int, columns: Int) -> [String] {
-    (0..<rows).map { _ in
-      let line = String.stdin(columns: columns)
-      let separator: UInt8? = __getchar_unlocked()
-      precondition(isNilOrAsciiNewLine(separator))
-      return line
-    }
-  }
-}
-
 // MARK: - 単語系統
 
 extension String {
@@ -176,6 +94,88 @@ extension Array where Element == [String] {
       let items: [ReaderItem<String>] = (0..<columns).map { _ in try! _atos.read() }
       precondition(isNilOrAsciiNewLine(items.last?.separator ?? nil))
       return items.map(\.value)
+    }
+  }
+}
+
+// MARK: - 行系統
+
+extension String {
+
+  /// 標準入力から1行を読み、改行を除いて返します
+  ///
+  /// 空白も含めて、行をそのまま返します。
+  ///
+  /// 入力例
+  /// ```
+  /// abc def
+  /// ghi
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print(String.readLine()) // abc def
+  /// print(String.readLine()) // ghi
+  /// ```
+  public static func readLine() -> String {
+    Swift.readLine()!
+  }
+
+  /// 標準入力から指定した長さの文字列を読み、返します
+  ///
+  /// 入力例
+  /// ```
+  /// abcde
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print(String.stdin(columns: 3), String.stdin(columns: 2)) // abc de
+  /// ```
+  public static func stdin(columns: Int) -> String {
+    try! _atos.read(count: columns)
+  }
+}
+
+extension Array where Element == String {
+
+  /// 標準入力から指定した行数を読み、配列で返します
+  ///
+  /// 各行は ``String/readLine()`` と同じく、空白も含めてそのまま返します。
+  ///
+  /// 入力例
+  /// ```
+  /// a b
+  /// c d
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print([String].stdin(rows: 2)) // ["a b", "c d"]
+  /// ```
+  public static func stdin(rows: Int) -> [String] {
+    (0..<rows).map { _ in .readLine() }
+  }
+
+  /// 標準入力から指定した長さの文字列を指定した行数読み、配列で返します
+  ///
+  /// 入力例
+  /// ```
+  /// ####
+  /// #..#
+  /// ####
+  /// ```
+  ///
+  /// 読み込み例
+  /// ```
+  /// print([String].stdin(rows: 3, columns: 4)) // ["####", "#..#", "####"]
+  /// ```
+  public static func stdin(rows: Int, columns: Int) -> [String] {
+    (0..<rows).map { _ in
+      let line = String.stdin(columns: columns)
+      let separator: UInt8? = __getchar_unlocked()
+      precondition(isNilOrAsciiNewLine(separator))
+      return line
     }
   }
 }

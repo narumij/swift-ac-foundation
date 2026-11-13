@@ -98,3 +98,6 @@ Package.resolved
 .swift-version
 /Maintanance/
 /artifacts/
+
+# Memoization trial (local only).
+/MemoizeTrial/

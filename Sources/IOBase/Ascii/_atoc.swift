@@ -1,10 +1,10 @@
 import _FastIO
 
 @usableFromInline
-struct _atoc: InstanceIOReader, VariableBuffer {
+package struct _atoc: InstanceIOReader, VariableBuffer {
 
   @usableFromInline
-  typealias Element = [Character]
+  package typealias Element = [Character]
 
   public var buffer: [Character] = {
     var b = [Character]()
@@ -56,7 +56,7 @@ struct _atoc: InstanceIOReader, VariableBuffer {
 
   @inlinable
   @inline(__always)
-  static func read(count: Int) throws -> Element {
+  package static func read(count: Int) throws -> Element {
     return try instance._readCharacters(count: count)
   }
 

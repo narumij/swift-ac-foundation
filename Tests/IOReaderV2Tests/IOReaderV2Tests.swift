@@ -110,3 +110,92 @@ final class StringReaderTests: XCTestCase {
     }.inputOnly("a bc def")
   }
 }
+
+#if false
+final class UInt8ReaderTests: XCTestCase {
+
+  func testWordsLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([[UInt8]].stdin(), [Array("abc".utf8), Array("def".utf8)])
+      XCTAssertEqual([[UInt8]].stdin(), [Array("ghi".utf8)])
+    }.inputOnly("abc def\nghi")
+  }
+
+  func testWordsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([[UInt8]].stdin(columns: 3), [Array("a".utf8), Array("bc".utf8), Array("def".utf8)])
+    }.inputOnly("a bc def")
+  }
+
+  func testReadLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([UInt8].readLine(), Array("abc def".utf8))
+      XCTAssertEqual([UInt8].readLine(), Array("ghi".utf8))
+    }.inputOnly("abc def\nghi")
+  }
+
+  func testLineColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([UInt8].stdin(columns: 3), Array("abc".utf8))
+      XCTAssertEqual([UInt8].stdin(columns: 2), Array("de".utf8))
+    }.inputOnly("abc\nde")
+  }
+
+  func testLinesRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[UInt8]].stdin(rows: 2), [Array("a b".utf8), Array("c d".utf8)])
+    }.inputOnly("a b\nc d")
+  }
+
+  func testLinesRowsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual(
+        [[UInt8]].stdin(rows: 3, columns: 4),
+        [Array("####".utf8), Array("#..#".utf8), Array("####".utf8)])
+    }.inputOnly("####\n#..#\n####")
+  }
+}
+
+final class CharacterReaderTests: XCTestCase {
+
+  func testWordsLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Character]].stdin(), [Array("abc"), Array("def")])
+      XCTAssertEqual([[Character]].stdin(), [Array("ghi")])
+    }.inputOnly("abc def\nghi")
+  }
+
+  func testWordsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Character]].stdin(columns: 3), [Array("a"), Array("bc"), Array("def")])
+    }.inputOnly("a bc def")
+  }
+
+  func testReadLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([Character].readLine(), Array("abc def"))
+      XCTAssertEqual([Character].readLine(), Array("ghi"))
+    }.inputOnly("abc def\nghi")
+  }
+
+  func testLineColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([Character].stdin(columns: 3), Array("abc"))
+      XCTAssertEqual([Character].stdin(columns: 2), Array("de"))
+    }.inputOnly("abc\nde")
+  }
+
+  func testLinesRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Character]].stdin(rows: 2), [Array("a b"), Array("c d")])
+    }.inputOnly("a b\nc d")
+  }
+
+  func testLinesRowsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual(
+        [[Character]].stdin(rows: 3, columns: 4), [Array("####"), Array("#..#"), Array("####")])
+    }.inputOnly("####\n#..#\n####")
+  }
+}
+#endif

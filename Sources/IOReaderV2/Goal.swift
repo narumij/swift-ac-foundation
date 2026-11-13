@@ -5,22 +5,6 @@ public protocol ReadableElement {
   static var stdin: Self { get }
 }
 
-public protocol ReadableUnit {}
-
-public protocol ReadableAsciiLine: ReadableUnit {
-  associatedtype Element: ReadableElement
-  // String, [Character], [UInt8]
-  static func readLine() -> Self // 衝突するのでよけるしかない
-  static func stdin(columns: Int) -> Self
-}
-
-public protocol ReadableAsciiLines {
-  associatedtype Unit: ReadableAsciiLine
-  // [String], [[Character]], [[UInt8]]
-  static func stdin(rows: Int) -> Self
-  static func stdin(rows: Int, columns: Int) -> Self
-}
-
 public protocol ReadableAsciiWord: ReadableUnit {
   associatedtype Element: ReadableElement
   // String, [Character], [UInt8]
@@ -42,6 +26,26 @@ public protocol ReadableAsciiWords2D {
   static func stdin(rows: Int) -> Self
   static func stdin(rows: Int, columns: Int) -> Self
 }
+
+// MARK: -
+
+public protocol ReadableUnit {}
+
+public protocol ReadableAsciiLine: ReadableUnit {
+  associatedtype Element: ReadableElement
+  // String, [Character], [UInt8]
+  static func readLine() -> Self // 衝突するのでよけるしかない
+  static func stdin(columns: Int) -> Self
+}
+
+public protocol ReadableAsciiLines {
+  associatedtype Unit: ReadableAsciiLine
+  // [String], [[Character]], [[UInt8]]
+  static func stdin(rows: Int) -> Self
+  static func stdin(rows: Int, columns: Int) -> Self
+}
+
+// MARK: -
 
 public protocol ReadableNumber: ReadableUnit {
   // Int, Double

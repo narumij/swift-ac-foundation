@@ -1,9 +1,9 @@
 
 @usableFromInline
-struct _atob: VariableBufferIOReader, InstanceIOReader {
+package struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   @usableFromInline
-  typealias Element = [UInt8]
+  package typealias Element = [UInt8]
 
   public var buffer: [UInt8] = {
     var b = [UInt8]()
@@ -27,7 +27,7 @@ struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  static func read(count: Int) throws -> Element {
+  package static func read(count: Int) throws -> Element {
     return try instance.readBytes(count: count)
   }
 
