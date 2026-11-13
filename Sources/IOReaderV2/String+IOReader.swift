@@ -1,4 +1,5 @@
 import IOBase
+import IOUtil
 
 // MARK: - 単語系統
 
@@ -114,7 +115,7 @@ extension String {
   /// print(String.readLine()) // ghi
   /// ```
   public static func readLine() -> String {
-    Swift.readLine()!
+    try! withUnsafeReadLineBytes(strippingNewline: true) { String(decoding: $0, as: UTF8.self) }
   }
 
   /// 標準入力から指定した長さの文字列を読み、返します
