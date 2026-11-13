@@ -5,6 +5,7 @@ package struct _atol<Element: FixedWidthInteger & SignedInteger>: StaticIOReader
 
   @inlinable
   @inline(__always)
+  @available(*, deprecated)
   public static func read() throws -> Element {
     valuePreservingSeparator(try read())
   }

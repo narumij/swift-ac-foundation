@@ -66,6 +66,7 @@ extension InstanceIOReader {
 
   @inlinable
   @inline(__always)
+  @available(*, deprecated)
   public static func read() throws -> Element {
     try instance.read()
   }

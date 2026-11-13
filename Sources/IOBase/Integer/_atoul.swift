@@ -5,6 +5,7 @@ package struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIORea
 
   @inlinable
   @inline(__always)
+  @available(*, deprecated)
   public static func read() throws -> Element {
     valuePreservingSeparator(try read())
   }

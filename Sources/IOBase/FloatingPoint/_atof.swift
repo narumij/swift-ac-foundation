@@ -9,6 +9,7 @@ package struct _atof: StaticIOReader {
 
   @inlinable
   @inline(__always)
+  @available(*, deprecated)
   public static func read() throws -> Element {
     valuePreservingSeparator(try read())
   }

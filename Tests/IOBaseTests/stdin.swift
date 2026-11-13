@@ -25,7 +25,7 @@ extension Character {
 extension Int {
 
   public static func read() throws -> Self {
-    try _atol<Self>.read()
+    valuePreservingSeparator(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -36,7 +36,7 @@ extension Int {
 extension Int32 {
 
   public static func read() throws -> Self {
-    try _atol<Self>.read()
+    valuePreservingSeparator(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -47,7 +47,7 @@ extension Int32 {
 extension Int64 {
 
   public static func read() throws -> Self {
-    try _atol<Self>.read()
+    valuePreservingSeparator(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -58,7 +58,7 @@ extension Int64 {
 extension UInt {
 
   public static func read() throws -> Self {
-    try _atoul<Self>.read()
+    valuePreservingSeparator(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -69,7 +69,7 @@ extension UInt {
 extension UInt32 {
 
   public static func read() throws -> Self {
-    try _atoul<Self>.read()
+    valuePreservingSeparator(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -80,7 +80,7 @@ extension UInt32 {
 extension UInt64 {
 
   public static func read() throws -> Self {
-    try _atoul<Self>.read()
+    valuePreservingSeparator(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -92,7 +92,7 @@ extension UInt64 {
 extension Int128 {
 
   public static var stdin: Self {
-    try! _atol.read()
+    valuePreservingSeparator(try! _atol.read())
   }
 }
 
@@ -100,21 +100,21 @@ extension Int128 {
 extension UInt128 {
 
   public static var stdin: Self {
-    try! _atoul.read()
+    valuePreservingSeparator(try! _atoul.read())
   }
 }
 
 extension Double {
 
   public static func read() throws -> Self {
-    try _atof.read()
+    valuePreservingSeparator(try _atof.read())
   }
 }
 
 extension String {
 
   public static func read() throws -> Self {
-    try _atos.read()
+    valuePreservingSeparator(try _atos.read())
   }
 
   public static func read(columns: Int) throws -> Self {
@@ -129,7 +129,7 @@ extension String {
 extension Array where Element == UInt8 {
   
   public static func read() throws -> Self {
-    try _atob.read()
+    valuePreservingSeparator(try _atob.read())
   }
 
   public static func read(columns: Int) throws -> Self {
@@ -144,7 +144,7 @@ extension Array where Element == UInt8 {
 extension Array where Element == Character {
   
   public static func read() throws -> Self {
-    try _atoc.read()
+    valuePreservingSeparator(try _atoc.read())
   }
 
   public static func read(columns: Int) throws -> Self {
