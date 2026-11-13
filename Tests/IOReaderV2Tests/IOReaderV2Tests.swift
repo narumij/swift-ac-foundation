@@ -111,7 +111,6 @@ final class StringReaderTests: XCTestCase {
   }
 }
 
-#if false
 final class UInt8ReaderTests: XCTestCase {
 
   func testWordsLine() throws {
@@ -198,4 +197,3 @@ final class CharacterReaderTests: XCTestCase {
     }.inputOnly("####\n#..#\n####")
   }
 }
-#endif
