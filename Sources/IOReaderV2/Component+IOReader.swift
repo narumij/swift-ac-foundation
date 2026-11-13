@@ -58,3 +58,10 @@ extension Pack: Group where repeat each T: Component {
     .init(repeat (each T).stdin)
   }
 }
+
+/// タプルを一括で読みます
+@inlinable
+@inline(__always)
+public func stdin<each T: Component>() -> (repeat each T) {
+  (repeat (each T).stdin)
+}
