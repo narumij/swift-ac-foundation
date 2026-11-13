@@ -67,3 +67,18 @@ public protocol ReadableNumbers2D {
   static func stdin(rows: Int) -> Self
   static func stdin(rows: Int, columns: Int) -> Self
 }
+
+// MARK: -
+
+public protocol ReadableComponent { }
+
+public protocol ReadableGroup {
+  // SIMD, Pack
+  static var stdin: Self { get }
+}
+
+public protocol ReadableGroup1D {
+  associatedtype Element: ReadableGroup
+  // [SIMD], [Pack]
+  static func stdin(rows: Int) -> Self
+}

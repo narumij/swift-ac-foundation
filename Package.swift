@@ -66,12 +66,12 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2",
-      dependencies: ["IOBase","IOUtil"],
+      dependencies: ["IOBase","IOUtil", "Pack"],
       exclude: ["MEMO.md"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2Extra",
-      dependencies: ["IOBase"],
+      dependencies: ["IOReaderV2"],
       swiftSettings: _settings),
     .target(
       name: "IOWriter",
@@ -96,7 +96,6 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "Pack",
-      dependencies: ["IOReader"],
       swiftSettings: _settings),
     .target(
       name: "_cxx",
