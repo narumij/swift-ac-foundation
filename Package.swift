@@ -57,22 +57,18 @@ let package = Package(
         .define("NDEBUG", .when(configuration: .release)),
       ]),
     .target(
-      name: "IOReader",
-      dependencies: ["_FastIO"],
-      swiftSettings: _settings),
-    .target(
       name: "IOBase",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
-      name: "IOReaderV2",
+      name: "IOReader",
       dependencies: ["IOBase","IOUtil", "Pack"],
       exclude: ["MEMO.md"],
       swiftSettings: _settings),
     .target(
-      name: "IOReaderV2Extra",
+      name: "IOReaderExtra",
       dependencies: [
-        "IOReaderV2",
+        "IOReader",
         .product(name: "BigInt", package: "BigInt"),
         .product(name: "AtCoder", package: "swift-ac-library"),
       ],
@@ -81,16 +77,6 @@ let package = Package(
       name: "IOWriter",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
-    .target(
-      name: "IOReaderExtra",
-      dependencies: [
-        "IOReader",
-        "Pack",
-        .product(name: "BigInt", package: "BigInt"),
-        .product(name: "AtCoder", package: "swift-ac-library"),
-      ],
-      swiftSettings: _settings
-    ),
     .target(
       name: "IOUtil",
       dependencies: ["_FastIO"],
@@ -187,19 +173,11 @@ let package = Package(
       dependencies: ["IOBase", "TestingUtil"],
       swiftSettings: _settings),
     .testTarget(
-      name: "IOReaderV2Tests",
-      dependencies: ["IOReaderV2", "TestingUtil"],
-      swiftSettings: _settings),
-    .testTarget(
-      name: "IOReaderV2ExtraTests",
-      dependencies: ["IOReaderV2Extra", "TestingUtil"],
-      swiftSettings: _settings),
-    .testTarget(
       name: "IOReaderTests",
       dependencies: [
         "TestingUtil",
         "IOReader",
-        "UInt8Util",
+        "IOBase",
         "Pack",
       ],
       exclude: ["Specifications"],
