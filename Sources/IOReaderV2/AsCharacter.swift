@@ -5,8 +5,8 @@ protocol WordCharacter {}
 protocol Word {
   associatedtype Element: WordCharacter
   static func read() throws -> Self
-  static func lineIterator() -> LineIterator<Self>
-  static func lineIterator(columns: Int) -> LineIterator<Self>
+  static func wordIterator() -> LineIterator<Self>
+  static func wordIterator(columns: Int) -> LineIterator<Self>
 }
 
 extension Word {
@@ -24,11 +24,11 @@ protocol Word1D {
 extension Word1D {
   
   public static func stdin() -> Self {
-    .init(Element.lineIterator())
+    .init(Element.wordIterator())
   }
   
   public static func stdin(columns: Int) -> Self {
-    .init(Element.lineIterator(columns: columns))
+    .init(Element.wordIterator(columns: columns))
   }
 }
 
@@ -51,8 +51,8 @@ extension Word2D {
 // MARK: -
 
 protocol LineCharacter {
-  static func lineIterator() -> LineIterator<Self>
-  static func lineIterator(columns: Int) -> LineIterator<Self>
+  static func characterIterator() -> LineIterator<Self>
+  static func characterIterator(columns: Int) -> LineIterator<Self>
 }
 
 protocol Line {
@@ -63,11 +63,11 @@ protocol Line {
 extension Line {
 
   static func readLine() -> Self {
-    .init(Element.lineIterator())
+    .init(Element.characterIterator())
   }
   
   public static func stdin(columns: Int) -> Self {
-    .init(Element.lineIterator(columns: columns))
+    .init(Element.characterIterator(columns: columns))
   }
 }
 
