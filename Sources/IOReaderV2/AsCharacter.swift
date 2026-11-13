@@ -1,24 +1,36 @@
 import IOBase
 import IOUtil
 
-protocol WordCharacter {}
+protocol WordCharacter {
+  static func read() throws -> [Self]
+  static func wordIterator() -> LineIterator<[Self]>
+  static func wordIterator(columns: Int) -> AnyIterator<[Self]>
+}
 
 protocol Word {
   associatedtype Element: WordCharacter
-  static func read() throws -> Self
   static func wordIterator() -> LineIterator<Self>
-  static func wordIterator(columns: Int) -> LineIterator<Self>
+  static func wordIterator(columns: Int) -> AnyIterator<Self>
 }
 
-extension Word {
+extension Sequence where Element: WordCharacter {
 
-  static var stdin: Self {
-    try! .read()
+  static var stdin: [Element] {
+    try! Element.read()
+  }
+  
+  static func wordIterator() -> LineIterator<[Element]> {
+    Element.wordIterator()
+  }
+  
+  static func wordIterator(columns: Int) -> AnyIterator<[Element]> {
+    Element.wordIterator(columns: columns)
   }
 }
 
-protocol Word1D {
-  associatedtype Element: Word
+extension Array: Word where Element: WordCharacter { }
+
+protocol Word1D: Sequence where Element: Word {
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
@@ -32,6 +44,8 @@ extension Word1D {
     .init(Element.wordIterator(columns: columns))
   }
 }
+
+extension Array: Word1D where Element: Word {}
 
 protocol Word2D {
   associatedtype Element: Word1D
@@ -48,6 +62,8 @@ extension Word2D {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
 }
+
+extension Array: Word2D where Element: Word1D {}
 
 // MARK: -
 
@@ -86,24 +102,17 @@ extension Array where Element == [Character] {
 
 // MARK: -
 
-extension Character: LineCharacter {
+extension Character: WordCharacter {
   
-  public static var stdin: Self {
-    try! _atoc.read(count: 1).first!
-  }
-}
-
-extension Array where Element == Character {
-  
-  static func read() throws -> Self {
+  static func read() throws -> [Character] {
     try _atoc.instance.read()
   }
   
-  static func wordIterator() -> LineIterator<Self> {
+  static func wordIterator() -> IOBase.LineIterator<[Character]> {
     makeLineIterator { try! _atoc.instance.read() }
   }
   
-  static func wordIterator(columns: Int) -> AnyIterator<Self> {
+  static func wordIterator(columns: Int) -> AnyIterator<[Character]> {
     var columns = columns
     return AnyIterator {
       defer { columns -= 1 }
@@ -112,7 +121,16 @@ extension Array where Element == Character {
   }
 }
 
+// MARK: -
+
 extension Character {
+  
+  public static var stdin: Self {
+    try! _atoc.read(count: 1).first!
+  }
+}
+
+extension Character: LineCharacter {
 
   public static func readLine() -> [Character] {
     try! withUnsafeReadLineBytes(strippingNewline: true) { $0.map { Character(UnicodeScalar($0)) } }
