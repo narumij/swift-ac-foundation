@@ -2,7 +2,7 @@ import IOReaderV2
 import TestingUtil
 import XCTest
 
-final class IntReaderTests: XCTestCase {
+final class IntReaderTests: IOReaderV2TestCase {
 
   func testNumber() throws {
     try SolverRunner {
@@ -50,7 +50,7 @@ final class IntReaderTests: XCTestCase {
   }
 }
 
-final class UIntReaderTests: XCTestCase {
+final class UIntReaderTests: IOReaderV2TestCase {
 
   func testNumber() throws {
     try SolverRunner {
@@ -98,7 +98,7 @@ final class UIntReaderTests: XCTestCase {
   }
 }
 
-final class DoubleReaderTests: XCTestCase {
+final class DoubleReaderTests: IOReaderV2TestCase {
 
   func testNumber() throws {
     try SolverRunner {
@@ -146,7 +146,7 @@ final class DoubleReaderTests: XCTestCase {
   }
 }
 
-final class StringReaderTests: XCTestCase {
+final class StringReaderTests: IOReaderV2TestCase {
 
   func testReadLine() throws {
     try SolverRunner {
@@ -207,7 +207,7 @@ final class StringReaderTests: XCTestCase {
   }
 }
 
-final class CharacterReaderTests: XCTestCase {
+final class CharacterReaderTests: IOReaderV2TestCase {
 
   func testWords2DRows() throws {
     try SolverRunner {
@@ -277,7 +277,7 @@ final class CharacterReaderTests: XCTestCase {
   }
 }
 
-final class UInt8ReaderTests: XCTestCase {
+final class UInt8ReaderTests: IOReaderV2TestCase {
 
   func testWords2DRows() throws {
     try SolverRunner {
@@ -351,7 +351,7 @@ final class UInt8ReaderTests: XCTestCase {
   }
 }
 
-final class SetReaderTests: XCTestCase {
+final class SetReaderTests: IOReaderV2TestCase {
 
   func testNumbersLine() throws {
     try SolverRunner {
