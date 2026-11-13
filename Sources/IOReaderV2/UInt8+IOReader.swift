@@ -18,6 +18,10 @@ extension UInt8 {
     try! _atob.read(count: 1).first!
   }
 
+  public static func _readWithSeparator() throws -> (value: UInt8, separator: UInt8?) {
+    (try _atob.read(count: 1).first!, __getchar_unlocked())
+  }
+
   public static func readLine() -> [UInt8] {
     try! withUnsafeReadLineBytes(strippingNewline: true) { $0.map { $0 } }
   }

@@ -42,14 +42,10 @@ extension Set: Groups where Element: Group {}
 
 extension SIMD where Scalar: Component {
 
-  public static var stdin: Self {
-    var v = Self()
-    for i in v.indices { v[i] = try! ._readWithSeparator().value }
-    return v
-  }
-  
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    fatalError()
+    var v = Self()
+    for i in v.indices { v[i] = valuePreservingSeparator(try Scalar._readWithSeparator()) }
+    return (v, __getchar_unlocked())
   }
 }
 
@@ -60,12 +56,8 @@ extension SIMD4: Group where Scalar: Component { }
 @available(macOS 14.0.0, *)
 extension Pack: Group where repeat each T: Component {
   
-  public static var stdin: Pack<repeat each T> {
-    .init(repeat try! (each T)._readWithSeparator().value)
-  }
-  
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    fatalError()
+    (.init(repeat valuePreservingSeparator(try (each T)._readWithSeparator())), __getchar_unlocked())
   }
 }
 
@@ -73,5 +65,5 @@ extension Pack: Group where repeat each T: Component {
 @inlinable
 @inline(__always)
 public func stdin<each T: Component>() -> (repeat each T) {
-  (repeat try! (each T)._readWithSeparator().value)
+  (repeat valuePreservingSeparator(try! (each T)._readWithSeparator()))
 }

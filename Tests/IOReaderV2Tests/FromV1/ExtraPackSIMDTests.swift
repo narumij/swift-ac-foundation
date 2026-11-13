@@ -86,4 +86,26 @@ final class ExtraPackSIMDTests: IOReaderV2TestCase {
       .inputOnly("1 a\n2 b")
     }
   }
+
+  // 1文字は直後の1バイトを区切りとして受け取るので、詰めて書かれた文字も失わない
+  func testPackAdjacentCharacters() throws {
+    if #available(macOS 14.0, *) {
+      try SolverRunner(solver: {
+        let A: Pack<Character, Character> = .stdin
+        XCTAssertEqual(A.rawValue.0, "a")
+        XCTAssertEqual(A.rawValue.1, "b")
+      })
+      .inputOnly("ab")
+    }
+  }
+
+  // UInt8 は数値ではなく1バイトとして読む
+  func testTupleUInt8IsByte() throws {
+    try SolverRunner(solver: {
+      let (a, b): (UInt8, Int) = stdin()
+      XCTAssertEqual(a, UInt8(ascii: "7"))
+      XCTAssertEqual(b, 12)
+    })
+    .inputOnly("7 12")
+  }
 }

@@ -18,6 +18,10 @@ extension Character {
     try! _atoc.read(count: 1).first!
   }
 
+  public static func _readWithSeparator() throws -> (value: Character, separator: UInt8?) {
+    (try _atoc.read(count: 1).first!, __getchar_unlocked())
+  }
+
   public static func readLine() -> [Character] {
     try! withUnsafeReadLineBytes(strippingNewline: true) { $0.map { Character(UnicodeScalar($0)) } }
   }
