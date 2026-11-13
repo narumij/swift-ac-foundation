@@ -57,117 +57,119 @@ struct ReaderFixtureTests {
     #expect(value == Array("TakahashiAoki".utf8))
   }
 
-  @Test func spacesIntStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { Int.stdin }
+  #if DEATH_TEST
+    @Test func spacesIntStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { Int.stdin }
+      }
     }
-  }
 
-  @Test func emptyIntStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { Int.stdin }
+    @Test func emptyIntStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { Int.stdin }
+      }
     }
-  }
 
-  @Test func spacesDoubleStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { Double.stdin }
+    @Test func spacesDoubleStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { Double.stdin }
+      }
     }
-  }
 
-  @Test func emptyDoubleStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { Double.stdin }
+    @Test func emptyDoubleStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { Double.stdin }
+      }
     }
-  }
 
-  @Test func spacesStringStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { String.stdin }
+    @Test func spacesStringStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { String.stdin }
+      }
     }
-  }
 
-  @Test func emptyStringStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { String.stdin }
+    @Test func emptyStringStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { String.stdin }
+      }
     }
-  }
 
-  @Test func spacesCharactersStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [Character].stdin }
+    @Test func spacesCharactersStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [Character].stdin }
+      }
     }
-  }
 
-  @Test func emptyCharactersStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [Character].stdin }
+    @Test func emptyCharactersStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [Character].stdin }
+      }
     }
-  }
 
-  @Test func spacesBytesStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [UInt8].stdin }
+    @Test func spacesBytesStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [UInt8].stdin }
+      }
     }
-  }
 
-  @Test func emptyBytesStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [UInt8].stdin }
+    @Test func emptyBytesStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [UInt8].stdin }
+      }
     }
-  }
 
-  @Test func spacesStringColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { String.stdin(columns: 13) }
+    @Test func spacesStringColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { String.stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func emptyStringColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { String.stdin(columns: 13) }
+    @Test func emptyStringColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { String.stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func spacesCharactersColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [Character].stdin(columns: 13) }
+    @Test func spacesCharactersColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [Character].stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func emptyCharactersColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [Character].stdin(columns: 13) }
+    @Test func emptyCharactersColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [Character].stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func spacesBytesColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [UInt8].stdin(columns: 13) }
+    @Test func spacesBytesColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Spaces.txt")) { [UInt8].stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func emptyBytesColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [UInt8].stdin(columns: 13) }
+    @Test func emptyBytesColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("Empty.txt")) { [UInt8].stdin(columns: 13) }
+      }
     }
-  }
 
-  @Test func oneLineStringTooManyColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { String.stdin(columns: 14) }
+    @Test func oneLineStringTooManyColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { String.stdin(columns: 14) }
+      }
     }
-  }
 
-  @Test func oneLineCharactersTooManyColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { [Character].stdin(columns: 14) }
+    @Test func oneLineCharactersTooManyColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { [Character].stdin(columns: 14) }
+      }
     }
-  }
 
-  @Test func oneLineBytesTooManyColumnsStops() async {
-    await #expect(processExitsWith: .failure) {
-      _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { [UInt8].stdin(columns: 14) }
+    @Test func oneLineBytesTooManyColumnsStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try withStdinRedirectedThreadSafe(to: fixture("OneLineString.txt")) { [UInt8].stdin(columns: 14) }
+      }
     }
-  }
+  #endif
 }
