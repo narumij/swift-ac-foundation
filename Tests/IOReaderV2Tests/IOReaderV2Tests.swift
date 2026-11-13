@@ -302,3 +302,74 @@ final class UInt8ReaderTests: XCTestCase {
     }.inputOnly("####\n#..#\n####")
   }
 }
+
+final class SetReaderTests: XCTestCase {
+
+  func testNumbersLine() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<UInt>.stdin(), [1, 2])
+      XCTAssertEqual(Set<UInt>.stdin(), [3])
+    }.inputOnly("1 2 1\n3")
+  }
+
+  func testNumbersRows() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<UInt>.stdin(rows: 3), [1, 2])
+    }.inputOnly("1\n2\n1")
+  }
+
+  func testNumbersColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<UInt>.stdin(columns: 3), [1, 2])
+    }.inputOnly("1 2 1")
+  }
+
+  func testNumbers2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([Set<UInt>].stdin(rows: 2), [[1, 2], [3]])
+    }.inputOnly("1 2 1\n3")
+  }
+
+  func testNumbers2D() throws {
+    try SolverRunner {
+      XCTAssertEqual([Set<UInt>].stdin(rows: 2, columns: 2), [[1], [2, 3]])
+    }.inputOnly("1 1\n2 3")
+  }
+
+  func testStringWordsLine() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<String>.stdin(), ["a", "b"])
+      XCTAssertEqual(Set<String>.stdin(), ["c"])
+    }.inputOnly("a b a\nc")
+  }
+
+  func testStringWordsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<String>.stdin(columns: 3), ["a", "b"])
+    }.inputOnly("a b a")
+  }
+
+  func testCharacterWordsLine() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<[Character]>.stdin(), [Array("ab"), Array("cd")])
+    }.inputOnly("ab cd ab")
+  }
+
+  func testUInt8WordsColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual(Set<[UInt8]>.stdin(columns: 3), [Array("ab".utf8), Array("cd".utf8)])
+    }.inputOnly("ab cd ab")
+  }
+
+  func testWords2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([Set<String>].stdin(rows: 2), [["a", "b"], ["c"]])
+    }.inputOnly("a b a\nc")
+  }
+
+  func testWords2D() throws {
+    try SolverRunner {
+      XCTAssertEqual([Set<String>].stdin(rows: 2, columns: 2), [["a"], ["b", "c"]])
+    }.inputOnly("a a\nb c")
+  }
+}

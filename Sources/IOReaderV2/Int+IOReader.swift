@@ -114,3 +114,25 @@ extension Array where Element == [Int] {
     }
   }
 }
+
+// MARK: -
+
+extension Int: Numeric {
+
+  public static func read() throws -> Int {
+    try _atol<Int>.read()
+  }
+
+  public static func lineIterator() -> LineIterator<Int> {
+    makeLineIterator { try! _atol<Int>.read() }
+  }
+
+  public static func lineIterator(columns: Int) -> AnyIterator<Int> {
+    var columns = columns
+    return AnyIterator {
+      defer { columns -= 1 }
+      return columns > 0 ? try! _atol<Int>.read() : nil
+    }
+  }
+}
+
