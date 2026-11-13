@@ -7,7 +7,7 @@ public protocol Component {
 //extension Int: Component { }
 //extension String: Component { }
 
-protocol Group {
+public protocol Group {
   static var stdin: Self { get }
 }
 
@@ -22,13 +22,13 @@ extension Group {
   }
 }
 
-protocol Groups {
+public protocol Groups {
   associatedtype Element: Group
   init<S>(_ sequence: S) where S: Sequence, S.Element == Element
 }
 
 extension Groups {
-  static func stdin(rows: Int) -> Self {
+  public static func stdin(rows: Int) -> Self {
     .init(Element.groups(count: rows))
   }
 }
@@ -40,7 +40,7 @@ extension Set: Groups where Element: Group {}
 
 extension SIMD where Scalar: Component {
 
-  static var stdin: Self {
+  public static var stdin: Self {
     var v = Self()
     for i in v.indices { v[i] = .stdin }
     return v
@@ -54,7 +54,7 @@ extension SIMD4: Group where Scalar: Component { }
 @available(macOS 14.0.0, *)
 extension Pack: Group where repeat each T: Component {
   
-  static var stdin: Pack<repeat each T> {
+  public static var stdin: Pack<repeat each T> {
     .init(repeat (each T).stdin)
   }
 }
