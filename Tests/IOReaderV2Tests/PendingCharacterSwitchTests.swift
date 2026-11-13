@@ -23,6 +23,10 @@ final class PendingCharacterSwitchTests: IOReaderV2TestCase {
 
   // 単発の読み取り：直後の区切りが押し戻されている
   func testSingleReads() throws {
+    if #available(macOS 15.0, *) {
+      try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(Int128.stdin, 12) }
+      try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(UInt128.stdin, 12) }
+    }
     try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(Int.stdin, 12) }
     try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(UInt.stdin, 12) }
     try assertSwitch("1.5 rest\n", rest: " rest") { XCTAssertEqual(Double.stdin, 1.5) }
@@ -41,6 +45,12 @@ final class PendingCharacterSwitchTests: IOReaderV2TestCase {
       XCTAssertEqual(b, "x")
     }
     try assertSwitch("1 2 rest\n", rest: " rest") { XCTAssertEqual(SIMD2<Int>.stdin, SIMD2(1, 2)) }
+    if #available(macOS 26.0, *) {
+      try assertSwitch("1 2 rest\n", rest: " rest") {
+        let a: InlineArray<2, Int> = .stdin
+        XCTAssertEqual([a[0], a[1]], [1, 2])
+      }
+    }
     if #available(macOS 14.0, *) {
       try assertSwitch("1 x rest\n", rest: " rest") {
         let p: Pack<Int, Character> = .stdin

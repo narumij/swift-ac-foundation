@@ -77,6 +77,19 @@ extension Pack: Group where repeat each T: Component {
   }
 }
 
+@available(macOS 26.0, *)
+extension InlineArray: Group where Element: Component {
+
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    let value = try Self { i in
+      let (value, separator) = try Element._readWithSeparator()
+      if i < count - 1 { precondition(!isNilOrAsciiNewLine(separator)) }
+      return valuePreservingSeparator((value, separator))
+    }
+    return (value, __getchar_unlocked())
+  }
+}
+
 /// タプルを一括で読みます
 @inlinable
 @inline(__always)

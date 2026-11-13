@@ -124,3 +124,6 @@ extension Int: Numeric {}
 extension Int64: Numeric {}
 extension Int32: Numeric {}
 extension Int16: Numeric {}
+
+@available(macOS 15.0, *)
+extension Int128: Numeric {}

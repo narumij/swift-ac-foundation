@@ -11,3 +11,6 @@ extension UInt: Numeric {}
 extension UInt64: Numeric {}
 extension UInt32: Numeric {}
 extension UInt16: Numeric {}
+
+@available(macOS 15.0, *)
+extension UInt128: Numeric {}
