@@ -36,7 +36,7 @@ extension Array where Element == String {
   /// print([String].stdin()) // ["ghi"]
   /// ```
   public static func stdin() -> [String] {
-    Array(makeLineIterator(_atos.read))
+    Array(LineIterator<String>(read: _atos.read))
   }
 
   /// 標準入力から空白で区切られた文字列を指定した個数読み、配列で返します

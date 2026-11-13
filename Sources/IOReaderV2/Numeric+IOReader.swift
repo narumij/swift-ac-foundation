@@ -13,7 +13,7 @@ extension Numeric {
   }
 
   public static func lineIterator() -> LineIterator<Self> {
-    makeLineIterator { try _readWithSeparator() }
+    .init { try _readWithSeparator() }
   }
 
   public static func lineIterator(columns: Int) -> AnyIterator<Self> {

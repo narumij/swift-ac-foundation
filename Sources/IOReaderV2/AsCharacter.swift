@@ -18,7 +18,7 @@ extension Word {
   }
 
   public static func wordIterator() -> LineIterator<Self> {
-    makeLineIterator { try _readWithSeparator() }
+    .init { try _readWithSeparator() }
   }
 
   public static func wordIterator(columns: Int) -> AnyIterator<Self> {

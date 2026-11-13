@@ -34,7 +34,7 @@ extension Array where Element == Int {
   /// print([Int].stdin()) // [4]
   /// ```
   public static func stdin() -> [Int] {
-    Array(makeLineIterator(_atol<Int>.read))
+    Array(LineIterator<Int>(read: _atol<Int>.read))
   }
 
   /// 標準入力から縦に並んだ整数を指定した個数読み、配列で返します

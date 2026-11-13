@@ -1,31 +1,13 @@
 import Foundation
 import _FastIO
 
-protocol LineReader: ElementReader {
-
-  static func read() throws -> Item
-}
-
-extension LineReader {
-
-  @inlinable
-  @inline(__always)
-  static func readLine() -> [Element] {
-    Array(makeLineIterator(read))
-  }
+public struct LineIterator<Element>: IteratorProtocol, Sequence {
   
-  @inlinable
-  @inline(__always)
-  static func readLine() -> Set<Element>
-  where Element: Hashable {
-    Set(makeLineIterator(read))
+  package init(read: @escaping () throws -> ReaderItem<Element>, finished: Bool = false) {
+    self.read = read
+    self.finished = finished
   }
-}
 
-public protocol LineIteratorProtocol: IteratorProtocol, Sequence {}
-
-public struct LineIterator<Element>: LineIteratorProtocol {
-  
   let read: () throws -> ReaderItem<Element>
   var finished = false
 
@@ -39,10 +21,3 @@ public struct LineIterator<Element>: LineIteratorProtocol {
     return value
   }
 }
-
-package func makeLineIterator<Element>(
-  _ read: @escaping () throws -> ReaderItem<Element>
-) -> LineIterator<Element> {
-  LineIterator(read: read)
-}
-

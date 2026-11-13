@@ -1,3 +1,4 @@
+#if false
 // プロトコル名が現れる必要はないが、概念的に以下のような振る舞いを手に入れる
 
 public protocol ReadableElement {
@@ -82,3 +83,4 @@ public protocol ReadableGroup1D {
   // [SIMD], [Pack]
   static func stdin(rows: Int) -> Self
 }
+#endif
