@@ -117,22 +117,26 @@ extension Array where Element == [Int] {
 
 // MARK: -
 
-extension Int: Numeric {
+extension FixedWidthInteger where Self: SignedInteger {
 
-  public static func read() throws -> Int {
-    try _atol<Int>.read()
+  public static func read() throws -> Self {
+    try _atol<Self>.read()
   }
 
-  public static func lineIterator() -> LineIterator<Int> {
-    makeLineIterator { try! _atol<Int>.read() }
+  public static func lineIterator() -> LineIterator<Self> {
+    makeLineIterator { try! _atol<Self>.read() }
   }
 
-  public static func lineIterator(columns: Int) -> AnyIterator<Int> {
+  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
     var columns = columns
     return AnyIterator {
       defer { columns -= 1 }
-      return columns > 0 ? try! _atol<Int>.read() : nil
+      return columns > 0 ? try! _atol<Self>.read() : nil
     }
   }
 }
 
+extension Int: Numeric {}
+extension Int64: Numeric {}
+extension Int32: Numeric {}
+extension Int16: Numeric {}

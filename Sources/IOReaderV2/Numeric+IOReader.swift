@@ -2,8 +2,9 @@ import IOBase
 
 public protocol Numeric {
   static func read() throws -> Self
-  static func lineIterator() -> LineIterator<Self>
+  static func lineIterator() -> LineIterator
   static func lineIterator(columns: Int) -> AnyIterator<Self>
+  associatedtype LineIterator: LineIteratorProtocol where LineIterator.Element == Self
 }
 
 extension Numeric {
