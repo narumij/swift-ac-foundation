@@ -27,6 +27,7 @@ public struct InputConfiguration {
     _fastio_floating_point_mode = FastIOFloatingPointMode(floatingPointMode.rawValue)
   }
   
+  @inlinable
   public static func restoreCache() {
     _restore_stdin()
   }

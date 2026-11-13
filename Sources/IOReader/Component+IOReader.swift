@@ -11,10 +11,12 @@ public protocol Group {
 
 extension Group {
 
+  @inlinable
   public static var stdin: Self {
     valuePreservingSeparator(try! _readWithSeparator())
   }
 
+  @inlinable
   static func groups(count: Int) -> AnyIterator<Self> {
     var count = count
     return .init {
@@ -33,6 +35,7 @@ public protocol Groups {
 }
 
 extension Groups {
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init(Element.groups(count: rows))
   }
@@ -45,6 +48,7 @@ extension Set: Groups where Element: Group {}
 
 extension SIMD where Scalar: Component {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     var v = Self()
     for i in v.indices {
@@ -63,6 +67,7 @@ extension SIMD4: Group where Scalar: Component { }
 @available(macOS 14.0.0, *)
 extension Pack: Group where repeat each T: Component {
   
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     var started = false
     var previous: UInt8?
@@ -80,6 +85,7 @@ extension Pack: Group where repeat each T: Component {
 @available(macOS 26.0, *)
 extension InlineArray: Group where Element: Component {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     let value = try Self { i in
       let (value, separator) = try Element._readWithSeparator()

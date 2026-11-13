@@ -2,6 +2,7 @@ import IOBase
 
 extension FixedWidthInteger where Self: UnsignedInteger {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atoul<Self>.read()
   }

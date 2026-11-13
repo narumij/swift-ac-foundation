@@ -8,14 +8,17 @@ public protocol Numeric: Component {
 
 extension Numeric {
 
+  @inlinable
   public static var stdin: Self {
     valuePreservingSeparator(try! _readWithSeparator())
   }
 
+  @inlinable
   public static func lineIterator() -> LineIterator<Self> {
     .init { try _readWithSeparator() }
   }
 
+  @inlinable
   public static func lineIterator(columns: Int) -> ColumnsIterator<Self> {
     .init(columns: columns) { try _readWithSeparator() }
   }
@@ -28,10 +31,12 @@ public protocol Numeric1D {
 
 extension Numeric1D {
 
+  @inlinable
   public static func stdin() -> Self {
     .init(Element.lineIterator())
   }
 
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in
       let (value, separator) = try! Element._readWithSeparator()
@@ -40,6 +45,7 @@ extension Numeric1D {
     })
   }
 
+  @inlinable
   public static func stdin(columns: Int) -> Self {
     .init(Element.lineIterator(columns: columns))
   }
@@ -52,10 +58,12 @@ public protocol Numeric2D {
 
 extension Numeric2D {
 
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin() })
   }
 
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }

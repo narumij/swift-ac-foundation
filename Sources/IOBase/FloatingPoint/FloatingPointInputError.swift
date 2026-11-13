@@ -6,12 +6,14 @@ public struct FloatingPointInputError: Error, Equatable, CustomStringConvertible
   public let input: String
   public let nextByte: UInt8?
 
+  @inlinable
   public init(reason: IOReaderError, input: String, nextByte: UInt8?) {
     self.reason = reason
     self.input = input
     self.nextByte = nextByte
   }
 
+  @inlinable
   public var description: String {
     "cannot read Double, \(reason): read \(input.debugDescription), next \(describeByte(nextByte))"
   }

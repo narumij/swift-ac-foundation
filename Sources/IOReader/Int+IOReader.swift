@@ -13,6 +13,7 @@ extension Int {
   /// ```
   /// print(Int.stdin, Int.stdin) // 1 -2
   /// ```
+  @inlinable
   public static var stdin: Int {
     valuePreservingSeparator(try! _readWithSeparator())
   }
@@ -33,6 +34,7 @@ extension Array where Element == Int {
   /// print([Int].stdin()) // [1, 2, 3]
   /// print([Int].stdin()) // [4]
   /// ```
+  @inlinable
   public static func stdin() -> [Int] {
     Array(LineIterator<Int>(read: _atol<Int>.read))
   }
@@ -50,6 +52,7 @@ extension Array where Element == Int {
   /// ```
   /// print([Int].stdin(rows: 3)) // [1, 2, 3]
   /// ```
+  @inlinable
   public static func stdin(rows: Int) -> [Int] {
     (0..<rows).map { _ in
       let (value, separator): ReaderItem<Int> = try! _atol<Int>.read()
@@ -69,6 +72,7 @@ extension Array where Element == Int {
   /// ```
   /// print([Int].stdin(columns: 3)) // [1, 2, 3]
   /// ```
+  @inlinable
   public static func stdin(columns: Int) -> [Int] {
     Array(Int.lineIterator(columns: columns))
   }
@@ -90,6 +94,7 @@ extension Array where Element == [Int] {
   /// ```
   /// print([[Int]].stdin(rows: 2)) // [[1, 2, 3], [4]]
   /// ```
+  @inlinable
   public static func stdin(rows: Int) -> [[Int]] {
     (0..<rows).map { _ in .stdin() }
   }
@@ -106,6 +111,7 @@ extension Array where Element == [Int] {
   /// ```
   /// print([[Int]].stdin(rows: 2, columns: 3)) // [[1, 2, 3], [4, 5, 6]]
   /// ```
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[Int]] {
     (0..<rows).map { _ in .stdin(columns: columns) }
   }
@@ -115,6 +121,7 @@ extension Array where Element == [Int] {
 
 extension FixedWidthInteger where Self: SignedInteger {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atol<Self>.read()
   }

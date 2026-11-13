@@ -29,6 +29,7 @@ public protocol IOBytesConversionReadable: IOConversionReadable {
 
 extension IOIntegerConversionReadable {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atol.read { convert(from: $0) }
   }
@@ -36,6 +37,7 @@ extension IOIntegerConversionReadable {
 
 extension IOUnsignedIntegerConversionReadable {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atoul.read { convert(from: $0) }
   }
@@ -43,6 +45,7 @@ extension IOUnsignedIntegerConversionReadable {
 
 extension IODoubleConversionReadable {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atof.read { convert(from: $0) }
   }
@@ -50,6 +53,7 @@ extension IODoubleConversionReadable {
 
 extension IOStringConversionReadable {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atos.read { convert(from: $0) }
   }
@@ -57,6 +61,7 @@ extension IOStringConversionReadable {
 
 extension IOBytesConversionReadable {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atob.read { convert(from: $0) }
   }

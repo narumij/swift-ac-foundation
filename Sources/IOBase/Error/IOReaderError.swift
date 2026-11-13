@@ -13,6 +13,7 @@ public enum IOReaderError: Swift.Error, Equatable {
 
 extension IOReaderError: CustomStringConvertible {
 
+  @inlinable
   public var description: String {
     switch self {
     case .unexpectedNil: "the input could not be converted to the requested type"

@@ -3,14 +3,18 @@ import _FastIO
 
 public struct LineIterator<Element>: IteratorProtocol, Sequence {
   
+  @inlinable
   package init(read: @escaping () throws -> ReaderItem<Element>, finished: Bool = false) {
     self.read = read
     self.finished = finished
   }
 
+  @usableFromInline
   let read: () throws -> ReaderItem<Element>
+  @usableFromInline
   var finished = false
 
+  @inlinable
   public mutating func next() -> Element? {
     guard !finished else { return nil }
     var (value, separator) = try! read()
@@ -27,14 +31,18 @@ public struct LineIterator<Element>: IteratorProtocol, Sequence {
 
 public struct ColumnsIterator<Element>: IteratorProtocol, Sequence {
 
+  @inlinable
   package init(columns: Int, read: @escaping () throws -> ReaderItem<Element>) {
     self.columns = columns
     self.read = read
   }
 
+  @usableFromInline
   let read: () throws -> ReaderItem<Element>
+  @usableFromInline
   var columns: Int
 
+  @inlinable
   public mutating func next() -> Element? {
     guard columns > 0 else { return nil }
     columns -= 1

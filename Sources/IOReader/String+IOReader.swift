@@ -16,6 +16,7 @@ extension String {
   /// ```
   /// print(String.stdin, String.stdin) // abc def
   /// ```
+  @inlinable
   public static var stdin: String {
     valuePreservingSeparator(try! _readWithSeparator())
   }
@@ -36,6 +37,7 @@ extension Array where Element == String {
   /// print([String].stdin()) // ["abc", "def"]
   /// print([String].stdin()) // ["ghi"]
   /// ```
+  @inlinable
   public static func stdin() -> [String] {
     Array(LineIterator<String>(read: _atos.read))
   }
@@ -51,6 +53,7 @@ extension Array where Element == String {
   /// ```
   /// print([String].stdin(columns: 3)) // ["a", "bc", "def"]
   /// ```
+  @inlinable
   public static func stdin(columns: Int) -> [String] {
     Array(String.wordIterator(columns: columns))
   }
@@ -72,6 +75,7 @@ extension Array where Element == [String] {
   /// ```
   /// print([[String]].stdin(rows: 2)) // [["abc", "def"], ["ghi"]]
   /// ```
+  @inlinable
   public static func stdin(rows: Int) -> [[String]] {
     (0..<rows).map { _ in .stdin() }
   }
@@ -90,6 +94,7 @@ extension Array where Element == [String] {
   /// ```
   /// print([[String]].stdin(rows: 2, columns: 2)) // [["a", "b"], ["c", "d"]]
   /// ```
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> [[String]] {
     (0..<rows).map { _ in .stdin(columns: columns) }
   }
@@ -114,6 +119,7 @@ extension String {
   /// print(String.readLine()) // abc def
   /// print(String.readLine()) // ghi
   /// ```
+  @inlinable
   public static func readLine() -> String {
     try! withUnsafeReadLineBytes(strippingNewline: true) { String(decoding: $0, as: UTF8.self) }
   }
@@ -129,6 +135,7 @@ extension String {
   /// ```
   /// print(String.stdin(columns: 3), String.stdin(columns: 2)) // abc de
   /// ```
+  @inlinable
   public static func stdin(columns: Int) -> String {
     try! _atos.read(count: columns)
   }
@@ -150,6 +157,7 @@ extension Array where Element == String {
   /// ```
   /// print([String].stdin(rows: 2)) // ["a b", "c d"]
   /// ```
+  @inlinable
   public static func stdin(rows: Int) -> [String] {
     (0..<rows).map { _ in .readLine() }
   }
@@ -167,6 +175,7 @@ extension Array where Element == String {
   /// ```
   /// print([String].stdin(rows: 3, columns: 4)) // ["####", "#..#", "####"]
   /// ```
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> [String] {
     (0..<rows).map { _ in
       let line = String.stdin(columns: columns)
@@ -183,6 +192,7 @@ extension String: Component {}
 
 extension String: Word {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: String, separator: UInt8?) {
     try _atos.instance.read()
   }

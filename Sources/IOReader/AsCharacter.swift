@@ -13,14 +13,17 @@ public protocol Word {
 
 extension Word {
 
+  @inlinable
   public static var stdin: Self {
     valuePreservingSeparator(try! _readWithSeparator())
   }
 
+  @inlinable
   public static func wordIterator() -> LineIterator<Self> {
     .init { try _readWithSeparator() }
   }
 
+  @inlinable
   public static func wordIterator(columns: Int) -> ColumnsIterator<Self> {
     .init(columns: columns) { try _readWithSeparator() }
   }
@@ -28,6 +31,7 @@ extension Word {
 
 extension Array: Word & Component where Element: WordCharacter {
 
+  @inlinable
   public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8?) {
     try Element._readWithSeparator()
   }
@@ -39,10 +43,12 @@ public protocol Word1D: Sequence where Element: Word {
 
 extension Word1D {
 
+  @inlinable
   public static func stdin() -> Self {
     .init(Element.wordIterator())
   }
 
+  @inlinable
   public static func stdin(columns: Int) -> Self {
     .init(Element.wordIterator(columns: columns))
   }
@@ -58,10 +64,12 @@ public protocol Word2D {
 
 extension Word2D {
 
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin() })
   }
 
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
@@ -85,10 +93,12 @@ protocol Line {
 
 extension Array: Line where Element: LineCharacter {
 
+  @inlinable
   public static func readLine() -> [Element] {
     Element.readLine()
   }
 
+  @inlinable
   public static func stdin(columns: Int) -> [Element] {
     Element.readLine(columns: columns)
   }
@@ -96,10 +106,12 @@ extension Array: Line where Element: LineCharacter {
 
 extension Array where Element == [Character] {
 
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.readLine() })
   }
 
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
@@ -107,10 +119,12 @@ extension Array where Element == [Character] {
 
 extension Array where Element == [UInt8] {
 
+  @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in Element.readLine() })
   }
 
+  @inlinable
   public static func stdin(rows: Int, columns: Int) -> Self {
     .init((0..<rows).map { _ in Element.stdin(columns: columns) })
   }
