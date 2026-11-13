@@ -7,14 +7,6 @@ public protocol IOConversionReadable: Component & Numeric {
 
 extension IOConversionReadable {
   
-  public static var stdin: Self {
-    try! _readWithSeparator().value
-  }
-  
-  public static func read() throws -> Self {
-    try _readWithSeparator().value
-  }
-
   public static func lineIterator() -> IOBase.LineIterator<Self> {
     makeLineIterator { try Self._readWithSeparator() }
   }

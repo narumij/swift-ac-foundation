@@ -4,7 +4,7 @@ import _FastIO
 // nil means there is no separator to restore.
 @inlinable
 @inline(__always)
-func valuePreservingSeparator<Value>(_ result: ReaderItem<Value>) -> Value {
+package func valuePreservingSeparator<Value>(_ result: ReaderItem<Value>) -> Value {
   _ = __ungetc(result.separator)
   return result.value
 }

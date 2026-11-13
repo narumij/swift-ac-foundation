@@ -1,7 +1,7 @@
 import IOBase
 
 public protocol Numeric: Component {
-  static func read() throws -> Self
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
   static func lineIterator() -> LineIterator
   static func lineIterator(columns: Int) -> AnyIterator<Self>
   associatedtype LineIterator: LineIteratorProtocol where LineIterator.Element == Self
@@ -10,7 +10,7 @@ public protocol Numeric: Component {
 extension Numeric {
 
   public static var stdin: Self {
-    try! .read()
+    valuePreservingSeparator(try! _readWithSeparator())
   }
 }
 
@@ -26,7 +26,7 @@ extension Numeric1D {
   }
 
   public static func stdin(rows: Int) -> Self {
-    .init((0..<rows).map { _ in try! Element.read() })
+    .init((0..<rows).map { _ in Element.stdin })
   }
 
   public static func stdin(columns: Int) -> Self {

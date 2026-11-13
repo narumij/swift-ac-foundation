@@ -119,7 +119,7 @@ extension Array where Element == [Int] {
 
 extension FixedWidthInteger where Self: SignedInteger {
 
-  public static func read() throws -> Self {
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     try _atol<Self>.read()
   }
 

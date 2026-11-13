@@ -2,8 +2,8 @@ import IOBase
 
 extension BinaryFloatingPoint {
   
-  public static func read() throws -> Self {
-    .init(try _atof.read())
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    try _atof.read { .init($0) }
   }
 
   public static func lineIterator() -> FloatingPointLineIterator<Self> {
