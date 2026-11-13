@@ -5,20 +5,8 @@ import IOUtil
 
 extension UInt8: WordCharacter {
 
-  public static func read() throws -> [UInt8] {
+  public static func _readWithSeparator() throws -> (value: [UInt8], separator: UInt8?) {
     try _atob.instance.read()
-  }
-
-  public static func wordIterator() -> LineIterator<[UInt8]> {
-    makeLineIterator { try! _atob.instance.read() }
-  }
-
-  public static func wordIterator(columns: Int) -> AnyIterator<[UInt8]> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? try! _atob.instance.read() : nil
-    }
   }
 }
 

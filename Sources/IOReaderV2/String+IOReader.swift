@@ -185,16 +185,9 @@ extension Array where Element == String {
 extension String: Component {}
 
 extension String: Word {
-  public static func wordIterator() -> IOBase.LineIterator<String> {
-    makeLineIterator { try! _atos.instance.read() }
-  }
 
-  public static func wordIterator(columns: Int) -> AnyIterator<String> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? try! _atos.instance.read() : nil
-    }
+  public static func _readWithSeparator() throws -> (value: String, separator: UInt8?) {
+    try _atos.instance.read()
   }
 }
 

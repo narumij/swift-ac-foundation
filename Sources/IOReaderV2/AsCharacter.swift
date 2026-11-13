@@ -1,33 +1,41 @@
 import IOBase
 
 public protocol WordCharacter {
-  static func read() throws -> [Self]
-  static func wordIterator() -> LineIterator<[Self]>
-  static func wordIterator(columns: Int) -> AnyIterator<[Self]>
+  static func _readWithSeparator() throws -> (value: [Self], separator: UInt8?)
 }
 
 public protocol Word {
   associatedtype Element: WordCharacter
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
   static func wordIterator() -> LineIterator<Self>
   static func wordIterator(columns: Int) -> AnyIterator<Self>
 }
 
-extension Sequence where Element: WordCharacter {
+extension Word {
 
-  public static var stdin: [Element] {
-    try! Element.read()
+  public static var stdin: Self {
+    valuePreservingSeparator(try! _readWithSeparator())
   }
 
-  public static func wordIterator() -> LineIterator<[Element]> {
-    Element.wordIterator()
+  public static func wordIterator() -> LineIterator<Self> {
+    makeLineIterator { try _readWithSeparator() }
   }
 
-  public static func wordIterator(columns: Int) -> AnyIterator<[Element]> {
-    Element.wordIterator(columns: columns)
+  public static func wordIterator(columns: Int) -> AnyIterator<Self> {
+    var columns = columns
+    return AnyIterator {
+      defer { columns -= 1 }
+      return columns > 0 ? .stdin : nil
+    }
   }
 }
 
-extension Array: Word & Component where Element: WordCharacter {}
+extension Array: Word & Component where Element: WordCharacter {
+
+  public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8?) {
+    try Element._readWithSeparator()
+  }
+}
 
 public protocol Word1D: Sequence where Element: Word {
   init<S: Sequence>(_ sequence: S) where S.Element == Element
