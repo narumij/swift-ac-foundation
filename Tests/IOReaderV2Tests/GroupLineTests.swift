@@ -40,3 +40,22 @@ struct GroupLineTests {
     }
   }
 }
+
+// columns 個は1行に収まり、行末の空白は行の終わりとして受け入れる
+struct ColumnsLineTests {
+
+  @Test func columnsAcrossLinesStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [Int32].stdin(columns: 3) }.run(input: "1 2\n3\n")
+    }
+  }
+
+  @Test func columnsWithTrailingSpaceSucceed() async {
+    await #expect(processExitsWith: .success) {
+      _ = try SolverRunner {
+        precondition([Int32].stdin(columns: 2) == [1, 2])
+        precondition(Int32.stdin == 3)
+      }.run(input: "1 2 \n3\n")
+    }
+  }
+}

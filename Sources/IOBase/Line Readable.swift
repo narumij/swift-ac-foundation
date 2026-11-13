@@ -38,8 +38,16 @@ public struct ColumnsIterator<Element>: IteratorProtocol, Sequence {
   public mutating func next() -> Element? {
     guard columns > 0 else { return nil }
     columns -= 1
-    let (value, separator) = try! read()
-    _ = __ungetc(separator)
+    var (value, separator) = try! read()
+    while !isNilOrAsciiNewLine(separator), isASCIIWhitespace(separator!) {
+      separator = __getchar_unlocked()
+    }
+    if columns > 0 {
+      precondition(!isNilOrAsciiNewLine(separator))
+      _ = __ungetc(separator)
+    } else {
+      precondition(isNilOrAsciiNewLine(separator))
+    }
     return value
   }
 }
