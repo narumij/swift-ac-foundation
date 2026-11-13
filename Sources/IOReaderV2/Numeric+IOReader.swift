@@ -33,7 +33,11 @@ extension Numeric1D {
   }
 
   public static func stdin(rows: Int) -> Self {
-    .init((0..<rows).map { _ in Element.stdin })
+    .init((0..<rows).map { _ in
+      let (value, separator) = try! Element._readWithSeparator()
+      precondition(isNilOrAsciiNewLine(separator))
+      return value
+    })
   }
 
   public static func stdin(columns: Int) -> Self {

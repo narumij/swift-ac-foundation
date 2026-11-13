@@ -59,3 +59,22 @@ struct ColumnsLineTests {
     }
   }
 }
+
+// rows は1行に1つずつ並ぶ
+struct NumericRowsLineTests {
+
+  @Test func rowsSucceed() async {
+    await #expect(processExitsWith: .success) {
+      _ = try SolverRunner {
+        precondition([Int32].stdin(rows: 2) == [1, 2])
+        precondition(Int32.stdin == 3)
+      }.run(input: "1\n2\n3\n")
+    }
+  }
+
+  @Test func rowsWithTwoValuesOnALineStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [Int32].stdin(rows: 2) }.run(input: "1 2\n3\n")
+    }
+  }
+}
