@@ -39,4 +39,5 @@ extension Character {
   }
 }
 
+extension Character: Component {}
 extension Character: LineCharacter {}

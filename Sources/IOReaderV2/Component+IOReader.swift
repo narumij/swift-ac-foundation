@@ -1,11 +1,11 @@
 import Pack
 
-protocol Component {
+public protocol Component {
   static var stdin: Self { get }
 }
 
-extension Int: Component { }
-extension String: Component { }
+//extension Int: Component { }
+//extension String: Component { }
 
 protocol Group {
   static var stdin: Self { get }

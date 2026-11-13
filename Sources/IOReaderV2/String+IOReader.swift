@@ -182,6 +182,8 @@ extension Array where Element == String {
 
 // MARK: -
 
+extension String: Component {}
+
 extension String: Word {
   public static func wordIterator() -> IOBase.LineIterator<String> {
     makeLineIterator { try! _atos.instance.read() }

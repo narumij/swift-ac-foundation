@@ -39,4 +39,5 @@ extension UInt8 {
   }
 }
 
+extension UInt8: Component {}
 extension UInt8: LineCharacter {}

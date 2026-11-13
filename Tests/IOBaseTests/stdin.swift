@@ -1,3 +1,4 @@
+import IOBase
 
 extension UInt8 {
   

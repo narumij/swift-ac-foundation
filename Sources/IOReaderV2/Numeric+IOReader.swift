@@ -1,6 +1,6 @@
 import IOBase
 
-public protocol Numeric {
+public protocol Numeric: Component {
   static func read() throws -> Self
   static func lineIterator() -> LineIterator
   static func lineIterator(columns: Int) -> AnyIterator<Self>

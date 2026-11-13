@@ -27,7 +27,7 @@ extension Sequence where Element: WordCharacter {
   }
 }
 
-extension Array: Word where Element: WordCharacter {}
+extension Array: Word & Component where Element: WordCharacter {}
 
 public protocol Word1D: Sequence where Element: Word {
   init<S: Sequence>(_ sequence: S) where S.Element == Element
