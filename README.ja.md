@@ -70,6 +70,18 @@ let S = [String].stdin(rows: H, columns: W)
 token は半角スペース、タブ、改行などの空白文字で区切られます。
 文字列や文字は ASCII 入力を想定しています。
 
+`columns` を指定する読み取りは値が 1 行に並んでいること、`rows` を指定する読み取りは 1 行に値または組が 1 つであることを前提にします。
+入力が合わない場合は、読んだ値と次の文字を示すメッセージを出して停止します。
+
+`Int`、`UInt`、`Double`、`String`、`Character`、`UInt8` のほか、次の型も読み取れます。
+
+| 型 | 補足 |
+|---|---|
+| `Int128`, `UInt128` | macOS 15.0 以降で利用できます |
+| `SIMD2`, `SIMD3`, `SIMD4` | 1 行に並んだ値として読み取ります |
+| `Pack` | 1 行に並んだ値として読み取ります。macOS 14.0 以降で利用できます |
+| `InlineArray` | 1 行に並んだ値として読み取ります。macOS 26.0 以降で利用できます |
+
 詳しい使い方は以下のドキュメントに分けています。
 
 - [IOReader の考え方](Documents/IOReaderConcepts.ja.md): `readLine()` との違いから知りたい場合
@@ -82,27 +94,22 @@ IOReader 機能のみを利用したい場合は、個別に `import IOReader` �
 
 ### IOReaderExtra
 
-IOReaderExtra は、外部ライブラリ、新しめの実行環境、追加モジュールに依存する型へ `stdin` 対応を追加します。
+IOReaderExtra は、外部ライブラリの型へ `stdin` 対応を追加します。
 利用する場合は個別 import が必要です。
 
 ```swift
 import BigInt
 import IOReaderExtra
-import Pack
 
 let x = BigInt.stdin
-let a: Pack2<Int, String> = .stdin
-let v = SIMD3<Int>.stdin
 ```
 
 | 型 | 補足 |
 |---|---|
 | `BigInt` | 10 進文字列として読み取ります |
-| `Int128`, `UInt128` | macOS 15.0 以降で利用できます |
 | `static_modint`, `dynamic_modint` | AtCoder の modint 型です |
-| `Pack`, `Pack2`, `Pack3` | 中身の型が `stdin` 対応の場合に利用できます |
-| `SIMD2`, `SIMD3`, `SIMD4` | `Scalar` が `stdin` 対応の場合に利用できます |
-| `InlineArray` | macOS 26.0 以降、`Element` が `stdin` 対応の場合に利用できます |
+
+ほかの型も、`IOIntegerConversionReadable` や `IOStringConversionReadable` に準拠して `convert(from:)` を実装すると読み取れるようになります。
 
 ---
 

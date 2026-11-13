@@ -70,6 +70,18 @@ let S = [String].stdin(rows: H, columns: W)
 Tokens are separated by spaces, tabs, newlines, and similar whitespace.
 Strings and characters assume ASCII input.
 
+Reads with `columns` expect the values on one line, and reads with `rows` expect one value or one group per line.
+When the input does not match, the program stops with a message that shows the value read and the next character.
+
+Besides `Int`, `UInt`, `Double`, `String`, `Character`, and `UInt8`, the following types can be read.
+
+| Type | Notes |
+|---|---|
+| `Int128`, `UInt128` | Available on macOS 15.0 or later |
+| `SIMD2`, `SIMD3`, `SIMD4` | Read as values on one line |
+| `Pack` | Read as values on one line; available on macOS 14.0 or later |
+| `InlineArray` | Read as values on one line; available on macOS 26.0 or later |
+
 Detailed usage is split across the following documents.
 
 - [IOReader Concepts](Documents/IOReaderConcepts.md): start here if you want to understand how it differs from `readLine()`
@@ -82,27 +94,22 @@ If you only want IOReader features, you can import `IOReader` directly.
 
 ### IOReaderExtra
 
-IOReaderExtra adds `stdin` support for types that depend on external libraries, newer platform features, or optional helper modules.
+IOReaderExtra adds `stdin` support for types from external libraries.
 It requires an individual import.
 
 ```swift
 import BigInt
 import IOReaderExtra
-import Pack
 
 let x = BigInt.stdin
-let a: Pack2<Int, String> = .stdin
-let v = SIMD3<Int>.stdin
 ```
 
 | Type | Notes |
 |---|---|
 | `BigInt` | Reads from a decimal string |
-| `Int128`, `UInt128` | Available on macOS 15.0 or later |
 | `static_modint`, `dynamic_modint` | AtCoder modint types |
-| `Pack`, `Pack2`, `Pack3` | Available when the contained types support `stdin` |
-| `SIMD2`, `SIMD3`, `SIMD4` | Available when `Scalar` supports `stdin` |
-| `InlineArray` | Available on macOS 26.0 or later when `Element` supports `stdin` |
+
+Other types can be made readable by conforming to `IOIntegerConversionReadable` or `IOStringConversionReadable` and implementing `convert(from:)`.
 
 ---
 
