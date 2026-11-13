@@ -58,10 +58,11 @@ jobs:
         uses: SwiftyLab/setup-swift@latest
       # Input tests replace process-wide stdin/stdout. Explicitly disable parallel execution.
       # Performance measurements are not memory-safety checks and are excluded.
+      # strip_env=0 keeps the sanitizer runtime for exit-test child processes.
       - name: Run sanitizer tests
         env:
-          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1
-          TSAN_OPTIONS: halt_on_error=1:exitcode=66
+          ASAN_OPTIONS: detect_leaks=0:symbolize=1:abort_on_error=1:strip_env=0
+          TSAN_OPTIONS: halt_on_error=1:exitcode=66:strip_env=0
           SWIFT_BACKTRACE: enable=yes
         shell: bash
         run: |
