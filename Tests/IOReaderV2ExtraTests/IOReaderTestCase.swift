@@ -7,6 +7,7 @@ class IOReaderV2ExtraTestCase: XCTestCase {
   override func setUpWithError() throws {
     try super.setUpWithError()
     savedConfiguration = InputConfiguration.shared
+    InputConfiguration.shared.usesPendingCharacter = false
   }
 
   override func tearDownWithError() throws {

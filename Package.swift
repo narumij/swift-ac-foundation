@@ -71,7 +71,11 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "IOReaderV2Extra",
-      dependencies: ["IOReaderV2"],
+      dependencies: [
+        "IOReaderV2",
+        .product(name: "BigInt", package: "BigInt"),
+        .product(name: "AtCoder", package: "swift-ac-library"),
+      ],
       swiftSettings: _settings),
     .target(
       name: "IOWriter",
