@@ -98,6 +98,54 @@ final class UIntReaderTests: XCTestCase {
   }
 }
 
+final class DoubleReaderTests: XCTestCase {
+
+  func testNumber() throws {
+    try SolverRunner {
+      XCTAssertEqual(Double.stdin, 1.5)
+      XCTAssertEqual(Double.stdin, -2)
+    }.inputOnly("1.5 -2")
+  }
+
+  func testNumbersLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([Double].stdin(), [1, 2.5, 3])
+      XCTAssertEqual([Double].stdin(), [4])
+    }.inputOnly("1 2.5 3\n4")
+  }
+
+  func testNumbersLineThenReadLine() throws {
+    try SolverRunner {
+      XCTAssertEqual([Double].stdin(), [1, 2])
+      XCTAssertEqual(String.readLine(), "a b")
+    }.inputOnly("1 2\na b")
+  }
+
+  func testNumbersRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([Double].stdin(rows: 3), [1, 2, 3.5])
+    }.inputOnly("1\n2\n3.5")
+  }
+
+  func testNumbersColumns() throws {
+    try SolverRunner {
+      XCTAssertEqual([Double].stdin(columns: 3), [1, 2, 3.5])
+    }.inputOnly("1 2 3.5")
+  }
+
+  func testNumbers2DRows() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Double]].stdin(rows: 2), [[1, 2, 3], [4.5]])
+    }.inputOnly("1 2 3\n4.5")
+  }
+
+  func testNumbers2D() throws {
+    try SolverRunner {
+      XCTAssertEqual([[Double]].stdin(rows: 2, columns: 3), [[1, 2, 3], [4, 5, 6.5]])
+    }.inputOnly("1 2 3\n4 5 6.5")
+  }
+}
+
 final class StringReaderTests: XCTestCase {
 
   func testReadLine() throws {

@@ -2,10 +2,10 @@ import Foundation
 @preconcurrency import _FastIO
 
 @usableFromInline
-struct _atof: StaticIOReader {
+package struct _atof: StaticIOReader {
 
   @usableFromInline
-  typealias Element = Double
+  package typealias Element = Double
 
   @inlinable
   @inline(__always)
