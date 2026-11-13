@@ -3,7 +3,7 @@ import IOBase
 public protocol Numeric: Component {
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
   static func lineIterator() -> LineIterator<Self>
-  static func lineIterator(columns: Int) -> AnyIterator<Self>
+  static func lineIterator(columns: Int) -> ColumnsIterator<Self>
 }
 
 extension Numeric {
@@ -16,12 +16,8 @@ extension Numeric {
     .init { try _readWithSeparator() }
   }
 
-  public static func lineIterator(columns: Int) -> AnyIterator<Self> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? .stdin : nil
-    }
+  public static func lineIterator(columns: Int) -> ColumnsIterator<Self> {
+    .init(columns: columns) { try _readWithSeparator() }
   }
 }
 

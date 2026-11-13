@@ -21,3 +21,22 @@ public struct LineIterator<Element>: IteratorProtocol, Sequence {
     return value
   }
 }
+
+public struct ColumnsIterator<Element>: IteratorProtocol, Sequence {
+
+  package init(columns: Int, read: @escaping () throws -> ReaderItem<Element>) {
+    self.columns = columns
+    self.read = read
+  }
+
+  let read: () throws -> ReaderItem<Element>
+  var columns: Int
+
+  public mutating func next() -> Element? {
+    guard columns > 0 else { return nil }
+    columns -= 1
+    let (value, separator) = try! read()
+    _ = __ungetc(separator)
+    return value
+  }
+}

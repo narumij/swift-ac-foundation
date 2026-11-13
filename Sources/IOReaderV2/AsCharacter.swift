@@ -8,7 +8,7 @@ public protocol Word {
   associatedtype Element: WordCharacter
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
   static func wordIterator() -> LineIterator<Self>
-  static func wordIterator(columns: Int) -> AnyIterator<Self>
+  static func wordIterator(columns: Int) -> ColumnsIterator<Self>
 }
 
 extension Word {
@@ -21,12 +21,8 @@ extension Word {
     .init { try _readWithSeparator() }
   }
 
-  public static func wordIterator(columns: Int) -> AnyIterator<Self> {
-    var columns = columns
-    return AnyIterator {
-      defer { columns -= 1 }
-      return columns > 0 ? .stdin : nil
-    }
+  public static func wordIterator(columns: Int) -> ColumnsIterator<Self> {
+    .init(columns: columns) { try _readWithSeparator() }
   }
 }
 
