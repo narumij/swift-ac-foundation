@@ -108,4 +108,37 @@ final class ExtraPackSIMDTests: IOReaderV2TestCase {
     })
     .inputOnly("7 12")
   }
+
+  // 入力の最後が1文字のとき、先読みは入力の終わり（nil）になる
+  func testPackCharacterAtEOF() throws {
+    if #available(macOS 14.0, *) {
+      try SolverRunner(solver: {
+        let A: Pack<Int, Character> = .stdin
+        XCTAssertEqual(A.rawValue.0, 1)
+        XCTAssertEqual(A.rawValue.1, "a")
+      })
+      .inputOnly("1 a")
+    }
+  }
+
+  func testTupleCharacterAtEOF() throws {
+    try SolverRunner(solver: {
+      let (a, b): (Int, Character) = stdin()
+      XCTAssertEqual(a, 1)
+      XCTAssertEqual(b, "a")
+    })
+    .inputOnly("1 a")
+  }
+
+  // 1文字のあとも次の行を読める（先読みした改行は押し戻される）
+  func testPackCharacterThenNextLine() throws {
+    if #available(macOS 14.0, *) {
+      try SolverRunner(solver: {
+        let A: Pack<Int, Character> = .stdin
+        XCTAssertEqual(A.rawValue.1, "a")
+        XCTAssertEqual(Int.stdin, 2)
+      })
+      .inputOnly("1 a\n2")
+    }
+  }
 }
