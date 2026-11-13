@@ -13,10 +13,8 @@ public struct FloatingPointInputError: Error, Equatable, CustomStringConvertible
   }
 
   public var description: String {
-    let detail = reason == .floatingPointOutOfRange
-      ? "数値が表現範囲外です" : "数値の構文が不正または未完成です"
     let next = nextByte.map { String(UnicodeScalar($0)).debugDescription } ?? "EOF"
-    return "Doubleとして読み取れません: \(input.debugDescription)（\(detail)、次の文字: \(next)）"
+    return "\(reason): read \(input.debugDescription), next \(next)"
   }
 
   public var errorDescription: String? { description }

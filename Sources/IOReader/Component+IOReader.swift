@@ -21,7 +21,7 @@ extension Group {
       guard count > 0 else { return nil }
       count -= 1
       let (value, separator) = try! _readWithSeparator()
-      precondition(isNilOrAsciiNewLine(separator))
+      precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one group")
       return value
     }
   }
@@ -49,7 +49,7 @@ extension SIMD where Scalar: Component {
     var v = Self()
     for i in v.indices {
       let item = try Scalar._readWithSeparator()
-      if i < v.scalarCount - 1 { precondition(!isNilOrAsciiNewLine(item.separator)) }
+      if i < v.scalarCount - 1 { precondition(!isNilOrAsciiNewLine(item.separator), "the line ended before the group was complete") }
       v[i] = valuePreservingSeparator(item)
     }
     return (v, __getchar_unlocked())
@@ -67,7 +67,7 @@ extension Pack: Group where repeat each T: Component {
     var started = false
     var previous: UInt8?
     func read<U: Component>(_: U.Type) throws -> U {
-      if started { precondition(!isNilOrAsciiNewLine(previous)) }
+      if started { precondition(!isNilOrAsciiNewLine(previous), "the line ended before the group was complete") }
       started = true
       let item = try U._readWithSeparator()
       previous = item.separator
@@ -83,7 +83,7 @@ extension InlineArray: Group where Element: Component {
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
     let value = try Self { i in
       let (value, separator) = try Element._readWithSeparator()
-      if i < count - 1 { precondition(!isNilOrAsciiNewLine(separator)) }
+      if i < count - 1 { precondition(!isNilOrAsciiNewLine(separator), "the line ended before the group was complete") }
       return valuePreservingSeparator((value, separator))
     }
     return (value, __getchar_unlocked())

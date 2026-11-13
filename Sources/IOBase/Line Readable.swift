@@ -43,10 +43,10 @@ public struct ColumnsIterator<Element>: IteratorProtocol, Sequence {
       separator = __getchar_unlocked()
     }
     if columns > 0 {
-      precondition(!isNilOrAsciiNewLine(separator))
+      precondition(!isNilOrAsciiNewLine(separator), "the line ended before all columns were read")
       _ = __ungetc(separator)
     } else {
-      precondition(isNilOrAsciiNewLine(separator))
+      precondition(isNilOrAsciiNewLine(separator), "the line has more values than the columns")
     }
     return value
   }

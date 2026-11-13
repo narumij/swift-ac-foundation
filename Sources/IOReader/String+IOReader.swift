@@ -171,7 +171,7 @@ extension Array where Element == String {
     (0..<rows).map { _ in
       let line = String.stdin(columns: columns)
       let separator: UInt8? = __getchar_unlocked()
-      precondition(isNilOrAsciiNewLine(separator))
+      precondition(isNilOrAsciiNewLine(separator), "the line has more characters than the columns")
       return line
     }
   }
