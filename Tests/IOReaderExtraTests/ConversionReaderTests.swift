@@ -6,7 +6,7 @@ import TestingUtil
 import XCTest
 
 // IOReaderExtraTests の BigInt・modint のテストを V2 で移したもの。後半は並びの読み取りの確認。
-final class ConversionReaderTests: IOReaderV2ExtraTestCase {
+final class ConversionReaderTests: IOReaderExtraTestCase {
 
   func testModint() throws {
     try SolverRunner(solver: {

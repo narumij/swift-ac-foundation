@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class ReadStdinRowsColumnsTests: IOReaderV2TestCase {
+final class ReadStdinRowsColumnsTests: IOReaderTestCase {
   
   func testUInt8RowsColumns() throws {
     try SolverRunner(solver: {

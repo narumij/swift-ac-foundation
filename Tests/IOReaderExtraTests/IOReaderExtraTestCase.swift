@@ -1,7 +1,7 @@
 import XCTest
 import IOBase
 
-class IOReaderV2ExtraTestCase: XCTestCase {
+class IOReaderExtraTestCase: XCTestCase {
   private var savedConfiguration = InputConfiguration.shared
 
   override func setUpWithError() throws {

@@ -5,7 +5,7 @@ import XCTest
 
 // IOReaderExtraTests の Pack・SIMD のテストを、V2 の .stdin で移したもの。
 // v1 の try .read() と .stdin の2通りは、V2 では .stdin の1通りになる。
-final class ExtraPackSIMDTests: IOReaderV2TestCase {
+final class ExtraPackSIMDTests: IOReaderTestCase {
 
   func testPack() throws {
     if #available(macOS 14.0, *) {

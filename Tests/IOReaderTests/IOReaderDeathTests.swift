@@ -4,7 +4,7 @@
 
   import IOReader
 
-  struct IOReaderV2DeathTests {
+  struct IOReaderDeathTests {
 
     @Test func numbersRows_traps_whenRowHasMoreValues() async throws {
       await #expect(processExitsWith: .failure) {

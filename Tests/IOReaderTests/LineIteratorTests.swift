@@ -3,7 +3,7 @@ import TestingUtil
 import XCTest
 
 // 1行の読み取りは改行をまたがない（行末の空白があっても次の行を読まない）
-final class LineIteratorTests: IOReaderV2TestCase {
+final class LineIteratorTests: IOReaderTestCase {
 
   func testLineStopsAtNewlineAfterTrailingSpace() throws {
     try SolverRunner(solver: {

@@ -2,7 +2,7 @@ import IOReader
 import TestingUtil
 import XCTest
 
-final class Int128Tests: IOReaderV2TestCase {
+final class Int128Tests: IOReaderTestCase {
 
   func testInt128() throws {
     if #available(macOS 15.0, *) {
@@ -15,7 +15,7 @@ final class Int128Tests: IOReaderV2TestCase {
   }
 }
 
-final class InlineArrayTests: IOReaderV2TestCase {
+final class InlineArrayTests: IOReaderTestCase {
 
   func testInlineArray() throws {
     if #available(macOS 26.0, *) {

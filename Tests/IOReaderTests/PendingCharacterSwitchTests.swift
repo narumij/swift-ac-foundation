@@ -6,7 +6,7 @@ import XCTest
 
 // 押し戻しの置き場所を使う設定から使わない設定へ切り替えても、保留中の1バイトが標準入力へ戻り、
 // そのあとの読み取り（Swift の readLine を含む）を乱さないことを、読み取りの種類ごとに確かめる。
-final class PendingCharacterSwitchTests: IOReaderV2TestCase {
+final class PendingCharacterSwitchTests: IOReaderTestCase {
 
   // 置き場所ありで read を実行し、置き場所なしに切り替えたあと、残りの1行が rest になることを確かめる。
   private func assertSwitch(
