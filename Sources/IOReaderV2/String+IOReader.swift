@@ -51,7 +51,7 @@ extension Array where Element == String {
   /// print([String].stdin(columns: 3)) // ["a", "bc", "def"]
   /// ```
   public static func stdin(columns: Int) -> [String] {
-    (0..<columns).map { _ in .stdin }
+    Array(String.wordIterator(columns: columns))
   }
 }
 
@@ -90,11 +90,7 @@ extension Array where Element == [String] {
   /// print([[String]].stdin(rows: 2, columns: 2)) // [["a", "b"], ["c", "d"]]
   /// ```
   public static func stdin(rows: Int, columns: Int) -> [[String]] {
-    (0..<rows).map { _ in
-      let items: [ReaderItem<String>] = (0..<columns).map { _ in try! _atos.read() }
-      precondition(isNilOrAsciiNewLine(items.last?.separator ?? nil))
-      return items.map(\.value)
-    }
+    (0..<rows).map { _ in .stdin(columns: columns) }
   }
 }
 

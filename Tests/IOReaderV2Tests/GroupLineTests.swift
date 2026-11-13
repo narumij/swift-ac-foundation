@@ -77,4 +77,60 @@ struct NumericRowsLineTests {
       _ = try SolverRunner { _ = [Int32].stdin(rows: 2) }.run(input: "1 2\n3\n")
     }
   }
+
+  // 具象の [Int].stdin(rows:) も同じく1行に1つずつ
+  @Test func concreteIntRowsSucceed() async {
+    await #expect(processExitsWith: .success) {
+      _ = try SolverRunner {
+        precondition([Int].stdin(rows: 2) == [1, 2])
+        precondition(Int.stdin == 3)
+      }.run(input: "1\n2\n3\n")
+    }
+  }
+
+  @Test func concreteIntRowsWithTwoValuesOnALineStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [Int].stdin(rows: 2) }.run(input: "1 2\n3\n")
+    }
+  }
+}
+
+// 具象の [Int] / [String] の columns も1行に収まる
+struct ConcreteColumnsLineTests {
+
+  @Test func concreteIntColumnsAcrossLinesStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [Int].stdin(columns: 3) }.run(input: "1 2\n3\n")
+    }
+  }
+
+  @Test func concreteStringColumnsAcrossLinesStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [String].stdin(columns: 3) }.run(input: "a b\nc\n")
+    }
+  }
+
+  @Test func concreteColumnsSucceed() async {
+    await #expect(processExitsWith: .success) {
+      _ = try SolverRunner {
+        precondition([Int].stdin(columns: 2) == [1, 2])
+        precondition([String].stdin(columns: 2) == ["a", "b"])
+      }.run(input: "1 2\na b\n")
+    }
+  }
+
+  @Test func concreteRowsColumnsAcrossLinesStops() async {
+    await #expect(processExitsWith: .failure) {
+      _ = try SolverRunner { _ = [[Int]].stdin(rows: 1, columns: 2) }.run(input: "1\n2\n")
+    }
+  }
+
+  @Test func concreteRowsColumnsWithTrailingSpaceSucceed() async {
+    await #expect(processExitsWith: .success) {
+      _ = try SolverRunner {
+        precondition([[Int]].stdin(rows: 2, columns: 2) == [[1, 2], [3, 4]])
+        precondition([[String]].stdin(rows: 1, columns: 2) == [["a", "b"]])
+      }.run(input: "1 2 \n3 4\na b \n")
+    }
+  }
 }

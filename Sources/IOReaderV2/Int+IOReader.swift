@@ -70,7 +70,7 @@ extension Array where Element == Int {
   /// print([Int].stdin(columns: 3)) // [1, 2, 3]
   /// ```
   public static func stdin(columns: Int) -> [Int] {
-    (0..<columns).map { _ in .stdin }
+    Array(Int.lineIterator(columns: columns))
   }
 }
 
@@ -107,11 +107,7 @@ extension Array where Element == [Int] {
   /// print([[Int]].stdin(rows: 2, columns: 3)) // [[1, 2, 3], [4, 5, 6]]
   /// ```
   public static func stdin(rows: Int, columns: Int) -> [[Int]] {
-    (0..<rows).map { _ in
-      let items: [ReaderItem<Int>] = (0..<columns).map { _ in try! _atol<Int>.read() }
-      precondition(isNilOrAsciiNewLine(items.last?.separator ?? nil))
-      return items.map(\.value)
-    }
+    (0..<rows).map { _ in .stdin(columns: columns) }
   }
 }
 
