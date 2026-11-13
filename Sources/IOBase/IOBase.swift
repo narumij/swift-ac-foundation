@@ -20,7 +20,6 @@ extension ElementReader {
 
 @usableFromInline
 protocol StaticIOReader: ElementReader {
-  static func read() throws -> Element
   static func read() throws -> Item
 }
 
@@ -43,12 +42,6 @@ extension StaticIOSubReader {
 
   @inlinable
   @inline(__always)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try Self._read())
-  }
-
-  @inlinable
-  @inline(__always)
   public static func read() throws -> Item {
     try Self._read()
   }
@@ -57,19 +50,11 @@ extension StaticIOSubReader {
 @usableFromInline
 protocol InstanceIOReader: ElementReader {
   associatedtype Element
-  mutating func read() throws -> Element
   mutating func read() throws -> Item
   static var instance: Self { get set }
 }
 
 extension InstanceIOReader {
-
-  @inlinable
-  @inline(__always)
-  @available(*, deprecated)
-  public static func read() throws -> Element {
-    try instance.read()
-  }
 
   @inlinable
   @inline(__always)

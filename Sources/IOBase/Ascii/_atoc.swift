@@ -27,12 +27,6 @@ package struct _atoc: InstanceIOReader, VariableBuffer {
 
   @inlinable
   @inline(__always)
-  public mutating func read() throws -> Element {
-    valuePreservingSeparator(try _read())
-  }
-
-  @inlinable
-  @inline(__always)
   public mutating func read() throws -> Item {
     try _read()
   }

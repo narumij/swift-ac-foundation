@@ -9,13 +9,6 @@ package struct _atof: StaticIOReader {
 
   @inlinable
   @inline(__always)
-  @available(*, deprecated)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try read())
-  }
-
-  @inlinable
-  @inline(__always)
   public static func read() throws -> Item {
     try read(mode: FloatingPointMode(rawValue: _fastio_floating_point_mode.rawValue)!)
   }

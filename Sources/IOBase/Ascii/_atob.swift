@@ -13,12 +13,6 @@ package struct _atob: VariableBufferIOReader, InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  public mutating func read() throws -> Element {
-    valuePreservingSeparator(try read() as Item)
-  }
-
-  @inlinable
-  @inline(__always)
   public mutating func read() throws -> Item {
     try read { b, c in
       (b, c)

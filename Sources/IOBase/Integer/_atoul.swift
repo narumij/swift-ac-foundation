@@ -5,13 +5,6 @@ package struct _atoul<Element: FixedWidthInteger & UnsignedInteger>: StaticIORea
 
   @inlinable
   @inline(__always)
-  @available(*, deprecated)
-  public static func read() throws -> Element {
-    valuePreservingSeparator(try read())
-  }
-
-  @inlinable
-  @inline(__always)
   public static func read() throws -> Item {
     try read(mode: IntegerMode(rawValue: _fastio_integer_mode.rawValue)!)
   }

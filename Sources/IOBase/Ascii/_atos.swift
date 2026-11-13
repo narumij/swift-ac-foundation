@@ -14,12 +14,6 @@ package struct _atos: VariableBufferIOReader, InstanceIOReader {
 
   @inlinable
   @inline(__always)
-  public mutating func read() throws -> Element {
-    valuePreservingSeparator(try read() as Item)
-  }
-
-  @inlinable
-  @inline(__always)
   public mutating func read() throws -> Item {
 
     try read { (b: [UInt8], c: UInt8?) in
