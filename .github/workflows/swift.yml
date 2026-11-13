@@ -75,6 +75,8 @@ jobs:
           # Foundation uses its ModInt API; those excluded APIs are not used here.
           if [[ "${{ matrix.sanitizer }}" == "thread" ]]; then
             extra_args+=(--traits TSAN_TEST)
+          else
+            extra_args+=(--traits ENABLE_DEATH_TESTS)
           fi
           swift test "${extra_args[@]}" --build-system native -c ${{ matrix.configuration }} \
             --sanitize ${{ matrix.sanitizer }} --no-parallel --skip 'Performance' \

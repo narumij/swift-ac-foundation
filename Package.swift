@@ -10,6 +10,7 @@ var _settings: [SwiftSetting] =
     .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
+    .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
 
   ] + defines.map { .define($0) }
 
@@ -32,6 +33,10 @@ let package = Package(
     ),
     .trait(
       name: "BENCHMARK"
+    ),
+    .trait(
+      name: "ENABLE_DEATH_TESTS",
+      description: "Compile and run Swift Testing exit tests on platforms where they are not enabled by default."
     ),
   ],
   dependencies: [
