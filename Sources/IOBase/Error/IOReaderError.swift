@@ -15,7 +15,7 @@ extension IOReaderError: CustomStringConvertible {
 
   public var description: String {
     switch self {
-    case .unexpectedNil: "input ended unexpectedly"
+    case .unexpectedNil: "the input could not be converted to the requested type"
     case .unexpectedSpace: "found a space or line end where a value was expected"
     case .unexpectedEOF: "input ended before a value was read"
     case .unexpectedEmpty: "found an empty value"
