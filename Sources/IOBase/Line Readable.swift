@@ -13,7 +13,10 @@ public struct LineIterator<Element>: IteratorProtocol, Sequence {
 
   public mutating func next() -> Element? {
     guard !finished else { return nil }
-    let (value, separator) = try! read()
+    var (value, separator) = try! read()
+    while !isNilOrAsciiNewLine(separator), isASCIIWhitespace(separator!) {
+      separator = __getchar_unlocked()
+    }
     finished = isNilOrAsciiNewLine(separator)
     if !finished {
       _ = __ungetc(separator)
