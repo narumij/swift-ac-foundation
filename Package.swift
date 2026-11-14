@@ -68,7 +68,6 @@ let package = Package(
     .target(
       name: "IOReader",
       dependencies: ["IOBase","IOUtil"],
-      exclude: ["MEMO.md"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderExtra",
