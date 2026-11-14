@@ -1,6 +1,6 @@
 import Foundation
 
-extension String {
+extension StringProtocol {
 
   @inlinable
   @inline(__always)
@@ -10,7 +10,7 @@ extension String {
 
   @inlinable
   @inline(__always)
-  public subscript<R>(_bounds bounds: R) -> Substring where R: RangeExpression, R.Bound == Int {
+  public subscript<R>(_bounds bounds: R) -> SubSequence where R: RangeExpression, R.Bound == Int {
     let bounds = bounds.relative(to: (0..<self.count))
     let start = index(startIndex, offsetBy: bounds.lowerBound)
     let end = index(startIndex, offsetBy: bounds.upperBound)
