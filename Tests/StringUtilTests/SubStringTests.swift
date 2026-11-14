@@ -38,4 +38,25 @@ final class SubStringTests: XCTestCase {
     XCTAssertEqual("b", s[3])
     XCTAssertEqual("é👍", s[1..<3])
   }
+
+  func testSubstringIntSubscript() throws {
+    // 先頭からずれた Substring でも、添字は Substring の先頭を 0 として数える
+    let sub = "abcdef".dropFirst(2)
+    XCTAssertEqual("cdef", sub)
+    XCTAssertEqual("c", sub[0])
+    XCTAssertEqual("f", sub[3])
+    XCTAssertEqual(Array(sub), (0..<sub.count).map { sub[$0] })
+    XCTAssertEqual("de", sub[1..<3])
+    XCTAssertEqual("cdef", sub[0...])
+    XCTAssertEqual("cde", sub[...2])
+    XCTAssertEqual("", sub[2..<2])
+  }
+
+  func testSubstringUnicode() throws {
+    let sub = "xaé👍b".dropFirst()
+    XCTAssertEqual("a", sub[0])
+    XCTAssertEqual("é", sub[1])
+    XCTAssertEqual("👍", sub[2])
+    XCTAssertEqual("é👍", sub[1..<3])
+  }
 }
