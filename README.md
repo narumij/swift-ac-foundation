@@ -567,7 +567,7 @@ Empty ranges are handled safely, so you can write loops without worrying about t
 
 ---
 
-### CxxWrapped
+### CxxMath
 
 This module is a wrapper for using C++ standard library `std::gcd` and `std::lcm` from Swift.
 
@@ -584,10 +584,10 @@ Currently, the C++ side exposes them through `extern "C"`, and Swift calls them 
 
 #### Partial Import
 
-If you only want CxxWrapped features, import the module below.
+If you only want CxxMath features, import the module below.
 
 ```swift
-import CxxWrapped
+import CxxMath
 ```
 
 ---

@@ -567,7 +567,7 @@ for i in 3 ..>= 0 {
 
 ---
 
-### CxxWrapped
+### CxxMath
 
 C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
 
@@ -584,10 +584,10 @@ print(lcm(12, 16)) // 48
 
 #### 部分利用
 
-CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
+CxxMath 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
-import CxxWrapped
+import CxxMath
 ```
 
 ---

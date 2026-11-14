@@ -97,7 +97,7 @@ let package = Package(
       dependencies: ["_MT19937"],
       swiftSettings: _settings),
     .target(
-      name: "CxxWrapped",
+      name: "CxxMath",
       dependencies: ["_cxx"],
       swiftSettings: _settings),
     .target(
@@ -125,7 +125,7 @@ let package = Package(
         "IOUtil",
         "Bisect",
         "Pack",
-        "CxxWrapped",
+        "CxxMath",
         "StringUtil",
         "CharacterUtil",
         "UInt8Util",
@@ -189,10 +189,10 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "CxxWrappedTests",
+      name: "CxxMathTests",
       dependencies: [
         "TestingUtil",
-        "CxxWrapped",
+        "CxxMath",
       ],
       swiftSettings: _settings
     ),

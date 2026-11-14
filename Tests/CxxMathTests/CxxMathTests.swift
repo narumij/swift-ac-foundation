@@ -5,10 +5,10 @@
 //  Created by narumij on 2025/06/20.
 //
 
-import CxxWrapped
+import CxxMath
 import XCTest
 
-final class CxxWrappedTests: XCTestCase {
+final class CxxMathTests: XCTestCase {
 
   override func setUpWithError() throws {
   }
