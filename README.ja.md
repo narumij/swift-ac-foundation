@@ -70,6 +70,18 @@ let S = [String].stdin(rows: H, columns: W)
 token は半角スペース、タブ、改行などの空白文字で区切られます。
 文字列や文字は ASCII 入力を想定しています。
 
+`columns` を指定する読み取りは値が 1 行に並んでいること、`rows` を指定する読み取りは 1 行に値または組が 1 つであることを前提にします。
+入力が合わない場合は、読んだ値と次の文字を示すメッセージを出して停止します。
+
+`Int`、`UInt`、`Double`、`String`、`Character`、`UInt8` のほか、次の型も読み取れます。
+
+| 型 | 補足 |
+|---|---|
+| `Int128`, `UInt128` | macOS 15.0 以降で利用できます |
+| `SIMD2`, `SIMD3`, `SIMD4` | 1 行に並んだ値として読み取ります |
+| `Pack` | 1 行に並んだ値として読み取ります。macOS 14.0 以降で利用できます |
+| `InlineArray` | 1 行に並んだ値として読み取ります。macOS 26.0 以降で利用できます |
+
 詳しい使い方は以下のドキュメントに分けています。
 
 - [IOReader の考え方](Documents/IOReaderConcepts.ja.md): `readLine()` との違いから知りたい場合
@@ -82,27 +94,20 @@ IOReader 機能のみを利用したい場合は、個別に `import IOReader` �
 
 ### IOReaderExtra
 
-IOReaderExtra は、外部ライブラリ、新しめの実行環境、追加モジュールに依存する型へ `stdin` 対応を追加します。
+IOReaderExtra は、`Pack` 型へ `stdin` 対応を追加します。
 利用する場合は個別 import が必要です。
 
 ```swift
-import BigInt
 import IOReaderExtra
-import Pack
 
-let x = BigInt.stdin
 let a: Pack2<Int, String> = .stdin
-let v = SIMD3<Int>.stdin
 ```
 
 | 型 | 補足 |
 |---|---|
-| `BigInt` | 10 進文字列として読み取ります |
-| `Int128`, `UInt128` | macOS 15.0 以降で利用できます |
-| `static_modint`, `dynamic_modint` | AtCoder の modint 型です |
-| `Pack`, `Pack2`, `Pack3` | 中身の型が `stdin` 対応の場合に利用できます |
-| `SIMD2`, `SIMD3`, `SIMD4` | `Scalar` が `stdin` 対応の場合に利用できます |
-| `InlineArray` | macOS 26.0 以降、`Element` が `stdin` 対応の場合に利用できます |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | 中身の型が `stdin` 対応型 |
+
+ほかの型も、`IOConversion` に準拠して `read()` を実装すると読み取れるようになります。詳しくは [IOReader リファレンス](Documents/IOReaderReference.ja.md) を参照してください。
 
 ---
 
@@ -313,7 +318,7 @@ print(ans)
 
 `Pack` は `Comparable` にも対応しているため、優先度付きキューやダイクストラ法など、順序付きの比較が必要な場面でも利用できます。
 
-コンパイル環境によって問題が発生する場合は、代わりに `Pack2` や `Pack3` を利用してください。
+コンパイル環境によって問題が発生する場合は、代わりに `Pack2`、`Pack3`、`Pack4` を利用してください。
 
 #### 部分利用
 
@@ -562,7 +567,7 @@ for i in 3 ..>= 0 {
 
 ---
 
-### CxxWrapped
+### CxxMath
 
 C++ 標準ライブラリの `std::gcd` と `std::lcm` を Swift から利用するためのラッパーです。
 
@@ -579,22 +584,22 @@ print(lcm(12, 16)) // 48
 
 #### 部分利用
 
-CxxWrapped 機能のみを利用したい場合は以下をインポートしてください。
+CxxMath 機能のみを利用したい場合は以下をインポートしてください。
 
 ```swift
-import CxxWrapped
+import CxxMath
 ```
 
 ---
 
-### MT19937
+### CxxMT19937
 
 メルセンヌツイスターです。疑似乱数です。
 AHC等で、再現性のある乱数が使いたい場合にご利用ください。
 利用する場合は個別 import が必要です。
 
 ```swift
-import MT19937
+import CxxMT19937
 
 var mt = mt19937_64(seed: 0)
 let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)

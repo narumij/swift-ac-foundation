@@ -1,5 +1,20 @@
 extension UInt8 {
-  
+
+  @inlinable
+  public var isASCII: Bool {
+    self < 0x80
+  }
+
+  @inlinable
+  public var isAlphabet: Bool {
+    isLowercase || isUppercase
+  }
+
+  @inlinable
+  public var isDigit: Bool {
+    (0x30...0x39).contains(self)
+  }
+
   /// ASCII の小文字 a–z かどうか
   @inlinable
   @inline(__always)
@@ -61,6 +76,9 @@ extension UInt8 {
     }
   }
 
+  /// ASCII の数字 0–9 かどうか
+  ///
+  /// `Character` と異なり、上付き数字 ²(0xB2)、³(0xB3)、¹(0xB9)は対象外
   // SwiftのCharacterProperties.swiftを一部流用しています
   @inlinable
   @inline(__always)
@@ -68,6 +86,9 @@ extension UInt8 {
     return wholeNumberValue != nil
   }
   
+  /// ASCII の数字 0–9 の値。それ以外は nil
+  ///
+  /// `Character` と異なり、上付き数字 ²(0xB2)、³(0xB3)、¹(0xB9)は nil
   // SwiftのCharacterProperties.swiftを一部流用しています
   @inlinable
   @inline(__always)

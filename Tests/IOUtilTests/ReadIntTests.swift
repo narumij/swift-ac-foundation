@@ -1,11 +1,7 @@
 import TestingUtil
 import XCTest
 
-#if DEBUG
-  @testable import IOUtil
-#else
-  import IOUtil
-#endif
+import IOUtil
 
 final class ReadIntTests: XCTestCase {
 

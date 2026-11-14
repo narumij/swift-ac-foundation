@@ -10,6 +10,7 @@ var _settings: [SwiftSetting] =
     .define("BENCHMARK", .when(traits: ["BENCHMARK"])),
 
     .define("DEATH_TEST", .when(platforms: [.macOS])),
+    .define("DEATH_TEST", .when(traits: ["ENABLE_DEATH_TESTS"])),
 
   ] + defines.map { .define($0) }
 
@@ -23,19 +24,17 @@ let package = Package(
   //  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(name: "AcFoundation", targets: ["AcFoundation"])
+    .library(name: "AcFoundation", targets: ["AcFoundation"]),
+    .library(name: "TestingUtil", targets: ["TestingUtil"]),
   ],
-  traits: [],
-  dependencies: [
-    .package(
-      url: "https://github.com/apple/swift-algorithms",
-      from: "1.2.1"),
-    .package(
-      url: "https://github.com/attaswift/BigInt",
-      from: "5.7.0"),
-    .package(
-      url: "https://github.com/narumij/swift-ac-library",
-      branch: "main"),
+  traits: [
+    .trait(
+      name: "BENCHMARK"
+    ),
+    .trait(
+      name: "ENABLE_DEATH_TESTS",
+      description: "Compile and run Swift Testing exit tests on platforms where they are not enabled by default."
+    ),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -48,33 +47,33 @@ let package = Package(
         .define("NDEBUG", .when(configuration: .release)),
       ]),
     .target(
-      name: "IOReader",
+      name: "IOBase",
       dependencies: ["_FastIO"],
       swiftSettings: _settings),
     .target(
-      name: "IOWriter",
-      dependencies: ["_FastIO"],
+      name: "IOReader",
+      dependencies: ["IOBase"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderExtra",
       dependencies: [
         "IOReader",
         "Pack",
-        .product(name: "BigInt", package: "BigInt"),
-        .product(name: "AtCoder", package: "swift-ac-library"),
       ],
-      swiftSettings: _settings
-    ),
+      swiftSettings: _settings),
+    .target(
+      name: "IOWriter",
+      dependencies: ["_FastIO"],
+      swiftSettings: _settings),
     .target(
       name: "IOUtil",
-      dependencies: ["_FastIO"],
+      dependencies: ["_FastIO", "IOBase"],
       swiftSettings: _settings),
     .target(
       name: "Bisect",
       swiftSettings: _settings),
     .target(
       name: "Pack",
-      dependencies: ["IOReader"],
       swiftSettings: _settings),
     .target(
       name: "_cxx",
@@ -94,56 +93,43 @@ let package = Package(
         .unsafeFlags(["-std=c++17"]),
       ]),
     .target(
-      name: "MT19937",
+      name: "CxxMT19937",
       dependencies: ["_MT19937"],
       swiftSettings: _settings),
     .target(
-      name: "CxxWrapped",
+      name: "CxxMath",
       dependencies: ["_cxx"],
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
-      dependencies: ["IOUtil"],
       swiftSettings: _settings),
     .target(
       name: "StringUtil",
       swiftSettings: _settings),
     .target(
       name: "UInt8Util",
-      dependencies: ["IOUtil"],
-      swiftSettings: _settings),
-    .target(
-      name: "Miscellaneous",
-      dependencies: ["IOReader"],
-      swiftSettings: _settings),
-    .target(
-      name: "Convenience",
-      dependencies: [
-        "Pack",
-        .product(name: "BigInt", package: "BigInt"),
-      ],
       swiftSettings: _settings),
     .target(
       name: "TestingUtil",
       dependencies: [
-        .product(name: "Algorithms", package: "swift-algorithms")
+        "_FastIO",
       ],
       swiftSettings: _settings),
     .target(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
+        "IOReaderExtra",
+        "IOBase",
         "IOWriter",
         "IOUtil",
         "Bisect",
         "Pack",
-        "CxxWrapped",
+        "CxxMath",
         "StringUtil",
         "CharacterUtil",
         "UInt8Util",
-        "Miscellaneous",
-        "Convenience",
-        "MT19937",
+        "CxxMT19937",
         "TestingUtil",
       ],
       swiftSettings: _settings
@@ -156,13 +142,19 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
+      name: "IOBaseTests",
+      dependencies: ["IOBase", "TestingUtil"],
+      swiftSettings: _settings),
+    .testTarget(
       name: "IOReaderTests",
       dependencies: [
         "TestingUtil",
         "IOReader",
-        "UInt8Util",
+        "IOReaderExtra",
+        "IOBase",
         "Pack",
       ],
+      exclude: ["Specifications"],
       resources: [
         .copy("Resources")
       ],
@@ -189,16 +181,19 @@ let package = Package(
       name: "IOUtilTests",
       dependencies: [
         "TestingUtil",
+        "IOBase",
         "IOUtil",
         "IOReader",
+        "IOWriter",
+        "UInt8Util",
       ],
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "CxxWrappedTests",
+      name: "CxxMathTests",
       dependencies: [
         "TestingUtil",
-        "CxxWrapped",
+        "CxxMath",
       ],
       swiftSettings: _settings
     ),
@@ -235,28 +230,10 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "MT19937Tests",
+      name: "CxxMT19937Tests",
       dependencies: [
         "TestingUtil",
-        "MT19937",
-      ],
-      swiftSettings: _settings
-    ),
-    .testTarget(
-      name: "MiscellaneousTests",
-      dependencies: [
-        "TestingUtil",
-        "Miscellaneous",
-        "Pack"
-      ],
-      swiftSettings: _settings
-    ),
-    .testTarget(
-      name: "ConvenienceTests",
-      dependencies: [
-        "TestingUtil",
-        "Convenience",
-        .product(name: "Algorithms", package: "swift-algorithms")
+        "CxxMT19937",
       ],
       swiftSettings: _settings
     ),

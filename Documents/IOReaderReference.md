@@ -195,10 +195,8 @@ Importing `IOReaderExtra` enables `stdin` for the following types.
 
 | Type | Condition |
 |---|---|
-| `BigInt` | Use `IOReaderExtra` and `BigInt` |
 | `Int128`, `UInt128` | macOS 15.0 or later |
-| `static_modint`, `dynamic_modint` | AtCoder modint |
-| `Pack`, `Pack2`, `Pack3` | The contained types support `stdin` |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | The contained types support `stdin` |
 | `InlineArray` | macOS 26.0 or later, and the element type supports `stdin` |
 
 Example:
@@ -206,81 +204,45 @@ Example:
 ```swift
 import IOReaderExtra
 
-let x = BigInt.stdin
 let a: Pack2<Int, String> = .stdin
 ```
 
 ## Advanced: Supporting Custom Types
 
-To make your own type readable from input, conform it to `SingleReadable` and implement how it should be read.
+To make your own type readable from input, conform it to `IOConversion` and implement `read()`.
 For ordinary use, the concrete types listed above are enough.
 
-The `read()` here is not meant to be called directly. It is the implementation that enables `stdin`.
-For example, you can represent a bag number or luggage weight as its own type instead of using plain `Int` everywhere.
+`read()` is not meant to be called directly. It is the implementation that enables `stdin`.
+Inside `read()`, read the values with `readTuple()` and build your type from them.
 
 ```swift
 import AcFoundation
 
-struct Bag {
-  let number: Int
+struct Edge {
+  let u: Int
+  let v: Int
+  let w: Int
 }
 
-extension Bag: SingleReadable {
-  static func read() throws -> Bag {
-    Bag(number: try Int.read())
+extension Edge: IOConversion, Group {
+  static func read() throws -> Edge {
+    let (u, v, w): (Int, Int, Int) = try readTuple()
+    return Edge(u: u, v: v, w: w)
   }
 }
 
-struct Luggage {
-  let weight: Int
-}
-
-extension Luggage: SingleReadable {
-  static func read() throws -> Luggage {
-    Luggage(weight: try Int.read())
-  }
-}
-
-let bag = Bag.stdin
-let luggage = Luggage.stdin
+let edge = Edge.stdin
+let edges = [Edge].stdin(rows: 3)
 ```
 
-You can also build a type by combining multiple input-readable types.
-Continuing from the `Bag` and `Luggage` definitions above:
+`readTuple()` reads all values from the same line. If the line ends before all values are read, the program stops.
+Adding `Group` enables `stdin` and `stdin(rows:)`, with one value of the type per line.
 
-```swift
-struct BagAndLuggage {
-  let bag: Bag
-  let luggage: Luggage
-}
+`readTuple()` also reads a single value.
+For a type read from one token, conform to `IOReader.Numeric` instead of `Group`. This enables `stdin` and `stdin(columns:)`.
+Write `IOReader.Numeric` with the module name, because `Swift.Numeric` has the same name.
 
-extension BagAndLuggage: SingleReadable {
-  static func read() throws -> BagAndLuggage {
-    BagAndLuggage(
-      bag: try Bag.read(),
-      luggage: try Luggage.read()
-    )
-  }
-}
-
-let pair = BagAndLuggage.stdin
-
-let bag = pair.bag
-let luggage = pair.luggage
-```
-
-`IOIntegerConversionReadable` and related protocols are helper protocols for custom types that can be created from multiple source types. They decide which input type should be used.
-Even when initializer candidates are ambiguous, the argument type of `convert(from:)` makes the input path explicit.
-
-| Protocol | Source type |
-|---|---|
-| `IOIntegerConversionReadable` | `Int` |
-| `IOUnsignedIntegerConversionReadable` | `UInt` |
-| `IODoubleConversionReadable` | `Double` |
-| `IOStringConversionReadable` | `String` |
-| `IOBytesConversionReadable` | `[UInt8]` |
-
-For example, when a type can be created from both a number and a string, you can explicitly read input as an integer.
+When a type can be created from several input types, `as` chooses which type to read.
 
 ```swift
 import AcFoundation
@@ -297,9 +259,9 @@ struct Label {
   }
 }
 
-extension Label: IOIntegerConversionReadable {
-  static func convert(from value: Int) -> Label {
-    Label(value)
+extension Label: IOConversion, IOReader.Numeric {
+  static func read() throws -> Label {
+    Label(try readTuple() as Int)
   }
 }
 

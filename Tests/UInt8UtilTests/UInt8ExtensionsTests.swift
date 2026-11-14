@@ -1,9 +1,39 @@
-import IOUtil
 import TestingUtil
 import UInt8Util
 import XCTest
 
 final class UInt8ExtensionsTests: XCTestCase {
+
+  func testIsASCII() {
+    // バイトを Unicode スカラーとして見たときの isASCII と一致する
+    for b in UInt8(0)...0xFF {
+      XCTAssertEqual(b.isASCII, Unicode.Scalar(b).isASCII, "\(b)")
+      XCTAssertEqual(b.isASCII, Character(Unicode.Scalar(b)).isASCII, "\(b)")
+    }
+  }
+
+  func testIsDigit() {
+    for b in UInt8(0)...0xFF {
+      XCTAssertEqual(b.isDigit, (0x30...0x39).contains(b), "\(b)")
+    }
+    XCTAssertTrue(UInt8(ascii: "0").isDigit)
+    XCTAssertTrue(UInt8(ascii: "9").isDigit)
+    XCTAssertFalse(UInt8(ascii: "/").isDigit)
+    XCTAssertFalse(UInt8(ascii: ":").isDigit)
+    XCTAssertFalse(UInt8(ascii: "a").isDigit)
+  }
+
+  func testIsAlphabet() {
+    for b in UInt8(0)...0xFF {
+      let expected = (0x41...0x5A).contains(b) || (0x61...0x7A).contains(b)
+      XCTAssertEqual(b.isAlphabet, expected, "\(b)")
+    }
+    XCTAssertTrue(UInt8(ascii: "a").isAlphabet)
+    XCTAssertTrue(UInt8(ascii: "Z").isAlphabet)
+    XCTAssertFalse(UInt8(ascii: "0").isAlphabet)
+    XCTAssertFalse(UInt8(ascii: "@").isAlphabet)
+    XCTAssertFalse(UInt8(ascii: "[").isAlphabet)
+  }
 
   func testLowercaseAndUppercaseProperties() {
     let lowerA = Character("a").asciiValue!
@@ -148,72 +178,6 @@ final class StringAsciiExtensionsTests: XCTestCase {
     let s = "AéB👍C"
     // 'A' = 0x41, 'B' = 0x42, 'C' = 0x43; 'é' and '👍' are non-ASCII
     XCTAssertEqual(s.asciiValues, [0x41, 0x42, 0x43])
-  }
-
-  func testputchars_unlocked() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        "ABC".asciiValues.putchars_unlocked()
-        "DE".asciiValues.putchars_unlocked(terminator: 0x20)
-        "F".asciiValues.putchars_unlocked()
-      })
-      .run(
-        input:
-          """
-          """),
-
-      """
-      ABC
-      DE F
-      """)
-  }
-
-  func test_readLine0() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [UInt8] = readLine()!
-        print(String(bytes: SS, encoding: .ascii)!)
-        print("DUMMY")
-      })
-      .run(
-        input:
-          """
-          aaaaaaaaaaaaabb
-          cc
-          """),
-
-      """
-      aaaaaaaaaaaaabb
-      DUMMY
-      """)
-  }
-
-  func test_readLine1() throws {
-    XCTAssertEqual(
-      try SolverRunner(solver: {
-        let SS: [UInt8] = readLine(strippingNewline: false)!
-        print(String(bytes: SS, encoding: .ascii)!)
-        print("DUMMY")
-      })
-      .run(
-        input:
-          """
-          aaaaaaaaaaaaabb
-          cc
-          """),
-
-      """
-      aaaaaaaaaaaaabb
-
-      DUMMY
-      """)
-  }
-
-  func test_readLineStripsCRLF() throws {
-    try SolverRunner(solver: {
-      let line: [UInt8] = readLine()!
-      XCTAssertEqual(line, Array("abc".utf8))
-    }).inputOnly("abc\r\nnext")
   }
 }
 

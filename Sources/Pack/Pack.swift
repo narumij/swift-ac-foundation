@@ -1,5 +1,5 @@
 import Foundation
-import IOReader
+//import IOReader
 
 /// 複数の値を、辞書のキーやHeapの要素にする際に用いる、ラッパーオブジェクトです
 ///
