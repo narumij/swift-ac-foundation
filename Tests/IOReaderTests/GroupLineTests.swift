@@ -25,6 +25,18 @@
       }
     }
 
+    @Test func tupleOnOneLineSucceeds() async {
+      await #expect(processExitsWith: .success) {
+        _ = try SolverRunner { let _: (Int, Character) = stdin() }.run(input: "1 a\n")
+      }
+    }
+
+    @Test func tupleAcrossLinesStops() async {
+      await #expect(processExitsWith: .failure) {
+        _ = try SolverRunner { let _: (Int, Character) = stdin() }.run(input: "1\na\n")
+      }
+    }
+
     @Test func packRowsSucceed() async {
       if #available(macOS 14.0, *) {
         await #expect(processExitsWith: .success) {

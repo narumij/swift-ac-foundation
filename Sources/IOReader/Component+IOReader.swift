@@ -53,6 +53,17 @@ func _readGroupElement<T: Component>(last: Bool) throws -> T {
   return valuePreservingSeparator(item)
 }
 
+@inlinable
+func _readGroupElements<each T: Component>() throws -> (repeat each T) {
+  var remaining = 0
+  for _ in repeat (each T).self { remaining += 1 }
+  func read<U: Component>(_: U.Type) throws -> U {
+    remaining -= 1
+    return try _readGroupElement(last: remaining == 0)
+  }
+  return (repeat try read((each T).self))
+}
+
 extension SIMD where Scalar: Component {
 
   @inlinable
@@ -84,36 +95,27 @@ extension Pack: Group where repeat each T: Component {
   }
 }
 
-extension Pack2: Group where T: Component, U: Component {
+extension Pack2: IOConversion, Group where T: Component, U: Component {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    let first: T = try _readGroupElement(last: false)
-    let second: U = try _readGroupElement(last: true)
-    return (.init(first, second), __getchar_unlocked())
+  public static func read() throws -> Self {
+    .init(rawValue: try readTuple())
   }
 }
 
-extension Pack3: Group where T: Component, U: Component, V: Component {
+extension Pack3: IOConversion, Group where T: Component, U: Component, V: Component {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    let first: T = try _readGroupElement(last: false)
-    let second: U = try _readGroupElement(last: false)
-    let third: V = try _readGroupElement(last: true)
-    return (.init(first, second, third), __getchar_unlocked())
+  public static func read() throws -> Self {
+    .init(rawValue: try readTuple())
   }
 }
 
-extension Pack4: Group where T: Component, U: Component, V: Component, W: Component {
+extension Pack4: IOConversion, Group where T: Component, U: Component, V: Component, W: Component {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    let first: T = try _readGroupElement(last: false)
-    let second: U = try _readGroupElement(last: false)
-    let third: V = try _readGroupElement(last: false)
-    let fourth: W = try _readGroupElement(last: true)
-    return (.init(first, second, third, fourth), __getchar_unlocked())
+  public static func read() throws -> Self {
+    .init(rawValue: try readTuple())
   }
 }
 
@@ -133,5 +135,5 @@ extension InlineArray: Group where Element: Component {
 @inlinable
 @inline(__always)
 public func stdin<each T: Component>() -> (repeat each T) {
-  (repeat valuePreservingSeparator(try! (each T)._readWithSeparator()))
+  try! _readGroupElements()
 }

@@ -109,7 +109,7 @@ let x = BigInt.stdin
 | `BigInt` | Reads from a decimal string |
 | `static_modint`, `dynamic_modint` | AtCoder modint types |
 
-Other types can be made readable by conforming to `IOIntegerConversionReadable` or `IOStringConversionReadable` and implementing `convert(from:)`.
+Other types can be made readable by conforming to `IOConversion` and implementing `read()`. See [IOReader Reference](Documents/IOReaderReference.md).
 
 ---
 

@@ -109,7 +109,7 @@ let x = BigInt.stdin
 | `BigInt` | 10 進文字列として読み取ります |
 | `static_modint`, `dynamic_modint` | AtCoder の modint 型です |
 
-ほかの型も、`IOIntegerConversionReadable` や `IOStringConversionReadable` に準拠して `convert(from:)` を実装すると読み取れるようになります。
+ほかの型も、`IOConversion` に準拠して `read()` を実装すると読み取れるようになります。詳しくは [IOReader リファレンス](Documents/IOReaderReference.ja.md) を参照してください。
 
 ---
 

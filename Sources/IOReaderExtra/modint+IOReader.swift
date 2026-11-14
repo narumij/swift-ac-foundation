@@ -1,11 +1,12 @@
 import AtCoder
+import IOReader
 
-extension static_modint: IOIntegerConversionReadable {
+extension static_modint: IOConversion, IOReader.Numeric {
   @inlinable
-  public static func convert(from: Int) -> Self { .init(from) }
+  public static func read() throws -> Self { .init(try readTuple() as Int) }
 }
 
-extension dynamic_modint: IOIntegerConversionReadable {
+extension dynamic_modint: IOConversion, IOReader.Numeric {
   @inlinable
-  public static func convert(from: Int) -> Self { .init(from) }
+  public static func read() throws -> Self { .init(try readTuple() as Int) }
 }

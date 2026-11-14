@@ -212,75 +212,41 @@ let a: Pack2<Int, String> = .stdin
 
 ## 発展: 独自型対応
 
-独自型を入力対応にしたい場合は、`SingleReadable` に準拠して読み方を実装します。
+独自型を入力対応にしたい場合は、`IOConversion` に準拠して `read()` を実装します。
 通常の利用では、上で挙げた具体型を使えば十分です。
 
 ここでの `read()` は直接呼ぶためではなく、`stdin` を使えるようにするための実装です。
-たとえば、鞄の番号や荷物の重さを、そのまま `Int` として扱わず別の型にできます。
+`read()` の中では、`readTuple()` で値を読み、独自型を作ります。
 
 ```swift
 import AcFoundation
 
-struct Bag {
-  let number: Int
+struct Edge {
+  let u: Int
+  let v: Int
+  let w: Int
 }
 
-extension Bag: SingleReadable {
-  static func read() throws -> Bag {
-    Bag(number: try Int.read())
+extension Edge: IOConversion, Group {
+  static func read() throws -> Edge {
+    let (u, v, w): (Int, Int, Int) = try readTuple()
+    return Edge(u: u, v: v, w: w)
   }
 }
 
-struct Luggage {
-  let weight: Int
-}
-
-extension Luggage: SingleReadable {
-  static func read() throws -> Luggage {
-    Luggage(weight: try Int.read())
-  }
-}
-
-let bag = Bag.stdin
-let luggage = Luggage.stdin
+let edge = Edge.stdin
+let edges = [Edge].stdin(rows: 3)
 ```
 
-複数の入力対応型を組み合わせる型も作れます。
-先ほどの `Bag` と `Luggage` の定義に続けて、次のように書けます。
+`readTuple()` は、すべての値を同じ行から読みます。読み終わる前に行が終わると停止します。
+`Group` にも準拠すると、`stdin` と、1 行に 1 つずつ読む `stdin(rows:)` が使えます。
 
-```swift
-struct BagAndLuggage {
-  let bag: Bag
-  let luggage: Luggage
-}
+`readTuple()` は値を 1 つだけ読むこともできます。
+1 token から読む型は、`Group` の代わりに `IOReader.Numeric` に準拠します。`stdin` と `stdin(columns:)` が使えます。
+`Swift.Numeric` と同じ名前なので、モジュール名を付けて `IOReader.Numeric` と書きます。
 
-extension BagAndLuggage: SingleReadable {
-  static func read() throws -> BagAndLuggage {
-    BagAndLuggage(
-      bag: try Bag.read(),
-      luggage: try Luggage.read()
-    )
-  }
-}
+複数の型から作れる型では、`as` でどの型として読むかを決めます。
 
-let pair = BagAndLuggage.stdin
-
-let bag = pair.bag
-let luggage = pair.luggage
-```
-
-`IOIntegerConversionReadable` などは、複数の型から作れる独自型に対して、どの入力型を経由して読むかを決めるための補助プロトコルです。
-initializer の候補が曖昧になる場合でも、`convert(from:)` の引数型で入力経路を明示できます。
-
-| プロトコル | 変換元 |
-|---|---|
-| `IOIntegerConversionReadable` | `Int` |
-| `IOUnsignedIntegerConversionReadable` | `UInt` |
-| `IODoubleConversionReadable` | `Double` |
-| `IOStringConversionReadable` | `String` |
-| `IOBytesConversionReadable` | `[UInt8]` |
-
-たとえば、数字と文字列の両方から作れる型では、入力を整数として読むことを明示できます。
 ```swift
 import AcFoundation
 
@@ -296,9 +262,9 @@ struct Label {
   }
 }
 
-extension Label: IOIntegerConversionReadable {
-  static func convert(from value: Int) -> Label {
-    Label(value)
+extension Label: IOConversion, IOReader.Numeric {
+  static func read() throws -> Label {
+    Label(try readTuple() as Int)
   }
 }
 
