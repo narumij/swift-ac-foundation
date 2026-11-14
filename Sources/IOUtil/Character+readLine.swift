@@ -1,5 +1,3 @@
-import IOUtil
-
 @inlinable
 public func readLine(strippingNewline: Bool = true) -> [Character]? {
   try? withUnsafeReadLineBytes { line in

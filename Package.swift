@@ -102,14 +102,12 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "CharacterUtil",
-      dependencies: ["IOUtil"],
       swiftSettings: _settings),
     .target(
       name: "StringUtil",
       swiftSettings: _settings),
     .target(
       name: "UInt8Util",
-      dependencies: ["IOUtil"],
       swiftSettings: _settings),
     .target(
       name: "TestingUtil",
