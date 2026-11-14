@@ -94,20 +94,20 @@ IOReader 機能のみを利用したい場合は、個別に `import IOReader` �
 
 ### IOReaderExtra
 
-IOReaderExtra は、外部ライブラリの型へ `stdin` 対応を追加します。
+IOReaderExtra は、`Pack` 型へ `stdin` 対応を追加します。
 利用する場合は個別 import が必要です。
 
 ```swift
-import BigInt
 import IOReaderExtra
 
-let x = BigInt.stdin
+let a: Pack2<Int, String> = .stdin
 ```
 
 | 型 | 補足 |
 |---|---|
-| `BigInt` | 10 進文字列として読み取ります |
-| `static_modint`, `dynamic_modint` | AtCoder の modint 型です |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | 中身の型が `stdin` 対応型 |
+
+`BigInt` と AtCoder の modint 型の `stdin` 対応は、AtCoderKit が提供します。
 
 ほかの型も、`IOConversion` に準拠して `read()` を実装すると読み取れるようになります。詳しくは [IOReader リファレンス](Documents/IOReaderReference.ja.md) を参照してください。
 

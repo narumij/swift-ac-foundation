@@ -24,13 +24,10 @@ let package = Package(
   //  platforms: [.macOS(.v14), .iOS(.v17), .tvOS(.v17), .watchOS(.v10), .macCatalyst(.v17)],
   products: [
     // Products define the executables and libraries a package produces, making them visible to other packages.
-    .library(name: "AcFoundation", targets: ["AcFoundation"])
+    .library(name: "AcFoundation", targets: ["AcFoundation"]),
+    .library(name: "TestingUtil", targets: ["TestingUtil"]),
   ],
   traits: [
-    .trait(
-      name: "TSAN_TEST",
-      description: "Use swift-ac-library's TSan compiler workarounds; its DSU and MCFGraph APIs are excluded only in this test configuration."
-    ),
     .trait(
       name: "BENCHMARK"
     ),
@@ -46,10 +43,6 @@ let package = Package(
     .package(
       url: "https://github.com/attaswift/BigInt",
       from: "5.7.0"),
-    .package(
-      url: "https://github.com/narumij/swift-ac-library",
-      branch: "main",
-      traits: [.defaults, .init(name: "TSAN_TEST", condition: .when(traits: ["TSAN_TEST"]))]),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -74,8 +67,6 @@ let package = Package(
       dependencies: [
         "IOReader",
         "Pack",
-        .product(name: "BigInt", package: "BigInt"),
-        .product(name: "AtCoder", package: "swift-ac-library"),
       ],
       swiftSettings: _settings),
     .target(

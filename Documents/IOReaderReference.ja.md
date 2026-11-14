@@ -195,9 +195,7 @@ let (s, x): (String, Double) = stdin()
 
 | 型 | 条件 |
 |---|---|
-| `BigInt` | `IOReaderExtra` と `BigInt` を利用する |
 | `Int128`, `UInt128` | macOS 15.0 以降 |
-| `static_modint`, `dynamic_modint` | AtCoder の modint |
 | `Pack`, `Pack2`, `Pack3`, `Pack4` | 中身の型が `stdin` 対応型 |
 | `InlineArray` | macOS 26.0 以降、要素型が `stdin` 対応型 |
 
@@ -206,9 +204,10 @@ let (s, x): (String, Double) = stdin()
 ```swift
 import IOReaderExtra
 
-let x = BigInt.stdin
 let a: Pack2<Int, String> = .stdin
 ```
+
+`BigInt` と AtCoder の modint 型の `stdin` 対応は、AtCoderKit が提供します。
 
 ## 発展: 独自型対応
 

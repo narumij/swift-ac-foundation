@@ -94,20 +94,20 @@ If you only want IOReader features, you can import `IOReader` directly.
 
 ### IOReaderExtra
 
-IOReaderExtra adds `stdin` support for types from external libraries.
+IOReaderExtra adds `stdin` support for `Pack` types.
 It requires an individual import.
 
 ```swift
-import BigInt
 import IOReaderExtra
 
-let x = BigInt.stdin
+let a: Pack2<Int, String> = .stdin
 ```
 
 | Type | Notes |
 |---|---|
-| `BigInt` | Reads from a decimal string |
-| `static_modint`, `dynamic_modint` | AtCoder modint types |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | The contained types support `stdin` |
+
+`stdin` support for `BigInt` and AtCoder modint types is provided by AtCoderKit.
 
 Other types can be made readable by conforming to `IOConversion` and implementing `read()`. See [IOReader Reference](Documents/IOReaderReference.md).
 
