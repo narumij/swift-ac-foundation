@@ -1,4 +1,3 @@
-import Algorithms
 @preconcurrency import Foundation
 
 @usableFromInline
@@ -108,7 +107,7 @@ public struct SolverRunner {
       }
     }
 
-    return String(completeOutput.trimmingSuffix { $0.isNewline })
+    return String(completeOutput.dropLast(completeOutput.reversed().prefix { $0.isNewline }.count))
   }
 
   /// 指定した文字列を標準入力として solver を実行する。

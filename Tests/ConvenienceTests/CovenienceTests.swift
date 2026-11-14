@@ -1,4 +1,3 @@
-import Algorithms
 import Convenience
 import TestingUtil
 import XCTest
@@ -6,7 +5,7 @@ import XCTest
 final class CovenienceTests: XCTestCase {
 
   func testPrefixSum() throws {
-    XCTAssertEqual(prefixSum((1...5) + []), (1...5).reductions(0, +))
+    XCTAssertEqual(prefixSum((1...5) + []), [0, 1, 3, 6, 10, 15])
   }
 
   func testPrefixSum2D() throws {

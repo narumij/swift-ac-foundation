@@ -36,11 +36,6 @@ let package = Package(
       description: "Compile and run Swift Testing exit tests on platforms where they are not enabled by default."
     ),
   ],
-  dependencies: [
-    .package(
-      url: "https://github.com/apple/swift-algorithms",
-      from: "1.2.1"),
-  ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
     // Targets can depend on other targets in this package and products from dependencies.
@@ -130,7 +125,6 @@ let package = Package(
       name: "TestingUtil",
       dependencies: [
         "_FastIO",
-        .product(name: "Algorithms", package: "swift-algorithms")
       ],
       swiftSettings: _settings),
     .target(
@@ -269,7 +263,6 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "Convenience",
-        .product(name: "Algorithms", package: "swift-algorithms")
       ],
       swiftSettings: _settings
     ),
