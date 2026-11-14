@@ -7,7 +7,7 @@
 
 import XCTest
 import TestingUtil
-import CharacterUtil
+import IOUtil
 
 final class CharacterReadLineTests: XCTestCase {
   
