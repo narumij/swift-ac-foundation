@@ -1,19 +1,18 @@
 import IOReader
 import Pack
-import IOBase
 
 @available(macOS 14.0.0, *)
-extension Pack: Group where repeat each T: Component {
+extension Pack: IOConversion, Group where repeat each T: Component {
   
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+  public static func read() throws -> Self {
     var remaining = 0
     for _ in repeat (each T).self { remaining += 1 }
     func read<U: Component>(_: U.Type) throws -> U {
       remaining -= 1
       return try _readGroupElement(last: remaining == 0)
     }
-    return (.init(repeat try read((each T).self)), __getchar_unlocked())
+    return .init(repeat try read((each T).self))
   }
 }
 
