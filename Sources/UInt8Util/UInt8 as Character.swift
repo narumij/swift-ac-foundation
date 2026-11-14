@@ -1,5 +1,20 @@
 extension UInt8 {
-  
+
+  @inlinable
+  public var isASCII: Bool {
+    self < 0x80
+  }
+
+  @inlinable
+  public var isAlphabet: Bool {
+    isLowercase || isUppercase
+  }
+
+  @inlinable
+  public var isDigit: Bool {
+    (0x30...0x39).contains(self)
+  }
+
   /// ASCII の小文字 a–z かどうか
   @inlinable
   @inline(__always)
