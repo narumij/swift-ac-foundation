@@ -67,13 +67,14 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "IOReader",
-      dependencies: ["IOBase","IOUtil", "Pack"],
+      dependencies: ["IOBase","IOUtil"],
       exclude: ["MEMO.md"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderExtra",
       dependencies: [
         "IOReader",
+        "Pack",
         .product(name: "BigInt", package: "BigInt"),
         .product(name: "AtCoder", package: "swift-ac-library"),
       ],
@@ -182,6 +183,7 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "IOReader",
+        "IOReaderExtra",
         "IOBase",
         "Pack",
       ],

@@ -1,4 +1,5 @@
 import IOReader
+import IOReaderExtra
 import Pack
 import TestingUtil
 import XCTest

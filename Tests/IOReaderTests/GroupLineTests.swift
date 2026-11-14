@@ -1,5 +1,6 @@
 #if DEATH_TEST
   import IOReader
+  import IOReaderExtra
   import Pack
   import TestingUtil
   import Testing

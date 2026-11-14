@@ -1,5 +1,6 @@
 import IOBase
 import IOReader
+import IOReaderExtra
 import Pack
 import TestingUtil
 import XCTest
@@ -44,13 +45,6 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
       XCTAssertEqual(a, 1)
       XCTAssertEqual(b, "x")
     }
-    try assertSwitch("1 2 rest\n", rest: " rest") { XCTAssertEqual(SIMD2<Int>.stdin, SIMD2(1, 2)) }
-    if #available(macOS 26.0, *) {
-      try assertSwitch("1 2 rest\n", rest: " rest") {
-        let a: InlineArray<2, Int> = .stdin
-        XCTAssertEqual([a[0], a[1]], [1, 2])
-      }
-    }
     if #available(macOS 14.0, *) {
       try assertSwitch("1 x rest\n", rest: " rest") {
         let p: Pack<Int, Character> = .stdin
@@ -75,6 +69,13 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
     }
     try assertSwitch("1 2\nnext\n", rest: "next") {
       XCTAssertEqual([SIMD2<Int>].stdin(rows: 1), [SIMD2(1, 2)])
+    }
+    try assertSwitch("1 2\nnext\n", rest: "next") { XCTAssertEqual(SIMD2<Int>.stdin, SIMD2(1, 2)) }
+    if #available(macOS 26.0, *) {
+      try assertSwitch("1 2\nnext\n", rest: "next") {
+        let a: InlineArray<2, Int> = .stdin
+        XCTAssertEqual([a[0], a[1]], [1, 2])
+      }
     }
     try assertSwitch("a b\nc\nnext\n", rest: "next") {
       XCTAssertEqual([String].stdin(rows: 2), ["a b", "c"])
