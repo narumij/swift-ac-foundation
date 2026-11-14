@@ -131,6 +131,7 @@ let package = Package(
       name: "AcFoundation",
       dependencies: [
         "IOReader",
+        "IOReaderExtra",
         "IOBase",
         "IOWriter",
         "IOUtil",
