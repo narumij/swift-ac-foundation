@@ -198,7 +198,7 @@ let (s, x): (String, Double) = stdin()
 | `BigInt` | `IOReaderExtra` と `BigInt` を利用する |
 | `Int128`, `UInt128` | macOS 15.0 以降 |
 | `static_modint`, `dynamic_modint` | AtCoder の modint |
-| `Pack`, `Pack2`, `Pack3` | 中身の型が `stdin` 対応型 |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | 中身の型が `stdin` 対応型 |
 | `InlineArray` | macOS 26.0 以降、要素型が `stdin` 対応型 |
 
 例:

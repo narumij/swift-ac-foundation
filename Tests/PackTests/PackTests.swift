@@ -135,6 +135,41 @@ final class PackTests: XCTestCase {
     XCTAssertEqual(a.map(\.2), b.map(\.rawValue.2))
   }
 
+  func testExample4() throws {
+    let p: Pack4<Int, String, UInt, Double> = .init(1, "2", 3, 4.5)
+    XCTAssertEqual(p.first, 1)
+    XCTAssertEqual(p.second, "2")
+    XCTAssertEqual(p.third, 3)
+    XCTAssertEqual(p.fourth, 4.5)
+    let b: [Pack4<Int, String, UInt, Int>: Int] = [.init(1, "1", 3, 4): 1]
+    XCTAssertEqual(b[.init(1, "1", 3, 4)], 1)
+    XCTAssertNil(b[.init(1, "1", 3, 5)])
+  }
+
+  func testPack4MutableAccessors() throws {
+    var p = Pack4(1, "one", UInt(1), 1.0)
+
+    p.first = 2
+    p.second = "two"
+    p.third = 3
+    p.fourth = 4.0
+
+    XCTAssertEqual(p.rawValue.0, 2)
+    XCTAssertEqual(p.rawValue.1, "two")
+    XCTAssertEqual(p.rawValue.2, 3)
+    XCTAssertEqual(p.rawValue.3, 4.0)
+  }
+
+  func testCompare4() throws {
+    let tuples = [(1, 1, 3, 2), (1, 2, 3, 1), (2, 1, 3, 4), (1, 1, 3, 1), (3, 1, 3, 3), (2, 1, 3, 3), (2, 3, 3, 0)]
+    let a = tuples.sorted(by: <)
+    let b = tuples.map(Pack4.init).sorted(by: <)
+    XCTAssertEqual(a.map(\.0), b.map(\.rawValue.0))
+    XCTAssertEqual(a.map(\.1), b.map(\.rawValue.1))
+    XCTAssertEqual(a.map(\.2), b.map(\.rawValue.2))
+    XCTAssertEqual(a.map(\.3), b.map(\.rawValue.3))
+  }
+
   func testPerformanceExample() throws {
     // This is an example of a performance test case.
     self.measure {

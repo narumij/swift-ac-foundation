@@ -320,7 +320,7 @@ print(ans)
 
 `Pack` also supports `Comparable`, so it can be used in priority queues, Dijkstra's algorithm, and other situations that require ordered comparisons.
 
-If compilation becomes problematic in your environment, use `Pack2` or `Pack3` instead.
+If compilation becomes problematic in your environment, use `Pack2`, `Pack3`, or `Pack4` instead.
 
 #### Partial Import
 

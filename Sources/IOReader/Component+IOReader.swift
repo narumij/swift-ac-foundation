@@ -82,6 +82,51 @@ extension Pack: Group where repeat each T: Component {
   }
 }
 
+extension Pack2: Group where T: Component, U: Component {
+
+  @inlinable
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    let t = try T._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(t.separator), "the line ended before the group was complete: read \(t.value), next \(describeByte(t.separator))")
+    let first = valuePreservingSeparator(t)
+    let second = valuePreservingSeparator(try U._readWithSeparator())
+    return (.init(first, second), __getchar_unlocked())
+  }
+}
+
+extension Pack3: Group where T: Component, U: Component, V: Component {
+
+  @inlinable
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    let t = try T._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(t.separator), "the line ended before the group was complete: read \(t.value), next \(describeByte(t.separator))")
+    let first = valuePreservingSeparator(t)
+    let u = try U._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(u.separator), "the line ended before the group was complete: read \(u.value), next \(describeByte(u.separator))")
+    let second = valuePreservingSeparator(u)
+    let third = valuePreservingSeparator(try V._readWithSeparator())
+    return (.init(first, second, third), __getchar_unlocked())
+  }
+}
+
+extension Pack4: Group where T: Component, U: Component, V: Component, W: Component {
+
+  @inlinable
+  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+    let t = try T._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(t.separator), "the line ended before the group was complete: read \(t.value), next \(describeByte(t.separator))")
+    let first = valuePreservingSeparator(t)
+    let u = try U._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(u.separator), "the line ended before the group was complete: read \(u.value), next \(describeByte(u.separator))")
+    let second = valuePreservingSeparator(u)
+    let v = try V._readWithSeparator()
+    precondition(!isNilOrAsciiNewLine(v.separator), "the line ended before the group was complete: read \(v.value), next \(describeByte(v.separator))")
+    let third = valuePreservingSeparator(v)
+    let fourth = valuePreservingSeparator(try W._readWithSeparator())
+    return (.init(first, second, third, fourth), __getchar_unlocked())
+  }
+}
+
 @available(macOS 26.0, *)
 extension InlineArray: Group where Element: Component {
 

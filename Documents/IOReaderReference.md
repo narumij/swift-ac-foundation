@@ -198,7 +198,7 @@ Importing `IOReaderExtra` enables `stdin` for the following types.
 | `BigInt` | Use `IOReaderExtra` and `BigInt` |
 | `Int128`, `UInt128` | macOS 15.0 or later |
 | `static_modint`, `dynamic_modint` | AtCoder modint |
-| `Pack`, `Pack2`, `Pack3` | The contained types support `stdin` |
+| `Pack`, `Pack2`, `Pack3`, `Pack4` | The contained types support `stdin` |
 | `InlineArray` | macOS 26.0 or later, and the element type supports `stdin` |
 
 Example:

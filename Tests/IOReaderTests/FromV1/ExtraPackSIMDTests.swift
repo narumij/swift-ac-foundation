@@ -25,6 +25,38 @@ final class ExtraPackSIMDTests: IOReaderTestCase {
     }
   }
 
+  func testPack2() throws {
+    try SolverRunner(solver: {
+      let value: Pack2<Int, String> = .stdin
+      XCTAssertEqual(value, Pack2(1, "ab"))
+    })
+    .inputOnly("1 ab")
+  }
+
+  func testPack3() throws {
+    try SolverRunner(solver: {
+      let value: Pack3<Int, Double, String> = .stdin
+      XCTAssertEqual(value, Pack3(1, 2.5, "c"))
+    })
+    .inputOnly("1 2.5 c")
+  }
+
+  func testPack4() throws {
+    try SolverRunner(solver: {
+      let value: Pack4<Int, Int, Int, Int> = .stdin
+      XCTAssertEqual(value, Pack4(1, 2, 3, 4))
+    })
+    .inputOnly("1 2 3 4")
+  }
+
+  func testPack2Array() throws {
+    try SolverRunner(solver: {
+      let values: [Pack2<Int, Int>] = .stdin(rows: 2)
+      XCTAssertEqual(values, [Pack2(1, 2), Pack2(3, 4)])
+    })
+    .inputOnly("1 2\n3 4")
+  }
+
   func testSIMD2() throws {
     try SolverRunner(solver: {
       let value: SIMD2<Int> = .stdin
