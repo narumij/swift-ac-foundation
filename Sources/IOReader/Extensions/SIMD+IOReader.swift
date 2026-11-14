@@ -1,14 +1,15 @@
 extension SIMD where Scalar: Component {
 
   @inlinable
-  public static var columns: Int { Self().scalarCount }
-
-  @inlinable
-  public static func read(_ elements: ColumnsIterator<Scalar>) -> Self {
-    .init(elements)
+  public static func read() throws -> Self {
+    var value = Self()
+    for i in value.indices {
+      value[i] = try _readGroupElement(last: i == value.indices.last)
+    }
+    return value
   }
 }
 
-extension SIMD2: IOFixedArrayConversion, Group where Scalar: Component {}
-extension SIMD3: IOFixedArrayConversion, Group where Scalar: Component {}
-extension SIMD4: IOFixedArrayConversion, Group where Scalar: Component {}
+extension SIMD2: IOConversion, Component, Numeric where Scalar: Component {}
+extension SIMD3: IOConversion, Component, Numeric where Scalar: Component {}
+extension SIMD4: IOConversion, Component, Numeric where Scalar: Component {}

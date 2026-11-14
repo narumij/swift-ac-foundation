@@ -31,6 +31,7 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
     try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(Int.stdin, 12) }
     try assertSwitch("12 rest\n", rest: " rest") { XCTAssertEqual(UInt.stdin, 12) }
     try assertSwitch("1.5 rest\n", rest: " rest") { XCTAssertEqual(Double.stdin, 1.5) }
+    try assertSwitch("1 2 rest\n", rest: " rest") { XCTAssertEqual(SIMD2<Int>.stdin, SIMD2(1, 2)) }
     try assertSwitch("ab rest\n", rest: " rest") { XCTAssertEqual(String.stdin, "ab") }
     try assertSwitch("ab rest\n", rest: " rest") { XCTAssertEqual([Character].stdin, ["a", "b"]) }
     try assertSwitch("ab rest\n", rest: " rest") { XCTAssertEqual([UInt8].stdin, Array("ab".utf8)) }
@@ -44,6 +45,11 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
       let (a, b): (Int, Character) = stdin()
       XCTAssertEqual(a, 1)
       XCTAssertEqual(b, "x")
+    }
+    try assertSwitch("1 2 3 rest\n", rest: " rest") {
+      let (a, b): (Int, SIMD2<Int>) = stdin()
+      XCTAssertEqual(a, 1)
+      XCTAssertEqual(b, SIMD2(2, 3))
     }
     if #available(macOS 14.0, *) {
       try assertSwitch("1 x rest\n", rest: " rest") {
@@ -70,7 +76,6 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
     try assertSwitch("1 2\nnext\n", rest: "next") {
       XCTAssertEqual([SIMD2<Int>].stdin(rows: 1), [SIMD2(1, 2)])
     }
-    try assertSwitch("1 2\nnext\n", rest: "next") { XCTAssertEqual(SIMD2<Int>.stdin, SIMD2(1, 2)) }
     if #available(macOS 26.0, *) {
       try assertSwitch("1 2\nnext\n", rest: "next") {
         let a: InlineArray<2, Int> = .stdin
