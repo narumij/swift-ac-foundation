@@ -112,16 +112,6 @@ let package = Package(
       dependencies: ["IOUtil"],
       swiftSettings: _settings),
     .target(
-      name: "Miscellaneous",
-      dependencies: ["IOReader"],
-      swiftSettings: _settings),
-    .target(
-      name: "Convenience",
-      dependencies: [
-        "Pack",
-      ],
-      swiftSettings: _settings),
-    .target(
       name: "TestingUtil",
       dependencies: [
         "_FastIO",
@@ -141,8 +131,6 @@ let package = Package(
         "StringUtil",
         "CharacterUtil",
         "UInt8Util",
-        "Miscellaneous",
-        "Convenience",
         "MT19937",
         "TestingUtil",
       ],
@@ -247,23 +235,6 @@ let package = Package(
       dependencies: [
         "TestingUtil",
         "MT19937",
-      ],
-      swiftSettings: _settings
-    ),
-    .testTarget(
-      name: "MiscellaneousTests",
-      dependencies: [
-        "TestingUtil",
-        "Miscellaneous",
-        "Pack"
-      ],
-      swiftSettings: _settings
-    ),
-    .testTarget(
-      name: "ConvenienceTests",
-      dependencies: [
-        "TestingUtil",
-        "Convenience",
       ],
       swiftSettings: _settings
     ),
