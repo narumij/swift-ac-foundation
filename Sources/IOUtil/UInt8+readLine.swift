@@ -1,3 +1,5 @@
+import IOBase
+
 @inlinable
 public func readLine(strippingNewline: Bool = true) -> [UInt8]? {
   try? withUnsafeReadLineBytes { line in

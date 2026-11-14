@@ -1,11 +1,5 @@
 import _FastIO
 
-public
-  enum IOUtilError: Swift.Error
-{
-  case unexpectedEmpty
-}
-
 /// 入力ライブラリを自作するときに、行単位の読み取りで詰まった場合の補助関数です。
 /// `body` に渡されるバイト列は、この関数の呼び出し中だけ有効です。
 @inlinable
@@ -21,7 +15,7 @@ public func withUnsafeReadLineBytes<T>(
     _free(utf8Start)
   }
   guard utf8Count > 0, let utf8Start else {
-    throw IOUtilError.unexpectedEmpty
+    throw IOReaderError.unexpectedEOF
   }
 
   let LF: UInt8 = 10

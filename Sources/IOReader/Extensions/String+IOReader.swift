@@ -1,5 +1,4 @@
 import IOBase
-import IOUtil
 
 // MARK: - 単語系統
 

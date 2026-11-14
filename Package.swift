@@ -52,7 +52,7 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "IOReader",
-      dependencies: ["IOBase","IOUtil"],
+      dependencies: ["IOBase"],
       swiftSettings: _settings),
     .target(
       name: "IOReaderExtra",
@@ -67,7 +67,7 @@ let package = Package(
       swiftSettings: _settings),
     .target(
       name: "IOUtil",
-      dependencies: ["_FastIO"],
+      dependencies: ["_FastIO", "IOBase"],
       swiftSettings: _settings),
     .target(
       name: "Bisect",
@@ -181,6 +181,7 @@ let package = Package(
       name: "IOUtilTests",
       dependencies: [
         "TestingUtil",
+        "IOBase",
         "IOUtil",
         "IOReader",
         "IOWriter",
