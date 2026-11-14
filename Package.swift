@@ -40,9 +40,6 @@ let package = Package(
     .package(
       url: "https://github.com/apple/swift-algorithms",
       from: "1.2.1"),
-    .package(
-      url: "https://github.com/attaswift/BigInt",
-      from: "5.7.0"),
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -127,7 +124,6 @@ let package = Package(
       name: "Convenience",
       dependencies: [
         "Pack",
-        .product(name: "BigInt", package: "BigInt"),
       ],
       swiftSettings: _settings),
     .target(
