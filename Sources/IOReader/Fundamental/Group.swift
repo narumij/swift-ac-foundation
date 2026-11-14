@@ -1,5 +1,10 @@
 import IOBase
 
+// グループのコンポーネント。それ以上の意味がまだない
+public protocol Component {
+  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
+}
+
 public protocol Group {
   static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
 }
