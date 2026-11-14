@@ -592,14 +592,14 @@ import CxxWrapped
 
 ---
 
-### MT19937
+### CxxMT19937
 
 This is a Mersenne Twister pseudorandom number generator.
 Use it when you need reproducible random numbers, such as in AHC.
 It requires an individual import.
 
 ```swift
-import MT19937
+import CxxMT19937
 
 var mt = mt19937_64(seed: 0)
 let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)

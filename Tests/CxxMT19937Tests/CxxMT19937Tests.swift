@@ -1,14 +1,14 @@
 //
-//  MT19937Tests.swift
+//  CxxMT19937Tests.swift
 //  swift-ac-foundation
 //
 //  Created by narumij on 2025/08/09.
 //
 
-import MT19937
+import CxxMT19937
 import XCTest
 
-final class MT19937Tests: XCTestCase {
+final class CxxMT19937Tests: XCTestCase {
 
   override func setUpWithError() throws {
     // Put setup code here. This method is called before the invocation of each test method in the class.

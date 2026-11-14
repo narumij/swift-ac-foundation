@@ -592,14 +592,14 @@ import CxxWrapped
 
 ---
 
-### MT19937
+### CxxMT19937
 
 メルセンヌツイスターです。疑似乱数です。
 AHC等で、再現性のある乱数が使いたい場合にご利用ください。
 利用する場合は個別 import が必要です。
 
 ```swift
-import MT19937
+import CxxMT19937
 
 var mt = mt19937_64(seed: 0)
 let randomInteger = Int.random(in: Int.min...Int.max, using: &mt)

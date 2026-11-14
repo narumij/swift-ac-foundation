@@ -93,7 +93,7 @@ let package = Package(
         .unsafeFlags(["-std=c++17"]),
       ]),
     .target(
-      name: "MT19937",
+      name: "CxxMT19937",
       dependencies: ["_MT19937"],
       swiftSettings: _settings),
     .target(
@@ -129,7 +129,7 @@ let package = Package(
         "StringUtil",
         "CharacterUtil",
         "UInt8Util",
-        "MT19937",
+        "CxxMT19937",
         "TestingUtil",
       ],
       swiftSettings: _settings
@@ -229,10 +229,10 @@ let package = Package(
       swiftSettings: _settings
     ),
     .testTarget(
-      name: "MT19937Tests",
+      name: "CxxMT19937Tests",
       dependencies: [
         "TestingUtil",
-        "MT19937",
+        "CxxMT19937",
       ],
       swiftSettings: _settings
     ),
