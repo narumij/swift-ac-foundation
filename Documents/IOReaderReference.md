@@ -207,8 +207,6 @@ import IOReaderExtra
 let a: Pack2<Int, String> = .stdin
 ```
 
-`stdin` support for `BigInt` and AtCoder modint types is provided by AtCoderKit.
-
 ## Advanced: Supporting Custom Types
 
 To make your own type readable from input, conform it to `IOConversion` and implement `read()`.

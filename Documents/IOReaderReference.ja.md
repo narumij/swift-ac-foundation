@@ -207,8 +207,6 @@ import IOReaderExtra
 let a: Pack2<Int, String> = .stdin
 ```
 
-`BigInt` と AtCoder の modint 型の `stdin` 対応は、AtCoderKit が提供します。
-
 ## 発展: 独自型対応
 
 独自型を入力対応にしたい場合は、`IOConversion` に準拠して `read()` を実装します。

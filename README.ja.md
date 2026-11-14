@@ -107,8 +107,6 @@ let a: Pack2<Int, String> = .stdin
 |---|---|
 | `Pack`, `Pack2`, `Pack3`, `Pack4` | 中身の型が `stdin` 対応型 |
 
-`BigInt` と AtCoder の modint 型の `stdin` 対応は、AtCoderKit が提供します。
-
 ほかの型も、`IOConversion` に準拠して `read()` を実装すると読み取れるようになります。詳しくは [IOReader リファレンス](Documents/IOReaderReference.ja.md) を参照してください。
 
 ---

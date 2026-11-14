@@ -107,8 +107,6 @@ let a: Pack2<Int, String> = .stdin
 |---|---|
 | `Pack`, `Pack2`, `Pack3`, `Pack4` | The contained types support `stdin` |
 
-`stdin` support for `BigInt` and AtCoder modint types is provided by AtCoderKit.
-
 Other types can be made readable by conforming to `IOConversion` and implementing `read()`. See [IOReader Reference](Documents/IOReaderReference.md).
 
 ---
