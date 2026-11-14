@@ -95,7 +95,7 @@ If you only want IOReader features, you can import `IOReader` directly.
 ### IOReaderExtra
 
 IOReaderExtra adds `stdin` support for `Pack` types.
-It requires an individual import.
+It is also available through `AcFoundation`, but you can import it individually when you only need these features.
 
 ```swift
 import IOReaderExtra
