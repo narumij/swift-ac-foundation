@@ -251,23 +251,18 @@ final class CinCompatibleDecimalIntegerTests: CinCompatibleV2TestCase {
 
   #endif
 
-  #if false
-  private func readValue<T: SingleReadable>(_ type: T.Type) throws -> T {
-    try T.read()
-  }
-
   func testUnsignedSignsAndOutOfRange() throws {
     for (text, expected) in [("+12", UInt(12)), ("-0", 0), ("-1", UInt.max),
       ("-" + String(UInt.max), 1)] {
       try withExactInput(text + "x") {
-        XCTAssertEqual(try self.readValue(UInt.self), expected)
+        XCTAssertEqual(try UInt.read(), expected)
         XCTAssertEqual(getchar_unlocked(), 120)
       }
     }
     #if false // Preserve the former throwing specification for later review.
     for prefix in ["", "+", "-"] {
       try withExactInput(prefix + String(UInt.max) + "0x") {
-        XCTAssertThrowsError(try self.readValue(UInt.self)) {
+        XCTAssertThrowsError(try UInt.read()) {
           XCTAssertEqual($0 as? IOReaderError, .integerOutOfRange)
         }
         XCTAssertEqual(getchar_unlocked(), 120)
@@ -276,7 +271,6 @@ final class CinCompatibleDecimalIntegerTests: CinCompatibleV2TestCase {
     }
     #endif
   }
-  #endif
 
   func testReadContinuesAfterHandlingInvalidInteger() throws {
     try withExactInput("+x12") {
