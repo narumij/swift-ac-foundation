@@ -27,7 +27,7 @@ package func __getchar_unlocked<I:FixedWidthInteger>() -> I? {
 }
 
 @inlinable
-func __ungetc<I:FixedWidthInteger>(_ c: I?) -> Int32 {
+package func __ungetc<I:FixedWidthInteger>(_ c: I?) -> Int32 {
   if let c {
     return _ungetc(Int32(c))
   }

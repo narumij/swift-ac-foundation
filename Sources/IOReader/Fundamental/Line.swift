@@ -1,5 +1,3 @@
-import IOBase
-
 public protocol LineCharacter {
   static func readLine() -> [Self]
   static func readLine(columns: Int) -> [Self]

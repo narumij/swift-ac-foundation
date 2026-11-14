@@ -1,5 +1,3 @@
-import IOBase
-
 extension SIMD where Scalar: Component {
 
   @inlinable

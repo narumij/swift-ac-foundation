@@ -1,5 +1,3 @@
-import IOBase
-
 public protocol IOFixedArrayConversion {
   associatedtype Element: Component
   static var columns: Int { get }

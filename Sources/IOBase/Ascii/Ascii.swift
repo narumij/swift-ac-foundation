@@ -45,6 +45,6 @@ func isNumber<T: FixedWidthInteger>(_ c: T) -> Bool {
 
 @inlinable
 @inline(__always)
-func isASCIIWhitespace<T: FixedWidthInteger>(_ c: T) -> Bool {
+package func isASCIIWhitespace<T: FixedWidthInteger>(_ c: T) -> Bool {
   (1 << c) & spaces != 0
 }

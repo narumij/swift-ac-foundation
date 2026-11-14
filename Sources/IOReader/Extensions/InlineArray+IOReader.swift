@@ -1,5 +1,3 @@
-import IOBase
-
 @available(macOS 26.0, *)
 extension InlineArray: IOFixedArrayConversion, Group where Element: Component {
 
