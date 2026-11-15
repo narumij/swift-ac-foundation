@@ -14,7 +14,7 @@ private struct Plain: PrintableElement {
   var printableDescription: String { "<\(v)>" }
 }
 
-final class CustomStringConvertiblePrintTests: XCTestCase {
+final class PrintableElementPrintTests: XCTestCase {
 
   func testInt() throws {
     XCTAssertEqual(try SolverRunner(solver: { [1, 2, 3].print() }).outputOnly(), "1 2 3")
