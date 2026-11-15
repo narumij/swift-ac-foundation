@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `IOReaderExtra`ターゲットを追加し、`Pack`/`Pack2`/`Pack3`/`Pack4`のIOReader対応を追加
 - `Pack4`を追加
 - `IOWriter`ターゲットを追加し、`Sequence`/`InlineArray`向けの`print`と`putchar_unlocked`（`Character`）を追加
+- `IOWriter`に`PrintableElement`を追加し、準拠した型の`Sequence`でも`print`を使えるように変更（`CustomStringConvertible`な型は`printableDescription`の実装を省略可能）
 - `IOUtil`に`Sequence`/`Collection`/`InlineArray`向けの`fastPrint`補助を追加
 - `TestingUtil`ターゲットとライブラリプロダクトを追加し、テスト用ヘルパーをライブラリ側へ移動
 - `TestingUtilTests`ターゲットを追加し、`SolverRunner`、`StdoutSilencer`、標準入力リダイレクトのテストを追加
