@@ -123,3 +123,39 @@ public func putchar_unlocked(_ c: Character) {
     putchar_unlocked(Int32(bitPattern: b.value))
   }
 }
+
+public protocol PrintableElement {
+  var printableDescription: String { get }
+}
+
+extension PrintableElement where Self: CustomStringConvertible {
+  @inlinable
+  public var printableDescription: String { description }
+}
+
+extension Sequence where Element: PrintableElement {
+
+  @inlinable
+  public func print(separator: String = " ", terminator: String = "\n") {
+    var first = true
+    forEach { element in
+      if first {
+        first = false
+      } else {
+        Swift.print(separator, terminator: "")
+      }
+      Swift.print(element.printableDescription, terminator: "")
+    }
+    Swift.print("", terminator: terminator)
+  }
+}
+
+extension Sequence where Element: Sequence, Element.Element: PrintableElement {
+
+  @inlinable
+  public func print(separator: String = " ", terminator: String = "\n") {
+    forEach {
+      $0.print(separator: separator, terminator: terminator)
+    }
+  }
+}

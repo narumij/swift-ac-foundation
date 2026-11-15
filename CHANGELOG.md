@@ -7,34 +7,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+`Misc (#35)`と`Develop/misc/0 (#41)`をsquashマージした内容です。0.1.34からの差分としてまとめています。
+
 ### Added
 
+- `IOBase`ターゲットを追加し、cin互換の低レベル入力部品をIOReaderから分離
+- `InputConfiguration`を追加し、整数入力モード（`auto`/`auto2`/`binary`/`octal`/`decimal`/`hexadecimal`）と浮動小数点入力モード（`specific`/`libcxx`/`gccLike`）を実行時に選択可能に変更
 - `IOConfig.BufferPolicy`を追加し、IOReaderの可変長バッファ容量を制御可能に変更
-- `IOReaderExtra`ターゲットを追加し、`BigInt`、AtCoderの`static_modint`/`dynamic_modint`、`Pack`/`Pack2`/`Pack3`、`SIMD`、`InlineArray`のIOReader対応を追加
+- IOReaderに`Component`/`Group`/`IOConversion`を追加し、`IOConversion`に準拠して`read()`を実装した型を読み取れるように変更
+- IOReaderに`lineIterator`/`wordIterator`と`readTuple()`を追加
 - `Int128`と`UInt128`のIOReader対応を追加（macOS 15.0以降）
-- `Collection.readLine()`系に`stdin()`ショートカットを追加
-- `IOUtil`に`Sequence`/`Collection`/`InlineArray`向けの`print`/`fastPrint`補助を追加
-- `TestingUtil`ターゲットを追加し、テスト用ヘルパーをライブラリ側へ移動
+- `SIMD2`/`SIMD3`/`SIMD4`と`InlineArray`のIOReader対応を追加（1行に並んだ値として読み取り。`SIMD`はタプルの要素にも使用可能）
+- `IOReaderExtra`ターゲットを追加し、`Pack`/`Pack2`/`Pack3`/`Pack4`のIOReader対応を追加
+- `Pack4`を追加
+- `IOWriter`ターゲットを追加し、`Sequence`/`InlineArray`向けの`print`と`putchar_unlocked`（`Character`）を追加
+- `IOWriter`に`PrintableElement`を追加し、準拠した型の`Sequence`でも`print`を使えるように変更（`CustomStringConvertible`な型は`printableDescription`の実装を省略可能）
+- `IOUtil`に`Sequence`/`Collection`/`InlineArray`向けの`fastPrint`補助を追加
+- `TestingUtil`ターゲットとライブラリプロダクトを追加し、テスト用ヘルパーをライブラリ側へ移動
 - `TestingUtilTests`ターゲットを追加し、`SolverRunner`、`StdoutSilencer`、標準入力リダイレクトのテストを追加
-- `Array.resize(_:_:)`、`Array.resized`、`BigInt`向けの`**`を追加
-- `TakahashiAokiDraw`、`correct`/`incorrect`、`Success`/`Failure`などの出力補助を追加
+- `BENCHMARK`と`ENABLE_DEATH_TESTS`のパッケージtraitを追加
+- `UInt8`に`isASCII`、`isAlphabet`、`isDigit`を追加
+- `UInt8`のシーケンス向けに`joined()`を追加
+- `StringProtocol`にInt添字を追加し、`Substring`でもInt添字を使えるように変更
+- CIにAddress Sanitizer/Thread Sanitizerのジョブを追加し、通常テストをdebug/releaseに分割
 
 ### Changed
 
+- IOReaderを全面的に作り直し（旧`IOReaderV2`を`IOReader`の名前で置き換え）
+- IOReaderの`columns`指定は値が1行に並んでいること、`rows`指定は1行に値または組が1つであることを前提にし、合わない入力では読んだ値と次の文字を示すメッセージを出して停止するように変更
+- IOReaderの`readLine()`をthrowsもOptionalも返さない形に変更
+- 入力エラーメッセージを英語に変更
+- タプル読み取りの要素プロトコルを`TupleReadable`から`Component`へ変更
+- `MT19937`ターゲットを`CxxMT19937`へリネーム
+- `CxxWrapped`ターゲットを`CxxMath`へリネーム
+- `AcFoundation`が`IOReaderExtra`も再エクスポートするように変更
+- `withUnsafeReadLineBytes`を`IOUtil`から`IOBase`へ移動し、IOReaderの`IOUtil`依存を解消
+- `[Character]`/`[UInt8]`を返す`readLine(strippingNewline:)`を`_FastIO`ベースの実装へ変更し、`IOUtil`のグローバル関数へ移動
+- `putchar_unlocked`（`UInt8`）を`IOUtil`へ移動
+- IOReader内部の`Error`を`IOReaderError`へリネームし、`IOBase`へ移動
+- `UInt8`の`isWholeNumber`/`wholeNumberValue`がASCIIの0–9だけを対象とすることをドキュメントに明記（Latin-1の上付き数字は対象外）
 - Swift tools versionを6.2へ更新し、Packageのplatform指定を外す方向へ調整
 - テストターゲットを機能別に分割し、旧`AcFoundationTests`配下のテストを各モジュール用ターゲットへ移動
-- `Pack`系の`SingleReadable`適合を`IOReaderExtra`へ移動
 - `fastPrint`の引数名を`terminater`から`terminator`へ修正し、旧APIを削除
 - `fastPrint`の整数型制約を`FastPrintableInteger`へ変更し、対応型を`Int`/`UInt`と16/32/64bit整数に限定
 - `String.init(ascii:)`を削除し、`String.init(asciiValues:)`へ一本化
-- 1次元`prefixSum`を`reductions`推奨として非推奨化
 - `Pack`にmacOS 14.0以降のavailabilityを付与
-- IOReader内部の`Error`を`IOReaderError`へリネーム
-- `[Character]`/`[UInt8]`の`readLine(strippingNewline:)`を`_FastIO`ベースの実装へ変更
 - CI対象ブランチに`compatible/AtCoder/2025`を追加
 
 ### Removed
 
+- 外部パッケージへの依存（swift-algorithms、BigInt）をすべて削除
+- `Miscellaneous`ターゲットと`Convenience`ターゲットを削除
+- IOReaderのthrowsする`read`系API（`read(columns:)`、`read(rows:)`、`read(rows:columns:)`、グローバルの`read()`など）を削除
+- `IOUtilError`を削除（`IOReaderError.unexpectedEOF`を使用）
 - `IndexHelper2D`、`TransposedIndexHelper2D`、`IndexHelper3D`を削除
 - `FileOutputStream`を削除
 - `IOUtil`の実験的な`readIntLine`/`readUIntLine`系APIを削除
