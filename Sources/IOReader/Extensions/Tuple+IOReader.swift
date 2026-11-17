@@ -11,7 +11,7 @@ public func stdin<each T: Component>() -> (repeat each T) {
 
 @inlinable
 package func _readGroupElement<T: Component>(last: Bool, separator: inout UInt8?) throws -> T {
-  let item = try T._readWithSeparator()
+  let item = try T.read()
   if !last { precondition(!isNilOrAsciiNewLine(item.separator), "the line ended before the group was complete: read \(item.value), next \(describeByte(item.separator))") }
   separator = item.separator
   if !last { _ = __ungetc(item.separator) }

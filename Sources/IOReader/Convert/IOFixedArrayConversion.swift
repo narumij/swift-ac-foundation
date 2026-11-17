@@ -7,7 +7,7 @@ public protocol IOFixedArrayConversion {
 extension IOFixedArrayConversion {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    (read(ColumnsIterator(columns: columns) { try Element._readWithSeparator() }), nil)
+  public static func read() throws -> (value: Self, separator: UInt8?) {
+    (read(ColumnsIterator(columns: columns) { try Element.read() }), nil)
   }
 }

@@ -5,7 +5,7 @@ import IOBase
 extension UInt8: WordCharacter {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: [UInt8], separator: UInt8?) {
+  public static func read() throws -> (value: [UInt8], separator: UInt8?) {
     try _atob.instance.read()
   }
 }
@@ -20,7 +20,7 @@ extension UInt8 {
   }
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: UInt8, separator: UInt8?) {
+  public static func read() throws -> (value: UInt8, separator: UInt8?) {
     (try _atob.read(count: 1).first!, __getchar_unlocked())
   }
 

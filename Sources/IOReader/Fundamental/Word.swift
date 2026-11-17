@@ -1,12 +1,12 @@
 import IOBase
 
 public protocol WordCharacter {
-  static func _readWithSeparator() throws -> (value: [Self], separator: UInt8?)
+  static func read() throws -> (value: [Self], separator: UInt8?)
 }
 
 public protocol Word {
   associatedtype Element: WordCharacter
-  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
+  static func read() throws -> (value: Self, separator: UInt8?)
   static func wordIterator() -> LineIterator<Self>
   static func wordIterator(columns: Int) -> ColumnsIterator<Self>
 }
@@ -15,25 +15,25 @@ extension Word {
 
   @inlinable
   public static var stdin: Self {
-    valuePreservingSeparator(try! _readWithSeparator())
+    valuePreservingSeparator(try! read())
   }
 
   @inlinable
   public static func wordIterator() -> LineIterator<Self> {
-    .init { try _readWithSeparator() }
+    .init { try read() }
   }
 
   @inlinable
   public static func wordIterator(columns: Int) -> ColumnsIterator<Self> {
-    .init(columns: columns) { try _readWithSeparator() }
+    .init(columns: columns) { try read() }
   }
 }
 
 extension Array: Word & Component where Element: WordCharacter {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: [Element], separator: UInt8?) {
-    try Element._readWithSeparator()
+  public static func read() throws -> (value: [Element], separator: UInt8?) {
+    try Element.read()
   }
 }
 

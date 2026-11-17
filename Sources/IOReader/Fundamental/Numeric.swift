@@ -1,7 +1,7 @@
 import IOBase
 
 public protocol Numeric: Component {
-  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
+  static func read() throws -> (value: Self, separator: UInt8?)
   static func lineIterator() -> LineIterator<Self>
   static func lineIterator(columns: Int) -> ColumnsIterator<Self>
 }
@@ -10,17 +10,17 @@ extension Numeric {
 
   @inlinable
   public static var stdin: Self {
-    valuePreservingSeparator(try! _readWithSeparator())
+    valuePreservingSeparator(try! read())
   }
 
   @inlinable
   public static func lineIterator() -> LineIterator<Self> {
-    .init { try _readWithSeparator() }
+    .init { try read() }
   }
 
   @inlinable
   public static func lineIterator(columns: Int) -> ColumnsIterator<Self> {
-    .init(columns: columns) { try _readWithSeparator() }
+    .init(columns: columns) { try read() }
   }
 }
 
@@ -39,7 +39,7 @@ extension Numeric1D {
   @inlinable
   public static func stdin(rows: Int) -> Self {
     .init((0..<rows).map { _ in
-      let (value, separator) = try! Element._readWithSeparator()
+      let (value, separator) = try! Element.read()
       precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one value: read \(value), next \(describeByte(separator))")
       return value
     })

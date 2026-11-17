@@ -61,7 +61,7 @@ final class ConversionSeparatorTests: IOReaderTestCase {
 
   func testConversionReturnsEOF() throws {
     struct FinalValue: Component {
-      static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+      static func read() throws -> (value: Self, separator: UInt8?) {
         (Self(), nil)
       }
     }

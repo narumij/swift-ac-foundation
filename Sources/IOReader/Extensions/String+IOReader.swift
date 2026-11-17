@@ -17,7 +17,7 @@ extension String {
   /// ```
   @inlinable
   public static var stdin: String {
-    valuePreservingSeparator(try! _readWithSeparator())
+    valuePreservingSeparator(try! read())
   }
 }
 
@@ -192,7 +192,7 @@ extension String: Component {}
 extension String: Word {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: String, separator: UInt8?) {
+  public static func read() throws -> (value: String, separator: UInt8?) {
     try _atos.instance.read()
   }
 }

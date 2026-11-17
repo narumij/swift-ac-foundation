@@ -7,11 +7,6 @@ public protocol IOConversion {
 extension IOConversion {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    try read()
-  }
-
-  @inlinable
   public static func readTuple<each T: Component>() throws -> (value: (repeat each T), separator: UInt8?) {
     try _readGroupElements()
   }
