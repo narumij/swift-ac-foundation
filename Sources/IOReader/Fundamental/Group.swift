@@ -2,18 +2,18 @@ import IOBase
 
 // グループのコンポーネント。それ以上の意味がまだない
 public protocol Component {
-  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
+  static func read() throws -> (value: Self, separator: UInt8?)
 }
 
 public protocol Group {
-  static func _readWithSeparator() throws -> (value: Self, separator: UInt8?)
+  static func read() throws -> (value: Self, separator: UInt8?)
 }
 
 extension Group {
 
   @inlinable
   public static var stdin: Self {
-    valuePreservingSeparator(try! _readWithSeparator())
+    _takeValue(try! read())
   }
 
   @inlinable
@@ -22,7 +22,7 @@ extension Group {
     return .init {
       guard count > 0 else { return nil }
       count -= 1
-      let (value, separator) = try! _readWithSeparator()
+      let (value, separator) = try! read()
       precondition(
         isNilOrAsciiNewLine(separator),
         "each row must hold exactly one group: read \(value), next \(describeByte(separator))")

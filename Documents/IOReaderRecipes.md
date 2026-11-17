@@ -2,6 +2,8 @@
 
 English | [日本語](IOReaderRecipes.ja.md)
 
+This document describes the current API on `main`. Line validation and separator handling differ from the AtCoder 2025 compatibility branch.
+
 (For the IOReader concepts, see [IOReader Concepts](IOReaderConcepts.md).)
 
 This page shows practical input patterns using IOReader.
@@ -88,11 +90,11 @@ read it as follows:
 ```swift
 let N = Int.stdin // -> 3
 let M = Int.stdin // -> 3
-let A = [Int].stdin(rows: N, columns: M)
+let A = [[Int]].stdin(rows: N, columns: M)
 // -> [
-//     1, 2, 3,
-//     4, 5, 6,
-//     7, 8, 9,
+//     [1, 2, 3],
+//     [4, 5, 6],
+//     [7, 8, 9],
 //    ]
 ```
 

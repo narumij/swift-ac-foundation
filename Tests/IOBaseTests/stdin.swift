@@ -1,5 +1,12 @@
 import IOBase
 
+// These adapters compare the low-level readers with cin, which leaves every
+// terminating byte unread. Public IOReader input consumes a trailing newline.
+private func _cinValue<Value>(_ item: (value: Value, separator: UInt8?)) -> Value {
+  _ = __ungetc(item.separator)
+  return item.value
+}
+
 extension UInt8 {
   
   public static func read() throws -> UInt8 {
@@ -25,7 +32,7 @@ extension Character {
 extension Int {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atol<Self>.read())
+    _cinValue(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -36,7 +43,7 @@ extension Int {
 extension Int32 {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atol<Self>.read())
+    _cinValue(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -47,7 +54,7 @@ extension Int32 {
 extension Int64 {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atol<Self>.read())
+    _cinValue(try _atol<Self>.read())
   }
   
   public static var stdin: Self {
@@ -58,7 +65,7 @@ extension Int64 {
 extension UInt {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atoul<Self>.read())
+    _cinValue(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -69,7 +76,7 @@ extension UInt {
 extension UInt32 {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atoul<Self>.read())
+    _cinValue(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -80,7 +87,7 @@ extension UInt32 {
 extension UInt64 {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atoul<Self>.read())
+    _cinValue(try _atoul<Self>.read())
   }
 
   public static var stdin: Self {
@@ -92,7 +99,7 @@ extension UInt64 {
 extension Int128 {
 
   public static var stdin: Self {
-    valuePreservingSeparator(try! _atol.read())
+    _cinValue(try! _atol.read())
   }
 }
 
@@ -100,21 +107,21 @@ extension Int128 {
 extension UInt128 {
 
   public static var stdin: Self {
-    valuePreservingSeparator(try! _atoul.read())
+    _cinValue(try! _atoul.read())
   }
 }
 
 extension Double {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atof.read())
+    _cinValue(try _atof.read())
   }
 }
 
 extension String {
 
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atos.read())
+    _cinValue(try _atos.read())
   }
 
   public static func read(columns: Int) throws -> Self {
@@ -129,7 +136,7 @@ extension String {
 extension Array where Element == UInt8 {
   
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atob.read())
+    _cinValue(try _atob.read())
   }
 
   public static func read(columns: Int) throws -> Self {
@@ -144,7 +151,7 @@ extension Array where Element == UInt8 {
 extension Array where Element == Character {
   
   public static func read() throws -> Self {
-    valuePreservingSeparator(try _atoc.read())
+    _cinValue(try _atoc.read())
   }
 
   public static func read(columns: Int) throws -> Self {

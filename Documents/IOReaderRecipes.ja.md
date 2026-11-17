@@ -2,6 +2,8 @@
 
 [English](IOReaderRecipes.md) | 日本語
 
+この文書は `main` の現行APIを対象とします。AtCoder 2025互換ブランチとは、行の検査や区切りの扱いが異なります。
+
 (IOReader の考え方は[こちら](IOReaderConcepts.ja.md)をどうぞ。)
 
 ここでは、IOReaderを用いた実践的な入力方法について説明します。
@@ -78,11 +80,11 @@ let A = [Int].stdin(columns: N)
 ```swift
 let N = Int.stdin // -> 3
 let M = Int.stdin // -> 3
-let A = [Int].stdin(rows: N, columns: M)
+let A = [[Int]].stdin(rows: N, columns: M)
 // -> [
-//     1, 2, 3,
-//     4, 5, 6,
-//     7, 8, 9,
+//     [1, 2, 3],
+//     [4, 5, 6],
+//     [7, 8, 9],
 //    ]
 ```
 

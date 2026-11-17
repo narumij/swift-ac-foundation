@@ -15,7 +15,7 @@ extension Int {
   /// ```
   @inlinable
   public static var stdin: Int {
-    valuePreservingSeparator(try! _readWithSeparator())
+    _takeValue(try! read())
   }
 }
 
@@ -122,7 +122,7 @@ extension Array where Element == [Int] {
 extension FixedWidthInteger where Self: SignedInteger {
 
   @inlinable
-  public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
+  public static func read() throws -> (value: Self, separator: UInt8?) {
     try _atol<Self>.read()
   }
 }

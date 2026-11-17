@@ -10,6 +10,7 @@ typedef struct mt19937_64 {
 } mt19937_64;
 
 mt19937_64* mt19937_64_create(uint32_t seed);
+mt19937_64* mt19937_64_clone(const mt19937_64* source);
 void     mt19937_64_destroy(mt19937_64*);
 uint64_t mt19937_64_next_u64(mt19937_64*);
 void     mt19937_64_discard(mt19937_64*, uint64_t);

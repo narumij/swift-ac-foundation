@@ -24,6 +24,13 @@ mt19937_64* mt19937_64_create(uint32_t seed)
   return result;
 }
 
+mt19937_64* mt19937_64_clone(const mt19937_64* source)
+{
+  mt19937_64* result = new mt19937_64();
+  result->handle = new mt19937_64_impl(*source->handle);
+  return result;
+}
+
 void mt19937_64_destroy(mt19937_64* h)
 {
   delete h->handle;

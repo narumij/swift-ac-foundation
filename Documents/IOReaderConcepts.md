@@ -2,140 +2,88 @@
 
 English | [日本語](IOReaderConcepts.ja.md)
 
-The IOReader included in AcFoundation provides a way to read input values token by token.
+IOReader, included in AcFoundation, reads values from standard input using their types.
+This document describes the current API on `main`. Line validation and separator handling differ from the AtCoder 2025 compatibility branch.
 
-## How It Works
+## Reading Lines or Values
 
-Given the following input:
+Consider this input:
 
-```
+```text
 3
 1 2 3
 ```
 
-### Standard Input
+Swift's standard `Swift.readLine()` returns the lines `"3"` and `"1 2 3"`.
+Using them as numbers requires splitting or conversion.
 
-If you read it with `readLine()`:
+IOReader reads the values directly:
 
-```
-_ = readLine() // -> "3"
-```
-
-The remaining input is:
-
-```
-1 2 3
+```swift
+let n = Int.stdin       // 3
+let a = [Int].stdin(columns: n) // [1, 2, 3]
 ```
 
-Reading once more gives:
+`Int.stdin` skips leading whitespace, reads one integer, and consumes an immediately following newline. Other trailing bytes remain unread.
+The next value read also skips leading whitespace, so successive number or word reads do not need to handle the separator explicitly.
 
-```
-_ = readLine() // -> "1 2 3"
-```
+Calling `Int.stdin` four times on the input above returns `3`, `1`, `2`, and `3`.
+After each call, the remaining input is `"1 2 3\n"`, `" 2 3\n"`, `" 3\n"`, and `""`, respectively.
 
-The remaining input is empty:
+## Specifying the Shape of a Line
 
-```
-(EOF)
-```
+- `[Int].stdin()` reads a line of values into an array.
+- `[Int].stdin(columns: n)` reads `n` values on one line.
+- `[Int].stdin(rows: n)` reads `n` lines with one value per line.
+- `[[Int]].stdin(rows: h, columns: w)` reads `h` lines with `w` values per line.
 
-Strings read line by line usually need to be split or converted before use.
+A `columns` read stops the program if the line ends too early or contains extra values.
+Use `String.readLine()` to preserve spaces and empty lines.
 
-### IOReader
+## Switching from Values to Lines
 
-If you read the same input with `Int.stdin`:
+A single number or word read consumes an immediately following newline. Other separators remain unread and are included in the following whole-line read.
 
-```
-_ = Int.stdin // -> 3
-```
+For input `3\nhello world\n`:
 
-The remaining input is:
-
-```
-1 2 3
-```
-
-Reading again gives:
-
-```
-_ = Int.stdin // -> 1
+```swift
+let n = Int.stdin             // 3
+let text = String.readLine()   // "hello world"
 ```
 
-The remaining input is:
+For input `3 hello world\n`, the first `String.readLine()` returns `" hello world"` instead.
+Line-based reads such as `[Int].stdin(columns:)` consume the separator at the end of the line.
 
-```
-2 3
-```
+### Mixing with Swift.readLine or Other Input Helpers
 
-Reading again gives:
+IOReader's `String.readLine()` also reads a character held in the internal pushback buffer.
+Before mixing IOReader with `Swift.readLine()` or direct stdio reads, disable the internal pushback buffer.
+Any pending character is restored to standard input, and subsequent pushback uses standard `ungetc`.
 
-```
-_ = Int.stdin // -> 2
-```
+```swift
+import AcFoundation
+import IOBase
 
-The remaining input is:
-
-```
-3
-```
-
-Reading again gives:
-
-```
-_ = Int.stdin // -> 3
+InputConfiguration.shared.usesPendingCharacter = false
+let n = Int.stdin
+let rest = Swift.readLine()
 ```
 
-The remaining input is empty:
+Saving and restoring the configuration does not rewind consumed input.
+Standard input and its configuration are shared; do not read from multiple tasks concurrently.
 
-```
-(EOF)
-```
+## Characters
 
-The value is returned as the specified or inferred type, so no extra conversion is needed.
+Character and string input assumes ASCII.
 
-### Combining IOReader with readLine()
-
-IOReader consumes only the input it needs and does not read ahead.
-
-If IOReader leaves the following input:
-
-```
-2 3
-```
-
-then using `readLine()` reads that rest of the line:
-
-```
-_ = readLine() // -> "2 3"
-```
-
-The remaining input is empty:
-
-```
-(EOF)
-```
-
-This makes it possible to combine IOReader with your own input helpers.
-
-## Tokens
-
-IOReader handles numbers, strings, and characters.
-
-| Category | Types |
+| Category | Example types |
 |---|---|
 | Numbers | `Int`, `UInt`, `Double`, `Float` |
-| Strings | `String`, `[Character]`, `[UInt8]` |
-| Characters | `Character`, `UInt8` |
+| Words | `String`, `[Character]`, `[UInt8]` |
+| One character | `Character`, `UInt8` |
 
-`[Character]` and `[UInt8]` can be used for string input, and `UInt8` can be used for character input.
-
-Although `UInt8` is a numeric type, IOReader treats it as character data.
-Use another integer type when you want to read a number.
-
-### Summary
-
-IOReader behaves similarly to C++ `cin`.
-
-The `stdin` property on each supported type reads a value directly as that type.
+`Character.stdin` and `UInt8.stdin` skip leading whitespace and read exactly one character.
+For example, three calls to `Character.stdin` read `A`, `B`, and `C` from `ABC`.
+Although `UInt8` is a numeric type, IOReader treats it as character data. Use `Int` or another supported numeric type for numbers.
 
 Next page: [IOReader Recipes](IOReaderRecipes.md)
