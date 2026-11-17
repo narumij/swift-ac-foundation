@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-`Misc (#35)`と`Develop/misc/0 (#41)`をsquashマージした内容です。0.1.34からの差分としてまとめています。
+`Misc (#35)`と`Develop/misc/0 (#41)`のsquashマージ、およびその後の修正を、0.1.34からの差分としてまとめています。
 
 ### Added
 
@@ -66,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `CxxMT19937.mt19937_64`のコピー同士で乱数生成器の状態が共有され、片方の`next()`や`discard(_:)`がもう片方の乱数列も進める問題を修正。C++の`std::mt19937_64`を引き続き使用し、更新前に現在の状態を複製するCopy-on-Writeを導入。別々のコピーを並行利用した際の共有状態への書き込み競合にも対処
 - `geline.swift`を`getline.swift`へリネーム
 - IOReaderの可変長バッファが大きくなり続ける問題を修正
 - `stderr`/`stdout`向け`FILE`ポインタの`TextOutputStream`対応を復帰
