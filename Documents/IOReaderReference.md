@@ -244,15 +244,18 @@ struct Edge {
 }
 
 extension Edge: IOConversion, Group {
-  static func read() throws -> Edge {
-    let (u, v, w): (Int, Int, Int) = try readTuple()
-    return Edge(u: u, v: v, w: w)
+  static func read() throws -> (value: Edge, separator: UInt8?) {
+    try readTuple { (value: (Int, Int, Int)) in
+      Edge(u: value.0, v: value.1, w: value.2)
+    }
   }
 }
 
 let edge = Edge.stdin
 let edges = [Edge].stdin(rows: 3)
 ```
+
+`read()` and `readTuple()` return `(value: ..., separator: UInt8?)`. The closure converts only the value; `readTuple` passes the separator through to the line iterator. `nil` represents EOF.
 
 `readTuple()` reads all values from the same line. If the line ends before all values are read, the program stops.
 Adding `Group` enables `stdin` and `stdin(rows:)`, with one value of the type per line.
@@ -279,8 +282,8 @@ struct Label {
 }
 
 extension Label: IOConversion, IOReader.Numeric {
-  static func read() throws -> Label {
-    Label(try readTuple() as Int)
+  static func read() throws -> (value: Label, separator: UInt8?) {
+    try readTuple { (value: Int) in Label(value) }
   }
 }
 

@@ -1,18 +1,23 @@
 import IOBase
 
 public protocol IOConversion {
-  static func read() throws -> Self
+  static func read() throws -> (value: Self, separator: UInt8?)
 }
 
 extension IOConversion {
 
   @inlinable
   public static func _readWithSeparator() throws -> (value: Self, separator: UInt8?) {
-    (try read(), __getchar_unlocked())
+    try read()
   }
 
   @inlinable
-  public static func readTuple<each T: Component>() throws -> (repeat each T) {
+  public static func readTuple<each T: Component>() throws -> (value: (repeat each T), separator: UInt8?) {
     try _readGroupElements()
+  }
+
+  @inlinable
+  public static func readTuple<each T: Component, S>(_ f: ((repeat each T)) -> S) throws -> (value: S, separator: UInt8?) {
+    try _readGroupElements(f)
   }
 }

@@ -244,15 +244,18 @@ struct Edge {
 }
 
 extension Edge: IOConversion, Group {
-  static func read() throws -> Edge {
-    let (u, v, w): (Int, Int, Int) = try readTuple()
-    return Edge(u: u, v: v, w: w)
+  static func read() throws -> (value: Edge, separator: UInt8?) {
+    try readTuple { (value: (Int, Int, Int)) in
+      Edge(u: value.0, v: value.1, w: value.2)
+    }
   }
 }
 
 let edge = Edge.stdin
 let edges = [Edge].stdin(rows: 3)
 ```
+
+`read()` と `readTuple()` は `(value: ..., separator: UInt8?)` を返します。クロージャでは値だけを変換し、セパレータは `readTuple` が行イテレータへ引き継ぎます。`nil` は EOF を表します。
 
 `readTuple()` は、すべての値を同じ行から読みます。読み終わる前に行が終わると停止します。
 `Group` にも準拠すると、`stdin` と、1 行に 1 つずつ読む `stdin(rows:)` が使えます。
@@ -279,8 +282,8 @@ struct Label {
 }
 
 extension Label: IOConversion, IOReader.Numeric {
-  static func read() throws -> Label {
-    Label(try readTuple() as Int)
+  static func read() throws -> (value: Label, separator: UInt8?) {
+    try readTuple { (value: Int) in Label(value) }
   }
 }
 

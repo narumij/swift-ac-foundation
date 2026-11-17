@@ -19,7 +19,7 @@ public struct LineIterator<Element>: IteratorProtocol, Sequence {
       separator = __getchar_unlocked()
     }
     finished = isNilOrAsciiNewLine(separator)
-    if !finished {
+    if !finished, separator.map(isASCIINewline) == false  {
       _ = __ungetc(separator)
     }
     return value

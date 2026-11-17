@@ -24,11 +24,11 @@ let n = Int.stdin       // 3
 let a = [Int].stdin(columns: n) // [1, 2, 3]
 ```
 
-`Int.stdin` skips leading whitespace, reads one integer, and leaves its following separator unread.
+`Int.stdin` skips leading whitespace, reads one integer, and consumes an immediately following newline. Other trailing bytes remain unread.
 The next value read also skips leading whitespace, so successive number or word reads do not need to handle the separator explicitly.
 
 Calling `Int.stdin` four times on the input above returns `3`, `1`, `2`, and `3`.
-After each call, the remaining input is `"\n1 2 3\n"`, `" 2 3\n"`, `" 3\n"`, and `"\n"`, respectively.
+After each call, the remaining input is `"1 2 3\n"`, `" 2 3\n"`, `" 3\n"`, and `""`, respectively.
 
 ## Specifying the Shape of a Line
 
@@ -42,13 +42,12 @@ Use `String.readLine()` to preserve spaces and empty lines.
 
 ## Switching from Values to Lines
 
-A single number or word read leaves its following separator unread. A whole-line read includes that separator.
+A single number or word read consumes an immediately following newline. Other separators remain unread and are included in the following whole-line read.
 
 For input `3\nhello world\n`:
 
 ```swift
 let n = Int.stdin             // 3
-let rest = String.readLine()   // "" (up to the newline after 3)
 let text = String.readLine()   // "hello world"
 ```
 

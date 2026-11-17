@@ -100,7 +100,6 @@ final class PendingCharacterSwitchTests: IOReaderTestCase {
       XCTAssertEqual(Int.stdin, 12)
       XCTAssertEqual(String.readLine(), " rest")
       XCTAssertEqual(Int.stdin, 34)
-      XCTAssertEqual(String.readLine(), "")
       XCTAssertEqual(String.readLine(), "next")
     }).inputOnly("12 rest\n34\nnext\n")
   }
