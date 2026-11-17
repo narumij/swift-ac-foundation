@@ -70,8 +70,13 @@ let S = [String].stdin(rows: H, columns: W)
 token は半角スペース、タブ、改行などの空白文字で区切られます。
 文字列や文字は ASCII 入力を想定しています。
 
-`columns` を指定する読み取りは値が 1 行に並んでいること、`rows` を指定する読み取りは 1 行に値または組が 1 つであることを前提にします。
-入力が合わない場合は、読んだ値と次の文字を示すメッセージを出して停止します。
+以下は `main` の現行APIの説明です。AtCoder 2025互換ブランチとは、行の検査や区切りの扱いが異なります。
+数値配列の `columns` は1行の値の個数、`rows` は1行に1値ずつ読む行数です。行列は `[[Int]].stdin(rows:columns:)` で読みます。
+文字列配列の `rows` は空白や空行を保持した行読み、`rows:columns:` は空白を含まない固定幅の盤面向けです。
+数値の個数や行の形が指定に合わない場合は停止します。
+
+単品の数値・単語を読んだ後には区切りが残ります。続いて行を読む場合は `String.readLine()` を使います。
+Swift標準の `Swift.readLine()` と混ぜる場合の設定は、[IOReader の考え方](Documents/IOReaderConcepts.ja.md)を参照してください。
 
 `Int`、`UInt`、`Double`、`String`、`Character`、`UInt8` のほか、次の型も読み取れます。
 
@@ -99,6 +104,7 @@ IOReaderExtra は、`Pack` 型へ `stdin` 対応を追加します。
 
 ```swift
 import IOReaderExtra
+import Pack
 
 let a: Pack2<Int, String> = .stdin
 ```

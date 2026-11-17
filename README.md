@@ -70,8 +70,13 @@ let S = [String].stdin(rows: H, columns: W)
 Tokens are separated by spaces, tabs, newlines, and similar whitespace.
 Strings and characters assume ASCII input.
 
-Reads with `columns` expect the values on one line, and reads with `rows` expect one value or one group per line.
-When the input does not match, the program stops with a message that shows the value read and the next character.
+The following describes the current API on `main`. Line validation and separator handling differ from the AtCoder 2025 compatibility branch.
+For numeric arrays, `columns` is the number of values on one line; `rows` reads one value per line. Use `[[Int]].stdin(rows:columns:)` for a matrix.
+For string arrays, `rows` reads whole lines, preserving spaces and empty lines; `rows:columns:` is intended for fixed-width grids without spaces inside each row.
+The program stops if numeric counts or line shapes do not match the requested form.
+
+A single number or word read leaves its following separator unread. Use `String.readLine()` to read the rest of the line.
+For the configuration needed when mixing with Swift's standard `Swift.readLine()`, see [IOReader Concepts](Documents/IOReaderConcepts.md).
 
 Besides `Int`, `UInt`, `Double`, `String`, `Character`, and `UInt8`, the following types can be read.
 
@@ -99,6 +104,7 @@ It is also available through `AcFoundation`, but you can import it individually 
 
 ```swift
 import IOReaderExtra
+import Pack
 
 let a: Pack2<Int, String> = .stdin
 ```
