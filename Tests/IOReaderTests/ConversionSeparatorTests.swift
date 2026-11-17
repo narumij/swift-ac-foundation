@@ -59,13 +59,22 @@ final class ConversionSeparatorTests: IOReaderTestCase {
     }).inputOnly("1 2\nnext\n123abc\n")
   }
 
+  func testGenericSIMDRead() throws {
+    try SolverRunner(solver: {
+      let (value, separator) = try SIMD8<Int>.read()
+      XCTAssertEqual(value, SIMD8(1, 2, 3, 4, 5, 6, 7, 8))
+      XCTAssertEqual(separator, UInt8(ascii: "\n"))
+      XCTAssertEqual(String.readLine(), "next")
+    }).inputOnly("1 2 3 4 5 6 7 8\nnext\n")
+  }
+
   func testConversionReturnsEOF() throws {
     struct FinalValue: Component {
       static func read() throws -> (value: Self, separator: UInt8?) {
         (Self(), nil)
       }
     }
-    let item: (value: FinalValue, separator: UInt8?) = try ConvertedInt.readTuple()
+    let item: (value: FinalValue, separator: UInt8?) = try ConvertedInt.readTuple { (value: FinalValue) in value }
     XCTAssertNil(item.separator)
   }
 }

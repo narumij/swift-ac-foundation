@@ -1,3 +1,5 @@
+import IOBase
+
 extension SIMD where Scalar: Component {
 
   @inlinable
@@ -5,7 +7,13 @@ extension SIMD where Scalar: Component {
     var value = Self()
     var separator: UInt8?
     for i in value.indices {
-      value[i] = try _readGroupElement(last: i == value.indices.last, separator: &separator)
+      let item = try Scalar.read()
+      value[i] = item.value
+      separator = item.separator
+      if i != value.indices.last {
+        precondition(!isNilOrAsciiNewLine(separator), "the line ended before the group was complete: read \(item.value), next \(describeByte(separator))")
+        _ = __ungetc(separator)
+      }
     }
     return (value, separator)
   }

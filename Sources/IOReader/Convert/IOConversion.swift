@@ -7,12 +7,7 @@ public protocol IOConversion {
 extension IOConversion {
 
   @inlinable
-  public static func readTuple<each T: Component>() throws -> (value: (repeat each T), separator: UInt8?) {
-    try _readGroupElements()
-  }
-
-  @inlinable
   public static func readTuple<each T: Component, S>(_ f: ((repeat each T)) -> S) throws -> (value: S, separator: UInt8?) {
-    try _readGroupElements(f)
+    try _readTuple(f)
   }
 }

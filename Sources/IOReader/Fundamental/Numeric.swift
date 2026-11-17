@@ -10,7 +10,7 @@ extension Numeric {
 
   @inlinable
   public static var stdin: Self {
-    valuePreservingSeparator(try! read())
+    _takeValue(try! read())
   }
 
   @inlinable

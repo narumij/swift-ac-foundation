@@ -232,7 +232,7 @@ let a: Pack2<Int, String> = .stdin
 通常の利用では、上で挙げた具体型を使えば十分です。
 
 ここでの `read()` は直接呼ぶためではなく、`stdin` を使えるようにするための実装です。
-`read()` の中では、`readTuple()` で値を読み、独自型を作ります。
+`read()` の中では、`readTuple(_:)` で値を読み、独自型を作ります。
 
 ```swift
 import AcFoundation
@@ -255,12 +255,12 @@ let edge = Edge.stdin
 let edges = [Edge].stdin(rows: 3)
 ```
 
-`read()` と `readTuple()` は `(value: ..., separator: UInt8?)` を返します。クロージャでは値だけを変換し、セパレータは `readTuple` が行イテレータへ引き継ぎます。`nil` は EOF を表します。
+`read()` と `readTuple(_:)` は `(value: ..., separator: UInt8?)` を返します。クロージャでは値だけを変換し、セパレータは `readTuple` が行イテレータへ引き継ぎます。`nil` は EOF を表します。
 
-`readTuple()` は、すべての値を同じ行から読みます。読み終わる前に行が終わると停止します。
+`readTuple(_:)` は、すべての値を同じ行から読みます。読み終わる前に行が終わると停止します。
 `Group` にも準拠すると、`stdin` と、1 行に 1 つずつ読む `stdin(rows:)` が使えます。
 
-`readTuple()` は値を 1 つだけ読むこともできます。
+`readTuple(_:)` は値を 1 つだけ読むこともできます。
 1 token から読む型は、`Group` の代わりに `IOReader.Numeric` に準拠します。`stdin` と `stdin(columns:)` が使えます。
 `Swift.Numeric` と同じ名前なので、モジュール名を付けて `IOReader.Numeric` と書きます。
 

@@ -15,7 +15,7 @@ extension Int {
   /// ```
   @inlinable
   public static var stdin: Int {
-    valuePreservingSeparator(try! read())
+    _takeValue(try! read())
   }
 }
 

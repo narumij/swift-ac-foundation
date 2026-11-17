@@ -232,7 +232,7 @@ To make your own type readable from input, conform it to `IOConversion` and impl
 For ordinary use, the concrete types listed above are enough.
 
 `read()` is not meant to be called directly. It is the implementation that enables `stdin`.
-Inside `read()`, read the values with `readTuple()` and build your type from them.
+Inside `read()`, read the values with `readTuple(_:)` and build your type from them.
 
 ```swift
 import AcFoundation
@@ -255,12 +255,12 @@ let edge = Edge.stdin
 let edges = [Edge].stdin(rows: 3)
 ```
 
-`read()` and `readTuple()` return `(value: ..., separator: UInt8?)`. The closure converts only the value; `readTuple` passes the separator through to the line iterator. `nil` represents EOF.
+`read()` and `readTuple(_:)` return `(value: ..., separator: UInt8?)`. The closure converts only the value; `readTuple` passes the separator through to the line iterator. `nil` represents EOF.
 
-`readTuple()` reads all values from the same line. If the line ends before all values are read, the program stops.
+`readTuple(_:)` reads all values from the same line. If the line ends before all values are read, the program stops.
 Adding `Group` enables `stdin` and `stdin(rows:)`, with one value of the type per line.
 
-`readTuple()` also reads a single value.
+`readTuple(_:)` also reads a single value.
 For a type read from one token, conform to `IOReader.Numeric` instead of `Group`. This enables `stdin` and `stdin(columns:)`.
 Write `IOReader.Numeric` with the module name, because `Swift.Numeric` has the same name.
 
