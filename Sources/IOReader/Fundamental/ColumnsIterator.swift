@@ -23,10 +23,9 @@ public struct ColumnsIterator<Element>: IteratorProtocol, Sequence {
     }
     if columns > 0 {
       precondition(!isNilOrAsciiNewLine(separator), "the line ended before all columns were read: read \(value), next \(describeByte(separator))")
-      _ = __ungetc(separator)
     } else {
       precondition(isNilOrAsciiNewLine(separator), "the line has more values than the columns: read \(value), next \(describeByte(separator))")
     }
-    return value
+    return consumeNewline((value, separator))
   }
 }

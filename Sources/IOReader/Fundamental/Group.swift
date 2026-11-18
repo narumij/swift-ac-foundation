@@ -13,7 +13,7 @@ extension Group {
 
   @inlinable
   public static var stdin: Self {
-    _takeValue(try! read())
+    consumeNewline(try! read())
   }
 
   @inlinable
@@ -26,7 +26,7 @@ extension Group {
       precondition(
         isNilOrAsciiNewLine(separator),
         "each row must hold exactly one group: read \(value), next \(describeByte(separator))")
-      return value
+      return consumeNewline((value, separator))
     }
   }
 }

@@ -4,7 +4,7 @@ import IOBase
 @inlinable
 @inline(__always)
 public func stdin<each T: Component>() -> (repeat each T) {
-  _takeValue(try! _readTuple { $0 })
+  consumeNewline(try! _readTuple { $0 })
 }
 
 // MARK: -

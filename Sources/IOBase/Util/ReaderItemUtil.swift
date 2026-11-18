@@ -4,8 +4,13 @@ import _FastIO
 // nil means there is no separator to restore.
 @inlinable
 @inline(__always)
-package func _takeValue<Value>(_ result: ReaderItem<Value>) -> Value {
-  if result.separator.map(isASCIINewline) == false {
+package func consumeNewline<Value>(_ result: ReaderItem<Value>) -> Value {
+  if result.separator == .CR {
+    let next: UInt8? = __getchar_unlocked()
+    if next != .LF {
+      _ = __ungetc(next)
+    }
+  } else if result.separator.map(isASCIINewline) == false {
     _ = __ungetc(result.separator)
   }
   return result.value
