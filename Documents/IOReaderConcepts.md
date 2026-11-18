@@ -42,7 +42,7 @@ Use `String.readLine()` to preserve spaces and empty lines.
 
 ## Switching from Values to Lines
 
-A single number or word read consumes an immediately following newline. Other separators remain unread and are included in the following whole-line read.
+A single number or word read consumes an immediately following newline. Both bytes of CRLF are consumed as one newline. Other separators remain unread and are included in the following whole-line read.
 
 For input `3\nhello world\n`:
 

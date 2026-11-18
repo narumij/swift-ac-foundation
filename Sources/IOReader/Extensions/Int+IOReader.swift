@@ -15,7 +15,7 @@ extension Int {
   /// ```
   @inlinable
   public static var stdin: Int {
-    _takeValue(try! read())
+    consumeNewline(try! read())
   }
 }
 
@@ -57,7 +57,7 @@ extension Array where Element == Int {
     (0..<rows).map { _ in
       let (value, separator): ReaderItem<Int> = try! _atol<Int>.read()
       precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one value: read \(value), next \(describeByte(separator))")
-      return value
+      return consumeNewline((value, separator))
     }
   }
 

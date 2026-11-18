@@ -10,7 +10,7 @@ extension Numeric {
 
   @inlinable
   public static var stdin: Self {
-    _takeValue(try! read())
+    consumeNewline(try! read())
   }
 
   @inlinable
@@ -41,7 +41,7 @@ extension Numeric1D where Self: ~Copyable {
     .init((0..<rows).map { _ in
       let (value, separator) = try! Element.read()
       precondition(isNilOrAsciiNewLine(separator), "each row must hold exactly one value: read \(value), next \(describeByte(separator))")
-      return value
+      return consumeNewline((value, separator))
     })
   }
 

@@ -17,7 +17,7 @@ extension String {
   /// ```
   @inlinable
   public static var stdin: String {
-    _takeValue(try! read())
+    consumeNewline(try! read())
   }
 }
 
@@ -180,7 +180,7 @@ extension Array where Element == String {
       let line = String.stdin(columns: columns)
       let separator: UInt8? = __getchar_unlocked()
       precondition(isNilOrAsciiNewLine(separator), "the line has more characters than the columns: read \(line.debugDescription), next \(describeByte(separator))")
-      return line
+      return consumeNewline((line, separator))
     }
   }
 }

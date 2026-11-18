@@ -15,7 +15,7 @@ extension Word {
 
   @inlinable
   public static var stdin: Self {
-    _takeValue(try! read())
+    consumeNewline(try! read())
   }
 
   @inlinable

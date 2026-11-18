@@ -1,3 +1,6 @@
+import IOBase
+import IOReaderExtra
+import Pack
 import IOReader
 import TestingUtil
 import XCTest
@@ -17,5 +20,64 @@ final class IOReaderCRLFTests: IOReaderTestCase {
       XCTAssertEqual(String(characters), "Tanaka Aoi")
     })
     .inputOnly("Takahashi Aoki\r\nTanaka Aoi")
+  }
+
+  func testValueReadConsumesWholeNewline() throws {
+    for pending in [false, true] {
+      for newline in ["\n", "\r\n", "\r"] {
+        try SolverRunner(solver: {
+          InputConfiguration.shared.usesPendingCharacter = pending
+          XCTAssertEqual(Int.stdin, 12)
+          XCTAssertEqual(String.readLine(), "next")
+          XCTAssertEqual(String.stdin, "word")
+          XCTAssertEqual([UInt8].readLine(), [])
+          XCTAssertEqual(String.readLine(), "last")
+        }).inputOnly("12\(newline)next\nword\(newline)\r\nlast\n")
+      }
+    }
+  }
+
+  func testLineAndColumnsConsumeWholeNewline() throws {
+    for pending in [false, true] {
+      for newline in ["\n", "\r\n", "\r"] {
+        try SolverRunner(solver: {
+          InputConfiguration.shared.usesPendingCharacter = pending
+          XCTAssertEqual([Int].stdin(), [1, 2])
+          XCTAssertEqual(String.readLine(), "next")
+          XCTAssertEqual([Int].stdin(columns: 2), [3, 4])
+          XCTAssertEqual(String.readLine(), "last")
+        }).inputOnly("1 2 \t\(newline)next\n3 4 \t\(newline)last\n")
+      }
+    }
+  }
+
+  func testRowsAndGroupsConsumeWholeNewline() throws {
+    for pending in [false, true] {
+      try SolverRunner(solver: {
+        InputConfiguration.shared.usesPendingCharacter = pending
+        XCTAssertEqual([Int].stdin(rows: 2), [1, 2])
+        XCTAssertEqual(String.readLine(), "ints")
+        XCTAssertEqual([Double].stdin(rows: 2), [1.5, 2.5])
+        XCTAssertEqual(String.readLine(), "doubles")
+        let pair: (Int, Int) = stdin()
+        XCTAssertEqual(pair.0, 3)
+        XCTAssertEqual(pair.1, 4)
+        XCTAssertEqual(String.readLine(), "tuple")
+        XCTAssertEqual([Pack2<Int, Int>].stdin(rows: 1)[0].rawValue.1, 6)
+        XCTAssertEqual(String.readLine(), "pack")
+        XCTAssertEqual([String].stdin(rows: 1, columns: 3), ["abc"])
+        XCTAssertEqual(String.readLine(), "last")
+      }).inputOnly("1\r\n2\r\nints\n1.5\r\n2.5\r\ndoubles\n3 4\r\ntuple\n5 6\r\npack\nabc\r\nlast\n")
+    }
+  }
+
+  func testBareCRAtEOF() throws {
+    for pending in [false, true] {
+      try SolverRunner(solver: {
+        InputConfiguration.shared.usesPendingCharacter = pending
+        XCTAssertEqual(Int.stdin, 12)
+        XCTAssertThrowsError(try Int.read())
+      }).inputOnly("12\r")
+    }
   }
 }
