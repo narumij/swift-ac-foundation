@@ -24,12 +24,12 @@ extension Numeric {
   }
 }
 
-public protocol Numeric1D {
+public protocol Numeric1D: ~Copyable {
   associatedtype Element: Numeric
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
-extension Numeric1D {
+extension Numeric1D where Self: ~Copyable {
 
   @inlinable
   public static func stdin() -> Self {
@@ -51,12 +51,12 @@ extension Numeric1D {
   }
 }
 
-public protocol Numeric2D {
+public protocol Numeric2D: ~Copyable {
   associatedtype Element: Numeric1D
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
-extension Numeric2D {
+extension Numeric2D where Self: ~Copyable {
 
   @inlinable
   public static func stdin(rows: Int) -> Self {

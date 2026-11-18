@@ -31,12 +31,12 @@ extension Group {
   }
 }
 
-public protocol Groups {
+public protocol Groups: ~Copyable {
   associatedtype Element: Group
   init<S>(_ sequence: S) where S: Sequence, S.Element == Element
 }
 
-extension Groups {
+extension Groups where Self: ~Copyable {
   @inlinable
   public static func stdin(rows: Int) -> Self {
     .init(Element.groups(count: rows))
