@@ -37,11 +37,12 @@ extension Array: Word & Component where Element: WordCharacter {
   }
 }
 
-public protocol Word1D: Sequence where Element: Word {
+public protocol Word1D: ~Copyable {
+  associatedtype Element: Word
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
-extension Word1D {
+extension Word1D where Self: ~Copyable {
 
   @inlinable
   public static func stdin() -> Self {
@@ -57,12 +58,12 @@ extension Word1D {
 extension Array: Word1D where Element: Word {}
 extension Set: Word1D where Element: Word { }
 
-public protocol Word2D {
+public protocol Word2D: ~Copyable {
   associatedtype Element: Word1D
   init<S: Sequence>(_ sequence: S) where S.Element == Element
 }
 
-extension Word2D {
+extension Word2D where Self: ~Copyable {
 
   @inlinable
   public static func stdin(rows: Int) -> Self {
